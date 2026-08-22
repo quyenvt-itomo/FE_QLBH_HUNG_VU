@@ -1,0 +1,11 @@
+.login-form .ant-form-item-control-input-content *.ant-input-outlined {
+  border-radius: 12px !important;
+}
+
+.login-form
+  .ant-input-affix-wrapper
+  .ant-input-suffix
+  .ant-input-password-icon {
+  cursor: pointer;
+  color: #666;
+}

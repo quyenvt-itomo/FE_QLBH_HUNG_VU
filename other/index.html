@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <title>QUAN LY BAN HANG</title>
+    <style>
+      .full-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        z-index: 9999;
+        overflow: hidden;
+        transition: all 0.9s ease-in-out;
+      }
+
+      .top__full-screen,
+      .bot__full-screen {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #fff;
+        transition: transform 0.9s ease-in-out;
+      }
+
+      img.default-logo:not(.current-organization-logo) {
+        height: 160px;
+      }
+
+      .current-organization-logo {
+        height: 200px;
+        width: 200px;
+        object-fit: cover;
+        border-radius: 50%;
+        overflow: hidden;
+      }
+
+      /* Khi loading hoàn tất, top đi lên, bot đi xuống */
+      /* .full-screen.hide .top__full-screen {
+        transform: translateY(-100%);
+      }
+
+      .full-screen.hide .bot__full-screen {
+        transform: translateY(100%);
+      } */
+      .full-screen.hide {
+        opacity: 0;
+      }
+
+      .waiting__container {
+        min-height: 200px;
+      }
+
+      .waiting-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .waiting {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background-color: #006ec4;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+        animation: animationLoading 1s ease-in-out infinite;
+      }
+
+      .loading-container {
+        display: flex;
+        position: fixed;
+        align-items: center;
+        justify-content: center;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.1);
+        z-index: 99999;
+      }
+
+      .loading-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      .loading {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background-color: #006ec4;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.24);
+        animation: animationLoading 1s ease-in-out infinite;
+      }
+
+      .set_1 {
+        animation-delay: 0s;
+      }
+
+      .set_2 {
+        animation-delay: 0.2s;
+      }
+
+      .set_3 {
+        animation-delay: 0.4s;
+      }
+
+      .set_4 {
+        animation-delay: 0.6s;
+      }
+
+      .set_5 {
+        animation-delay: 0.8s;
+      }
+
+      @keyframes animationLoading {
+        0% {
+          transform: scale(0.7);
+        }
+        50% {
+          transform: scale(1);
+        }
+        100% {
+          transform: scale(0.7);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Loading Screen -->
+    <div id="initial-loader" class="full-screen">
+      <div class="top__full-screen flex items-center">
+        <img src="/logo.svg" class="default-logo" onerror="this.src = '/logo.svg'" />
+      </div>
+      <div class="bot__full-screen">
+        <div class="waiting__container full-width center" style="height: 100%">
+          <div class="waiting-wrapper">
+            <div class="waiting set_1"></div>
+            <div class="waiting set_2"></div>
+            <div class="waiting set_3"></div>
+            <div class="waiting set_4"></div>
+            <div class="waiting set_5"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

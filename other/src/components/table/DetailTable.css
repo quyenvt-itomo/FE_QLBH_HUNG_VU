@@ -1,0 +1,3 @@
+.product__table td .ant-input-number-outlined:not(.ant-input-number-disabled) {
+  background: transparent !important;
+}

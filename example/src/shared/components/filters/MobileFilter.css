@@ -1,0 +1,88 @@
+.itomo-mobile-filter {
+  z-index: 1;
+  box-shadow: 0px 3px 8px var(--shadow);
+}
+
+.itomo-mobile-filter .card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 4px;
+  background: var(--bg-panel);
+}
+
+.itomo-mobile-filter .card .title {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--text-secondary);
+}
+
+.itomo-mobile-filter .card .ant-input-outlined,
+.itomo-mobile-filter .card .ant-picker-outlined {
+  border: 0 !important;
+  background: var(--bg-card-input) !important;
+  width: 100% !important;
+  height: 36px !important;
+  border-radius: 8px !important;
+}
+
+/* TODO: Status */
+.itomo-mobile-filter .status-item {
+  display: flex;
+  padding: 0 15px;
+  gap: 15px;
+  align-items: center;
+  height: 56px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  border: 0.5px solid transparent;
+}
+
+.itomo-mobile-filter .status-item:hover:not(.active) {
+  background: #fafafa;
+}
+
+.itomo-mobile-filter .status-item .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  width: 36px;
+  border-radius: 6px;
+  background: var(--color-bg);
+  color: #747e76;
+}
+
+.itomo-mobile-filter .status-item .label {
+  font-weight: 400;
+}
+
+.itomo-mobile-filter .status-item .total {
+  font-weight: 500;
+  color: var(--color-primary);
+}
+
+.itomo-mobile-filter .status-item.active {
+  border: 0.5px solid var(--color-primary);
+  background: var(--color-bg-primary);
+}
+
+.itomo-mobile-filter .status-item.active .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.itomo-mobile-filter .status-item .label {
+  font-weight: 400;
+}
+
+.itomo-mobile-filter .status-item .total {
+  font-weight: 500;
+  color: var(--color-primary);
+}

@@ -1,0 +1,20 @@
+import { IconProps } from "../../utils/types/icon";
+
+export const IconRemove: React.FC<IconProps> = ({ color }) => {
+  return (
+    <svg
+      width="25"
+      height="25"
+      viewBox="0 0 25 25"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M16.5 8.5L8.5 16.5M16.5 16.5L8.5 8.5"
+        stroke={color || "#A6A6A6"}
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+};

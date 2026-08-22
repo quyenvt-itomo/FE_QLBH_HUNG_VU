@@ -1,0 +1,29 @@
+.role__row {
+    position: relative;
+    border-radius: 3px;
+}
+
+.role__row.role__selected-row {
+    background-color: #e5edf5;
+    color: #006ec4;
+    position: relative;
+}
+
+.role__row::before {
+    position: absolute;
+    content: "";
+    width: 2px;
+    height: 0;
+    background-color: #006ec4;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    transition: all 300ms ease-in-out;
+}
+
+.role__row.role__selected-row::before {
+    height: 100%;
+}
+.custom-item-form .ant-form-item-control {
+    padding-bottom: 0 !important;
+}

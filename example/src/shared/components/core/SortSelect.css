@@ -1,0 +1,5 @@
+.sort-select.ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector {
+  border-radius: 4px !important;
+  background-color: #fff !important;
+  border: 0 !important;
+}
