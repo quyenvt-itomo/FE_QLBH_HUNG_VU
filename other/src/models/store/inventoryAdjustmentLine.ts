@@ -1,4 +1,4 @@
-import { InventoryTransactionTypeEnum } from "../../constants/enum";
+import { InventoryTransactionType } from "../../constants/enum";
 import { ApiRequestQuery, ApiResponse } from "../base/api";
 import { IEntity } from "../base/entity";
 import { IProductVariant, ProductVariantSnapshot } from "../product";
@@ -20,7 +20,7 @@ export interface IInventoryAdjustmentLine extends IEntity {
 
   deltaQty: number;
 
-  direction: InventoryTransactionTypeEnum;
+  direction: InventoryTransactionType;
 
   // costPriceAtTime: number;
 

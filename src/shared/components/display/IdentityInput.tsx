@@ -1,6 +1,6 @@
 import React from "react";
 import { Form, Input, Select } from "antd";
-import { IdentificationTypeEnum } from "@/shared/constants/enum";
+import { IdentificationType } from "@/shared/constants/enum";
 import { CLASSNAME } from "@/shared/constants/ui";
 
 type FieldName = string | (string | number)[];
@@ -16,14 +16,14 @@ const IdentityInput: React.FC<IdentityInputProps> = ({
   nameNumber = "identityCode",
   nameType = "type",
 }) => {
-  const type = Form.useWatch(nameType, form) as IdentificationTypeEnum;
+  const type = Form.useWatch(nameType, form) as IdentificationType;
   const getLabel = () => {
     switch (type) {
-      case IdentificationTypeEnum.CCCD:
+      case IdentificationType.CCCD:
         return "Số CCCD";
-      case IdentificationTypeEnum.CMND:
+      case IdentificationType.CMND:
         return "Số CMND";
-      case IdentificationTypeEnum.HC:
+      case IdentificationType.HC:
         return "Số HC";
       default:
         return "Số định danh";
@@ -32,11 +32,11 @@ const IdentityInput: React.FC<IdentityInputProps> = ({
 
   const getPlaceholder = () => {
     switch (type) {
-      case IdentificationTypeEnum.CCCD:
+      case IdentificationType.CCCD:
         return "Nhập số CCCD";
-      case IdentificationTypeEnum.CMND:
+      case IdentificationType.CMND:
         return "Nhập số CMND";
-      case IdentificationTypeEnum.HC:
+      case IdentificationType.HC:
         return "Nhập số HC";
       default:
         return "Nhập số định danh";
@@ -81,12 +81,12 @@ const IdentityInput: React.FC<IdentityInputProps> = ({
 
       {/* Select */}
       <div className="w-20">
-        <Form.Item name={nameType} noStyle initialValue={IdentificationTypeEnum.CCCD}>
+        <Form.Item name={nameType} noStyle initialValue={IdentificationType.CCCD}>
           <Select
             options={[
-              { value: IdentificationTypeEnum.CCCD, label: "CCCD" },
-              { value: IdentificationTypeEnum.CMND, label: "CMND" },
-              { value: IdentificationTypeEnum.HC, label: "HC" },
+              { value: IdentificationType.CCCD, label: "CCCD" },
+              { value: IdentificationType.CMND, label: "CMND" },
+              { value: IdentificationType.HC, label: "HC" },
             ]}
             value={type}
             onChange={(value) => form.setFieldValue(nameType, value)}

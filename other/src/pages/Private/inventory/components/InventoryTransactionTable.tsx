@@ -5,7 +5,7 @@ import { useClientData } from "../../../../hooks/core/useClientData";
 import { formatDateTimeDDMMYYYY } from "../../../../utils/dateUtils";
 import { formatQuantity, formatMoney } from "../../../../utils/formatNumber";
 import { useEffect, useMemo, useState } from "react";
-import { inventoryRefTypeMap, InventoryTransactionTypeEnum } from "../../../../constants/enum";
+import { inventoryRefTypeMap, InventoryTransactionType } from "../../../../constants/enum";
 import { CLASSNAME, CSS } from "../../../../constants/UI";
 import { IProductVariant } from "../../../../models/product";
 import { getFullVariantOptionContent } from "../../../../utils/common";
@@ -47,7 +47,7 @@ const InventoryTransactionTable: React.FC<Props> = ({
 
     // Giao dịch - dùng closingQty/closingAmount từ BE (đã tính sẵn)
     dataSource.forEach((item: IInventoryTransaction, index: number) => {
-      const isImport = item.type === InventoryTransactionTypeEnum.IN;
+      const isImport = item.type === InventoryTransactionType.IN;
 
       formatData.push({
         ...item,

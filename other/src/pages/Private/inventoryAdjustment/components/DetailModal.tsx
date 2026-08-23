@@ -21,7 +21,7 @@ import { IInventoryAdjustment } from "../../../../models/store/inventoryAdjustme
 import { IInventoryAdjustmentLine } from "../../../../models/store/inventoryAdjustmentLine";
 import { useClientData } from "../../../../hooks/core/useClientData";
 import VirtualList from "rc-virtual-list";
-import { InventoryTransactionTypeEnum } from "../../../../constants/enum";
+import { InventoryTransactionType } from "../../../../constants/enum";
 import DropdownAction from "../../../../components/dropdown/ActionMenu";
 import { Icon } from "@iconify/react";
 import { exportInventoryAdjustmentToExcel } from "../../../../utils/excelExport";
@@ -83,9 +83,9 @@ const DetailModal: React.FC<DetailModalProps> = ({
       summary.countedQty += line.countedQty || 0;
       summary.expectedQty += line.expectedQty || 0;
       summary.deltaQty +=
-        (line.direction === InventoryTransactionTypeEnum.IN ? 1 : -1) * (line.deltaQty || 0);
+        (line.direction === InventoryTransactionType.IN ? 1 : -1) * (line.deltaQty || 0);
       summary.adjustmentValue +=
-        (line.direction === InventoryTransactionTypeEnum.IN ? 1 : -1) * (line.adjustmentValue || 0);
+        (line.direction === InventoryTransactionType.IN ? 1 : -1) * (line.adjustmentValue || 0);
       return summary;
     },
     { countedQty: 0, expectedQty: 0, deltaQty: 0, adjustmentValue: 0 },
@@ -363,7 +363,7 @@ const DetailModal: React.FC<DetailModalProps> = ({
               {(line, index) => {
                 const isUpdatingRow = isUpdating && rowData?.id === line.id;
                 const isDecrease =
-                  line.direction === InventoryTransactionTypeEnum.OUT && line.deltaQty !== 0;
+                  line.direction === InventoryTransactionType.OUT && line.deltaQty !== 0;
                 const adjustmentQty = (line.deltaQty || 0) * (isDecrease ? -1 : 1);
                 const adjustmentValue = (line.adjustmentValue || 0) * (isDecrease ? -1 : 1);
                 return (

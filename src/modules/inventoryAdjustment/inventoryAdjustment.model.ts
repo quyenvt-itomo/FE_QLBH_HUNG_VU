@@ -43,7 +43,7 @@ export interface InventoryAdjustment extends EntityWithCompany {
   reason: string | null;
   totalAdjustmentQuantity: number;
   totalAdjustmentValue: number;
-  isInitialAdjustment: boolean;
+  isInitial: boolean;
   subTotal: number;
   discountAmount: number;
   netAmount: number;

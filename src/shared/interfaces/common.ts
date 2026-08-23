@@ -2,7 +2,7 @@ import { FormInstance } from "antd";
 import { DefaultOptionType } from "antd/es/select";
 import { SelectProps as AntdSelectProps } from "antd";
 import { ApiRequestQuery, BaseError, PaginationProps, PayloadWithSubId } from "./api";
-import { IdentificationTypeEnum, SortOrderEnum } from "@/shared/constants/enum";
+import { IdentificationType, SortOrderEnum } from "@/shared/constants/enum";
 import { Entity } from "@/shared/base/entity";
 import { AttributeType } from "@/modules/attribute";
 
@@ -96,7 +96,7 @@ export interface InsuranceInfo {
 }
 
 export interface Identification {
-  type: IdentificationTypeEnum; // Loại giấy tờ
+  type: IdentificationType; // Loại giấy tờ
   identityCode: string; // Số giấy tờ
   issuedDate: string; // Ngày cấp
   issuedPlace: string; // Nơi cấp

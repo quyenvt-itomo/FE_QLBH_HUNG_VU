@@ -1,9 +1,5 @@
 import ExcelJS from "exceljs";
-import {
-  DiscountTypeEnum,
-  InventoryTransactionTypeEnum,
-  OrderLineTypeEnum,
-} from "../constants/enum";
+import { DiscountTypeEnum, InventoryTransactionType, OrderLineTypeEnum } from "../constants/enum";
 import { IOrder } from "../models/store/order";
 import { IStoreTransfer } from "../models/storeTransfer";
 import { getFullVariantOptionContent } from "./common";
@@ -626,7 +622,7 @@ export const exportInventoryAdjustmentToExcel = async (data: IInventoryAdjustmen
   let totalAdjustmentValue = 0;
 
   data.lines?.forEach((line, index) => {
-    const isDecrease = line.direction === InventoryTransactionTypeEnum.OUT;
+    const isDecrease = line.direction === InventoryTransactionType.OUT;
     const deltaQtyValue = (line.deltaQty || 0) * (isDecrease ? -1 : 1);
     const adjustmentValueValue = (line.adjustmentValue || 0) * (isDecrease ? -1 : 1);
 

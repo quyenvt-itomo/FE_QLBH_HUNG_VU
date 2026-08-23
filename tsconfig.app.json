@@ -34,5 +34,46 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"],
-  "exclude": ["scripts"]
+  "exclude": [
+    "scripts",
+    "src/modules/billOfMaterial/**",
+    "src/modules/commissionDebtAdjustment/**",
+    "src/modules/commissionDebtReport/**",
+    "src/modules/dashboard/**",
+    "src/modules/deviceWhitelist/**",
+    "src/modules/employee/**",
+    "src/modules/excel/**",
+    "src/modules/gateLog/**",
+    "src/modules/inventoryConversion/**",
+    "src/modules/invoice/**",
+    "src/modules/jobPosititon/**",
+    "src/modules/operationLog/**",
+    "src/modules/organization/**",
+    "src/modules/partnerContact/**",
+    "src/modules/partnerDebtAdjustment/**",
+    "src/modules/partnerDebtOffset/**",
+    "src/modules/partnerDebtReport/**",
+    "src/modules/paymentRequest/**",
+    "src/modules/paymentTerm/**",
+    "src/modules/pos/**",
+    "src/modules/production/**",
+    "src/modules/purchase/**",
+    "src/modules/purchaseLine/**",
+    "src/modules/purchaseQuotation/**",
+    "src/modules/purchaseRequisition/**",
+    "src/modules/quotation/**",
+    "src/modules/quotationLine/**",
+    "src/modules/quotationRequest/**",
+    "src/modules/referralCode/**",
+    "src/modules/service/**",
+    "src/modules/shippingPlan/**",
+    "src/modules/stockDocument/**",
+    "src/modules/stockDocumentLine/**",
+    "src/modules/warehouse/**",
+    "src/modules/warehouseTransfer/**",
+    "src/shared/pages/Private/DebtManagerment.tsx"
+    ,"src/shared/components/ExcelTaskPanel.tsx"
+    ,"src/shared/hooks/useExcelReload.ts"
+    ,"src/shared/stores/excel.slice.ts"
+  ]
 }

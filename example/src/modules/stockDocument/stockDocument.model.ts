@@ -101,9 +101,9 @@ export interface StockDocument extends EntityWithCompany {
   partnerSnapshot: PartnerSnapshot | null;
   partner: Partner | null;
 
-  shippingProviderId: string | null;
-  shippingProviderSnapshot: PartnerSnapshot | null;
-  shippingProvider: Partner | null;
+  shipperId: string | null;
+  shipperSnapshot: PartnerSnapshot | null;
+  shipper: Partner | null;
 
   // Người đại diện giao dịch (nếu là purchase_receipt, hoặc order_issue)
   representative: Representative | null;

@@ -1,7 +1,7 @@
 import { Attribute } from "@/modules/attribute";
 import { Organization } from "@/modules/organization/organization.model";
 import { Role } from "@/modules/role";
-import { FileCategory, GenderEnum } from "@/shared/constants/enum";
+import { FileCategory, Gender } from "@/shared/constants/enum";
 import { Address } from "@/shared/interfaces/common";
 import { File } from "@/shared/interfaces/file";
 
@@ -88,7 +88,7 @@ export interface User extends Entity {
   avatar: File[];
   email: string | null;
   phone: string | null;
-  gender: GenderEnum | null;
+  gender: Gender | null;
   dob: Date | null;
   address: Address | null;
 

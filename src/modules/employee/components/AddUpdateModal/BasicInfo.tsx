@@ -1,7 +1,7 @@
 import { Form, Input } from "antd";
 import { AddUpdateModalPartialProps } from ".";
 import Label from "@/shared/components/display/Label";
-import { GenderEnum, genderOptions, maritalStatusOptions } from "@/shared/constants/enum";
+import { Gender, genderOptions, maritalStatusOptions } from "@/shared/constants/enum";
 import { ethnicityOptions } from "@/shared/constants/option/ethnicity";
 import { getTaxCodeRules } from "@/shared/constants/formItemRule";
 import { religionOptions } from "@/shared/constants/option/religion";
@@ -35,7 +35,7 @@ export const BasicInfo: React.FC<AddUpdateModalPartialProps> = ({ form, id }) =>
           name="gender"
           label={<Label title="Giới tính" required />}
           rules={[{ required: true, message: "Vui lòng chọn giới tính" }]}
-          initialValue={GenderEnum.MALE}
+          initialValue={Gender.MALE}
         >
           <CustomSelect options={genderOptions} />
         </Form.Item>

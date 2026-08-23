@@ -1,71 +1,65 @@
-﻿import { Entity } from "@/shared/base/entity";
+import { Entity } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { Address, BankAccount, Representative } from "@/shared/interfaces/common";
 import { getOptionsByMap } from "@/shared/constants/enum";
-import { Attribute } from "../attribute";
-import { Employee } from "../employee";
-import { PaymentTerm } from "../paymentTerm";
-import { PartnerContact } from "../partnerContact";
+import type { Attribute } from "../attribute/attribute.model";
+import type { PartnerContact } from "../partnerContact/partnerContact.model";
 
 export enum PartnerType {
   CUSTOMER = "customer",
   SUPPLIER = "supplier",
-  SHIPPING_PROVIDER = "shipping_provider",
+  SHIPPER = "shipper",
+  SHIPPING_PROVIDER = "shipper",
 }
-
 export const partnerTypeMap: Record<PartnerType, string> = {
   [PartnerType.CUSTOMER]: "Khách hàng",
   [PartnerType.SUPPLIER]: "Nhà cung cấp",
-  [PartnerType.SHIPPING_PROVIDER]: "Đơn vị vận chuyển",
+  [PartnerType.SHIPPER]: "Đơn vị vận chuyển",
 };
-
 export const partnerTypeOptions = getOptionsByMap(partnerTypeMap);
 
 export interface PartnerQuery extends ApiRequestQuery {
-  moreQuery?: any;
+  storeId?: string;
+  type?: PartnerType;
   types?: PartnerType[];
   groupId?: string;
-  staffId?: string;
-  isActive?: boolean;
-  sourceBranchId?: string;
 }
-
 export interface PartnerSnapshot {
   id: string;
-  name: string;
-  code: string;
-  taxCode: string | null;
-  types: PartnerType[];
-  email?: string | null;
-  phone?: string | null;
-  address: Address | null;
-  representative: Representative | null;
-}
-
-export interface Partner extends Entity {
+  type: PartnerType;
   groupId: string | null;
-  group: Attribute | null;
-  code: string;
+  isOrganization: boolean;
   name: string;
-  types: PartnerType[];
-
-  taxCode: string | null;
-  address: Address | null;
-
-  staffId: string | null;
-  staff: Employee | null;
-
-  representative: Representative | null;
-  banks: BankAccount[];
-
+  code: string;
   email: string | null;
   phone: string | null;
-  zaloLink: string | null;
-
-  sourceBranchId: string | null;
-
-  paymentTermId: string | null;
-  paymentTerm: PaymentTerm | null;
-
-  contacts: PartnerContact[];
+  taxCode: string | null;
+  addresses: Address[];
+  address?: any;
+  representative: any;
+  banks: BankAccount[];
+}
+export interface Partner extends Entity {
+  type: PartnerType;
+  groupId: string | null;
+  group?: Attribute | null;
+  isOrganization: boolean;
+  name: string;
+  code: string;
+  email: string | null;
+  phone: string | null;
+  taxCode: string | null;
+  addresses: Address[];
+  /** Legacy single-address alias for retired public quotation screens. */
+  address?: any;
+  representative: any;
+  banks: BankAccount[];
+  maxDebtAmount: number | null;
+  contacts?: PartnerContact[];
+  /** Legacy read-only aliases while old report components are retired. */
+  types?: PartnerType[];
+  staffId?: string | null;
+  staff?: { code?: string; name?: string } | null;
+  zaloLink?: string | null;
+  paymentTerm?: { maxDebtAmount?: number; maxDebtDays?: number; depositRate?: number } | null;
 }

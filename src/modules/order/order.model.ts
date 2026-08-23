@@ -1,127 +1,57 @@
-import { Entity, EntityWithCompany } from "@/shared/base/entity";
+import { Entity } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
-import { AdditionalInfo } from "@/shared/interfaces/common";
-import { Partner, PartnerSnapshot } from "../partner";
-import { Employee, EmployeeSnapshot } from "../employee";
-import { MeshSpec, MeshSpecSnapshot, Quotation } from "../quotation";
-import { OrderLine } from "../orderLine";
-import { PartnerContactSnapshot } from "../partnerContact";
-import { Invoice } from "../invoice";
-import { CommissionAllocation } from "../incomeExpense";
-import { CommissionMode, DiscountTypeEnum } from "@/shared/constants/enum";
+import { PartnerSnapshot } from "../partner/partner.model";
+import { OrderLine } from "../orderLine/orderLine.model";
+import { DiscountTypeEnum } from "@/shared/constants/enum";
 
-// ── OrderCommission ──
-export interface OrderCommission extends Entity {
-  orderId: string;
+export enum OrderType { PURCHASE = "purchase", SALE = "sale", PURCHASE_RETURN = "purchase_return", SALE_RETURN = "sale_return" }
+export enum OrderStatus { DRAFT = "draft", COMPLETED = "completed", CANCELED = "canceled" }
 
-  // Người hưởng (liên hệ đối tác)
-  partnerContactId: string | null;
-  partnerContactSnapshot: PartnerContactSnapshot | null;
+export interface OrderQuery extends ApiRequestQuery { partnerId?: string; customerId?: string; storeId?: string; isCompleted?: boolean; approveStatus?: string; }
+export interface OrderSnapshot { id: string; type: OrderType; code: string; orderAt: string; partnerId: string | null; partnerSnapshot: PartnerSnapshot | null; }
 
-  totalAmount: number;
+export interface OrderCommission extends Entity { orderId: string; totalAmount: number; }
+export interface OrderCommissionDetail extends Entity { orderCommissionId: string; orderLineId: string; totalAmount: number; }
 
-  // ============================ RELATIONS ========================= //
-  order: any;
-  partnerContact: any | null;
-  details: OrderCommissionDetail[];
-}
-
-// ── OrderCommissionDetail ──
-export interface OrderCommissionDetail extends Entity {
-  orderCommissionId: string;
-  orderLineId: string;
-
-  totalAmount: number;
-
-  // ============================ RELATIONS ========================= //
-  orderCommission: any | null;
-  orderLine: any;
-}
-
-// ── Query ──
-export interface OrderQuery extends ApiRequestQuery {
-  moreQuery?: any;
-  customerId?: string;
-  staffId?: string;
-  isCompleted?: boolean;
-  approveStatus?: string;
-}
-
-export interface OrderSnapshot {
-  id: string;
+export interface Order extends Entity {
+  storeId: string;
+  type: OrderType;
+  status: OrderStatus;
   code: string;
-  timeAt: string;
-  customerId: string | null;
-  customerSnapshot: PartnerSnapshot | null;
-  staffId: string | null;
-  staffSnapshot: EmployeeSnapshot | null;
-}
-
-// ── Order ──
-export interface Order extends EntityWithCompany {
-  timeAt: Date;
-  code: string;
-
-  commissionMode: CommissionMode | null; // Cách tính hoa hồng: theo giá hay theo lượng
-
-  // Gắn với báo giá
-  sourceQuotationId: string | null;
-
-  // Khách hàng
-  customerId: string | null;
-  customerSnapshot: PartnerSnapshot | null;
-
-  // Người phụ trách
-  staffId: string | null;
-  staffSnapshot: EmployeeSnapshot | null;
-
-  meshSpecId: string | null;
-  meshSpecSnapshot: MeshSpecSnapshot | null;
-
-  additionalInfo: AdditionalInfo[];
-
-  // Đã hoàn thành chưa
-  isCompleted: boolean;
-  // Hoàn thành khi nào
-  completedAt: Date | null;
-
-  // Số lần tạo lệnh sản xuất
-  productionCount: number;
-
-  // =====================================================
-  // SỐ LIỆU TỔNG HỢP (Aggregate — tránh tính lại khi hiển thị danh sách)
-  // =====================================================
-  subTotal: number;
-
+  orderAt: string;
+  occurredAt: string | null;
+  canceledAt: string | null;
+  partnerId: string | null;
+  partnerSnapshot: PartnerSnapshot | null;
+  shipperId: string | null;
+  shipperSnapshot: PartnerSnapshot | null;
   discountType: DiscountTypeEnum;
-  discountValue: number;
-  discountAmount: number;
-
+  discountValue: number | null;
+  grossAmount: number;
+  discountAmount: number | null;
+  netAmount: number;
   taxType: DiscountTypeEnum;
-  taxValue: number;
-
+  taxValue: number | null;
   taxAmount: number;
-
   totalAmount: number;
-
-  totalCommissionAmount: number;
-
   totalCost: number;
-
-  // ============================ RELATIONS ========================= //
-  sourceQuotation: Quotation | null;
-
-  meshSpec: MeshSpec | null;
-
-  customer: Partner | null;
-
-  staff: Employee | null;
-
+  refOrderId: string | null;
+  returnGrossAmount: number;
+  returnDiscountAmount: number | null;
+  returnNetAmount: number;
+  returnTaxAmount: number;
+  returnTotalAmount: number;
+  returnTotalCost: number;
+  settlementAmount: number;
   lines: OrderLine[];
-
-  commissions: OrderCommission[];
-
-  commissionAllocations: CommissionAllocation[];
-
-  invoices: Invoice[];
+  /** Deprecated aliases used by old print views. */
+  timeAt?: string;
+  customerId?: string | null;
+  customer?: any;
+  staffId?: string | null;
+  staff?: any;
+  isCompleted?: boolean;
+  completedAt?: string | null;
+  commissionMode?: any;
+  taxRate?: number;
 }

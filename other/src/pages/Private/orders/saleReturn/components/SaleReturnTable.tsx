@@ -153,8 +153,8 @@ const SaleReturnTable: React.FC<ObjectTableProps> = ({
     },
     {
       title: "ĐVVC",
-      dataIndex: ["shippingProviderSnapshot", "name"],
-      key: "shippingProviderSnapshotName",
+      dataIndex: ["shipperSnapshot", "name"],
+      key: "shipperSnapshotName",
       width: 120,
     },
     {

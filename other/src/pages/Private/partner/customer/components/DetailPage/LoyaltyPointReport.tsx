@@ -1,7 +1,7 @@
 import { IPartner } from "../../../../../../models/partner";
 import {
   LoyaltyPointRefTypeEnum,
-  LoyaltyPointTransactionTypeEnum,
+  LoyaltyPointTransactionType,
 } from "../../../../../../constants/enum";
 import { usePageState } from "../../../../../../hooks/core/usePageState";
 import { Table, TableProps } from "antd";
@@ -33,7 +33,7 @@ export const LoyaltyPointReport: React.FC<{ customer: IPartner }> = ({ customer 
       isSummary: true,
     });
     loyaltyPointTransactions.forEach((item, index) => {
-      const isIncrease = item.type === LoyaltyPointTransactionTypeEnum.INCREASE;
+      const isIncrease = item.type === LoyaltyPointTransactionType.INCREASE;
       currentBalancePoints += isIncrease ? item.points : -item.points;
 
       formattedData.push({
@@ -44,7 +44,7 @@ export const LoyaltyPointReport: React.FC<{ customer: IPartner }> = ({ customer 
         content:
           item.refType === LoyaltyPointRefTypeEnum.ADJUSTMENT
             ? "Điều chỉnh điểm tích lũy"
-            : item.type === LoyaltyPointTransactionTypeEnum.INCREASE
+            : item.type === LoyaltyPointTransactionType.INCREASE
               ? "Mua hàng"
               : "Thanh toán bằng điểm",
         key: item.id,

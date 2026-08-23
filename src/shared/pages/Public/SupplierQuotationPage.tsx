@@ -388,8 +388,8 @@ const SupplierQuotationPage: React.FC = () => {
                         <ProvinceSelect
                           options={provinceOptions}
                           onChange={(value) => {
-                            form.setFieldValue(["supplierSnapshot", "address", "state"], value);
-                            form.setFieldValue(["supplierSnapshot", "address", "ward"], undefined);
+                            form.setFieldValue(["supplierSnapshot", "address", "state"] as any, value);
+                            form.setFieldValue(["supplierSnapshot", "address", "ward"] as any, undefined);
                           }}
                         />
                       </Form.Item>

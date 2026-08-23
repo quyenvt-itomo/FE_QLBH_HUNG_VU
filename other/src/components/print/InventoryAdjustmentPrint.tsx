@@ -1,6 +1,6 @@
 import React from "react";
 import { FE_BASE_URL } from "../../constants/ApiEndpoint";
-import { InventoryTransactionTypeEnum } from "../../constants/enum";
+import { InventoryTransactionType } from "../../constants/enum";
 import { IInventoryAdjustment } from "../../models/store/inventoryAdjustment";
 import { getFullAddress, getFullVariantOptionContent } from "../../utils/common";
 import { formatDateTimeDDMMYYYY } from "../../utils/dateUtils";
@@ -17,10 +17,9 @@ const InventoryAdjustmentPrint: React.FC<Props> = ({ data }) => {
       s.expectedQty += line.expectedQty || 0;
       s.countedQty += line.countedQty || 0;
       s.deltaQty +=
-        (line.direction === InventoryTransactionTypeEnum.IN ? 1 : -1) *
-        Math.abs(line.deltaQty || 0);
+        (line.direction === InventoryTransactionType.IN ? 1 : -1) * Math.abs(line.deltaQty || 0);
       s.adjustmentValue +=
-        (line.direction === InventoryTransactionTypeEnum.IN ? 1 : -1) *
+        (line.direction === InventoryTransactionType.IN ? 1 : -1) *
         Math.abs(line.adjustmentValue || 0);
       return s;
     },
@@ -113,7 +112,7 @@ const InventoryAdjustmentPrint: React.FC<Props> = ({ data }) => {
           </thead>
           <tbody>
             {lines.map((line, idx) => {
-              const isIn = line.direction === InventoryTransactionTypeEnum.IN;
+              const isIn = line.direction === InventoryTransactionType.IN;
               const sign = isIn ? "+" : "-";
               const variant = line.productVariantSnapshot || line.productVariant;
               const optionsContent = line.productVariantSnapshot?.options?.length

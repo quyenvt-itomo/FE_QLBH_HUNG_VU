@@ -69,12 +69,12 @@ export const Table: React.FC<ObjectTableProps> = ({ onViewDetail, ...rest }) => 
       },
       {
         title: "ĐVVC",
-        key: "shippingProvider",
+        key: "shipper",
         width: 120,
         render: (r: StockDocument) => (
           <EntityInfo
-            title={resolveByPath(r, ["shippingProvider", "name"])}
-            subTitle={resolveByPath(r, ["shippingProvider", "code"])}
+            title={resolveByPath(r, ["shipper", "name"])}
+            subTitle={resolveByPath(r, ["shipper", "code"])}
           />
         ),
       },

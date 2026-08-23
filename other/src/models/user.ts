@@ -1,4 +1,4 @@
-import { GenderEnum } from "../constants/enum";
+import { Gender } from "../constants/enum";
 import { ApiRequestQuery, ApiResponse } from "./base/api";
 import { IEntity } from "./base/entity";
 import { IFile } from "./base/file";
@@ -21,7 +21,7 @@ export interface IUser extends IEntity {
   code: string;
   email: string | null;
   phone: string | null;
-  gender: GenderEnum | null;
+  gender: Gender | null;
   dob: Date | null;
   address: IAddress | null;
 

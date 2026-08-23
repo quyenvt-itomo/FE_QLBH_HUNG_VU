@@ -29,9 +29,9 @@ export interface IOrder extends IEntityWithStore {
   discountValue: number | null; // % hoặc số tiền, tuỳ discountType
 
   // TODO ===== Shipping Info =====
-  shippingProviderId: string | null;
-  shippingProvider: IPartner | null;
-  shippingProviderSnapshot: PartnerSnapshot | null;
+  shipperId: string | null;
+  shipper: IPartner | null;
+  shipperSnapshot: PartnerSnapshot | null;
   shippingFee: number | null; // phí vận chuyển
   isFreeShipping: boolean; // miễn phí vận chuyển
 

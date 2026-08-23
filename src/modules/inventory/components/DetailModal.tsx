@@ -15,7 +15,7 @@ import { ProductCardLite } from "@/modules/product";
 import { useGlobalData } from "@/shared/hooks/useGlobalData";
 import CustomPagination from "@/shared/components/CustomPagination";
 import { RefTypeFilter } from "./RefTypeFilter";
-import { TransactionTypeEnum } from "@/shared/constants/enum";
+import { TransactionType } from "@/shared/constants/enum";
 
 interface Props {
   product?: InventoryReport;
@@ -69,7 +69,7 @@ export const DetailInventoryReportModal: React.FC<Props> = ({
     });
 
     dataSource.forEach((item, index) => {
-      const isImport = item.type === TransactionTypeEnum.IN;
+      const isImport = item.type === TransactionType.IN;
 
       formatData.push({
         ...item,

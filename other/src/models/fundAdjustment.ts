@@ -1,4 +1,4 @@
-import { FundTransactionTypeEnum } from "../constants/enum";
+import { FundTransactionType } from "../constants/enum";
 import { ApiRequestQuery, ApiResponse } from "./base/api";
 import { IEntity } from "./base/entity";
 import { IFund } from "./fund";
@@ -17,7 +17,7 @@ export interface IFundAdjustment extends IEntity {
   expectedAmount: number; // số tiền hệ thống ghi nhận
   countedAmount: number; // số tiền thực tế kiểm kê
   deltaAmount: number;
-  direction: FundTransactionTypeEnum;
+  direction: FundTransactionType;
   reason: string;
 }
 

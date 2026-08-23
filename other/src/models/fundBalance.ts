@@ -1,4 +1,4 @@
-import { FundTransactionRefTypeEnum, FundTransactionTypeEnum } from "../constants/enum";
+import { FundTransactionRefTypeEnum, FundTransactionType } from "../constants/enum";
 import { ApiRequestQuery, ApiResponse } from "./base/api";
 import { IEntity } from "./base/entity";
 import { IFund } from "./fund";
@@ -21,7 +21,7 @@ export interface IFundBalanceTransaction extends IEntity {
   fundId?: string;
   fund?: IFund;
 
-  type: FundTransactionTypeEnum;
+  type: FundTransactionType;
   refId: string;
   refCode: string;
   refType: FundTransactionRefTypeEnum;

@@ -388,8 +388,8 @@ export const AddUpdateModal: React.FC<AddUpdateModalProps<StockDocument>> = ({
 
                     form.setFieldValue("shippingPlanId", null);
                     form.setFieldValue("shippingPlan", null);
-                    form.setFieldValue("shippingProviderId", null);
-                    form.setFieldValue("shippingProvider", null);
+                    form.setFieldValue("shipperId", null);
+                    form.setFieldValue("shipper", null);
 
                     form.setFieldValue("lines", []);
                   }}
@@ -445,8 +445,8 @@ export const AddUpdateModal: React.FC<AddUpdateModalProps<StockDocument>> = ({
                   defaultData={shippingPlan}
                   onChangeData={(value) => {
                     form.setFieldValue("shippingPlan", value);
-                    form.setFieldValue("shippingProviderId", value?.partnerId);
-                    form.setFieldValue("shippingProvider", value?.partner || null);
+                    form.setFieldValue("shipperId", value?.partnerId);
+                    form.setFieldValue("shipper", value?.partner || null);
                   }}
                   disabled={!purchase || !!editData}
                   query={{ purchaseId: purchase?.id, approveStatus: ApproveStatus.APPROVED }}
@@ -454,11 +454,11 @@ export const AddUpdateModal: React.FC<AddUpdateModalProps<StockDocument>> = ({
               </Form.Item>
               <Form.Item name="shippingPlan" hidden />
 
-              <Form.Item name={["shippingProvider", "name"]} label={<Label title="ĐVVC" />}>
+              <Form.Item name={["shipper", "name"]} label={<Label title="ĐVVC" />}>
                 <Input disabled placeholder="Chọn PA vận chuyển" />
               </Form.Item>
-              <Form.Item name="shippingProviderId" hidden />
-              <Form.Item name="shippingProvider" hidden />
+              <Form.Item name="shipperId" hidden />
+              <Form.Item name="shipper" hidden />
 
               <Form.Item
                 name={["shippingPlan", "unitPrice"]}

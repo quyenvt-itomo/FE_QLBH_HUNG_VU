@@ -15,7 +15,7 @@ export enum AttributeType {
   PARTNER_GROUP = "partner_group",
 }
 
-import { getOptionsByMap } from "@/shared/constants/enum";
+import { getOptionsByMap } from "../../shared/constants/enum";
 export const attributeTypeMap: Record<AttributeType, string> = {
   [AttributeType.OPERATION]: "Công đoạn sản xuất",
   [AttributeType.UNIT]: "Đơn vị tính",

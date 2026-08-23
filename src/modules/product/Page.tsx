@@ -1,6 +1,5 @@
 ﻿import React, { useMemo, useState } from "react";
 import { usePageState } from "@/shared/hooks/usePageState";
-import { useExcelReload } from "@/shared/hooks/useExcelReload";
 import { SearchInput } from "@/shared/components/input";
 import DateRangeFilter from "@/shared/components/button/DateRangeFilter";
 import AddButton from "@/shared/components/button/AddButton";
@@ -8,7 +7,6 @@ import { Panel } from "@/shared/components/display/Panel";
 import { Tabs, Table } from "antd";
 import CustomPagination from "@/shared/components/CustomPagination";
 import { formatMoney } from "@/shared/utils/number.util";
-import { ExcelButton, ExcelEntityType } from "@/modules/excel";
 import dayjs from "dayjs";
 import { CLASSNAME } from "@/shared/constants/ui";
 import { DropdownAction } from "@/shared/components/dropdown";
@@ -54,9 +52,6 @@ export const ProductPage: React.FC = () => {
   const { handleOpenAdd, handleOpenEdit, handleOpenDetail, handleDelete, handleEditFromDetail } =
     useProductHandlers({ getById, create, update, remove, setOpen, setOpenDetail, setRowData });
 
-  // Tự động reload khi import hoàn tất
-  useExcelReload(ExcelEntityType.PRODUCT, pageAction.handleReload);
-
   return (
     <div className="flex flex-col h-full w-full gap-1">
       <div className="flex justify-between items-start gap-3">
@@ -68,10 +63,6 @@ export const ProductPage: React.FC = () => {
         />
         <div className="flex items-center gap-3">
           <SearchInput value={keyword} onSearch={pageAction.handleSearch} maxWidth={340} />
-          <ExcelButton
-            entityType={ExcelEntityType.PRODUCT}
-            exportOptions={{ filters: { type }, filename: "Danh_sach_hang_hoa_" }}
-          />
           <AddButton onOpenAdd={handleOpenAdd} />
         </div>
       </div>
@@ -181,16 +172,17 @@ export const ProductPriceHistoryPage: React.FC = () => {
       for (const ph of product.priceHistories || []) {
         if (!ph.createdAt) continue;
         const date = dayjs(ph.createdAt).format("YYYY-MM-DD");
-        if (!byUnit[ph.unitId]) byUnit[ph.unitId] = {};
+        const unitId = ph.unitId || product.baseUnitId || "base";
+        if (!byUnit[unitId]) byUnit[unitId] = {};
         // Keep latest price for that unit on that date (last one wins since sorted DESC)
-        if (!(date in byUnit[ph.unitId])) {
-          byUnit[ph.unitId][date] = ph.pricePerUnit;
+        if (!(date in byUnit[unitId])) {
+          byUnit[unitId][date] = ph.pricePerUnit ?? ph.costPrice;
         }
       }
 
       // For each date, compute price from baseUnit (if exists)
       for (const date of sortedDates) {
-        const baseUnitId = product.baseUnitId;
+        const baseUnitId = product.baseUnitId || "base";
         if (baseUnitId && byUnit[baseUnitId]?.[date] != null) {
           row[date] = byUnit[baseUnitId][date];
         } else {
@@ -315,10 +307,6 @@ export const ProductPriceHistoryPage: React.FC = () => {
             onRangeChange={pageAction.handleDateRangerChange}
           />
           <SearchInput value={keyword} onSearch={pageAction.handleSearch} maxWidth={280} />
-          <ExcelButton
-            entityType={ExcelEntityType.PRICE_HISTORY}
-            exportOptions={{ filters: { startAt, endAt }, filename: "Lich_su_gia_" }}
-          />
         </div>
       </div>
       <Panel>

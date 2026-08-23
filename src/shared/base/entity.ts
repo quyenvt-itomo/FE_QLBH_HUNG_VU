@@ -1,7 +1,6 @@
 import { Attribute } from "@/modules/attribute";
-import { Organization } from "@/modules/organization/organization.model";
 import { Role } from "@/modules/role";
-import { FileCategory, GenderEnum } from "@/shared/constants/enum";
+import { FileCategory, Gender } from "@/shared/constants/enum";
 import { Address } from "@/shared/interfaces/common";
 import { File } from "@/shared/interfaces/file";
 
@@ -78,8 +77,10 @@ export type Entity = {
 };
 
 export interface EntityWithCompany extends Entity {
+  /** Kept as a source-compatible name for existing screens; BE is store-scoped. */
+  storeId?: string | null;
+  /** @deprecated use storeId */
   companyId?: string | null;
-  company?: Organization | null;
 }
 
 export interface User extends Entity {
@@ -88,7 +89,7 @@ export interface User extends Entity {
   avatar: File[];
   email: string | null;
   phone: string | null;
-  gender: GenderEnum | null;
+  gender: Gender | null;
   dob: Date | null;
   address: Address | null;
 

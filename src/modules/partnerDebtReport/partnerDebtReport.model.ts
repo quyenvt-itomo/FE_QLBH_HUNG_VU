@@ -3,7 +3,7 @@ import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { Partner } from "../partner";
 import { Invoice, InvoiceType } from "../invoice";
 import { InvoiceAllocation } from "../incomeExpense";
-import { DebtSideEnum, getOptionsByMap, TransactionTypeEnum } from "@/shared/constants/enum";
+import { DebtSideEnum, getOptionsByMap, TransactionType } from "@/shared/constants/enum";
 
 export enum PartnerDebtRefTypeEnum {
   INVOICE = "invoice", // Phát sinh từ hóa đơn
@@ -40,7 +40,7 @@ export interface PartnerDebtTransaction extends EntityWithCompany {
 
   partnerId: string;
 
-  type: TransactionTypeEnum;
+  type: TransactionType;
 
   amount: number;
 

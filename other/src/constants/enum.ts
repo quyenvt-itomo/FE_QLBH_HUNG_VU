@@ -38,15 +38,15 @@ export enum SortOrderEnum {
   DESC = "DESC",
 }
 
-export enum GenderEnum {
+export enum Gender {
   MALE = "male",
   FEMALE = "female",
   OTHER = "other",
 }
-export const genderMap: Record<GenderEnum, string> = {
-  [GenderEnum.MALE]: "Nam",
-  [GenderEnum.FEMALE]: "Nữ",
-  [GenderEnum.OTHER]: "Khác",
+export const genderMap: Record<Gender, string> = {
+  [Gender.MALE]: "Nam",
+  [Gender.FEMALE]: "Nữ",
+  [Gender.OTHER]: "Khác",
 };
 
 export enum storeStatusEnum {
@@ -212,14 +212,14 @@ export const incomeExpenseTypeMap: Record<IncomeExpenseTypeEnum, string> = {
   expense: "Chi tiền",
 };
 
-export enum FundTransactionTypeEnum {
+export enum FundTransactionType {
   INCREASE = "increase",
   DECREASE = "decrease",
 }
 
-export const fundTransactionTypeMap: Record<FundTransactionTypeEnum, string> = {
-  [FundTransactionTypeEnum.INCREASE]: "Tăng",
-  [FundTransactionTypeEnum.DECREASE]: "Giảm",
+export const fundTransactionTypeMap: Record<FundTransactionType, string> = {
+  [FundTransactionType.INCREASE]: "Tăng",
+  [FundTransactionType.DECREASE]: "Giảm",
 };
 
 export enum FundTransactionRefTypeEnum {
@@ -235,7 +235,7 @@ export const fundRefTypeMap: Record<FundTransactionRefTypeEnum, string> = {
   [FundTransactionRefTypeEnum.ADJUSTMENT]: "Điều chỉnh quỹ",
 };
 
-export enum InventoryTransactionTypeEnum {
+export enum InventoryTransactionType {
   IN = "in",
   OUT = "out",
 }
@@ -330,7 +330,7 @@ export const orderTypeMap: Record<OrderTypeEnum, string> = {
   [OrderTypeEnum.SALE_RETURN]: "Đơn KH trả hàng",
 };
 
-export enum LoyaltyPointTransactionTypeEnum {
+export enum LoyaltyPointTransactionType {
   INCREASE = "increase", // Tăng điểm
   DECREASE = "decrease", // Giảm điểm
 }

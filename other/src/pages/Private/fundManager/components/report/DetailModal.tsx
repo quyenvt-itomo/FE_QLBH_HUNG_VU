@@ -6,7 +6,7 @@ import { CLASSNAME } from "../../../../../constants/UI";
 import DateRangeFilter from "../../../../../components/button/DateRangeFilter";
 import { formatDateTimeDDMMYYYY } from "../../../../../utils/dateUtils";
 import { formatMoney } from "../../../../../utils/formatNumber";
-import { fundRefTypeMap, FundTransactionTypeEnum } from "../../../../../constants/enum";
+import { fundRefTypeMap, FundTransactionType } from "../../../../../constants/enum";
 import NoData from "../../../../../components/display/NoData";
 
 interface Props {
@@ -40,7 +40,7 @@ const DetailModal: React.FC<Props> = ({
       isSummary: true,
     });
     data.forEach((item, index) => {
-      const isIncrease = item.type === FundTransactionTypeEnum.INCREASE;
+      const isIncrease = item.type === FundTransactionType.INCREASE;
       currentBalanceAmount += isIncrease ? item.amount : -item.amount;
 
       formattedData.push({

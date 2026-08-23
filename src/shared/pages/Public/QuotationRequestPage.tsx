@@ -315,8 +315,8 @@ const QuotationRequestPage: React.FC = () => {
                         <ProvinceSelect
                           options={provinceOptions}
                           onChange={(value) => {
-                            form.setFieldValue(["customerSnapshot", "address", "state"], value);
-                            form.setFieldValue(["customerSnapshot", "address", "ward"], undefined);
+                            form.setFieldValue(["customerSnapshot", "address", "state"] as any, value);
+                            form.setFieldValue(["customerSnapshot", "address", "ward"] as any, undefined);
                           }}
                         />
                       </Form.Item>

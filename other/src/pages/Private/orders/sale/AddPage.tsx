@@ -109,7 +109,7 @@ const AddPage: React.FC = () => {
         ...order,
         partnerId: order.partner?.id || order.partnerId,
         employeeId: order.employee?.id || order.employeeId,
-        shippingProviderId: order.shippingProvider?.id || order.shippingProviderId,
+        shipperId: order.shipper?.id || order.shipperId,
       };
       form.setFieldsValue(normalizedOrder);
     } else if (cachedOrders.length > 0) {
@@ -146,7 +146,7 @@ const AddPage: React.FC = () => {
           // Preserve nested objects from values or currentOrder
           partner: values.partner || currentOrder?.partner,
           employee: values.employee || currentOrder?.employee,
-          shippingProvider: values.shippingProvider || currentOrder?.shippingProvider,
+          shipper: values.shipper || currentOrder?.shipper,
           // Preserve lines from form values
           lines: formattedValues.lines || currentOrder?.lines || [],
         };

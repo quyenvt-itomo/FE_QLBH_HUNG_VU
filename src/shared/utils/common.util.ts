@@ -547,15 +547,12 @@ type ResolvePathValue<T, P extends readonly string[]> = P extends readonly [infe
  * @param path  Mảng path (key đầu phải là SnapshotKey của T)
  * @param fallback Giá trị fallback (mặc định "")
  */
-export function resolveByPath<T extends Record<string, any>, const P extends readonly string[]>(
+export function resolveByPath<T extends Record<string, any>>(
   obj: T | null | undefined,
-  path: P & SnapshotPath<T>,
+  path: readonly string[],
   fallback?: any,
-): ResolvePathValue<T, P> {
-  return resolveByPathImpl(obj, path as unknown as readonly string[], fallback) as ResolvePathValue<
-    T,
-    P
-  >;
+): any {
+  return resolveByPathImpl(obj, path, fallback);
 }
 
 function resolveByPathImpl(

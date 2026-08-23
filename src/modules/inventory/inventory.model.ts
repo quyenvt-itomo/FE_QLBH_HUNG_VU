@@ -1,73 +1,68 @@
-﻿import { EntityWithCompany } from "@/shared/base/entity";
+import { Entity } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
-import { Product, ProductType } from "../product";
-import { TransactionTypeEnum } from "@/shared/constants/enum";
+import { Product } from "../product/product.model";
+import { TransactionType } from "@/shared/constants/enum";
 
 export enum InventoryTransactionRefTypeEnum {
-  PURCHASE_RECEIPT = "purchase_receipt", // Phiếu nhập kho từ đơn mua hàng
-  MATERIAL_ISSUE = "material_issue", // Phiếu xuất kho NVL
-  PRODUCTION_RECEIPT = "production_receipt", // Phiếu nhập kho thành phẩm
-  ORDER_ISSUE = "order_issue", // Phiếu xuất kho hàng bán
+  PRODUCT_PRICE_UPDATE = "product_price_update",
+  PURCHASE = "purchase",
+  SALE = "sale",
+  PURCHASE_RETURN = "purchase_return",
+  SALE_RETURN = "sale_return",
   TRANSFER = "transfer",
   ADJUST = "adjust",
 }
+
 export const inventoryTransactionRefTypeMap: Record<InventoryTransactionRefTypeEnum, string> = {
-  [InventoryTransactionRefTypeEnum.PURCHASE_RECEIPT]: "Nhập kho hàng mua",
-  [InventoryTransactionRefTypeEnum.MATERIAL_ISSUE]: "Xuất kho NVL",
-  [InventoryTransactionRefTypeEnum.PRODUCTION_RECEIPT]: "Nhập kho thành phẩm",
-  [InventoryTransactionRefTypeEnum.ORDER_ISSUE]: "Xuất kho hàng bán",
-  [InventoryTransactionRefTypeEnum.TRANSFER]: "Chuyển kho",
-  [InventoryTransactionRefTypeEnum.ADJUST]: "Điều chỉnh kho",
+  [InventoryTransactionRefTypeEnum.PRODUCT_PRICE_UPDATE]: "Cập nhật giá vốn",
+  [InventoryTransactionRefTypeEnum.PURCHASE]: "Nhập hàng",
+  [InventoryTransactionRefTypeEnum.SALE]: "Bán hàng",
+  [InventoryTransactionRefTypeEnum.PURCHASE_RETURN]: "Trả hàng nhà cung cấp",
+  [InventoryTransactionRefTypeEnum.SALE_RETURN]: "Khách trả hàng",
+  [InventoryTransactionRefTypeEnum.TRANSFER]: "Chuyển cửa hàng",
+  [InventoryTransactionRefTypeEnum.ADJUST]: "Điều chỉnh tồn kho",
 };
 
 export interface InventoryQuery extends ApiRequestQuery {
-  moreQuery?: any;
   productId?: string;
-  type?: ProductType;
-  types?: ProductType[];
+  storeId?: string;
   refType?: InventoryTransactionRefTypeEnum;
+  types?: string[];
 }
 
 export interface InventoryReport extends Product {
-  closingAmount: number;
-  closingQuantity: number;
-  outAmount: number;
-  outQuantity: number;
-  inAmount: number;
-  inQuantity: number;
-  openingAmount: number;
   openingQuantity: number;
+  openingAmount: number;
+  inQuantity: number;
+  inAmount: number;
+  outQuantity: number;
+  outAmount: number;
+  closingQuantity: number;
+  closingAmount: number;
 }
 
-export interface InventoryTransaction extends EntityWithCompany {
+export interface InventoryTransaction extends Entity {
   occurredAt: string;
-
   productId: string;
-  product: Product;
-
-  type: TransactionTypeEnum;
-  refId: string;
-  refCode: string;
-  refType: InventoryTransactionRefTypeEnum;
-
+  storeId: string;
+  product?: Product | null;
   quantity: number;
   amount: number;
-
-  closingQuantity: number;
-  closingAmount: number;
+  type: TransactionType;
+  costPriceAfter: number;
+  quantityAfter: number;
+  inventoryValueAfter: number;
+  refType: InventoryTransactionRefTypeEnum;
+  refId: string;
+  refCode?: string | null;
+  closingQuantity?: number;
+  closingAmount?: number;
 }
+
 export interface InventoryStreamData {
   timestamp: string;
   totalVariants: number;
   pendingVariants: number;
   processingVariants: number;
-  byDocumentType: {
-    saleOrders: number;
-    purchaseOrders: number;
-    purchaseReturns: number;
-    saleReturns: number;
-    transferVouchers: number;
-    adjustmentVouchers: number;
-    unknown: number;
-  };
+  byDocumentType: Record<string, number>;
 }

@@ -254,7 +254,7 @@ export const ConfirmImportModal: React.FC<Props> = ({
                 </div>
               </div>
               <div className="text-sm text-gray-500 mt-1">
-                {resolveByPath(data, ["shippingProvider", "name"]) || "--"}
+                {resolveByPath(data, ["shipper", "name"]) || "--"}
               </div>
             </div>
 

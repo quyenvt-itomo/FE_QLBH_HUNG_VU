@@ -1,6 +1,5 @@
 export * from "./add_select";
 export * from "./button";
-export * from "./core";
 export * from "./display";
 export * from "./dropdown";
 export * from "./filters";

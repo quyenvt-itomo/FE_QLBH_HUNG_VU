@@ -13,7 +13,7 @@ import { PartnerCardLite } from "@/modules/partner";
 import { InvoiceType, invoiceStatusMap, invoiceTypeMap } from "@/modules/invoice";
 import { useGlobalData } from "@/shared/hooks/useGlobalData";
 import CustomPagination from "@/shared/components/CustomPagination";
-import { TransactionTypeEnum } from "@/shared/constants/enum";
+import { TransactionType } from "@/shared/constants/enum";
 import { InputMoney } from "@/shared/components/input";
 import {
   AddUpdatePaymentRequestModal,
@@ -66,7 +66,7 @@ const buildLedgerRows = (invoices: PartnerDebtInvoice[]): LedgerRow[] => {
   invoices.forEach((inv, index) => {
     // Các giao dịch giảm trừ của hóa đơn: type = OUT, sắp theo ngày
     const reductions = (inv.reductions || [])
-      .filter((r) => r.type === TransactionTypeEnum.OUT)
+      .filter((r) => r.type === TransactionType.OUT)
       .sort((a, b) => new Date(a.occurredAt).getTime() - new Date(b.occurredAt).getTime());
 
     // Tra cứu ngân hàng theo số chứng từ từ các phiếu thu/chi phân bổ

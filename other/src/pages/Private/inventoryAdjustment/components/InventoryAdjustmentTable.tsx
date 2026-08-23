@@ -4,7 +4,7 @@ import { ColumnsConfigType } from "../../../../components/table/handleColumnSele
 import TableColumnConfig, {
   ObjectTableProps,
 } from "../../../../components/table/TableColumnConfig";
-import { InventoryTransactionTypeEnum } from "../../../../constants/enum";
+import { InventoryTransactionType } from "../../../../constants/enum";
 import { useClientData } from "../../../../hooks/core/useClientData";
 import { IInventoryAdjustmentLine } from "../../../../models/store/inventoryAdjustmentLine";
 import { formatDateTimeDDMMYYYY } from "../../../../utils/dateUtils";
@@ -148,7 +148,7 @@ const InventoryAdjustmentTable: React.FC<ObjectTableProps> = ({
       width: 120,
       align: "right",
       render: (value: number, record: IInventoryAdjustmentLine) => {
-        const isIn = record.direction === InventoryTransactionTypeEnum.IN;
+        const isIn = record.direction === InventoryTransactionType.IN;
         const finalValue = value * (isIn ? 1 : -1);
         return <span className={!isIn ? "text-red-600" : ""}>{formatQuantity(finalValue)}</span>;
       },
@@ -160,7 +160,7 @@ const InventoryAdjustmentTable: React.FC<ObjectTableProps> = ({
       width: 120,
       align: "right",
       render: (value: number, record: IInventoryAdjustmentLine) => {
-        const isIn = record.direction === InventoryTransactionTypeEnum.IN;
+        const isIn = record.direction === InventoryTransactionType.IN;
         const finalValue = value * (isIn ? 1 : -1);
         return <span className={!isIn ? "text-red-600" : ""}>{formatMoney(finalValue)}</span>;
       },

@@ -14,7 +14,6 @@ import NotFoundPage from "./shared/pages/Public/error/NotFound/NotFoundPage";
 import PublicLayout from "./shared/layout/Public";
 import AuthMiddleware from "./shared/middleware/AuthMiddleware";
 import PrivateLayout from "./shared/layout/Private";
-import ExcelTaskPanel from "./shared/components/ExcelTaskPanel";
 
 dayjs.locale("vi");
 
@@ -139,7 +138,6 @@ const App: React.FC = () => {
         }}
       >
         <AntdApp>
-          <ExcelTaskPanel />
           <Routes>
             {publicRoutes.map((route, index) => {
               const Page = route.component;

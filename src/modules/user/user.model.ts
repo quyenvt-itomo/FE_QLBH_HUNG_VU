@@ -1,33 +1,28 @@
 import { Entity } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
-import { CompanyUser, Organization } from "../organization";
+import { Address } from "@/shared/interfaces/common";
 import { File } from "@/shared/interfaces/file";
+import { Gender } from "@/shared/constants/enum";
 import { Role } from "../role";
-import { Employee } from "../employee";
 
 export interface UserQuery extends ApiRequestQuery {
-  moreQuery?: any;
+  storeId?: string;
+  roleId?: string;
+  isActive?: boolean;
 }
 
 export interface User extends Entity {
   code: string;
   name: string;
   username: string;
+  password?: string;
   email: string | null;
   phone: string | null;
-  password: string;
-  avatar: File[];
-  sourceCompanyId: string | null;
-  sourceCompany?: Organization | null;
-
-  isActive: boolean;
-
-  companyUsers: CompanyUser[];
-
-  // for current company context
-  roleId?: string | null;
+  gender?: Gender | null;
+  dob?: Date | null;
+  address?: Address | null;
+  roleId: string | null;
   role?: Role | null;
-
-  employeeId?: string | null;
-  employee?: Employee | null;
+  isActive: boolean;
+  avatar?: File[];
 }

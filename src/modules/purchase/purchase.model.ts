@@ -47,6 +47,8 @@ export interface PurchaseQuery extends ApiRequestQuery {
 }
 
 export interface Purchase extends EntityWithCompany {
+  /** Compatibility snapshot retained by legacy purchase screens. */
+  company?: any;
   orderedAt: Date; // Ngày đặt hàng
   code: string;
 

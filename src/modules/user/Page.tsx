@@ -5,8 +5,6 @@ import { useUserStore } from "./user.store";
 import { usePageState } from "@/shared/hooks/usePageState";
 import { User } from "./user.model";
 import { AddUpdateModal, UserTable } from "./components";
-import { ExcelEntityType } from "@/modules/excel/excel.enum";
-import { useExcelReload } from "@/shared/hooks/useExcelReload";
 import { useUserHandlers } from "./user.handlers";
 
 export const UserPage: React.FC = () => {
@@ -40,8 +38,6 @@ export const UserPage: React.FC = () => {
         pageAction.handleClose();
       },
     );
-
-  useExcelReload(ExcelEntityType.USER, pageAction.handleReload);
 
   const { handleOpenAdd, handleOpenEdit, handleDelete } = useUserHandlers({
     create,

@@ -33,7 +33,7 @@ export const OrganizationPage: React.FC = () => {
 
   const { getInfo } = useAuth();
   const { activeTab, onTabChange } = useHashTabs<TabsType>({
-    items: tabItems.map((item) => ({ value: item.key as TabsType, label: item.label })),
+    items: tabItems.map((item) => ({ key: item.key as TabsType, label: item.label })),
   });
 
   const [openSetting, setOpenSetting] = useState<boolean>(false);

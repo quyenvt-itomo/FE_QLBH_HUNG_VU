@@ -1,5 +1,5 @@
 import { Entity } from "@/shared/base/entity";
-import { GenderEnum, MaritalStatusEnum } from "@/shared/constants/enum";
+import { Gender, MaritalStatusEnum } from "@/shared/constants/enum";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import {
   Address,
@@ -35,7 +35,7 @@ export interface Employee extends Entity {
   code: string;
   name: string;
   avatar: File[];
-  gender: GenderEnum | null;
+  gender: Gender | null;
   dob: string | null;
   maritalStatus: MaritalStatusEnum | null;
   ethnicity: string | null;

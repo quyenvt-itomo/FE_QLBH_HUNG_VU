@@ -179,7 +179,7 @@ export const DetailModal: React.FC<Props> = ({ open, data, onClose, onOpenUpdate
               {resolveByPath(data, ["shippingPlan", "code"], "--")}
             </div>
             <div className="text-sm text-gray-500 mt-1">
-              {resolveByPath(data, ["shippingProvider", "name"], "--")}
+              {resolveByPath(data, ["shipper", "name"], "--")}
             </div>
           </div>
           <div className="bg-purple-50 rounded-lg p-4 border border-purple-100">

@@ -7,7 +7,6 @@ import AddButton from "@/shared/components/button/AddButton";
 import { Panel } from "@/shared/components/display/Panel";
 import { Tabs } from "antd";
 import { PartnerAddUpdateModal, PartnerTable, PartnerDetailModal } from "./components";
-import { ExcelButton, ExcelEntityType } from "@/modules/excel";
 import { usePartnerHandlers } from "./partner.handlers";
 
 export const typeItems = [
@@ -50,7 +49,7 @@ export const PartnerPage: React.FC = () => {
     update,
     remove,
   } = usePartnerStore(
-    { page, size, keyword, sortBy, sortOrder, reload, type: type === "all" ? undefined : type },
+    { page, size, keyword, sortBy, sortOrder, reload, type: type === "all" ? undefined : type as PartnerType },
     () => pageAction.handleClose(),
   );
 
@@ -75,14 +74,6 @@ export const PartnerPage: React.FC = () => {
         />
         <div className="flex items-center gap-3">
           <SearchInput value={keyword} onSearch={pageAction.handleSearch} maxWidth={340} />
-          <ExcelButton
-            entityType={ExcelEntityType.PARTNER}
-            onSuccess={() => pageAction.handleReload()}
-            exportOptions={{
-              filters: { type: type === "all" ? undefined : type },
-              filename: "Danh_sach_doi_tac_",
-            }}
-          />
           <AddButton onOpenAdd={handleOpenAdd} />
         </div>
       </div>

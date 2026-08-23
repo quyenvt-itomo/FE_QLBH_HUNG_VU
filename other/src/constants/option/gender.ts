@@ -1,6 +1,6 @@
-import { GenderEnum, genderMap } from "../enum";
+import { Gender, genderMap } from "../enum";
 
-export const genderOptions = Object.values(GenderEnum).map((key) => ({
+export const genderOptions = Object.values(Gender).map((key) => ({
   label: genderMap[key],
   value: key,
 }));

@@ -2,7 +2,7 @@ import ContentTooltip from "../../../../../components/table/ContentTooltip";
 import TableColumnConfig, {
   ObjectTableProps,
 } from "../../../../../components/table/TableColumnConfig";
-import { FundTransactionTypeEnum } from "../../../../../constants/enum";
+import { FundTransactionType } from "../../../../../constants/enum";
 import { useClientData } from "../../../../../hooks/core/useClientData";
 import { IFundAdjustment } from "../../../../../models/fundAdjustment";
 import { formatDateTimeDDMMYYYY } from "../../../../../utils/dateUtils";
@@ -59,7 +59,7 @@ const FundAdjustmentTable: React.FC<ObjectTableProps> = ({
       align: "right",
       render: (value: number, record: IFundAdjustment) => (
         <span
-          className={`${record.direction === FundTransactionTypeEnum.DECREASE ? "text-red-600" : "text-blue-500"}`}
+          className={`${record.direction === FundTransactionType.DECREASE ? "text-red-600" : "text-blue-500"}`}
         >
           {formatMoney(value)}
         </span>

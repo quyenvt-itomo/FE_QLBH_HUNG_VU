@@ -1,7 +1,4 @@
-import {
-  InventoryTransactionRefTypeEnum,
-  InventoryTransactionTypeEnum,
-} from "../../constants/enum";
+import { InventoryTransactionRefTypeEnum, InventoryTransactionType } from "../../constants/enum";
 import { ApiRequestQuery, ApiResponse } from "../base/api";
 import { IProduct, IProductVariant } from "../product";
 import { IEntityWithStore } from "./entityWithStore";
@@ -42,7 +39,7 @@ export interface IInventoryTransaction extends IEntityWithStore {
   productVariantId?: string;
   productVariant?: IProductVariant;
 
-  type: InventoryTransactionTypeEnum;
+  type: InventoryTransactionType;
   refId: string;
   refCode: string;
   refType: InventoryTransactionRefTypeEnum;

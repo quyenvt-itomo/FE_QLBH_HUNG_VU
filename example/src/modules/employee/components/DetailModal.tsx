@@ -7,11 +7,11 @@ import { getMainFile } from "@/shared/utils/file.util";
 import { AnchorInfo } from "./AddUpdateModal/Anchor";
 import { PartialPanel, PartialTitle } from "./AddUpdateModal/PartialComponent";
 import {
-  GenderEnum,
+  Gender,
   genderMap,
   maritalStatusMap,
   MaritalStatusEnum,
-  IdentificationTypeEnum,
+  IdentificationType,
 } from "@/shared/constants/enum";
 import { employeeContractTypeMap, employeeStatusMap, workingStatusMap } from "../employee.enum";
 import { formatDateDDMMYYYY } from "@/shared/utils/date.util";
@@ -29,10 +29,10 @@ interface EmployeeDetailModalProps extends Omit<DetailModalProps<Employee>, "dat
 
 const EMPTY_TEXT = "--";
 
-const identifyTypeMap: Record<IdentificationTypeEnum, string> = {
-  [IdentificationTypeEnum.CCCD]: "CCCD",
-  [IdentificationTypeEnum.CMND]: "CMND",
-  [IdentificationTypeEnum.HC]: "Hộ chiếu",
+const identifyTypeMap: Record<IdentificationType, string> = {
+  [IdentificationType.CCCD]: "CCCD",
+  [IdentificationType.CMND]: "CMND",
+  [IdentificationType.HC]: "Hộ chiếu",
 };
 
 const DisplayRow: React.FC<{ label: string; value?: React.ReactNode }> = ({ label, value }) => {
@@ -126,7 +126,7 @@ export const DetailModal: React.FC<EmployeeDetailModalProps> = ({
                 <DisplayRow label="Tên nhân sự" value={formatText(data?.name)} />
                 <DisplayRow
                   label="Giới tính"
-                  value={data?.gender ? genderMap[data.gender as GenderEnum] : EMPTY_TEXT}
+                  value={data?.gender ? genderMap[data.gender as Gender] : EMPTY_TEXT}
                 />
                 <DisplayRow label="Ngày sinh" value={formatDate(data?.dob)} />
                 <DisplayRow
@@ -147,7 +147,7 @@ export const DetailModal: React.FC<EmployeeDetailModalProps> = ({
                   label="Loại giấy tờ"
                   value={
                     data?.identification?.type
-                      ? identifyTypeMap[data.identification.type as IdentificationTypeEnum]
+                      ? identifyTypeMap[data.identification.type as IdentificationType]
                       : EMPTY_TEXT
                   }
                 />

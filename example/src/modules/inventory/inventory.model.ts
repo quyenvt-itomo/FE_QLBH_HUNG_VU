@@ -1,7 +1,7 @@
 ﻿import { EntityWithCompany } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { Product, ProductType } from "../product";
-import { TransactionTypeEnum } from "@/shared/constants/enum";
+import { TransactionType } from "@/shared/constants/enum";
 
 export enum InventoryTransactionRefTypeEnum {
   PURCHASE_RECEIPT = "purchase_receipt", // Phiếu nhập kho từ đơn mua hàng
@@ -45,7 +45,7 @@ export interface InventoryTransaction extends EntityWithCompany {
   productId: string;
   product: Product;
 
-  type: TransactionTypeEnum;
+  type: TransactionType;
   refId: string;
   refCode: string;
   refType: InventoryTransactionRefTypeEnum;

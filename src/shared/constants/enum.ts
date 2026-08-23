@@ -24,17 +24,17 @@ export enum SortOrderEnum {
   DESC = "DESC",
 }
 
-export enum GenderEnum {
+export enum Gender {
   MALE = "MALE",
   FEMALE = "FEMALE",
   OTHER = "OTHER",
 }
-export const genderMap: Record<GenderEnum, string> = {
-  [GenderEnum.MALE]: "Nam",
-  [GenderEnum.FEMALE]: "Nữ",
-  [GenderEnum.OTHER]: "Khác",
+export const genderMap: Record<Gender, string> = {
+  [Gender.MALE]: "Nam",
+  [Gender.FEMALE]: "Nữ",
+  [Gender.OTHER]: "Khác",
 };
-export const genderOptions = Object.values(GenderEnum).map((gender) => ({
+export const genderOptions = Object.values(Gender).map((gender) => ({
   label: genderMap[gender],
   value: gender,
 }));
@@ -164,7 +164,7 @@ export const maritalStatusOptions = Object.values(MaritalStatusEnum).map((status
   value: status,
 }));
 
-export enum IdentificationTypeEnum {
+export enum IdentificationType {
   CCCD = "CCCD", // Căn cước công dân
   CMND = "CMND", // Chứng minh nhân dân
   HC = "HC", // Hộ chiếu
@@ -235,7 +235,7 @@ export enum PurchaseStatusEnum {
   CANCELED = "canceled", // da huy
 }
 
-export enum TransactionTypeEnum {
+export enum TransactionType {
   IN = "in",
   OUT = "out",
 }

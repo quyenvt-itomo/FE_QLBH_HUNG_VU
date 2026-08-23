@@ -1,7 +1,6 @@
 export * from "./api";
 export * from "./base";
 export * from "./components";
-export * from "./constants";
 export * from "./hooks";
 export * from "./interfaces";
 export * from "./layout";

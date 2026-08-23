@@ -8,24 +8,24 @@ import { useSaleOrderCache } from "../../../../../../hooks/cache/useSaleOrderCac
 
 const ShippingInfo: React.FC<PartialProps> = ({ form }) => {
   const { currentOrder, updateCurrentCache } = useSaleOrderCache();
-  const shippingProvider = Form.useWatch("shippingProvider", form);
+  const shipper = Form.useWatch("shipper", form);
   return (
     <div className="flex flex-col w-full h-fit shrink-0">
       <div className="flex items-end gap-4">
         <div className="flex flex-col flex-1">
           <Label title="Đơn vị giao hàng" />
-          <Form.Item name="shippingProviderId" noStyle>
+          <Form.Item name="shipperId" noStyle>
             <PartnerSelect
               className="w-full"
-              defaultData={shippingProvider}
+              defaultData={shipper}
               onChangeData={(val) => {
-                form.setFieldValue("shippingProvider", val);
+                form.setFieldValue("shipper", val);
               }}
               placeholder="Chọn đơn vị giao hàng"
               type={PartnerTypeEnum.SHIPPER}
             />
           </Form.Item>
-          <Form.Item name="shippingProvider" hidden />
+          <Form.Item name="shipper" hidden />
         </div>
 
         <div className="flex flex-col w-80">

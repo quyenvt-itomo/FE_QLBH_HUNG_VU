@@ -1,4 +1,4 @@
-import { LoyaltyPointRefTypeEnum, LoyaltyPointTransactionTypeEnum } from "../constants/enum";
+import { LoyaltyPointRefTypeEnum, LoyaltyPointTransactionType } from "../constants/enum";
 import { ApiRequestQuery, ApiResponse } from "./base/api";
 import { IEntity } from "./base/entity";
 import { IPartner } from "./partner";
@@ -20,7 +20,7 @@ export interface ILoyaltyPointTransaction extends IEntity {
   occurredAt: string;
   partnerId: string;
 
-  type: LoyaltyPointTransactionTypeEnum; // INCREASE | DECREASE
+  type: LoyaltyPointTransactionType; // INCREASE | DECREASE
 
   refId: string;
   refCode: string;

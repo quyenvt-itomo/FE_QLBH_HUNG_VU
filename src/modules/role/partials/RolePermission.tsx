@@ -5,7 +5,6 @@ import { Role } from "../role.model";
 import { role } from "@/shared/constants/permission";
 import SubmitButton from "@/shared/components/button/SubmitButton";
 import PermissionSelect from "@/shared/components/uncontrolled_selects/PermissionSelect";
-import { ExcelModuleSwitchGroup } from "./ExcelModuleSwitchGroup";
 
 const { Title } = Typography;
 
@@ -33,8 +32,6 @@ export const RolePermission: React.FC<RolePermissionProps> = ({
     if (!selectedRow) return;
     form.setFieldsValue({
       permissions: selectedRow.permissions || {},
-      importExcel: selectedRow.importExcel || [],
-      exportExcel: selectedRow.exportExcel || [],
     } as any);
   };
 
@@ -87,14 +84,7 @@ export const RolePermission: React.FC<RolePermissionProps> = ({
       >
         <div className="grid grid-cols-2 gap-4">
           {/* Nhập Excel */}
-          <Form.Item name="importExcel" noStyle>
-            <ExcelModuleSwitchGroup mode="import" disabled={!onUpdateRolePermission} />
-          </Form.Item>
-
           {/* Xuất Excel */}
-          <Form.Item name="exportExcel" noStyle>
-            <ExcelModuleSwitchGroup mode="export" disabled={!onUpdateRolePermission} />
-          </Form.Item>
           {role.map((group) => (
             <div
               key={group.title}

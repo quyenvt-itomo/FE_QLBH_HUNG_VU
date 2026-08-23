@@ -19,8 +19,8 @@ const ShippingInfo: React.FC<PartialProps> = ({ data, onUpdate }) => {
         <div className="max-w-96 flex-1">
           <EditableInfoCol<IOrder>
             label="Đơn vị vận chuyển"
-            value={data.shippingProvider?.name}
-            fieldKey="shippingProviderId"
+            value={data.shipper?.name}
+            fieldKey="shipperId"
             editComponent={<PartnerSelect type={PartnerTypeEnum.SHIPPER} />}
             onUpdate={onUpdate}
           />
