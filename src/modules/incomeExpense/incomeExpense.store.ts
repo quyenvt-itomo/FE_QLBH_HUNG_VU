@@ -2,8 +2,7 @@
 import { apiEndpoint } from "@/shared/constants/apiEndpoint";
 import { IncomeExpense, IncomeExpenseQuery } from "./incomeExpense.model";
 
-export const useIncomeExpenseStore = createBaseStore<IncomeExpense, IncomeExpenseQuery>({
-  key: "incomeExpenses",
-  apiUrl: apiEndpoint.incomeExpense.base,
-  permissionModule: "incomeExpense",
-});
+const createIncomeExpenseStore = (key: string, apiUrl: string, permissionModule: "income" | "expense") => createBaseStore<IncomeExpense, IncomeExpenseQuery>({ key, apiUrl, permissionModule });
+export const useIncomeStore = createIncomeExpenseStore("incomes", apiEndpoint.incomeExpense.income, "income");
+export const useExpenseStore = createIncomeExpenseStore("expenses", apiEndpoint.incomeExpense.expense, "expense");
+export const useIncomeExpenseStore = useIncomeStore;

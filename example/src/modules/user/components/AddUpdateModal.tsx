@@ -273,7 +273,7 @@ export const AddUpdateModal: React.FC<AddUpdateModalProps<User>> = ({
                                   if (!value) return;
                                   setDefaultValue(value);
                                   add({
-                                    companyId: value.id,
+                                    storeId: value.id,
                                     company: value,
                                   });
                                 }}
@@ -317,7 +317,7 @@ export const AddUpdateModal: React.FC<AddUpdateModalProps<User>> = ({
                                           onChangeData={(val) =>
                                             form.setFieldValue(["companyUsers", name, "role"], val)
                                           }
-                                          query={{ companyId: company?.id }}
+                                          query={{ storeId: company?.id }}
                                         />
                                       </Form.Item>
                                     </td>
@@ -331,7 +331,7 @@ export const AddUpdateModal: React.FC<AddUpdateModalProps<User>> = ({
                                               val,
                                             )
                                           }
-                                          query={{ companyId: company?.id }}
+                                          query={{ storeId: company?.id }}
                                         />
                                       </Form.Item>
                                     </td>
@@ -377,7 +377,7 @@ export const AddUpdateModal: React.FC<AddUpdateModalProps<User>> = ({
                           <RoleSelect
                             defaultData={role}
                             onChangeData={(val) => (form as any).setFieldValue("role", val)}
-                            query={{ companyId: currentCompany?.id }}
+                            query={{ storeId: currentCompany?.id }}
                           />
                         </Form.Item>
                         <Form.Item name="role" hidden />
@@ -387,7 +387,7 @@ export const AddUpdateModal: React.FC<AddUpdateModalProps<User>> = ({
                           <EmployeeSelect
                             defaultData={employee}
                             onChangeData={(val) => (form as any).setFieldValue("employee", val)}
-                            query={{ companyId: currentCompany?.id }}
+                            query={{ storeId: currentCompany?.id }}
                           />
                         </Form.Item>
                         <Form.Item name="employee" hidden />

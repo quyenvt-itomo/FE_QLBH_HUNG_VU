@@ -15,7 +15,7 @@ export const useProductStore = createBaseStore<Product, ProductQuery>({
 export const useProductPriceHistoryStore = createBaseStore<Product, ProductQuery>({
   key: "productPriceHistories",
   apiUrl: apiEndpoint.product.priceHistory,
-  permissionModule: "priceHistory",
+  permissionModule: "product",
 });
 
 /**

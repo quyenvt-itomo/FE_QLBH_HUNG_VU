@@ -140,7 +140,7 @@ const QuotationRequestPage: React.FC = () => {
     try {
       const result = await createPublic({
         ...values,
-        companyId: company?.id,
+        storeId: company?.id,
       });
       if (result) {
         setCreatedCode(result.code || "");
@@ -315,8 +315,14 @@ const QuotationRequestPage: React.FC = () => {
                         <ProvinceSelect
                           options={provinceOptions}
                           onChange={(value) => {
-                            form.setFieldValue(["customerSnapshot", "address", "state"] as any, value);
-                            form.setFieldValue(["customerSnapshot", "address", "ward"] as any, undefined);
+                            form.setFieldValue(
+                              ["customerSnapshot", "address", "state"] as any,
+                              value,
+                            );
+                            form.setFieldValue(
+                              ["customerSnapshot", "address", "ward"] as any,
+                              undefined,
+                            );
                           }}
                         />
                       </Form.Item>

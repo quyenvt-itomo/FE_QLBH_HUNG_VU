@@ -140,7 +140,7 @@ const QuotationRequestPage: React.FC = () => {
     try {
       const result = await createPublic({
         ...values,
-        companyId: company?.id,
+        storeId: company?.id,
       });
       if (result) {
         setCreatedCode(result.code || "");

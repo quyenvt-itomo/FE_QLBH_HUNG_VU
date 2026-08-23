@@ -12,7 +12,7 @@ const moduleToEntityType = new Map<
   { entityType: ExcelEntityType; supportsImport: boolean }
 >();
 for (const et of Object.values(ExcelEntityType)) {
-  const mod = mapEntityTypeToModule(et);
+  const mod = mapEntityTypeToModule(et) as Module;
   if (mod) {
     moduleToEntityType.set(mod, {
       entityType: et,

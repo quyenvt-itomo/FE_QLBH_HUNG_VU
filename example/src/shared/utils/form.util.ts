@@ -219,20 +219,17 @@ export const setFormCode = async ({ form, type, field }: SetFormCodeParams) => {
     const ipAddress = sessionStorage.getItem("ipAddress");
     const deviceId = localStorage.getItem("deviceId") || "1";
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const companyId = currentCompany?.id || "";
-    const response = await fetch(
-      `${BASE_URL}${apiEndpoint.code}?type=${type}&companyId=${companyId}`,
-      {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "x-company-id": companyId,
-          "x-device-id": deviceId || "",
-          "x-timezone": timeZone,
-          "x-ip-address": ipAddress || "",
-        },
+    const storeId = currentCompany?.id || "";
+    const response = await fetch(`${BASE_URL}${apiEndpoint.code}?type=${type}&storeId=${storeId}`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "x-company-id": storeId,
+        "x-device-id": deviceId || "",
+        "x-timezone": timeZone,
+        "x-ip-address": ipAddress || "",
       },
-    );
+    });
 
     if (!response.ok) {
       throw new Error("Network response was not ok");

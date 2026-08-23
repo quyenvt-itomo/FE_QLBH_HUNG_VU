@@ -12,7 +12,6 @@ export interface ApiRequestQuery {
   status?: string;
   sortBy?: string;
   sortOrder?: SortOrderEnum;
-  companyId?: string;
   storeId?: string;
   reload?: boolean;
   isLocked?: boolean;

@@ -31,6 +31,7 @@ export const privateRoutesName = {
   sales: {
     pos: "/sales/pos",
     order: "/sales/orders",
+    saleReturn: "/sales/returns",
     quotation: "/sales/quotations",
     quotationRequest: "/sales/quotation-requests",
     purchaseQuotation: "/sales/purchase-quotations",
@@ -40,6 +41,7 @@ export const privateRoutesName = {
   // TODO: Purchases - Mua hàng
   purchases: {
     purchase: "/purchases",
+    purchaseReturn: "/purchases/returns",
   },
 
   // TODO: Productions - Sản xuất
@@ -58,6 +60,7 @@ export const privateRoutesName = {
     gateLog: "/inventories/gate-logs",
     shippingPlan: "/inventories/shipping-plans",
     report: "/inventories/report",
+    storeTransfer: "/inventories/transfers",
   },
 
   // TODO: Accountants - Kế toán
@@ -97,6 +100,10 @@ export const privateRoutesName = {
     permission: "/categories/permission",
     attribute: "/categories/attributes",
     setting: "/categories/settings",
+    customer: "/categories/customers",
+    supplier: "/categories/suppliers",
+    shipper: "/categories/shippers",
+    store: "/categories/stores",
   },
 
   // TODO: System - Hệ thống

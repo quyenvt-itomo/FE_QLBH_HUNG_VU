@@ -184,7 +184,7 @@ export const PurchaseDetailModal: React.FC<Props> = ({
       {
         title: "SL",
         dataIndex: "quantity",
-        key: "qty",
+        key: "quantity",
         width: 80,
         align: "right",
         render: ({ value }) => <span className="font-medium">{formatQuantity(value)}</span>,

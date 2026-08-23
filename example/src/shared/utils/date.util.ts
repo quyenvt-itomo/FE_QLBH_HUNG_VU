@@ -216,7 +216,7 @@ const dateFields: string[] = [
   // FundAdjustment, FundTransfer, FundTransaction,
   // CommissionDebtAdjustment, CommissionDebtTransaction,
   // IncomeExpense, InventoryAdjustment, InventoryTransaction,
-  // PartnerDebtAdjustment, PartnerDebtOffset, PartnerDebtTransaction,
+  // PartnerDebtAdjustment, PartnerDebtOffset, DebtTransaction,
   // VatDebtAdjustment, VatDebtTransaction
   "occurredAt",
   "referenceDate",

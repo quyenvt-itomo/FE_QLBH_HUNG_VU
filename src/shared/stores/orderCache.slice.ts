@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export interface CachedOrder {
   id?: string;
   code?: string;
+  type?: "sale" | "sale_return" | "purchase" | "purchase_return";
   [key: string]: unknown;
 }
 

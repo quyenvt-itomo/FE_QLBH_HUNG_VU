@@ -39,7 +39,7 @@ export const InventoryAdjustmentTable: React.FC<Props> = ({ onViewDetail, ...res
     {
       title: "SL chênh lệch",
       dataIndex: "totalAdjustmentQuantity",
-      key: "qty",
+      key: "quantity",
       width: 120,
       align: "right",
       render: (v: number) => v ?? "--",

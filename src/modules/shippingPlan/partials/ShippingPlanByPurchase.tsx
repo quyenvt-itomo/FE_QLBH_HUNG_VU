@@ -96,7 +96,7 @@ export const ShippingPlanByPurchase: React.FC<Props> = ({ purchase, canCreate, o
     {
       title: "Số chuyến",
       dataIndex: "quantity",
-      key: "qty",
+      key: "quantity",
       width: 100,
       align: "right",
       render: (v: number) => formatQuantity(v),

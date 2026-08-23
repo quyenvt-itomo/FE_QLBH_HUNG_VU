@@ -60,7 +60,7 @@ export const apiEndpoint = {
   jobPosition: { base: "/job-position" },
   user: { base: "/user" },
   employee: { base: "/employee" },
-  partner: { base: "/partner" },
+  partner: { base: "/customer", customer: "/customer", supplier: "/supplier", shipper: "/shipper" },
   partnerContact: { base: "/partner-contact" },
   product: {
     base: "/product",
@@ -70,6 +70,7 @@ export const apiEndpoint = {
   },
   material: { base: "/material" },
   warehouse: { base: "/warehouse" },
+  store: { base: "/store" },
 
   // ── Business ──
   quotation: {
@@ -107,8 +108,7 @@ export const apiEndpoint = {
     approve: "/purchase-requisition/:id/approve",
     reject: "/purchase-requisition/:id/reject",
   },
-  order: { base: "/order", line: "/order/:orderId/line", cancel: "/order/:id/cancel" },
-  orderLine: { base: "/order-line" },
+  order: { base: "/sale", sale: "/sale", saleReturn: "/sale-return", purchase: "/purchase", purchaseReturn: "/purchase-return", cancel: "/sale/:id/cancel", complete: "/sale/:id/complete" },
   purchase: {
     base: "/purchase",
     line: "/purchase/:purchaseId/line",
@@ -185,7 +185,7 @@ export const apiEndpoint = {
     adjustment: "/fund-balance/adjustment",
     transfer: "/fund-balance/transfer",
   },
-  incomeExpense: { base: "/income-expense" },
+  incomeExpense: { base: "/income", income: "/income", expense: "/expense" },
   invoice: { base: "/invoice", line: "/invoice/:invoiceId/line" },
   paymentRequest: {
     base: "/payment-request",

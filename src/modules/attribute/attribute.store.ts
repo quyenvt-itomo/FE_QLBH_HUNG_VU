@@ -5,5 +5,5 @@ import { apiEndpoint } from "@/shared/constants/apiEndpoint";
 export const useAttributeStore = createBaseStore<Attribute, AttributeQuery>({
   key: "attributes",
   apiUrl: apiEndpoint.attribute.base,
-  permissionModule: "category",
+  permissionModule: "attribute",
 });

@@ -5,7 +5,7 @@ import { StockDocument } from "../stockDocument";
 import { Product, ProductSnapshot } from "../product";
 import { Attribute, AttributeSnapshot } from "../attribute";
 import { PurchaseLine } from "../purchaseLine";
-import { OrderLine } from "../orderLine";
+import { OrderLine } from "../order/order.model";
 
 export enum StockDocumentLineType {
   PURCHASE_RECEIPT = "purchase_receipt",
@@ -13,6 +13,7 @@ export enum StockDocumentLineType {
   PRODUCTION_RECEIPT = "production_receipt",
   ORDER_ISSUE = "order_issue",
 }
+
 export const stockDocumentLineTypeMap: Record<StockDocumentLineType, string> = {
   [StockDocumentLineType.PURCHASE_RECEIPT]: "Nhập mua",
   [StockDocumentLineType.MATERIAL_ISSUE]: "Xuất NVL",
@@ -30,34 +31,24 @@ export interface StockDocumentLineQuery extends ApiRequestQuery {
 
 export interface StockDocumentLine extends Entity {
   stockDocumentId: string;
-
   purchaseLineId: string | null;
   purchaseLine: PurchaseLine | null;
-
   orderLineId: string | null;
   orderLine: OrderLine | null;
-
   productId: string | null;
   productSnapshot: ProductSnapshot | null;
   product: Product | null;
-
   unitId: string | null;
   unitSnapshot: AttributeSnapshot | null;
   unit: Attribute | null;
-
-  conversionRateAtTime: number; // Tỷ lệ quy đổi tại thời điểm tạo dòng này (dùng để quy đổi sang đơn vị gốc khi cần)
-
+  conversionRateAtTime: number;
   requestQuantity: number | null;
   stockQuantity: number | null;
-
   additionalQuantity: number | null;
   billingQuantity: number | null;
-
   varianceQuantity: number | null;
   varianceAmount: number | null;
-
   costPriceAtTime: number | null;
   costAmount: number | null;
-
   stockDocument: StockDocument;
 }

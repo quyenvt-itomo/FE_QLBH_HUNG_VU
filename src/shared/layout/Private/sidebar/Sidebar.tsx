@@ -30,8 +30,6 @@ const Sidebar: React.FC<SideBarProps> = ({ items }) => {
       theme="dark"
       collapsed={collapsed}
       style={{ background: "#0B2B1C" }}
-      // layout horizontal
-
       width={220}
       className="
         border-r border-black/5

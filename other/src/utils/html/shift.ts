@@ -273,13 +273,13 @@ export function getShiftHtmlContent(data: IShift) {
           </thead>
           <tbody>
             ${CASH_KEYS.map((key) => {
-              const qty = data.openingCashSnapshot?.[key] || 0;
-              if (qty === 0) return "";
+              const quantity = data.openingCashSnapshot?.[key] || 0;
+              if (quantity === 0) return "";
               return `
             <tr>
               <td class="text-left">${formatMoney(Number(key))} đ</td>
-              <td class="text-center">${qty}</td>
-              <td class="text-right">${formatMoney(qty * Number(key))} đ</td>
+              <td class="text-center">${quantity}</td>
+              <td class="text-right">${formatMoney(quantity * Number(key))} đ</td>
             </tr>
               `;
             })
@@ -312,13 +312,13 @@ export function getShiftHtmlContent(data: IShift) {
           </thead>
           <tbody>
             ${CASH_KEYS.map((key) => {
-              const qty = data.closingCashSnapshot?.[key] || 0;
-              if (qty === 0) return "";
+              const quantity = data.closingCashSnapshot?.[key] || 0;
+              if (quantity === 0) return "";
               return `
             <tr>
               <td class="text-left">${formatMoney(Number(key))} đ</td>
-              <td class="text-center">${qty}</td>
-              <td class="text-right">${formatMoney(qty * Number(key))} đ</td>
+              <td class="text-center">${quantity}</td>
+              <td class="text-right">${formatMoney(quantity * Number(key))} đ</td>
             </tr>
               `;
             })

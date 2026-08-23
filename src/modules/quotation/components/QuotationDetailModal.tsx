@@ -19,7 +19,7 @@ export const QuotationDetailModal: React.FC<Props> = ({ open, data, onClose, onO
     {
       title: "SL",
       dataIndex: "quantity",
-      key: "qty",
+      key: "quantity",
       width: 80,
       align: "right" as const,
       render: (v: number) => v?.toLocaleString(),

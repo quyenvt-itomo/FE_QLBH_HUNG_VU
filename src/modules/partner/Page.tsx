@@ -1,7 +1,7 @@
 ﻿import React from "react";
 import { usePageState } from "@/shared/hooks/usePageState";
 import { SearchInput } from "@/shared/components/input";
-import { usePartnerStore } from "./partner.store";
+import { useCustomerStore, useShipperStore, useSupplierStore } from "./partner.store";
 import { Partner, PartnerType, partnerTypeOptions } from "./partner.model";
 import AddButton from "@/shared/components/button/AddButton";
 import { Panel } from "@/shared/components/display/Panel";
@@ -10,11 +10,6 @@ import { PartnerAddUpdateModal, PartnerTable, PartnerDetailModal } from "./compo
 import { usePartnerHandlers } from "./partner.handlers";
 
 export const typeItems = [
-  {
-    label: "Tất cả",
-    key: "all",
-    value: "all",
-  },
   ...partnerTypeOptions,
 ];
 
@@ -37,21 +32,12 @@ export const PartnerPage: React.FC = () => {
     setRowData,
     pageAction,
   } = usePageState<Partner>();
-  const {
-    data,
-    loading,
-    creating,
-    updating,
-    pagination,
-    summary,
-    getById,
-    create,
-    update,
-    remove,
-  } = usePartnerStore(
-    { page, size, keyword, sortBy, sortOrder, reload, type: type === "all" ? undefined : type as PartnerType },
-    () => pageAction.handleClose(),
-  );
+  const activeType = (type as PartnerType) || PartnerType.CUSTOMER;
+  const customerStore = useCustomerStore({ page, size, keyword, sortBy, sortOrder, reload, type: PartnerType.CUSTOMER }, () => pageAction.handleClose());
+  const supplierStore = useSupplierStore({ page, size, keyword, sortBy, sortOrder, reload, type: PartnerType.SUPPLIER }, () => pageAction.handleClose());
+  const shipperStore = useShipperStore({ page, size, keyword, sortBy, sortOrder, reload, type: PartnerType.SHIPPER }, () => pageAction.handleClose());
+  const activeStore = activeType === PartnerType.SUPPLIER ? supplierStore : activeType === PartnerType.SHIPPER ? shipperStore : customerStore;
+  const { data, loading, creating, updating, pagination, getById, create, update, remove } = activeStore;
 
   const { handleOpenAdd, handleOpenEdit, handleOpenDetail, handleDelete } = usePartnerHandlers({
     getById,
@@ -67,7 +53,7 @@ export const PartnerPage: React.FC = () => {
     <div className="flex flex-col h-full w-full gap-1">
       <div className="flex justify-between items-start gap-3">
         <Tabs
-          activeKey={type}
+          activeKey={activeType}
           onChange={pageAction.handleTypeChange}
           items={typeItems}
           className="custom-tabs"
@@ -94,7 +80,7 @@ export const PartnerPage: React.FC = () => {
         open={open}
         editData={rowData}
         loading={creating || updating}
-        defaultType={type === "all" ? undefined : (type as PartnerType)}
+        defaultType={activeType}
         onAdd={create}
         onEdit={update}
         onClose={() => pageAction.handleClose(false)}

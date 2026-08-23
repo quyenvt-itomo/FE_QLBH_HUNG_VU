@@ -7,19 +7,29 @@ export interface ProductQuery extends ApiRequestQuery {
 }
 
 /** Legacy screen grouping; BE stores this as Attribute.groupId. */
-export enum ProductType { FINISHED = "finished", MAIN_MATERIAL = "main_material", SUB_MATERIAL = "sub_material" }
+export enum ProductType {
+  FINISHED = "finished",
+  MAIN_MATERIAL = "main_material",
+  SUB_MATERIAL = "sub_material",
+}
 export const productTypeMap: Record<ProductType, string> = {
   [ProductType.FINISHED]: "Thành phẩm",
   [ProductType.MAIN_MATERIAL]: "Nguyên liệu chính",
   [ProductType.SUB_MATERIAL]: "Nguyên liệu phụ",
 };
-export const productTypeOptions = Object.entries(productTypeMap).map(([value, label]) => ({ key: value, value, label }));
+export const productTypeOptions = Object.entries(productTypeMap).map(([value, label]) => ({
+  key: value,
+  value,
+  label,
+}));
 export const productGroupAttributeMap: Record<ProductType, any> = {
   [ProductType.FINISHED]: "finished_group",
   [ProductType.MAIN_MATERIAL]: "main_material_group",
   [ProductType.SUB_MATERIAL]: "sub_material_group",
 };
-export function productLabel(type: ProductType, base: string): string { return `${base} ${(productTypeMap[type] || type).toLowerCase()}`; }
+export function productLabel(type: ProductType, base: string): string {
+  return `${base} ${(productTypeMap[type] || type).toLowerCase()}`;
+}
 
 export interface ProductSnapshot {
   id: string;
@@ -29,8 +39,8 @@ export interface ProductSnapshot {
 }
 
 export interface ProductStockMetadata {
-  total: { qty: number; value: number };
-  byStore: Record<string, { qty: number; value: number }>;
+  total: { quantity: number; value: number };
+  byStore: Record<string, { quantity: number; value: number }>;
 }
 
 export interface Product extends Entity {

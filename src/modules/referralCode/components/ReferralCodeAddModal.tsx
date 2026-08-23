@@ -122,7 +122,7 @@ export const ReferralCodeAddModal: React.FC<Props> = ({
       {
         title: "Số lượng",
         dataIndex: "quantity",
-        key: "qty",
+        key: "quantity",
         width: 120,
         align: "right",
         render: (val: number) => formatQuantity(val),

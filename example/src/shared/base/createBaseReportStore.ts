@@ -44,7 +44,7 @@ export function createBaseReportStore<
 
     const paramsWithStore = {
       ...params,
-      companyId: currentCompany?.id ?? params?.companyId,
+      storeId: currentCompany?.id ?? params?.storeId,
     };
     const reportQuery = useQuery<ApiResponse<TReport[]>, BaseFailurePayload>({
       queryKey: [config.key, "report", paramsWithStore],

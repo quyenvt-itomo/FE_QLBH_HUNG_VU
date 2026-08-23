@@ -88,7 +88,7 @@ const QuotationRequestDetailPage: React.FC = () => {
     {
       title: "SỐ LƯỢNG",
       dataIndex: "quantity",
-      key: "qty",
+      key: "quantity",
       width: 100,
       align: "right",
       render: (v: number) => <span className="font-medium">{formatQuantity(v)}</span>,

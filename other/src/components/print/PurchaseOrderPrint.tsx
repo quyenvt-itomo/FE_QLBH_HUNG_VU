@@ -24,17 +24,17 @@ const PurchaseOrderPrint: React.FC<Props> = ({ data }) => {
   const tempItems: { baseAmount: number; vatRate: number }[] = [];
 
   normalLines.forEach((item) => {
-    const qty = item.quantity || 0;
+    const quantity = item.quantity || 0;
     const price = item.unitPrice || 0;
     const vatRate = item.taxRate || 0;
     const discountPerUnit =
       item.discountType === DiscountTypeEnum.PERCENT
         ? (price * (item.discountValue || 0)) / 100
         : item.discountValue || 0;
-    const money = qty * price;
-    const baseAmount = money - qty * discountPerUnit;
+    const money = quantity * price;
+    const baseAmount = money - quantity * discountPerUnit;
     fee.totalMoney += money;
-    fee.totalProductDiscount += qty * discountPerUnit;
+    fee.totalProductDiscount += quantity * discountPerUnit;
     tempItems.push({ baseAmount, vatRate });
   });
 

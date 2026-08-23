@@ -199,7 +199,7 @@ const SupplierQuotationPage: React.FC = () => {
     setLoading(true);
     try {
       const { code, ...submitValues } = values;
-      submitValues.companyId = company?.id;
+      submitValues.storeId = company?.id;
       submitValues.tempId = id;
       const newPurchaseQuotation = await createPublic(submitValues);
 
@@ -388,8 +388,14 @@ const SupplierQuotationPage: React.FC = () => {
                         <ProvinceSelect
                           options={provinceOptions}
                           onChange={(value) => {
-                            form.setFieldValue(["supplierSnapshot", "address", "state"] as any, value);
-                            form.setFieldValue(["supplierSnapshot", "address", "ward"] as any, undefined);
+                            form.setFieldValue(
+                              ["supplierSnapshot", "address", "state"] as any,
+                              value,
+                            );
+                            form.setFieldValue(
+                              ["supplierSnapshot", "address", "ward"] as any,
+                              undefined,
+                            );
                           }}
                         />
                       </Form.Item>

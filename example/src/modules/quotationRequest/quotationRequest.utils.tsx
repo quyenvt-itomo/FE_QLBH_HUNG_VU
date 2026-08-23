@@ -47,7 +47,7 @@ export const generateDefaultQuotationByRequest = (
     : [];
 
   return {
-    companyId: request.companyId,
+    storeId: request.storeId,
 
     quotationRequestId: request.id,
     quotationRequest: request as QuotationRequest,

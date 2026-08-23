@@ -17,7 +17,7 @@ export const ReferralCodeDetailModal: React.FC<Props> = ({ open, data, onClose }
     { title: "Mã SP", dataIndex: "productCode", key: "pCode", width: 100 },
     { title: "Tên sản phẩm", dataIndex: "productName", key: "pName" },
     { title: "ĐVT", dataIndex: "unitName", key: "unit", width: 100, align: "center" },
-    { title: "Số lượng", dataIndex: "quantity", key: "qty", width: 120, align: "right" },
+    { title: "Số lượng", dataIndex: "quantity", key: "quantity", width: 120, align: "right" },
   ];
 
   return (

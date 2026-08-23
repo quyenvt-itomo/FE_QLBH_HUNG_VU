@@ -33,7 +33,7 @@ export interface PartnerDebtReport extends Partner {
   openingAmount: number;
 }
 
-export interface PartnerDebtTransaction extends EntityWithCompany {
+export interface DebtTransaction extends EntityWithCompany {
   side: DebtSideEnum;
 
   occurredAt: Date;
@@ -94,5 +94,5 @@ export interface PartnerCurrentDebt extends Partner {
 export interface PartnerDebtInvoice extends Invoice {
   totalRemainingAmount: number;
   allocations: InvoiceAllocation[];
-  reductions: PartnerDebtTransaction[];
+  reductions: DebtTransaction[];
 }

@@ -12,10 +12,10 @@ export function calculateQuotation(data?: Partial<Quotation>) {
   let commissionTotal = 0;
 
   lines.forEach((item) => {
-    const qty = Number(item.quantity) || 0;
+    const quantity = Number(item.quantity) || 0;
     const price = Number(item.unitPrice) || 0;
     const taxRate = Number(item.taxRate) || 0;
-    const lineTotal = qty * price;
+    const lineTotal = quantity * price;
     subTotal += lineTotal;
     const lineTax = lineTotal * (taxRate / 100);
     taxAmount += lineTax;

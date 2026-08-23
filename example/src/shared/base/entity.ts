@@ -78,7 +78,7 @@ export type Entity = {
 };
 
 export interface EntityWithCompany extends Entity {
-  companyId?: string | null;
+  storeId?: string | null;
   company?: Organization | null;
 }
 

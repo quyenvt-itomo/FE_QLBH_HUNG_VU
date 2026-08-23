@@ -37,18 +37,18 @@ const ShiftPrint: React.FC<Props> = ({ data }) => {
       </thead>
       <tbody>
         {CASH_KEYS.map((key) => {
-          const qty = snapshot?.[key] || 0;
-          if (qty === 0) return null;
+          const quantity = snapshot?.[key] || 0;
+          if (quantity === 0) return null;
           return (
             <tr key={key}>
               <td className="text-left border-b border-dashed border-[#323832] px-1 py-0.5">
                 {formatMoney(Number(key))} đ
               </td>
               <td className="text-center border-b border-dashed border-[#323832] px-1 py-0.5">
-                {qty}
+                {quantity}
               </td>
               <td className="text-right border-b border-dashed border-[#323832] px-1 py-0.5">
-                {formatMoney(qty * Number(key))} đ
+                {formatMoney(quantity * Number(key))} đ
               </td>
             </tr>
           );

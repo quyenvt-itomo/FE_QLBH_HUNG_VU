@@ -1,386 +1,53 @@
-/**
- * =========================
- * MODULE DEFINITIONS — Đồng bộ với BE: permission.middleware.ts
- * =========================
- */
+/** Permission modules — single source of truth matching BE permission.middleware.ts. */
 export const MODULES = [
-  // ===== Reports (read-only) =====
-  "report",
-  "fundReport",
-  "fundBalanceReport",
-  "inventoryReport",
-  "partnerDebtReport",
-  "vatDebtReport",
-  "commissionDebtReport",
-  "purchaseCostReport",
-  "salesCostReport",
-  "productionOutputReport",
-
-  // ===== Mua hàng =====
-  "purchaseRequisition",
-  "purchaseQuotation",
-  "purchase",
-
-  // ==== Bán hàng =====
-  "quotationRequest",
-  "quotation",
-  "order",
-
-  // Kế hoạch vận chuyển
-  "shippingPlan",
-
-  // ===== Kế toán =====
-  "paymentRequest",
-  "incomeExpense",
-  "fund",
-  "fundAdjustment",
-  "fundTransfer",
-  "invoice",
-  "loan",
-  "termDeposit",
-  "asset",
-  "partnerDebtAdjustment",
-  "partnerDebtOffset",
-  "vatDebtAdjustment",
-  "commissionDebtAdjustment",
-
-  // ===== Kho =====
-  "warehouse",
-  "warehouseTransfer",
-  "inventoryAdjustment",
-  "stockDocument",
-  "gateLog",
-
-  // ===== Sản xuất =====
-  "bom",
-  "production",
-  "materialBugget",
-  "meshSheet",
-
-  // ===== Kho mở rộng =====
-  "inventoryConversion",
-
-  // ===== Nhân sự =====
-  "employee",
-  "payroll",
-
-  // ===== Thiết lập tổ chức =====
-  "organization",
-  "jobPosition",
-  "paymentTerm",
-
-  // ===== Core entities / danh mục =====
-  "partner",
-  "product",
-  "priceHistory",
-  "service",
-  "user",
-  "role",
-  "category",
-
-  // ===== An toàn & bảo mật =====
-  "log",
-  "loginApproval",
+  "report", "debtReport", "inventoryReport", "fundReport", "vatReport",
+  "sale", "saleReturn", "purchase", "purchaseReturn", "storeTransfer", "inventoryAdjustment",
+  "income", "expense", "fund", "fundAdjustment", "fundTransfer", "debtAdjustment", "vatAdjustment",
+  "customer", "supplier", "shipper", "product", "store", "user", "role", "attribute",
 ] as const;
-
 export type Module = (typeof MODULES)[number];
 
-/**
- * =========================
- * PERMISSIONS
- * =========================
- */
-export const PERMISSIONS = [
-  "create",
-  "read",
-  "readAll",
-  "update",
-  "delete",
-  "approve",
-  "customerApprove",
-  "confirmExport",
-  "confirmImport",
-  "complete",
-  "enter",
-  "exit",
-  "link",
-] as const;
-export type Permission = (typeof PERMISSIONS)[number];
+export const PERMISSIONS = ["create", "read", "update", "delete", "approve", "complete"] as const;
+export type Permission = (typeof PERMISSIONS)[number] | "readAll" | "customerApprove" | "confirmExport" | "confirmImport" | "enter" | "exit" | "link";
+export type PermissionStructure = { [key in Module]?: Permission[] };
 
-export type PermissionStructure = {
-  [key in Module]?: Permission[];
+export const ReadOnlyModules: Module[] = ["report", "debtReport", "inventoryReport", "fundReport", "vatReport"];
+export const ReadAllModules: Module[] = [];
+export const ApprovalModules: Module[] = [];
+export const CustomerApprovalModules: Module[] = [];
+export const ConfirmExportModules: Module[] = [];
+export const ConfirmImportModules: Module[] = [];
+export const CompleteModules: Module[] = ["sale", "saleReturn"];
+
+export const readPermissionFallbackMap: Partial<Record<Module, Module[]>> = {
+  product: ["sale", "saleReturn", "purchase", "purchaseReturn", "inventoryAdjustment", "storeTransfer"],
+  customer: ["sale", "saleReturn"],
+  supplier: ["purchase", "purchaseReturn"],
+  fund: ["fundTransfer", "fundAdjustment"],
 };
 
-/**
- * Các module chỉ có quyền read theo từng context
- */
-export const ReadOnlyModules: Module[] = [
-  "report",
-  "fundReport",
-  "inventoryReport",
-  "partnerDebtReport",
-  "vatDebtReport",
-  "purchaseCostReport",
-  "salesCostReport",
-  "productionOutputReport",
-  "materialBugget",
-  "priceHistory",
-
-  "quotationRequest",
-  "purchaseQuotation",
-  "order",
-];
-
-/**
- * Các module cần quyền readAll để xem toàn bộ dữ liệu
- */
-export const ReadAllModules: Module[] = [
-  "quotation",
-  "order",
-  "purchaseQuotation",
-  "purchase",
-
-  "partner",
-];
-
-/**
- * Các module cần quyền approve
- */
-export const ApprovalModules: Module[] = [
-  "quotationRequest",
-  "quotation",
-  "order",
-  "purchaseRequisition",
-  "purchaseQuotation",
-  "purchase",
-  "shippingPlan",
-  "paymentRequest",
-];
-
-/**
- * Các module đặc biệt
- */
-export const CustomerApprovalModules: Module[] = ["quotation"];
-export const ConfirmExportModules: Module[] = ["stockDocument"];
-export const ConfirmImportModules: Module[] = ["stockDocument"];
-export const CompleteModules: Module[] = ["purchase", "order", "production", "stockDocument"];
-
-/**
- * =========================
- * MODULE LABEL MAP
- * =========================
- */
 export const moduleMap: Record<Module, string> = {
-  // Reports
-  report: "Báo cáo tổng quan",
-  fundReport: "Báo cáo tồn quỹ",
-  fundBalanceReport: "Báo cáo số dư quỹ",
-  inventoryReport: "Báo cáo tồn kho",
-  partnerDebtReport: "Báo cáo công nợ đối tác",
-  vatDebtReport: "Báo cáo thuế VAT",
-  commissionDebtReport: "Báo cáo công nợ hoa hồng",
-  purchaseCostReport: "Báo cáo chi phí mua hàng",
-  salesCostReport: "Báo cáo chi phí bán hàng",
-  productionOutputReport: "Báo cáo công khoán",
-
-  // Business
-  order: "Đơn hàng",
-  quotation: "Báo giá",
-  quotationRequest: "Đề nghị báo giá",
-  purchaseQuotation: "Báo giá mua",
-  purchaseRequisition: "Đề nghị mua vật tư",
-  purchase: "Mua hàng",
-  shippingPlan: "Kế hoạch giao hàng",
-
-  // Finance
-  paymentRequest: "Đề nghị thanh toán",
-  incomeExpense: "Thu chi",
-  fund: "Danh sách quỹ",
-  fundAdjustment: "Điều chỉnh quỹ",
-  fundTransfer: "Chuyển quỹ",
-  invoice: "Hóa đơn",
-  loan: "Khoản vay",
-  termDeposit: "Tiền gửi có kỳ hạn",
-  asset: "Tài sản cố định",
-  partnerDebtAdjustment: "Điều chỉnh công nợ đối tác",
-  partnerDebtOffset: "Đối trừ công nợ",
-  vatDebtAdjustment: "Điều chỉnh thuế VAT",
-  commissionDebtAdjustment: "Điều chỉnh công nợ hoa hồng",
-
-  // Inventory
-  warehouse: "Kho hàng",
-  warehouseTransfer: "Chuyển kho",
-  inventoryAdjustment: "Kiểm kê",
-  inventoryConversion: "Chuyển mã",
-  stockDocument: "Phiếu xuất nhập kho",
-  gateLog: "Nhật ký cổng",
-
-  // Production
-  bom: "Định mức NVL",
-  production: "Sản xuất",
-  materialBugget: "Dự trù vật tư",
-  meshSheet: "Thông số lưới thép",
-
-  // HR
-  employee: "Nhân sự",
-  payroll: "Bảng lương",
-
-  // Organization
-  organization: "Cơ cấu tổ chức",
-  jobPosition: "Vị trí công việc",
-  paymentTerm: "Điều khoản thanh toán",
-
-  // Core
-  user: "Người dùng",
-  role: "Phân quyền",
-  partner: "Đối tác",
-  product: "Hàng hóa",
-  priceHistory: "Lịch sử giá",
-  service: "Dịch vụ",
-  category: "Danh mục",
-
-  // Security
-  log: "Nhật ký hệ thống",
-  loginApproval: "Xác thực đăng nhập",
+  report: "Báo cáo tổng quan", debtReport: "Báo cáo công nợ", inventoryReport: "Báo cáo tồn kho", fundReport: "Báo cáo quỹ", vatReport: "Báo cáo VAT",
+  sale: "Bán hàng", saleReturn: "Đổi trả hàng", purchase: "Nhập hàng", purchaseReturn: "Đổi trả hàng nhập", storeTransfer: "Chuyển cửa hàng", inventoryAdjustment: "Điều chỉnh tồn kho",
+  income: "Thu tiền", expense: "Chi tiền", fund: "Quỹ", fundAdjustment: "Điều chỉnh quỹ", fundTransfer: "Chuyển quỹ", debtAdjustment: "Điều chỉnh công nợ", vatAdjustment: "Điều chỉnh VAT",
+  customer: "Khách hàng", supplier: "Nhà cung cấp", shipper: "Đơn vị vận chuyển", product: "Sản phẩm", store: "Cửa hàng", user: "Người dùng", role: "Vai trò", attribute: "Thuộc tính",
 };
+export const permissionMap: Record<string, string> = { read: "Xem", create: "Thêm", update: "Sửa", delete: "Xóa", approve: "Duyệt", complete: "Hoàn tất", readAll: "Xem tất cả", customerApprove: "Khách hàng duyệt", confirmExport: "Xác nhận xuất", confirmImport: "Xác nhận nhập", enter: "Xe vào", exit: "Xe ra", link: "Liên kết" };
 
-/**
- * =========================
- * PERMISSION LABEL MAP
- * =========================
- */
-export const permissionMap: Record<Permission, string> = {
-  read: "Xem",
-  create: "Thêm",
-  update: "Sửa",
-  delete: "Xoá",
-
-  // Các quyền đặc thù
-  readAll: "Xem tất cả",
-  approve: "Duyệt",
-  complete: "Hoàn tất",
-  customerApprove: "Khách hàng duyệt",
-  confirmExport: "Xác nhận xuất kho",
-  confirmImport: "Xác nhận nhập kho",
-
-  // Các quyền đặc thù cho gateLog
-  enter: "Xe vào",
-  exit: "Xe ra",
-  link: "Liên kết",
-};
-
-/**
- * =========================
- * UI GROUPING
- * =========================
- */
-export const role: {
-  title: string;
-  modules: Module[];
-}[] = [
-  {
-    title: "Báo cáo",
-    modules: [
-      "report",
-      "fundReport",
-      "fundBalanceReport",
-      "inventoryReport",
-      "commissionDebtReport",
-      "partnerDebtReport",
-      "vatDebtReport",
-      "purchaseCostReport",
-      "salesCostReport",
-      "productionOutputReport",
-      "priceHistory",
-    ],
-  },
-  {
-    title: "Kinh doanh",
-    modules: [
-      "order",
-      "quotation",
-      "quotationRequest",
-      "purchaseQuotation",
-      "purchaseRequisition",
-      "purchase",
-      "shippingPlan",
-    ],
-  },
-  {
-    title: "Tài chính",
-    modules: [
-      "paymentRequest",
-      "incomeExpense",
-      "fund",
-      "fundAdjustment",
-      "fundTransfer",
-      "invoice",
-      "loan",
-      "termDeposit",
-      "asset",
-      "partnerDebtAdjustment",
-      "partnerDebtOffset",
-      "vatDebtAdjustment",
-      "commissionDebtAdjustment",
-    ],
-  },
-  {
-    title: "Kho",
-    modules: [
-      "warehouse",
-      "warehouseTransfer",
-      "inventoryAdjustment",
-      "inventoryConversion",
-      "stockDocument",
-      "gateLog",
-    ],
-  },
-  {
-    title: "Sản xuất",
-    modules: ["bom", "production", "materialBugget", "meshSheet"],
-  },
-  {
-    title: "Nhân sự",
-    modules: ["employee", "payroll"],
-  },
-  {
-    title: "Thiết lập",
-    modules: ["organization", "jobPosition", "paymentTerm"],
-  },
-  {
-    title: "Danh mục",
-    modules: ["user", "role", "partner", "product", "priceHistory", "service", "category"],
-  },
-  {
-    title: "Hệ thống",
-    modules: ["log", "loginApproval"],
-  },
+export const role: { title: string; modules: Module[] }[] = [
+  { title: "Báo cáo", modules: ["report", "debtReport", "inventoryReport", "fundReport", "vatReport"] },
+  { title: "Bán hàng", modules: ["sale", "saleReturn"] },
+  { title: "Nhập hàng", modules: ["purchase", "purchaseReturn"] },
+  { title: "Kho", modules: ["storeTransfer", "inventoryAdjustment"] },
+  { title: "Tài chính", modules: ["income", "expense", "fund", "fundAdjustment", "fundTransfer", "debtAdjustment", "vatAdjustment"] },
+  { title: "Đối tác", modules: ["customer", "supplier", "shipper"] },
+  { title: "Thiết lập", modules: ["product", "store", "user", "role", "attribute"] },
 ];
 
-/**
- * =========================
- * PERMISSION HELPERS
- * =========================
- */
-export function getPermissionOptions(
-  module: Module,
-): { value: Permission; label: string }[] | undefined {
-  const readOnly = ReadOnlyModules.includes(module);
-  let permissions: Permission[] = readOnly ? ["read"] : ["read", "create", "update", "delete"];
-
-  // Chèn vào ngay sau read
-  if (ReadAllModules.includes(module)) permissions.splice(1, 0, "readAll");
-  if (ApprovalModules.includes(module)) permissions.push("approve");
-  if (CustomerApprovalModules.includes(module)) permissions.push("customerApprove");
-  if (ConfirmExportModules.includes(module)) permissions.push("confirmExport");
-  if (ConfirmImportModules.includes(module)) permissions.push("confirmImport");
+export function getPermissionOptions(module: Module): { value: Permission; label: string }[] {
+  const permissions: Permission[] = ReadOnlyModules.includes(module)
+    ? ["read"]
+    : ["read", "create", "update", "delete"];
   if (CompleteModules.includes(module)) permissions.push("complete");
-  if (module === "gateLog") {
-    permissions = ["read", "enter", "exit", "link"];
-  }
-
-  return permissions.map((p) => ({
-    value: p,
-    label: permissionMap[p],
-  }));
+  return permissions.map((value) => ({ value, label: permissionMap[value] }));
 }

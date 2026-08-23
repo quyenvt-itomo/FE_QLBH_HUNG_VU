@@ -199,7 +199,7 @@ const SupplierQuotationPage: React.FC = () => {
     setLoading(true);
     try {
       const { code, ...submitValues } = values;
-      submitValues.companyId = company?.id;
+      submitValues.storeId = company?.id;
       submitValues.tempId = id;
       const newPurchaseQuotation = await createPublic(submitValues);
 

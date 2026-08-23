@@ -295,7 +295,7 @@ export const AddUpdateModal: React.FC<AddUpdateModalProps<Organization>> = ({
             <EmployeeSelect
               defaultData={manager}
               onChangeData={(val) => form?.setFieldValue("manager", val)}
-              query={{ companyId: id }}
+              query={{ storeId: id }}
             />
           </FormItemWithDiff>
           <Form.Item name="manager" hidden />

@@ -267,12 +267,12 @@ const ProductInfo: React.FC<PartialProps> = ({ data, itemForm, onReload, onUpdat
                       {formatMoney(
                         (() => {
                           const data = isEditing ? itemFormValue : item;
-                          const qty = data?.quantity || 0;
+                          const quantity = data?.quantity || 0;
                           const price = data?.unitPrice || 0;
                           const discount = data?.discountValue || 0;
                           const isPercent = data?.discountType === DiscountTypeEnum.PERCENT;
                           const discountAmount = isPercent ? (price * discount) / 100 : discount;
-                          const total = qty * (price - discountAmount);
+                          const total = quantity * (price - discountAmount);
                           return total;
                         })(),
                         format,
@@ -489,12 +489,12 @@ const ProductInfo: React.FC<PartialProps> = ({ data, itemForm, onReload, onUpdat
                       {formatMoney(
                         (() => {
                           const data = isEditing ? itemFormValue : item;
-                          const qty = data?.quantity || 0;
+                          const quantity = data?.quantity || 0;
                           const price = data?.unitPrice || 0;
                           const discount = data?.discountValue || 0;
                           const isPercent = data?.discountType === DiscountTypeEnum.PERCENT;
                           const discountAmount = isPercent ? (price * discount) / 100 : discount;
-                          const total = qty * (price - discountAmount);
+                          const total = quantity * (price - discountAmount);
                           return total;
                         })(),
                         format,

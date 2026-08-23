@@ -79,8 +79,6 @@ export type Entity = {
 export interface EntityWithCompany extends Entity {
   /** Kept as a source-compatible name for existing screens; BE is store-scoped. */
   storeId?: string | null;
-  /** @deprecated use storeId */
-  companyId?: string | null;
 }
 
 export interface User extends Entity {

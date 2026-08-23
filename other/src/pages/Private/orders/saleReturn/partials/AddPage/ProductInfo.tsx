@@ -306,7 +306,7 @@ const ProductInfo: React.FC<PartialProps> = ({ form }) => {
                               -
                               {formatMoney(
                                 (() => {
-                                  const qty = item?.quantity || 0;
+                                  const quantity = item?.quantity || 0;
                                   const price = item?.unitPrice || 0;
                                   const discount = item?.discountValue || 0;
                                   const isPercent = item?.discountType === DiscountTypeEnum.PERCENT;
@@ -315,7 +315,7 @@ const ProductInfo: React.FC<PartialProps> = ({ form }) => {
                                     ? (price * discount) / 100
                                     : discount;
 
-                                  const total = qty * (price - discountAmount);
+                                  const total = quantity * (price - discountAmount);
 
                                   return total;
                                 })(),
@@ -509,7 +509,7 @@ const ProductInfo: React.FC<PartialProps> = ({ form }) => {
                             <span className="flex w-32 justify-end px-3 text-sm font-medium text-primary shrink-0">
                               {formatMoney(
                                 (() => {
-                                  const qty = item?.quantity || 0;
+                                  const quantity = item?.quantity || 0;
                                   const price = item?.unitPrice || 0;
                                   const discount = item?.discountValue || 0;
                                   const isPercent = item?.discountType === DiscountTypeEnum.PERCENT;
@@ -518,7 +518,7 @@ const ProductInfo: React.FC<PartialProps> = ({ form }) => {
                                     ? (price * discount) / 100
                                     : discount;
 
-                                  const total = qty * (price - discountAmount);
+                                  const total = quantity * (price - discountAmount);
 
                                   return total;
                                 })(),

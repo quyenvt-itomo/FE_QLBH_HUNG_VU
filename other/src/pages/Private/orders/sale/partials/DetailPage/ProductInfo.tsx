@@ -366,7 +366,7 @@ const ProductInfo: React.FC<PartialProps> = ({ data, itemForm, onReload, onUpdat
                 {formatMoney(
                   (() => {
                     const data = rowData?.id === item.id ? itemFormValue : item;
-                    const qty = data?.quantity || 0;
+                    const quantity = data?.quantity || 0;
                     const price = data?.unitPrice || 0;
                     const discount = data?.discountValue || 0;
                     const isPercent = data?.discountType === DiscountTypeEnum.PERCENT;
@@ -375,7 +375,7 @@ const ProductInfo: React.FC<PartialProps> = ({ data, itemForm, onReload, onUpdat
                     const discountAmount = isPercent ? (price * discount) / 100 : discount;
 
                     // tổng trước VAT
-                    const total = qty * (price - discountAmount);
+                    const total = quantity * (price - discountAmount);
 
                     return total;
                   })(),

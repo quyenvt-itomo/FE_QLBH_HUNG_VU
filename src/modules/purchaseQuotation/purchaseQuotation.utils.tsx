@@ -23,7 +23,7 @@ export const generateDefaultPurchaseByQuotation = (
   );
 
   return {
-    companyId: quotation.companyId,
+    storeId: quotation.storeId,
 
     supplierId: quotation.supplierId,
     supplierSnapshot: quotation.supplierSnapshot,

@@ -1,8 +1,8 @@
 import { Module } from "@/shared/constants/permission";
 import { ExcelEntityType } from "./excel.enum";
 
-export function mapEntityTypeToModule(entityType: ExcelEntityType): Module {
-  const map: Record<ExcelEntityType, Module> = {
+export function mapEntityTypeToModule(entityType: ExcelEntityType): Module | string {
+  const map: Record<ExcelEntityType, Module | string> = {
     [ExcelEntityType.PARTNER]: "partner",
     [ExcelEntityType.EMPLOYEE]: "employee",
     [ExcelEntityType.USER]: "user",
@@ -18,7 +18,7 @@ export function mapEntityTypeToModule(entityType: ExcelEntityType): Module {
 export function checkShowButton(entityType: ExcelEntityType, availableModules?: Module[]): boolean {
   if (!availableModules || availableModules.length === 0) return false;
   const module = mapEntityTypeToModule(entityType);
-  return availableModules.includes(module);
+  return availableModules.includes(module as Module);
 }
 
 export const entityTypeLabel: Record<ExcelEntityType, string> = {

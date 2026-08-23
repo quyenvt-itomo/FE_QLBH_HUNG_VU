@@ -63,7 +63,7 @@ export function createBaseStore<
 >(config: {
   key: string;
   apiUrl: string;
-  permissionModule?: Module;
+  permissionModule?: Module | string;
   messages?: EntityMessage;
 
   extend?: (ctx: {
@@ -87,7 +87,7 @@ export function createBaseStore<
 
     const can = config.permissionModule
       ? (permission: Permission) =>
-          checkPermission(permissions, config.permissionModule!, permission)
+          checkPermission(permissions, config.permissionModule! as Module, permission)
       : () => true;
 
     // ===== temporary states =====

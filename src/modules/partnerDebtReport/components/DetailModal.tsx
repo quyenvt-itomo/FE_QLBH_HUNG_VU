@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Modal, Table } from "antd";
 import {
   PartnerDebtReport,
-  PartnerDebtTransaction,
+  DebtTransaction,
   PartnerDebtRefTypeEnum,
   partnerDebtRefTypeMap,
 } from "../partnerDebtReport.model";
@@ -20,7 +20,7 @@ import { DebtSideEnum, debtSideMap, TransactionType } from "@/shared/constants/e
 interface Props {
   side: DebtSideEnum;
   partner?: PartnerDebtReport;
-  dataSource: PartnerDebtTransaction[];
+  dataSource: DebtTransaction[];
   summaryData?: SummaryData | null;
   pagination?: PaginationProps | null;
   setPage?: (page: number) => void;

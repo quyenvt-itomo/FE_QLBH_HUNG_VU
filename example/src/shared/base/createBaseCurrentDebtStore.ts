@@ -48,7 +48,7 @@ export function createBaseCurrentDebtStore<
 
     const paramsWithStore = {
       ...params,
-      companyId: currentCompany?.id ?? params?.companyId,
+      storeId: currentCompany?.id ?? params?.storeId,
     };
 
     const partnerQuery = useQuery<ApiResponse<TPartner[]>, BaseFailurePayload>({

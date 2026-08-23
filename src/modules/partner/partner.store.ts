@@ -13,7 +13,7 @@ export const usePartnerStore = createBaseStore<
 >({
   key: "partners",
   apiUrl: apiEndpoint.partner.base,
-  permissionModule: "partner",
+  permissionModule: "customer",
   extend: ({ onError }) => ({
     getByTaxCode: async (code: string) => {
       try {
@@ -37,4 +37,16 @@ export const usePartnerStore = createBaseStore<
       }
     },
   }),
+});
+
+export const useCustomerStore = usePartnerStore;
+export const useSupplierStore = createBaseStore<Partner, PartnerQuery>({
+  key: "suppliers",
+  apiUrl: apiEndpoint.partner.supplier,
+  permissionModule: "supplier",
+});
+export const useShipperStore = createBaseStore<Partner, PartnerQuery>({
+  key: "shippers",
+  apiUrl: apiEndpoint.partner.shipper,
+  permissionModule: "shipper",
 });

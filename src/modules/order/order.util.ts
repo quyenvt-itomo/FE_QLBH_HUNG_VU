@@ -1,9 +1,6 @@
-﻿import { OrderLine } from "../orderLine";
-import { Order } from "./order.model";
+import { Order, OrderLine } from "./order.model";
 
-/**
- * Tính tổng tiền từ các dòng đơn hàng
- */
+/** Tính tổng tiền từ các dòng đơn hàng. Lines chỉ được cập nhật trong Order. */
 export function calculateOrder(data?: Partial<Order>) {
   const lines: OrderLine[] = data?.lines || [];
   let subTotal = 0;
@@ -12,9 +9,9 @@ export function calculateOrder(data?: Partial<Order>) {
   let commissionTotal = 0;
 
   lines.forEach((item) => {
-    const qty = Number(item.quantity) || 0;
+    const quantity = Number(item.quantity) || 0;
     const price = Number(item.unitPrice) || 0;
-    const lineTotal = qty * price;
+    const lineTotal = quantity * price;
     subTotal += lineTotal;
     const lineTax = (lineTotal * (Number(item.taxRate) || 0)) / 100;
     taxAmount += lineTax;
