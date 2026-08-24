@@ -1,9 +1,8 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-
+import { PartialFilterProps } from "@/shared/interfaces";
+import { GenericFilter } from "./GenericFilter";
 import { Fund } from "@/modules/fund/fund.model";
 import { FundMultipleSelect } from "@/modules/fund/components/Select";
-import { PartialFilterProps } from "@/shared/interfaces/common";
-import { GenericFilter } from "./GenericFilter";
 
 export const FundFilter: React.FC<PartialFilterProps<Fund>> = ({ data, setData }) => {
   const value = data.map((item) => item.id);

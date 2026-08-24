@@ -2,8 +2,8 @@ import { CaretRightOutlined } from "@ant-design/icons";
 import { Collapse } from "antd";
 import { useState } from "react";
 
-import { useGlobalData } from "@/shared/hooks/useGlobalData";
-import { Filter, FilterKey } from "@/shared/interfaces/common";
+import { useGlobalData } from "@/shared/hooks";
+import { Filter, FilterKey } from "@/shared/interfaces";
 import { AllPartnerFilter, CustomerFilter, ShipperFilter, SupplierFilter } from "./PartnerFilter";
 import {
   CategoryFilter,

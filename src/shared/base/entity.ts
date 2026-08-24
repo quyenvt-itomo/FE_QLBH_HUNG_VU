@@ -1,6 +1,6 @@
-import { Role } from "@/modules/role";
-import { FileCategory, Gender } from "@/shared/constants/enum";
-import { Address } from "@/shared/interfaces/common";
+import { Role } from "@/modules/role/role.model";
+import { FileCategory, Gender } from "@/shared/constants";
+import { Address } from "@/shared/interfaces";
 
 export type ActionKey =
   | "update"
