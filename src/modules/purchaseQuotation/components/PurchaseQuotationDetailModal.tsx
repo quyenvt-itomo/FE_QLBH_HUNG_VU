@@ -11,8 +11,8 @@ import { formatDate } from "@/shared/utils/date.util";
 import { formatMoney, formatQuantity } from "@/shared/utils/number.util";
 import { ApproveStatus } from "@/modules/shared/business.model";
 import { resolveByPath } from "@/shared/utils/common.util";
-import DocumentGroup from "@/shared/components/display/DocumentGroup";
-import { EntityInfo } from "@/shared/components/display/EntityInfo";
+import { DocumentGroup } from "@/shared";
+import { EntityInfo } from "@/shared";
 
 interface Props {
   open: boolean;

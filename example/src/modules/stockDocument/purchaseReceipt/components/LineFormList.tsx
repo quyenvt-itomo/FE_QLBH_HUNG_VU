@@ -12,7 +12,7 @@ import {
 } from "@/modules/purchaseLine";
 import { useAutoResetItem } from "@/shared/hooks/useAutoResetItem";
 import { MagnifyingGlassIcon } from "@/shared/icons";
-import { SortOrderEnum } from "@/shared/constants/enum";
+import { SortOrder } from "@/shared/constants/enum";
 import { formatMoney, formatPercentage, formatQuantity } from "@/shared/utils/number.util";
 import { StockDocumentCalculationUtil } from "../../stockDocument.util";
 import { makeFormListEnterHandler } from "@/shared/utils/formListKeyboard";
@@ -139,7 +139,7 @@ export const PurchaseReceiptLineFormList: React.FC<Props> = ({ form, showImportI
             query={{
               purchaseId: purchase?.id,
               sortBy: "sortOrder",
-              sortOrder: SortOrderEnum.ASC,
+              sortOrder: SortOrder.ASC,
             }}
             placeholder={
               purchase?.id ? "Chọn hàng hóa từ đơn mua hàng" : "Vui lòng chọn đơn mua hàng trước"

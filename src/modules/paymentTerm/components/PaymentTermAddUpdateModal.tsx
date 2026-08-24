@@ -1,16 +1,16 @@
 import React, { useEffect, useMemo } from "react";
 import { Input, Modal, Form, Row, Col, FormInstance } from "antd";
 import { FormProps } from "antd/lib";
-import SubmitButton from "@/shared/components/button/SubmitButton";
+import { SubmitButton } from "@/shared";
 import { AddUpdateModalProps } from "@/shared/interfaces/common";
 import { PaymentTerm } from "../paymentTerm.model";
 import { randomId } from "@/shared/utils/common.util";
 import { setFormErrors } from "@/shared/utils/form.util";
 import { parseFormDataDates } from "@/shared/utils/date.util";
-import Label from "@/shared/components/display/Label";
+import { Label } from "@/shared";
 import { useAppMessage } from "@/shared/hooks/useAppMessage";
-import { InputMoney, InputPercentage, InputQuantity } from "@/shared/components/input";
-import { FormSection } from "@/shared/components/form/FormSection";
+import { InputMoney, InputPercentage, InputQuantity } from "@/shared";
+import { FormSection } from "@/shared";
 
 export interface PartialProps {
   form: FormInstance<PaymentTerm>;

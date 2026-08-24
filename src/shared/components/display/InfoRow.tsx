@@ -1,5 +1,5 @@
 import React from "react";
-import Label from "./Label";
+import { Label } from "./Label";
 import { CLASSNAME } from "@/shared/constants/ui";
 
 interface InfoRowProps {
@@ -37,4 +37,4 @@ const InfoRow: React.FC<InfoRowProps> = ({
   );
 };
 
-export default InfoRow;
+export { InfoRow };

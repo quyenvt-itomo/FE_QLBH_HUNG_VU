@@ -14,4 +14,4 @@ const ManagerButton: React.FC<ButtonProps> = ({ onClick, ...rest }) => {
   );
 };
 
-export default ManagerButton;
+export { ManagerButton };

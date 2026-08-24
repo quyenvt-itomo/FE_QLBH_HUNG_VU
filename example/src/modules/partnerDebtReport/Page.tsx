@@ -25,7 +25,7 @@ import {
   filterUses as currentDebtFilterUses,
 } from "./currentDebtFilterItem";
 import { useState } from "react";
-import { DebtSideEnum, debtSideOptions, SortOrderEnum } from "@/shared/constants/enum";
+import { DebtSideEnum, debtSideOptions, SortOrder } from "@/shared/constants/enum";
 import { Radio } from "antd";
 import { InvoiceType, invoiceTypeMap } from "../invoice";
 
@@ -54,7 +54,7 @@ export const PartnerDebtReportPage: React.FC = () => {
     pageAction,
   } = usePageState<PartnerDebtReport>({
     sortBy: "name",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     filterUses,
     size: 20,
   });
@@ -203,7 +203,7 @@ export const CurrentDebtReportPage: React.FC<CurrentDebtReportPageProps> = ({ in
     pageAction,
   } = usePageState<PartnerCurrentDebt>({
     sortBy: "totalDebt",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     filterUses: currentDebtFilterUses,
     size: 20,
   });

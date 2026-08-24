@@ -1,7 +1,7 @@
-﻿import React from "react";
+import React from "react";
 import { Modal, Descriptions, Table } from "antd";
 import { BillOfMaterial } from "../billOfMaterial.model";
-import Title from "@/shared/components/display/Title";
+import { Title } from "@/shared";
 import { formatQuantity } from "@/shared/utils/number.util";
 import { resolveByPath } from "@/shared/utils/common.util";
 
@@ -29,40 +29,40 @@ export const BillOfMaterialDetailModal: React.FC<Props> = ({
       render: (v: number) => formatQuantity(v),
     },
     {
-      title: "% Hao hụt",
+      title: "% Hao h?t",
       dataIndex: "wastePercent",
       key: "waste",
       width: 80,
       align: "right" as const,
       render: (v: number) => v + "%",
     },
-    { title: "Ghi chú", dataIndex: "note", key: "note" },
+    { title: "Ghi ch�", dataIndex: "note", key: "note" },
   ];
   return (
     <Modal
-      title={"Chi tiết Định mức NVL"}
+      title={"Chi ti?t �?nh m?c NVL"}
       open={open}
       onCancel={onClose}
       footer={
         onOpenUpdate ? (
           <button className="text-blue-500" onClick={() => onOpenUpdate(data)}>
-            Chỉnh sửa
+            Ch?nh s?a
           </button>
         ) : null
       }
       width={900}
       destroyOnClose
     >
-      <Title content="Thông tin hàng hóa" />
+      <Title content="Th�ng tin h�ng h�a" />
       <Descriptions column={2} size="small" bordered>
-        <Descriptions.Item label="Mã SP">
+        <Descriptions.Item label="M? SP">
           {resolveByPath(data, ["product", "code"])}
         </Descriptions.Item>
-        <Descriptions.Item label="Tên SP">
+        <Descriptions.Item label="T�n SP">
           {resolveByPath(data, ["product", "name"])}
         </Descriptions.Item>
       </Descriptions>
-      <Title content={"Nguyên vật liệu (" + (data.lines?.length || 0) + " dòng)"} />
+      <Title content={"Nguy�n v?t li?u (" + (data.lines?.length || 0) + " d?ng)"} />
       <Table
         dataSource={data.lines || []}
         columns={lineCols}

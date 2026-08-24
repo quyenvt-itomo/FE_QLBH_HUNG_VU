@@ -58,4 +58,4 @@ const FloatLabel: React.FC<FloatLabelProps> = ({
   );
 };
 
-export default FloatLabel;
+export { FloatLabel };

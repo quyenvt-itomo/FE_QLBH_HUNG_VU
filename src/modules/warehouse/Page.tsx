@@ -1,8 +1,8 @@
-﻿import React from "react";
+import React from "react";
 import { usePageState } from "@/shared/hooks/usePageState";
-import { SearchInput } from "@/shared/components/input";
-import AddButton from "@/shared/components/button/AddButton";
-import { Panel } from "@/shared/components/display/Panel";
+import { SearchInput } from "@/shared";
+import { AddButton } from "@/shared";
+import { Panel } from "@/shared";
 import { ExcelButton, ExcelEntityType } from "@/modules/excel";
 import { useExcelReload } from "@/shared/hooks/useExcelReload";
 
@@ -49,8 +49,8 @@ export const WarehousePage: React.FC = () => {
     <div className="flex flex-col h-full w-full gap-1">
       <div className="flex justify-between items-start gap-3">
         <div className="flex flex-col">
-          <h2 className="text-base font-bold text-blue-800">Kho hàng</h2>
-          <p className="text-xs text-secondary">Quản lý kho hàng</p>
+          <h2 className="text-base font-bold text-blue-800">Kho h�ng</h2>
+          <p className="text-xs text-secondary">Qu?n l? kho h�ng</p>
         </div>
         <div className="flex items-center gap-3">
           <SearchInput value={keyword} onSearch={pageAction.handleSearch} maxWidth={340} />

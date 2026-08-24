@@ -1,5 +1,5 @@
 import React from "react";
-import { TableColumnConfig, ObjectTableProps } from "@/shared/components/table/TableColumnConfig";
+import { TableColumnConfig, ObjectTableProps } from "@/shared";
 import { BillOfMaterial } from "../billOfMaterial.model";
 import { formatQuantity } from "@/shared/utils/number.util";
 import { resolveByPath } from "@/shared/utils/common.util";

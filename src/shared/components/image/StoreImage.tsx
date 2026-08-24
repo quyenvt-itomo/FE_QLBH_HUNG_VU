@@ -122,5 +122,3 @@ export const StoreImage: React.FC<StoreImageProps> = ({
     </div>
   );
 };
-
-export default StoreImage;

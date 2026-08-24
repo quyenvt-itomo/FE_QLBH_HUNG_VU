@@ -1,20 +1,20 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Empty, Table } from "antd";
 import type { TableColumnsType } from "antd";
-import CustomizeColumnDisplay from "./CustomizeColumnDisplay";
-import HandleColumnSelector, { ColumnsConfigType } from "./handleColumnSelector";
+import { CustomizeColumnDisplay } from "./CustomizeColumnDisplay";
+import { HandleColumnSelector, ColumnsConfigType } from "./handleColumnSelector";
 import { TableProps } from "antd/lib";
 import { SorterResult } from "antd/es/table/interface";
 import { getInitialConfigColumns } from "./columnConfig";
 import { PaginationProps, SummaryData } from "@/shared/interfaces/api";
 import { useGlobalData } from "@/shared/hooks/useGlobalData";
 import { checkCanPermission } from "@/shared/utils/permission.util";
-import CustomPagination from "../CustomPagination";
+import { CustomPagination } from "../CustomPagination";
 import { CLASSNAME } from "@/shared/constants/ui";
 import { Entity } from "@/shared/base/entity";
 import { formatDateTimeDDMMYYYY } from "@/shared/utils/date.util";
 import { DropdownAction } from "../dropdown";
-import ExpandIconButton from "../button/ExpandIconButton";
+import { ExpandIconButton } from "../button/ExpandIconButton";
 
 export interface TableColumnConfigProps extends Omit<TableProps, "pagination"> {
   columns: ColumnsConfigType;

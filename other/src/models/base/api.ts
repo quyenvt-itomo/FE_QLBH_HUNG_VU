@@ -1,4 +1,4 @@
-import { SortOrderEnum } from "../../constants/enum";
+import { SortOrder } from "../../constants/enum";
 import { IAttribute } from "./attribute";
 
 export interface ApiRequestQuery {
@@ -11,7 +11,7 @@ export interface ApiRequestQuery {
   type?: string;
   status?: string;
   sortBy?: string;
-  sortOrder?: SortOrderEnum;
+  sortOrder?: SortOrder;
   storeId?: string;
 }
 

@@ -112,4 +112,4 @@ const DateRangeFilter: React.FC<DateRangeFilterProps> = ({
   );
 };
 
-export default DateRangeFilter;
+export { DateRangeFilter };

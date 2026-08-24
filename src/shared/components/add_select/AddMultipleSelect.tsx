@@ -1,5 +1,5 @@
 import { Select } from "antd";
-import AddButton from "./AddButton";
+import { AddSelectButton } from "./AddButton";
 import { DropdownColumn, DropdownHeader, renderDropdownBody } from "../core/CustomSelectLayout";
 import { CLASSNAME } from "@/shared/constants/ui";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
@@ -65,11 +65,11 @@ const AddMultipleSelect = <T extends { id: string; name: string }>({
 
       {showAddButton && (
         <>
-          <AddButton onClick={onOpen} disabled={disabled} />
+          <AddSelectButton onClick={onOpen} disabled={disabled} />
           {modal}
         </>
       )}
     </div>
   );
 };
-export default AddMultipleSelect;
+export { AddMultipleSelect };

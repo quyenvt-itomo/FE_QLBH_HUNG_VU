@@ -1,5 +1,5 @@
 import React from "react";
-import { TableColumnConfig, ObjectTableProps } from "@/shared/components/table/TableColumnConfig";
+import { TableColumnConfig, ObjectTableProps } from "@/shared";
 import { InventoryAdjustment } from "../inventoryAdjustment.model";
 import { formatDate } from "@/shared/utils/date.util";
 import { formatMoney } from "@/shared/utils/number.util";

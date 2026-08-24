@@ -9,7 +9,7 @@ type Primitive = string | number | boolean | bigint | symbol | null | undefined 
 
 type Prev = [never, 0, 1, 2, 3];
 
-export type DeepPath<T, Depth extends number = 4> = [Depth] extends [never]
+type DeepPath<T, Depth extends number = 4> = [Depth] extends [never]
   ? never
   : T extends Primitive
     ? never

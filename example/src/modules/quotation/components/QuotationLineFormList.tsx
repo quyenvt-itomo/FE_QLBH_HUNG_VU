@@ -34,7 +34,7 @@ import {
   CommissionMode,
   commissionModeOptions,
   SaleLineType,
-  SortOrderEnum,
+  SortOrder,
 } from "@/shared/constants/enum";
 import { MagnifyingGlassIcon } from "@/shared/icons";
 import { TrashIcon } from "@heroicons/react/24/outline";
@@ -473,7 +473,7 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
             query={{
               type: ProductType.MAIN_MATERIAL,
               sortBy: "type",
-              sortOrder: SortOrderEnum.ASC,
+              sortOrder: SortOrder.ASC,
             }}
             variant="borderless"
             placeholder="Chọn NVL chính"
@@ -601,7 +601,7 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
               <ProductMultipleSelect
                 value={defaultProduct ? [defaultProduct.id] : undefined}
                 defaultData={defaultProduct ? [defaultProduct] : undefined}
-                query={{ sortBy: "type", sortOrder: SortOrderEnum.ASC }}
+                query={{ sortBy: "type", sortOrder: SortOrder.ASC }}
                 placeholder="Chọn hàng hóa để thêm"
                 hideOptions={hideProducts}
                 prefix={<MagnifyingGlassIcon className="w-6 h-6 text-secondary" />}
@@ -628,7 +628,7 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
               <ServiceMultipleSelect
                 value={defaultService ? [defaultService.id] : undefined}
                 defaultData={defaultService ? [defaultService] : undefined}
-                query={{ sortBy: "type", sortOrder: SortOrderEnum.ASC }}
+                query={{ sortBy: "type", sortOrder: SortOrder.ASC }}
                 placeholder="Chọn dịch vụ để thêm"
                 hideOptions={hideServices}
                 prefix={<MagnifyingGlassIcon className="w-6 h-6 text-secondary" />}
@@ -657,7 +657,7 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
               <PartnerContactMultipleSelect
                 value={defaultPartnerContact ? [defaultPartnerContact.id] : undefined}
                 defaultData={defaultPartnerContact ? [defaultPartnerContact] : undefined}
-                query={{ sortBy: "type", sortOrder: SortOrderEnum.ASC }}
+                query={{ sortBy: "type", sortOrder: SortOrder.ASC }}
                 placeholder="Chọn người liên hệ để thêm"
                 hideOptions={hidePartnerContacts}
                 prefix={<MagnifyingGlassIcon className="w-6 h-6 text-secondary" />}

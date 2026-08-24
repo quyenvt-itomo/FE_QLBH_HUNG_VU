@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { usePageState } from "../../../hooks/core/usePageState";
-import { ExcelEntityType, IncomeExpenseTypeEnum, SortOrderEnum } from "../../../constants/enum";
+import { ExcelEntityType, IncomeExpenseTypeEnum, SortOrder } from "../../../constants/enum";
 import { useIncomeExpenseData } from "../../../hooks/useIncomeExpenseData";
 import CustomTitle from "../../../layout/Private/header/components/Title";
 import DateRangeFilter from "../../../components/button/DateRangeFilter";
@@ -42,7 +42,7 @@ export const Page: React.FC = () => {
     pageAction,
   } = usePageState<IIncomeExpense>({
     sortBy: "occurredAt",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     filterUses,
   });
   const [type, setType] = useState<IncomeExpenseTypeEnum>(IncomeExpenseTypeEnum.INCOME);

@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { TableColumnConfig, ObjectTableProps } from "@/shared/components/table/TableColumnConfig";
+import { TableColumnConfig, ObjectTableProps } from "@/shared";
 import { PaymentTerm } from "../paymentTerm.model";
 import { formatMoney } from "@/shared/utils/number.util";
 

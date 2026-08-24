@@ -1,9 +1,9 @@
-﻿import React from "react";
+import React from "react";
 import { usePageState } from "@/shared/hooks/usePageState";
-import { SearchInput } from "@/shared/components/input";
+import { SearchInput } from "@/shared";
 import { usePartnerContactStore } from "./partnerContact.store";
-import AddButton from "@/shared/components/button/AddButton";
-import { Panel } from "@/shared/components/display/Panel";
+import { AddButton } from "@/shared";
+import { Panel } from "@/shared";
 import { usePartnerContactHandlers } from "./partnerContact.handlers";
 import { Tabs } from "antd";
 import {
@@ -17,7 +17,7 @@ import { PartnerContact } from "./partnerContact.model";
 
 export const statusItems = [
   {
-    label: "Tất cả",
+    label: "T?t c?",
     key: "all",
     value: "all",
   },

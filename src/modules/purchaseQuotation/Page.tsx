@@ -1,22 +1,22 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { usePageState } from "@/shared/hooks/usePageState";
-import { SearchInput } from "@/shared/components/input";
+import { SearchInput } from "@/shared";
 import { usePurchaseQuotationStore } from "./purchaseQuotation.store";
 import {
   PurchaseQuotation,
   PurchaseQuotationType,
   purchaseQuotationTypeOptions,
 } from "./purchaseQuotation.model";
-import { Panel } from "@/shared/components/display/Panel";
+import { Panel } from "@/shared";
 import { PurchaseQuotationTable, PurchaseQuotationDetailModal } from "./components";
 import { Button, Radio, Tabs, Tooltip } from "antd";
 import { approvedStatusLiteItems } from "../shared/business.model";
-import DateRangeFilter from "@/shared/components/button/DateRangeFilter";
-import CustomFilter from "@/shared/components/filters";
+import { DateRangeFilter } from "@/shared";
+import { CustomFilter } from "@/shared";
 import { filterUses, rangerItems, sortItems } from "./filterItem";
 import { usePurchaseQuotationHandlers } from "./purchaseQuotation.handlers";
 import { LinkIcon } from "@heroicons/react/24/outline";
-import { SortOrderEnum } from "@/shared/constants/enum";
+import { SortOrder } from "@/shared/constants/enum";
 
 export const PurchaseQuotationPage: React.FC = () => {
   const {
@@ -41,7 +41,7 @@ export const PurchaseQuotationPage: React.FC = () => {
     pageAction,
   } = usePageState<PurchaseQuotation>({
     sortBy: "timeAt",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     filterUses,
   });
   const [type, setType] = useState<PurchaseQuotationType>(PurchaseQuotationType.QUOTATION);
@@ -80,7 +80,7 @@ export const PurchaseQuotationPage: React.FC = () => {
           className="custom-tabs"
         />
         <div className="flex items-center gap-3 flex-shrink-0">
-          <Tooltip title="Link báo giá">
+          <Tooltip title="Link b�o gi�">
             <Button onClick={handleCopyLink}>
               <LinkIcon className="w-5 h-5" />
             </Button>

@@ -1,4 +1,4 @@
-import { TableColumnConfig, ObjectTableProps } from "@/shared/components/table/TableColumnConfig";
+import { TableColumnConfig, ObjectTableProps } from "@/shared";
 
 export const JobPositionTable: React.FC<ObjectTableProps> = ({ ...rest }) => {
   const columns: any = [

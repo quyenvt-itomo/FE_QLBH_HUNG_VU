@@ -1,7 +1,7 @@
 import { Radio } from "antd";
 import React, { useState } from "react";
 import { usePageState } from "@/shared/hooks/usePageState";
-import { SortOrderEnum } from "@/shared/constants/enum";
+import { SortOrder } from "@/shared/constants/enum";
 import { SearchInput } from "@/shared/components/input";
 import DateRangeFilter from "@/shared/components/button/DateRangeFilter";
 import CustomFilter from "@/shared/components/filters";
@@ -39,7 +39,7 @@ export const PurchaseReceiptPage: React.FC = () => {
     pageAction,
   } = usePageState<StockDocument>({
     sortBy: "effectiveDate",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     filterUses,
   });
   const [openConfirmImport, setOpenConfirmImport] = useState(false);

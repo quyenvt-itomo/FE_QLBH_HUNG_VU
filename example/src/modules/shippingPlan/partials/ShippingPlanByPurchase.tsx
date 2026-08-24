@@ -8,7 +8,7 @@ import { resolveByPath } from "@/shared/utils/common.util";
 import { TableColumnConfig } from "@/shared/components/table/TableColumnConfig";
 import { ColumnsConfigType } from "@/shared/components/table";
 import { Purchase } from "@/modules/purchase";
-import { SortOrderEnum } from "@/shared/constants/enum";
+import { SortOrder } from "@/shared/constants/enum";
 import AddButton from "@/shared/components/button/AddButton";
 import { usePageState } from "@/shared/hooks/usePageState";
 import { ApproveStatusTag } from "@/shared/components/display/Tag";
@@ -45,7 +45,7 @@ export const ShippingPlanByPurchase: React.FC<Props> = ({ purchase, canCreate, o
       page: 1,
       size: 999,
       sortBy: "plannedAt",
-      sortOrder: SortOrderEnum.DESC,
+      sortOrder: SortOrder.DESC,
       purchaseId: purchase.id,
     },
     () => pageAction.handleClose(),

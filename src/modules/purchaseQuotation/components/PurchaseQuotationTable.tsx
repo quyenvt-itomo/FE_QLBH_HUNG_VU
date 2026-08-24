@@ -1,14 +1,14 @@
 import React, { useMemo } from "react";
-import { TableColumnConfig, ObjectTableProps } from "@/shared/components/table/TableColumnConfig";
+import { TableColumnConfig, ObjectTableProps } from "@/shared";
 import { PurchaseQuotation } from "../purchaseQuotation.model";
 import { formatDate, formatDateTimeDDMMYYYY } from "@/shared/utils/date.util";
-import { ColumnsConfigType } from "@/shared/components/table";
+import { ColumnsConfigType } from "@/shared";
 import { getFullAddress, resolveByPath } from "@/shared/utils/common.util";
 import { formatMoney } from "@/shared/utils/number.util";
-import { ApproveStatusTag } from "@/shared/components/display/Tag";
-import { MediaDropdown } from "@/shared/components/dropdown";
+import { ApproveStatusTag } from "@/shared";
+import { MediaDropdown } from "@/shared";
 import { File } from "@/shared/interfaces/file";
-import { EntityInfo } from "@/shared/components/display/EntityInfo";
+import { EntityInfo } from "@/shared";
 
 interface Props extends ObjectTableProps {
   onViewDetail?: (r: PurchaseQuotation) => void;

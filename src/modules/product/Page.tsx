@@ -1,15 +1,15 @@
-﻿import React, { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { usePageState } from "@/shared/hooks/usePageState";
-import { SearchInput } from "@/shared/components/input";
-import DateRangeFilter from "@/shared/components/button/DateRangeFilter";
-import AddButton from "@/shared/components/button/AddButton";
-import { Panel } from "@/shared/components/display/Panel";
+import { SearchInput } from "@/shared";
+import { DateRangeFilter } from "@/shared";
+import { AddButton } from "@/shared";
+import { Panel } from "@/shared";
 import { Tabs, Table } from "antd";
-import CustomPagination from "@/shared/components/CustomPagination";
+import { CustomPagination } from "@/shared";
 import { formatMoney } from "@/shared/utils/number.util";
 import dayjs from "dayjs";
 import { CLASSNAME } from "@/shared/constants/ui";
-import { DropdownAction } from "@/shared/components/dropdown";
+import { DropdownAction } from "@/shared";
 
 import "./index.css";
 import { useProductHandlers } from "./product.handlers";
@@ -163,11 +163,11 @@ export const ProductPriceHistoryPage: React.FC = () => {
     }
     const sortedDates = Array.from(dateSet).sort();
 
-    // Build pivot rows: for each product, map date → latest price of that day
+    // Build pivot rows: for each product, map date ? latest price of that day
     const rows: PriceHistoryRow[] = data.map((product) => {
       const row: PriceHistoryRow = { ...product };
 
-      // Group histories by unitId → date → price
+      // Group histories by unitId ? date ? price
       const byUnit: Record<string, Record<string, number>> = {};
       for (const ph of product.priceHistories || []) {
         if (!ph.createdAt) continue;
@@ -211,7 +211,7 @@ export const ProductPriceHistoryPage: React.FC = () => {
         render: (_: any, __: any, index: number) => (page - 1) * size + index + 1,
       },
       {
-        title: "Mã",
+        title: "M?",
         dataIndex: "code",
         key: "code",
         width: 110,
@@ -220,7 +220,7 @@ export const ProductPriceHistoryPage: React.FC = () => {
         className: "font-mono",
       },
       {
-        title: "Tên hàng",
+        title: "T�n h�ng",
         dataIndex: "name",
         key: "name",
         fixed: "left",
@@ -228,7 +228,7 @@ export const ProductPriceHistoryPage: React.FC = () => {
         ellipsis: true,
       },
       {
-        title: "ĐVT",
+        title: "�VT",
         dataIndex: ["baseUnit", "name"],
         key: "baseUnit",
         width: 80,
@@ -236,7 +236,7 @@ export const ProductPriceHistoryPage: React.FC = () => {
         ellipsis: true,
       },
       {
-        title: "Loại",
+        title: "Lo?i",
         dataIndex: "type",
         key: "type",
         width: 80,
@@ -253,7 +253,7 @@ export const ProductPriceHistoryPage: React.FC = () => {
       width: 120,
       align: "right" as const,
       render: (v: number | null) =>
-        v != null ? formatMoney(v) : <span className="text-gray-300">—</span>,
+        v != null ? formatMoney(v) : <span className="text-gray-300">�</span>,
     }));
 
     return [
@@ -297,7 +297,7 @@ export const ProductPriceHistoryPage: React.FC = () => {
         <Tabs
           activeKey={type}
           onChange={(key) => pageAction.handleTypeChange(key as ProductType)}
-          items={[{ label: "Tất cả", key: "all" }, ...productTypeOptions]}
+          items={[{ label: "T?t c?", key: "all" }, ...productTypeOptions]}
           className="custom-tabs"
         />
         <div className="flex items-center gap-3">
@@ -323,7 +323,7 @@ export const ProductPriceHistoryPage: React.FC = () => {
             className="table-h-full product-history-table"
             footer={() => (
               <CustomPagination
-                itemName="hàng hóa"
+                itemName="h�ng h�a"
                 length={data?.length}
                 pagination={pagination}
                 setPage={setPage}

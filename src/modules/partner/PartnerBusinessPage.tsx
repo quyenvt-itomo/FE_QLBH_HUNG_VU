@@ -1,7 +1,7 @@
 import React from "react";
 import { BaseStoreReturn } from "@/shared/base/createBaseStore";
-import AddButton from "@/shared/components/button/AddButton";
-import { SearchInput } from "@/shared/components/input";
+import { AddButton } from "@/shared";
+import { SearchInput } from "@/shared";
 import { usePageState } from "@/shared/hooks/usePageState";
 import { Partner, PartnerQuery, PartnerType } from "./partner.model";
 import { usePartnerHandlers } from "./partner.handlers";

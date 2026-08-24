@@ -2,8 +2,8 @@ import React from "react";
 import { SelectProps } from "@/shared/interfaces/common";
 import { StockDocument, StockDocumentQuery, stockDocumentTypeMap } from "../stockDocument.model";
 import { useStockDocumentStore } from "../stockDocument.store";
-import { DropdownColumn } from "@/shared/components/core/CustomSelectLayout";
-import { SmartSelect } from "@/shared/components/core/SmartSelect";
+import { DropdownColumn } from "@/shared";
+import { SmartSelect } from "@/shared";
 import { useRemoteSelect } from "@/shared/hooks/useRemoteSelect";
 import { stockDocumentStatusMap } from "../stockDocument.model";
 

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Modal, Form, Input, message, Checkbox } from "antd";
-import Label from "@/shared/components/display/Label";
-import SubmitButton from "@/shared/components/button/SubmitButton";
+import { Label } from "@/shared";
+import { SubmitButton } from "@/shared";
 import { useAuth } from "@/shared/hooks/useAuth";
 import { CLASSNAME } from "@/shared/constants/ui";
 

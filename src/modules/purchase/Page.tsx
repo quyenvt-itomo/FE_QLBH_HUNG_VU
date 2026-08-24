@@ -1,19 +1,19 @@
-﻿import React, { useEffect } from "react";
+import React, { useEffect } from "react";
 import { usePageState } from "@/shared/hooks/usePageState";
 import { useLocation } from "react-router-dom";
-import { SearchInput } from "@/shared/components/input";
+import { SearchInput } from "@/shared";
 import { usePurchaseStore } from "./purchase.store";
 import { Purchase } from "./purchase.model";
-import AddButton from "@/shared/components/button/AddButton";
-import { Panel } from "@/shared/components/display/Panel";
+import { AddButton } from "@/shared";
+import { Panel } from "@/shared";
 import { PurchaseTable, AddUpdatePurchaseModal, PurchaseDetailModal } from "./components";
 import { approvedStatusLiteItems } from "../shared/business.model";
 import { Tabs } from "antd";
-import DateRangeFilter from "@/shared/components/button/DateRangeFilter";
-import CustomFilter from "@/shared/components/filters";
+import { DateRangeFilter } from "@/shared";
+import { CustomFilter } from "@/shared";
 import { filterUses, rangerItems, sortItems } from "./filterItem";
 import { usePurchaseHandlers } from "./purchase.handlers";
-import { SortOrderEnum } from "@/shared/constants/enum";
+import { SortOrder } from "@/shared/constants/enum";
 
 const PurchasePage: React.FC = () => {
   const location = useLocation();
@@ -45,7 +45,7 @@ const PurchasePage: React.FC = () => {
     pageAction,
   } = usePageState<Purchase>({
     sortBy: "orderedAt",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     filterUses,
   });
 
@@ -141,7 +141,7 @@ const PurchasePage: React.FC = () => {
             filterUses={filterUses}
             onClearFilter={pageAction.resetFilter}
           />
-          <AddButton title="Thêm mới" onOpenAdd={handleOpenAdd} />
+          <AddButton title="Th�m m?i" onOpenAdd={handleOpenAdd} />
         </div>
       </div>
       <Panel>

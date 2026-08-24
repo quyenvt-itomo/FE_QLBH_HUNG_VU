@@ -1,5 +1,5 @@
 import "./MobileFilter.css";
-import DrawerFilter, { DrawerFilterProps, getActiveDatePresetLabel } from "./DrawerFilter";
+import { DrawerFilter, DrawerFilterProps, getActiveDatePresetLabel } from "./DrawerFilter";
 import { useState } from "react";
 import { SearchInput } from "../input";
 import { StatusFilter } from "./StatusFilter";
@@ -102,4 +102,4 @@ const MobileFilter: React.FC<MobileFilterProps> = ({
   );
 };
 
-export default MobileFilter;
+export { MobileFilter };

@@ -9,7 +9,7 @@ import { Panel } from "@/shared/components/display/Panel";
 import { checkSelection } from "@/shared/utils/common.util";
 import CustomFilter from "@/shared/components/filters";
 import { filterUses, rangerItems, sortItems } from "./filterItem";
-import { SortOrderEnum } from "@/shared/constants/enum";
+import { SortOrder } from "@/shared/constants/enum";
 import { ClipboardDocumentListIcon } from "@/shared/icons";
 import { OperationLogTable } from "./components/OperationLogTable";
 import DateRangeFilter from "@/shared/components/button/DateRangeFilter";
@@ -35,7 +35,7 @@ export const OperationLogPage: React.FC = () => {
     pageAction,
   } = usePageState<OperationLog>({
     sortBy: "createdAt",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     filterUses,
   });
 
@@ -92,7 +92,7 @@ export const OperationLogPage: React.FC = () => {
             rangerValue={ranger}
             onRangerChange={pageAction.handleRangerChange}
             sortItems={sortItems}
-            sortValue={sortBy ? { sortBy, sortOrder: sortOrder || SortOrderEnum.DESC } : undefined}
+            sortValue={sortBy ? { sortBy, sortOrder: sortOrder || SortOrder.DESC } : undefined}
             onSortChange={(val) => {
               pageAction.handleSortChange(val);
               setPage(1);

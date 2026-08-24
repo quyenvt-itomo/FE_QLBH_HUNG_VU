@@ -1,10 +1,10 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { usePageState } from "@/shared/hooks/usePageState";
-import { SearchInput } from "@/shared/components/input";
+import { SearchInput } from "@/shared";
 import { useCommissionDebtAdjustmentStore } from "./commissionDebtAdjustment.store";
 import { CommissionDebtAdjustment } from "./commissionDebtAdjustment.model";
-import AddButton from "@/shared/components/button/AddButton";
-import { Panel } from "@/shared/components/display/Panel";
+import { AddButton } from "@/shared";
+import { Panel } from "@/shared";
 import {
   CommissionDebtAdjustmentTable,
   AddUpdateCommissionDebtAdjustmentModal,
@@ -29,14 +29,14 @@ const CommissionDebtAdjustmentPage: React.FC = () => {
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
         <div className="flex flex-col">
           <h2 className="text-xl font-bold text-blue-800 dark:text-blue-200">
-            Điều chỉnh CN hoa hồng
+            �i?u ch?nh CN hoa h?ng
           </h2>
-          <p className="text-xs text-secondary">Điều chỉnh công nợ hoa hồng</p>
+          <p className="text-xs text-secondary">�i?u ch?nh c�ng n? hoa h?ng</p>
         </div>
         <div className="flex items-center gap-3">
           <SearchInput value={keyword} onSearch={pageAction.handleSearch} maxWidth={340} />
           <AddButton
-            title="Thêm mới"
+            title="Th�m m?i"
             onOpenAdd={() => {
               setRowData(undefined);
               setOpen(true);

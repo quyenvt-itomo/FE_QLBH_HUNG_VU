@@ -67,4 +67,4 @@ const SquareImage: React.FC<SquareImageProps> = ({ image, size = 28 }) => {
   );
 };
 
-export default SquareImage;
+export { SquareImage };

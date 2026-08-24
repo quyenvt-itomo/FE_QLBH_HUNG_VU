@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { usePageState } from "@/shared/hooks/usePageState";
-import { SearchInput } from "@/shared/components/input";
-import { AppSelect } from "@/shared/components/select/AppSelect";
+import { SearchInput } from "@/shared";
+import { AppSelect } from "@/shared";
 import { UserSelect } from "@/modules/user";
 import { useOperationLogStore } from "./operationLog.store";
 import { OperationLog, logActionMapping, targetEntityMapping } from "./operationLog.model";
-import { Panel } from "@/shared/components/display/Panel";
+import { Panel } from "@/shared";
 import { checkSelection } from "@/shared/utils/common.util";
-import CustomFilter from "@/shared/components/filters";
+import { CustomFilter } from "@/shared";
 import { filterUses, rangerItems, sortItems } from "./filterItem";
-import { SortOrderEnum } from "@/shared/constants/enum";
+import { SortOrder } from "@/shared/constants/enum";
 import { ClipboardDocumentListIcon } from "@/shared/icons";
 import { OperationLogTable } from "./components/OperationLogTable";
-import DateRangeFilter from "@/shared/components/button/DateRangeFilter";
+import { DateRangeFilter } from "@/shared";
 
 export const OperationLogPage: React.FC = () => {
   const [targetEntity, setTargetEntity] = useState<string | undefined>();
@@ -35,7 +35,7 @@ export const OperationLogPage: React.FC = () => {
     pageAction,
   } = usePageState<OperationLog>({
     sortBy: "createdAt",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     filterUses,
   });
 
@@ -92,7 +92,7 @@ export const OperationLogPage: React.FC = () => {
             rangerValue={ranger}
             onRangerChange={pageAction.handleRangerChange}
             sortItems={sortItems}
-            sortValue={sortBy ? { sortBy, sortOrder: sortOrder || SortOrderEnum.DESC } : undefined}
+            sortValue={sortBy ? { sortBy, sortOrder: sortOrder || SortOrder.DESC } : undefined}
             onSortChange={(val) => {
               pageAction.handleSortChange(val);
               setPage(1);

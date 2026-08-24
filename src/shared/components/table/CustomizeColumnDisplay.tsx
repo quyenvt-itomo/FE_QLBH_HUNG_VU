@@ -30,4 +30,4 @@ const CustomizeColumnDisplay: React.FC<CustomizeColumnDisplayProps> = ({ title, 
   );
 };
 
-export default CustomizeColumnDisplay;
+export { CustomizeColumnDisplay };

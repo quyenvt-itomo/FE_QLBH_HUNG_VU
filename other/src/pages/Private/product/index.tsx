@@ -18,7 +18,7 @@ import AddModal from "./components/AddModal";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import DetailModal from "./components/DetailModal";
 import { useEffect, useState } from "react";
-import { ExcelEntityType, SortOrderEnum } from "../../../constants/enum";
+import { ExcelEntityType, SortOrder } from "../../../constants/enum";
 import BarcodePrintModal from "./components/BarcodePrintModal";
 import { ExcelButton } from "../../../components/button/ExcelButton";
 import { filterUses, rangerItems, sortItems } from "./filterItem";
@@ -57,7 +57,7 @@ const Page: React.FC = () => {
     pageAction,
   } = usePageState<IProduct>({
     sortBy: "createdAt",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     filterUses,
   });
   const { currentStore, permissions } = useClientData();

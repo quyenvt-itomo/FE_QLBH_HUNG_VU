@@ -2,7 +2,7 @@ import { App, Button, Checkbox, Form, Input, InputNumber, Modal } from "antd";
 import { useEffect, useState } from "react";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { PlusOutlined } from "@ant-design/icons";
-import ActionButtons from "../button/ActionButtons";
+import { ActionButtons } from "../button/ActionButtons";
 import { Rule } from "antd/es/form";
 import { MultipleManagerModalProps } from "@/shared/interfaces/common";
 import { CLASSNAME } from "@/shared/constants/ui";
@@ -262,4 +262,4 @@ const MultipleManagerModal = <T extends { id: string; name: string; isDefault?: 
   );
 };
 
-export default MultipleManagerModal;
+export { MultipleManagerModal };

@@ -1,7 +1,7 @@
-Ôªøimport React from "react";
+import React from "react";
 import { Modal, Descriptions, Table } from "antd";
 import { Quotation } from "../quotation.model";
-import Title from "@/shared/components/display/Title";
+import { Title } from "@/shared";
 import { formatMoney } from "@/shared/utils/number.util";
 import { formatDate } from "@/shared/utils/date.util";
 import { resolveByPath } from "@/shared/utils/common.util";
@@ -15,7 +15,7 @@ interface Props {
 export const QuotationDetailModal: React.FC<Props> = ({ open, data, onClose, onOpenUpdate }) => {
   if (!data) return null;
   const lineCols = [
-    { title: "H√†ng h√≥a", dataIndex: ["productSnapshot", "name"], key: "product", width: 200 },
+    { title: "H‡ng hÛa", dataIndex: ["productSnapshot", "name"], key: "product", width: 200 },
     {
       title: "SL",
       dataIndex: "quantity",
@@ -25,16 +25,16 @@ export const QuotationDetailModal: React.FC<Props> = ({ open, data, onClose, onO
       render: (v: number) => v?.toLocaleString(),
     },
     {
-      title: "ƒê∆°n gi√°",
+      title: "–ın gi·",
       dataIndex: "unitPrice",
       key: "price",
       width: 120,
       align: "right" as const,
       render: (v: number) => formatMoney(v),
     },
-    { title: "Thu·∫ø %", dataIndex: "taxRate", key: "tax", width: 70, align: "right" as const },
+    { title: "Thu? %", dataIndex: "taxRate", key: "tax", width: 70, align: "right" as const },
     {
-      title: "Th√†nh ti·ªÅn",
+      title: "Th‡nh ti?n",
       key: "total",
       width: 130,
       align: "right" as const,
@@ -43,7 +43,7 @@ export const QuotationDetailModal: React.FC<Props> = ({ open, data, onClose, onO
   ];
   return (
     <Modal
-      title={"Chi ti·∫øt b√°o gi√°: " + data.code}
+      title={"Chi ti?t b·o gi·: " + data.code}
       open={open}
       onCancel={onClose}
       footer={
@@ -52,7 +52,7 @@ export const QuotationDetailModal: React.FC<Props> = ({ open, data, onClose, onO
             className="text-blue-500 hover:underline text-sm"
             onClick={() => onOpenUpdate(data)}
           >
-            Ch·ªânh s·ª≠a
+            Ch?nh s?a
           </button>
         ) : null
       }
@@ -60,25 +60,25 @@ export const QuotationDetailModal: React.FC<Props> = ({ open, data, onClose, onO
       destroyOnClose
     >
       <Descriptions column={3} size="small" bordered className="mb-4">
-        <Descriptions.Item label="M√£ BG">{data.code}</Descriptions.Item>
-        <Descriptions.Item label="Ng√†y">
+        <Descriptions.Item label="M? BG">{data.code}</Descriptions.Item>
+        <Descriptions.Item label="Ng‡y">
           {data.timeAt ? formatDate(data.timeAt) : "--"}
         </Descriptions.Item>
-        <Descriptions.Item label="Hi·ªáu l·ª±c ƒë·∫øn">
+        <Descriptions.Item label="Hi?u l?c ?n">
           {data.validUntil ? formatDate(data.validUntil) : "--"}
         </Descriptions.Item>
-        <Descriptions.Item label="Kh√°ch h√†ng">
+        <Descriptions.Item label="Kh·ch h‡ng">
           {resolveByPath(data, ["customer", "name"])}
         </Descriptions.Item>
-        <Descriptions.Item label="T·ªïng ti·ªÅn">
+        <Descriptions.Item label="T?ng ti?n">
           <b>{formatMoney(data.totalAmount)}</b>
         </Descriptions.Item>
-        <Descriptions.Item label="Tr·∫°ng th√°i">{data.approveStatus}</Descriptions.Item>
-        <Descriptions.Item label="Ghi ch√∫" span={3}>
+        <Descriptions.Item label="Tr?ng th·i">{data.approveStatus}</Descriptions.Item>
+        <Descriptions.Item label="Ghi ch˙" span={3}>
           {data.note || "--"}
         </Descriptions.Item>
       </Descriptions>
-      <Title content={"H√†ng h√≥a (" + (data.lines?.length || 0) + " d√≤ng)"} />
+      <Title content={"H‡ng hÛa (" + (data.lines?.length || 0) + " d?ng)"} />
       <Table
         dataSource={data.lines || []}
         columns={lineCols}

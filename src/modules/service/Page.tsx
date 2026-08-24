@@ -1,8 +1,8 @@
-﻿import React from "react";
+import React from "react";
 import { usePageState } from "@/shared/hooks/usePageState";
-import { SearchInput } from "@/shared/components/input";
-import AddButton from "@/shared/components/button/AddButton";
-import { Panel } from "@/shared/components/display/Panel";
+import { SearchInput } from "@/shared";
+import { AddButton } from "@/shared";
+import { Panel } from "@/shared";
 import { ExcelButton, ExcelEntityType } from "@/modules/excel";
 import { useExcelReload } from "@/shared/hooks/useExcelReload";
 import { Tabs } from "antd";
@@ -12,7 +12,7 @@ import { useServiceHandlers } from "./service.handlers";
 import { Service, serviceTypeOptions } from "./service.model";
 import { ServiceTable, ServiceAddUpdateModal, ServiceDetailModal } from "./components";
 
-export const statusItems = [{ label: "Tất cả", key: "all", value: "all" }, ...serviceTypeOptions];
+export const statusItems = [{ label: "T?t c?", key: "all", value: "all" }, ...serviceTypeOptions];
 
 export const ServicePage: React.FC = () => {
   const {

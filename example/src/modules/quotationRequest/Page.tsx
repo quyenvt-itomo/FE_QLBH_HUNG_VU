@@ -13,7 +13,7 @@ import { QuotationRequestDetailModal } from "./components/QuotationRequestDetail
 import { sortItems, filterUses, rangerItems } from "./filterItem";
 import { approvedStatusLiteItems } from "../shared/business.model";
 import { LinkIcon } from "@heroicons/react/24/outline";
-import { SortOrderEnum } from "@/shared/constants/enum";
+import { SortOrder } from "@/shared/constants/enum";
 
 const QuotationRequestPage: React.FC = () => {
   const {
@@ -38,7 +38,7 @@ const QuotationRequestPage: React.FC = () => {
     pageAction,
   } = usePageState<QuotationRequest>({
     sortBy: "timeAt",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     filterUses,
   });
 

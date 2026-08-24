@@ -36,4 +36,4 @@ const Title: React.FC<TitleProps> = ({
   );
 };
 
-export default Title;
+export { Title };

@@ -3,14 +3,14 @@ import { Role } from "./role.model";
 import { Card } from "antd";
 import { RoleList, RolePermission } from "./partials";
 import { useRoleStore } from "./role.store";
-import { SortOrderEnum } from "@/shared/constants/enum";
+import { SortOrder } from "@/shared/constants/enum";
 
 export const RolePage: React.FC = () => {
   const [selectedRow, setSelectedRow] = useState<Role | null>(null);
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
 
   const { loading, data, creating, updating, deleting, create, update, remove } = useRoleStore({
-    sortOrder: SortOrderEnum.ASC,
+    sortOrder: SortOrder.ASC,
     sortBy: "name",
     page: 1,
     size: 999,

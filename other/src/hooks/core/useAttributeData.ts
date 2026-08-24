@@ -14,7 +14,7 @@ import { useEffect } from "react";
 import { useClientData } from "./useClientData";
 import { UseDataParams } from "../../models/base/interface";
 import { IAttribute } from "../../models/base/attribute";
-import { AttributeTypeEnum, SortOrderEnum, attributeSystemModuleMap } from "../../constants/enum";
+import { AttributeTypeEnum, SortOrder, attributeSystemModuleMap } from "../../constants/enum";
 import { checkPermission } from "../../utils/permissionUtils";
 
 interface Params extends UseDataParams {
@@ -45,7 +45,7 @@ export const useAttributeData = ({ type, onCloseModal, isLockHook, size, reload 
         type,
         size,
         sortBy: "createdAt",
-        sortOrder: SortOrderEnum.ASC,
+        sortOrder: SortOrder.ASC,
       }),
     );
   };

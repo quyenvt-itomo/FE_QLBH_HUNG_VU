@@ -1,4 +1,4 @@
-import ActionButtons from "@/shared/components/button/ActionButtons";
+import { ActionButtons } from "@/shared";
 import { Partner } from "../partner.model";
 import { checkSelection } from "@/shared/utils/common.util";
 import { PartnerTypeTag } from "./Tag";

@@ -5,15 +5,15 @@ import { ShippingPlan } from "../shippingPlan.model";
 import { setFormErrors } from "@/shared/utils/form.util";
 import { formatFormData, parseFormDataDates } from "@/shared/utils/date.util";
 import { handleCloseWithPendingFiles, randomId } from "@/shared/utils/common.util";
-import SubmitButton from "@/shared/components/button/SubmitButton";
-import Label from "@/shared/components/display/Label";
+import { SubmitButton } from "@/shared";
+import { Label } from "@/shared";
 import { PartnerSelect } from "@/modules/partner/components/Select";
 import { PartnerType } from "@/modules/partner/partner.model";
-import { InputMoney, InputQuantity, InputPercentage } from "@/shared/components/input";
-import { AppDatePicker } from "@/shared/components/input/AppDatePicker";
+import { InputMoney, InputQuantity, InputPercentage } from "@/shared";
+import { AppDatePicker } from "@/shared";
 import { CalculationUtil } from "@/shared/utils/calculation.util";
 import dayjs from "dayjs";
-import { FileUploadBox } from "@/shared/components/upload/FileUploadBox";
+import { FileUploadBox } from "@/shared";
 import { EntityType, FileCategory } from "@/shared/constants/enum";
 
 export const ShippingPlanAddUpdateModal: React.FC<AddUpdateModalProps<ShippingPlan>> = ({

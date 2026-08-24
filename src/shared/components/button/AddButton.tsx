@@ -55,4 +55,4 @@ const AddButton: React.FC<AddButtonProps> = ({
   );
 };
 
-export default AddButton;
+export { AddButton };

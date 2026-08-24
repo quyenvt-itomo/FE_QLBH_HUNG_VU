@@ -1,10 +1,10 @@
 import { MultipleSelectProps, SelectProps } from "@/shared/interfaces/common";
 import { Product, ProductQuery, productTypeMap } from "../product.model";
 import { useProductStore, usePublicProductStore } from "../product.store";
-import { DropdownColumn } from "@/shared/components/core/CustomSelectLayout";
-import { SmartSelect } from "@/shared/components/core/SmartSelect";
+import { DropdownColumn } from "@/shared";
+import { SmartSelect } from "@/shared";
 import { useRemoteSelect } from "@/shared/hooks/useRemoteSelect";
-import { SmartMultipleSelect } from "@/shared/components/core/SmartMultipleSelect";
+import { SmartMultipleSelect } from "@/shared";
 import { ProductTypeTag } from "./Tag";
 
 const columns: DropdownColumn<Product>[] = [

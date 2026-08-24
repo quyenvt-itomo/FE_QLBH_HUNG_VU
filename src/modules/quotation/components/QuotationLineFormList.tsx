@@ -1,6 +1,6 @@
-﻿import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { Form, Input, InputNumber, Select } from "antd";
-import { FormListTable, FormColumn } from "@/shared/components/form/FormListTable";
+import { FormListTable, FormColumn } from "@/shared";
 import { formatMoney, formatQuantity } from "@/shared/utils/number.util";
 import {
   collectProduct,
@@ -14,7 +14,7 @@ import {
 } from "@/modules/product";
 import { PartialProps } from "./AddUpdateQuotationModal";
 import { randomId, resolveByPath } from "@/shared/utils/common.util";
-import { AppSelect } from "@/shared/components/select/AppSelect";
+import { AppSelect } from "@/shared";
 import { QuotationLine } from "@/modules/quotationLine";
 import { useAutoResetItem } from "@/shared/hooks/useAutoResetItem";
 import {
@@ -34,11 +34,11 @@ import {
   CommissionMode,
   commissionModeOptions,
   SaleLineType,
-  SortOrderEnum,
+  SortOrder,
 } from "@/shared/constants/enum";
 import { MagnifyingGlassIcon } from "@/shared/icons";
 import { TrashIcon } from "@heroicons/react/24/outline";
-import { InputMoney, InputPercentage, InputQuantity } from "@/shared/components/input";
+import { InputMoney, InputPercentage, InputQuantity } from "@/shared";
 import {
   QuotationCalculationUtil,
   QuotationCommissionEntry,
@@ -70,7 +70,7 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
     }
   }, [commissionLength]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── Công thức phụ thuộc lẫn nhau — dùng chung QuotationCalculationUtil ──
+  // ?? C�ng th?c ph? thu?c l?n nhau � d�ng chung QuotationCalculationUtil ??
   const commissionId = (c: any) => c?.tempId || c?.id;
   const qc = new QuotationCalculationUtil();
   const commissionEntries = (record: any) =>
@@ -86,13 +86,13 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
   const calcProfit = (record: any) => qc.calculateRawProfit(record);
   const calcMainPrice = (record: any) => qc.calculateMainPrice(record);
 
-  // Tự ghi lại quantity/unitPrice (giá trị thực = raw + tổng hoa hồng) vào từng line
+  // T? ghi l?i quantity/unitPrice (gi� tr? th?c = raw + t?ng hoa h?ng) v�o t?ng line
   useEffect(() => {
     if (!lines?.length) return;
     const next = (lines as any[]).map((r) => ({ ...r }));
     let changed = false;
     next.forEach((record: any) => {
-      // Tự tính số lượng Kg (rawMaterialQuantity) từ SL (rawQuantity) theo đơn vị quy đổi
+      // T? t�nh s? l�?ng Kg (rawMaterialQuantity) t? SL (rawQuantity) theo ��n v? quy �?i
       const rawMaterialQuantity = getQuantityInKg({
         product: record.product || record.productSnapshot || null,
         unitId: record.unitId,
@@ -116,7 +116,7 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
     if (changed) form.setFieldsValue({ lines: next });
   }, [lines, commissions]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Khi đổi chế độ hoa hồng (≥ 2 người hưởng): các giá trị của chế độ kia phải về 0
+  // Khi �?i ch? �? hoa h?ng (? 2 ng�?i h�?ng): c�c gi� tr? c?a ch? �? kia ph?i v? 0
   const prevModeRef = useRef<string | null>(commissionMode || CommissionMode.PRICE);
   useEffect(() => {
     if (commissions.length <= 1) return;
@@ -124,8 +124,8 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
     if (prevModeRef.current === next) return;
     prevModeRef.current = next;
 
-    const resetPrice = next === CommissionMode.QUANTITY; // đang theo lượng → xóa giá
-    const resetQuantity = next === CommissionMode.PRICE; // đang theo giá → xóa lượng
+    const resetPrice = next === CommissionMode.QUANTITY; // �ang theo l�?ng ? x�a gi�
+    const resetQuantity = next === CommissionMode.PRICE; // �ang theo gi� ? x�a l�?ng
 
     const currentLines = form.getFieldValue("lines") || [];
     const updated = (currentLines as any[]).map((record: any) => {
@@ -151,13 +151,13 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
     const id = commission?.tempId || commission?.id;
     if (!id) return;
 
-    // Xóa commission khỏi mảng commissions
+    // X�a commission kh?i m?ng commissions
     form.setFieldValue(
       "commissions",
       commissions.filter((c) => (c?.tempId || c?.id) !== id),
     );
 
-    // Dọn các field flat commission_<id>_* và commissionDetails trên từng line
+    // D?n c�c field flat commission_<id>_* v� commissionDetails tr�n t?ng line
     const currentLines: QuotationLine[] = form.getFieldValue("lines") || [];
     const updated = currentLines.map((record) => {
       const clone = { ...record };
@@ -177,11 +177,11 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
   };
 
   /**
-   * Cột hoa hồng động theo chiều ngang, dựa vào độ dài mảng `commissions`.
-   * Vì `columns` là mảng JS thuần, ta map từng commission → 1 cột nhóm (group)
-   * với các cột con: Đơn giá / TT giá / %VAT / Lượng / Tổng HH.
-   * Giá trị từng ô lưu trên mỗi dòng line dưới dạng flat field `commission_<id>_*`.
-   * Khi `commissions` thay đổi (useWatch), useMemo tự chạy lại → số cột thay đổi.
+   * C?t hoa h?ng �?ng theo chi?u ngang, d?a v�o �? d�i m?ng `commissions`.
+   * V? `columns` l� m?ng JS thu?n, ta map t?ng commission ? 1 c?t nh�m (group)
+   * v?i c�c c?t con: ��n gi� / TT gi� / %VAT / L�?ng / T?ng HH.
+   * Gi� tr? t?ng � l�u tr�n m?i d?ng line d�?i d?ng flat field `commission_<id>_*`.
+   * Khi `commissions` thay �?i (useWatch), useMemo t? ch?y l?i ? s? c?t thay �?i.
    */
   const commissionColumns = useMemo<FormColumn<QuotationLine>[]>(() => {
     const isMulti = commissions.length > 1;
@@ -207,7 +207,7 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
       if (showPrice) {
         children.push(
           {
-            title: <span className="text-xs">Đơn giá</span>,
+            title: <span className="text-xs">��n gi�</span>,
             dataIndex: prefix("price"),
             width: 80,
             align: "right",
@@ -216,7 +216,7 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
             render: () => <InputMoney variant="borderless" />,
           },
           {
-            title: <span className="text-xs">Thành tiền</span>,
+            title: <span className="text-xs">Th�nh ti?n</span>,
             dataIndex: prefix("priceAmount"),
             width: 90,
             align: "right",
@@ -234,7 +234,7 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
             render: () => <InputPercentage variant="borderless" />,
           },
           {
-            title: <span className="text-xs">Thành tiền</span>,
+            title: <span className="text-xs">Th�nh ti?n</span>,
             dataIndex: prefix("priceTaxRateAmount"),
             width: 90,
             align: "right",
@@ -250,7 +250,7 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
       if (showQuantity) {
         children.push(
           {
-            title: <span className="text-xs">Lượng</span>,
+            title: <span className="text-xs">L�?ng</span>,
             dataIndex: prefix("quantity"),
             width: 80,
             align: "right",
@@ -259,7 +259,7 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
             render: () => <InputQuantity variant="borderless" />,
           },
           {
-            title: <span className="text-xs">Thành tiền</span>,
+            title: <span className="text-xs">Th�nh ti?n</span>,
             dataIndex: prefix("quantityAmount"),
             width: 90,
             align: "right",
@@ -279,7 +279,7 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
             render: () => <InputPercentage variant="borderless" />,
           },
           {
-            title: <span className="text-xs">Thành tiền</span>,
+            title: <span className="text-xs">Th�nh ti?n</span>,
             dataIndex: prefix("quantityTaxRateAmount"),
             width: 90,
             align: "right",
@@ -301,11 +301,11 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
           <div className="flex items-center justify-center gap-3 px-3 relative">
             <span className="flex justify-center">{`HH ${index + 1}:`}</span>
             <span className="font-semibold">{name || "--"}</span>
-            <span className="text-xs text-gray-500">SĐT: {phone || "--"}</span>
+            <span className="text-xs text-gray-500">S�T: {phone || "--"}</span>
 
             <button
               type="button"
-              title="Xóa hoa hồng"
+              title="X�a hoa h?ng"
               className="ml-3 text-red-500 hover:text-red-700"
               onClick={() => handleRemoveCommission(commission)}
             >
@@ -330,7 +330,7 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
       render: (ctx) => ctx.index + 1,
     },
     {
-      title: "Tên hàng hóa / dịch vụ",
+      title: "T�n h�ng h�a / d?ch v?",
       dataIndex: "name",
       width: 220,
       fixed: "left",
@@ -340,7 +340,7 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
           : resolveByPath(record, ["service", "name"]),
     },
     {
-      title: "Mã hàng",
+      title: "M? h�ng",
       dataIndex: "code",
       width: 100,
       render: ({ record }) =>
@@ -349,7 +349,7 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
           : resolveByPath(record, ["service", "code"]),
     },
     {
-      title: "ĐVT",
+      title: "�VT",
       dataIndex: "unitId",
       width: 100,
       align: "center",
@@ -382,18 +382,18 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
       },
     },
     {
-      title: "Số lượng",
+      title: "S? l�?ng",
       dataIndex: "quantity",
       width: 80,
       align: "right",
       render: ({ record }) => formatQuantity(calcQuantity(record)),
     },
     {
-      title: "Đơn giá",
+      title: "��n gi�",
       dataIndex: "price",
       children: [
         {
-          title: <span className="text-xs font-normal">Vnđ</span>,
+          title: <span className="text-xs font-normal">Vn�</span>,
           dataIndex: "unitPrice",
           width: 80,
           align: "right",
@@ -403,11 +403,11 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
     },
 
     {
-      title: "Thành tiền",
+      title: "Th�nh ti?n",
       dataIndex: "subTotal",
       children: [
         {
-          title: <span className="text-xs font-normal">Vnđ</span>,
+          title: <span className="text-xs font-normal">Vn�</span>,
           dataIndex: "subTotal",
           width: 120,
           align: "right",
@@ -430,7 +430,7 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
           render: () => <InputPercentage variant="borderless" />,
         },
         {
-          title: <span className="text-xs font-normal">Vnđ</span>,
+          title: <span className="text-xs font-normal">Vn�</span>,
           dataIndex: "taxAmount",
           width: 90,
           align: "right",
@@ -440,11 +440,11 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
     },
 
     {
-      title: "Tổng tiền",
+      title: "T?ng ti?n",
       dataIndex: "grossAmount",
       children: [
         {
-          title: <span className="text-xs font-normal">Vnđ</span>,
+          title: <span className="text-xs font-normal">Vn�</span>,
           dataIndex: "grossAmount",
           width: 130,
           align: "right",
@@ -453,7 +453,7 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
       ],
     },
     {
-      title: "Vật tư chính",
+      title: "V?t t� ch�nh",
       dataIndex: "materialId",
       width: 150,
       className: "green-column",
@@ -473,16 +473,16 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
             query={{
               type: ProductType.MAIN_MATERIAL,
               sortBy: "type",
-              sortOrder: SortOrderEnum.ASC,
+              sortOrder: SortOrder.ASC,
             }}
             variant="borderless"
-            placeholder="Chọn NVL chính"
+            placeholder="Ch?n NVL ch�nh"
             onChangeData={(data) => {
               if (!data) return;
               form.setFieldValue(["lines", name, "materialId"], data.id);
               form.setFieldValue(["lines", name, "material"], data);
               form.setFieldValue(["lines", name, "materialSnapshot"], data);
-              // Giá nhập hiện tại = giá theo Kg của NVL
+              // Gi� nh?p hi?n t?i = gi� theo Kg c?a NVL
               form.setFieldValue(["lines", name, "rawMaterialUnitPrice"], getPriceInKg(data) || 0);
             }}
           />
@@ -490,7 +490,7 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
       },
     },
     {
-      title: <span className="text-wrap">Giá nhập hiện tại</span>,
+      title: <span className="text-wrap">Gi� nh?p hi?n t?i</span>,
       dataIndex: "rawMaterialUnitPrice",
       width: 90,
       align: "right",
@@ -500,7 +500,7 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
       render: () => <InputMoney variant="borderless" />,
     },
     {
-      title: <span className="text-wrap">Chi phí tạm tính</span>,
+      title: <span className="text-wrap">Chi ph� t?m t�nh</span>,
       dataIndex: "rawAdditionalCost",
       width: 80,
       align: "right",
@@ -510,18 +510,18 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
       render: () => <InputMoney variant="borderless" />,
     },
     {
-      title: "Lợi nhuận",
+      title: "L?i nhu?n",
       dataIndex: "profit",
       width: 120,
       align: "right",
       render: ({ record }) => formatMoney(calcProfit(record)),
     },
     {
-      title: "Thực tế chưa VAT",
+      title: "Th?c t? ch�a VAT",
       dataIndex: "rawGroup",
       children: [
         {
-          title: <span className="text-xs">Giá (kg)</span>,
+          title: <span className="text-xs">Gi� (kg)</span>,
           dataIndex: "mainPrice",
           width: 80,
           align: "right",
@@ -529,7 +529,7 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
           render: ({ record }) => formatMoney(calcMainPrice(record)),
         },
         {
-          title: <span className="text-xs">Lượng (Kg)</span>,
+          title: <span className="text-xs">L�?ng (Kg)</span>,
           dataIndex: "rawMaterialQuantity",
           width: 80,
           align: "right",
@@ -539,7 +539,7 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
           render: () => <InputQuantity variant="borderless" />,
         },
         {
-          title: <span className="text-xs">Lượng (Đvt)</span>,
+          title: <span className="text-xs">L�?ng (�vt)</span>,
           dataIndex: "rawQuantity",
           width: 80,
           align: "right",
@@ -548,7 +548,7 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
           render: () => <InputQuantity variant="borderless" />,
         },
         {
-          title: <span className="text-xs">Giá (Đvt)</span>,
+          title: <span className="text-xs">Gi� (�vt)</span>,
           dataIndex: "rawUnitPrice",
           width: 90,
           align: "right",
@@ -557,7 +557,7 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
           render: () => <InputMoney variant="borderless" />,
         },
         {
-          title: <span className="text-xs">Thành tiền</span>,
+          title: <span className="text-xs">Th�nh ti?n</span>,
           dataIndex: "rawSubTotal",
           width: 120,
           align: "right",
@@ -581,13 +581,13 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
         errorCells={errorCells}
         showDelete
         sortable
-        title="Danh sách hàng hóa / dịch vụ"
+        title="Danh s�ch h�ng h�a / d?ch v?"
         addWidth={"fit-content"}
         renderAdd={(add) => (
           <div className="flex items-center gap-3">
             {commissions.length > 1 && (
               <span className="flex items-center gap-2">
-                <span className="text-sm font-semibold">Chế độ hoa hồng:</span>
+                <span className="text-sm font-semibold">Ch? �? hoa h?ng:</span>
                 <AppSelect
                   style={{ width: 120 }}
                   className="h-8"
@@ -601,8 +601,8 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
               <ProductMultipleSelect
                 value={defaultProduct ? [defaultProduct.id] : undefined}
                 defaultData={defaultProduct ? [defaultProduct] : undefined}
-                query={{ sortBy: "type", sortOrder: SortOrderEnum.ASC }}
-                placeholder="Chọn hàng hóa để thêm"
+                query={{ sortBy: "type", sortOrder: SortOrder.ASC }}
+                placeholder="Ch?n h�ng h�a �? th�m"
                 hideOptions={hideProducts}
                 prefix={<MagnifyingGlassIcon className="w-6 h-6 text-secondary" />}
                 suffixIcon={null}
@@ -628,8 +628,8 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
               <ServiceMultipleSelect
                 value={defaultService ? [defaultService.id] : undefined}
                 defaultData={defaultService ? [defaultService] : undefined}
-                query={{ sortBy: "type", sortOrder: SortOrderEnum.ASC }}
-                placeholder="Chọn dịch vụ để thêm"
+                query={{ sortBy: "type", sortOrder: SortOrder.ASC }}
+                placeholder="Ch?n d?ch v? �? th�m"
                 hideOptions={hideServices}
                 prefix={<MagnifyingGlassIcon className="w-6 h-6 text-secondary" />}
                 suffixIcon={null}
@@ -657,8 +657,8 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
               <PartnerContactMultipleSelect
                 value={defaultPartnerContact ? [defaultPartnerContact.id] : undefined}
                 defaultData={defaultPartnerContact ? [defaultPartnerContact] : undefined}
-                query={{ sortBy: "type", sortOrder: SortOrderEnum.ASC }}
-                placeholder="Chọn người liên hệ để thêm"
+                query={{ sortBy: "type", sortOrder: SortOrder.ASC }}
+                placeholder="Ch?n ng�?i li�n h? �? th�m"
                 hideOptions={hidePartnerContacts}
                 prefix={<MagnifyingGlassIcon className="w-6 h-6 text-secondary" />}
                 suffixIcon={null}
@@ -667,8 +667,8 @@ export const QuotationLineFormList: React.FC<PartialProps> = ({ form, errorCells
                   setDefaultPartnerContact(item);
                   if (!item) return;
 
-                  // Thêm người hưởng hoa hồng vào commissions
-                  // mỗi phần tử commission → 1 nhóm cột hoa hồng ngang
+                  // Th�m ng�?i h�?ng hoa h?ng v�o commissions
+                  // m?i ph?n t? commission ? 1 nh�m c?t hoa h?ng ngang
                   const current = form.getFieldValue("commissions") || [];
                   form.setFieldValue("commissions", [
                     ...current,

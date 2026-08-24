@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ExcelEntityType, ImportJobStatus, ExportJobStatus } from "@/modules/excel/excel.enum";
+import { ExcelEntityType, ImportJobStatus, ExportJobStatus } from "../../modules/excel/excel.enum";
 import type {
   ExportJobResponse,
   ExportProgressData,
   ImportJobResponse,
   ImportProgressData,
   ImportExcelResult,
-} from "@/modules/excel/excel.model";
+} from "../../modules/excel/excel.model";
 
 // ============================================================
 // Task types

@@ -1,8 +1,8 @@
 import { SelectProps } from "@/shared/interfaces/common";
 import { Employee, EmployeeQuery } from "../employee.model";
 import { useEmployeeStore } from "../employee.store";
-import { DropdownColumn } from "@/shared/components/core/CustomSelectLayout";
-import { SmartSelect } from "@/shared/components/core/SmartSelect";
+import { DropdownColumn } from "@/shared";
+import { SmartSelect } from "@/shared";
 import { useRemoteSelect } from "@/shared/hooks/useRemoteSelect";
 
 export const EmployeeSelect: React.FC<SelectProps<Employee, EmployeeQuery>> = ({

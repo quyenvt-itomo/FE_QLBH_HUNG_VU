@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Modal, Tabs, Tag } from "antd";
 import { Warehouse } from "../warehouse.model";
 import { DetailModalProps } from "@/shared/interfaces/common";
-import { InfoField } from "@/shared/components/display/InfoField";
+import { InfoField } from "@/shared";
 import { getFullAddress } from "@/shared/utils/common.util";
 
 const InfoTab: React.FC<{ data: Warehouse }> = ({ data }) => (

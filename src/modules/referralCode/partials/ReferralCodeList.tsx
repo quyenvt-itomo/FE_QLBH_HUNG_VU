@@ -6,8 +6,8 @@ import { ApproveStatus } from "@/modules/shared/business.model";
 import { ReferralCode } from "../referralCode.model";
 import { useReferralCodeStore } from "../referralCode.store";
 import { ReferralCodeCardBase, ReferralCodeAddModal, ReferralCodeDetailModal } from "../components";
-import Title from "@/shared/components/display/Title";
-import { SortOrderEnum } from "@/shared/constants/enum";
+import { Title } from "@/shared";
+import { SortOrder } from "@/shared/constants/enum";
 import { usePageState } from "@/shared/hooks/usePageState";
 
 interface ReferralCodeListProps {
@@ -36,7 +36,7 @@ export const ReferralCodeList: React.FC<ReferralCodeListProps> = ({ purchaseRequ
     pageAction,
   } = usePageState<ReferralCode>({
     sortBy: "createdAt",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
   });
 
   const { data, loading, create, creating } = useReferralCodeStore({

@@ -107,4 +107,4 @@ const UserImageGroup: React.FC<UserImageGroupProps> = ({
   );
 };
 
-export default UserImageGroup;
+export { UserImageGroup };

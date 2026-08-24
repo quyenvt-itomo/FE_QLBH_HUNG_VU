@@ -15,4 +15,4 @@ const ContentTooltip: React.FC<{
   );
 };
 
-export default ContentTooltip;
+export { ContentTooltip };

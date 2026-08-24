@@ -22,4 +22,4 @@ const GenderSelect: React.FC<SelectProps> = ({ className, ...rest }) => {
   );
 };
 
-export default GenderSelect;
+export { GenderSelect };

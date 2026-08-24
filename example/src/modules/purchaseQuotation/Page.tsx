@@ -16,7 +16,7 @@ import CustomFilter from "@/shared/components/filters";
 import { filterUses, rangerItems, sortItems } from "./filterItem";
 import { usePurchaseQuotationHandlers } from "./purchaseQuotation.handlers";
 import { LinkIcon } from "@heroicons/react/24/outline";
-import { SortOrderEnum } from "@/shared/constants/enum";
+import { SortOrder } from "@/shared/constants/enum";
 
 export const PurchaseQuotationPage: React.FC = () => {
   const {
@@ -41,7 +41,7 @@ export const PurchaseQuotationPage: React.FC = () => {
     pageAction,
   } = usePageState<PurchaseQuotation>({
     sortBy: "timeAt",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     filterUses,
   });
   const [type, setType] = useState<PurchaseQuotationType>(PurchaseQuotationType.QUOTATION);

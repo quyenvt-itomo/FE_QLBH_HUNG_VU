@@ -12,7 +12,7 @@ import { resolveByPath } from "@/shared/utils/common.util";
 import { StockDocumentLine } from "@/modules/stockDocumentLine";
 import { StockDocumentCalculationUtil } from "../../stockDocument.util";
 import { textColorStyle } from "@/shared/constants/ui";
-import { DataTable, DataColumn } from "@/shared/components/display/DataTable";
+import { DataTable, DataColumn } from "@/shared";
 
 interface Props {
   open: boolean;

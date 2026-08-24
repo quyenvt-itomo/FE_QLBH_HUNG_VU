@@ -56,4 +56,4 @@ export const ApproveStatusTag: React.FC<{
   );
 };
 
-export default Tag;
+export { Tag };

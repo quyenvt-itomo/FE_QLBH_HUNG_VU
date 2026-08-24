@@ -18,7 +18,7 @@ import DocumentGroup from "@/shared/components/display/DocumentGroup";
 import { StockDocumentStatus, useStockDocumentStore } from "@/modules/stockDocument";
 import dayjs from "dayjs";
 import { DataTable, DataColumn, SummaryConfig } from "@/shared/components/display/DataTable";
-import { SortOrderEnum } from "@/shared/constants/enum";
+import { SortOrder } from "@/shared/constants/enum";
 import { Icon } from "@iconify/react";
 
 interface Props {
@@ -46,7 +46,7 @@ export const PurchaseDetailModal: React.FC<Props> = ({
     page: 1,
     size: 999,
     sortBy: "actualImportDate",
-    sortOrder: SortOrderEnum.ASC,
+    sortOrder: SortOrder.ASC,
     purchaseId: data?.id,
     status: StockDocumentStatus.COMPLETED,
     isLocked: !data || data.approveStatus !== ApproveStatus.APPROVED,

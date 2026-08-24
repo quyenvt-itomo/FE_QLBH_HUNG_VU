@@ -1,15 +1,15 @@
-﻿import React from "react";
+import React from "react";
 import { App, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { usePageState } from "@/shared/hooks/usePageState";
 import { ShippingPlan } from "./shippingPlan.model";
 import { useShippingPlanStore } from "./shippingPlan.store";
 import { useShippingPlanHandlers } from "./shippingPlan.handlers";
-import { Panel } from "@/shared/components/display/Panel";
-import { SearchInput } from "@/shared/components/input";
+import { Panel } from "@/shared";
+import { SearchInput } from "@/shared";
 import { ShippingPlanAddUpdateModal } from "./components/ShippingPlanAddUpdateModal";
 import { ShippingPlanDetailModal } from "./components/ShippingPlanDetailModal";
-import { ApproveStatusTag } from "@/shared/components/display/Tag";
+import { ApproveStatusTag } from "@/shared";
 import { formatMoney, formatQuantity } from "@/shared/utils/number.util";
 import { resolveByPath } from "@/shared/utils/common.util";
 import { formatDateTime } from "@/shared/utils/date.util";
@@ -60,22 +60,22 @@ export const ShippingPlanPage: React.FC = () => {
     });
 
   const columns: ColumnsType<ShippingPlan> = [
-    { title: "Mã", dataIndex: "code", key: "code", width: 140, className: "font-mono" },
+    { title: "M?", dataIndex: "code", key: "code", width: 140, className: "font-mono" },
     {
-      title: "Ngày dự kiến",
+      title: "Ng�y d? ki?n",
       dataIndex: "plannedAt",
       key: "plannedAt",
       width: 160,
       render: (v: string) => formatDateTime(v),
     },
     {
-      title: "ĐVVC",
+      title: "�VVC",
       key: "partner",
       width: 200,
-      render: (r: ShippingPlan) => resolveByPath(r, ["partner", "name"], "—"),
+      render: (r: ShippingPlan) => resolveByPath(r, ["partner", "name"], "�"),
     },
     {
-      title: "Cước VC",
+      title: "C�?c VC",
       dataIndex: "unitPrice",
       key: "unitPrice",
       width: 120,
@@ -83,7 +83,7 @@ export const ShippingPlanPage: React.FC = () => {
       render: (v: number) => formatMoney(v),
     },
     {
-      title: "Số chuyến",
+      title: "S? chuy?n",
       dataIndex: "quantity",
       key: "quantity",
       width: 100,
@@ -91,7 +91,7 @@ export const ShippingPlanPage: React.FC = () => {
       render: (v: number) => formatQuantity(v),
     },
     {
-      title: "Tổng tiền",
+      title: "T?ng ti?n",
       dataIndex: "totalAmount",
       key: "totalAmount",
       width: 140,
@@ -99,7 +99,7 @@ export const ShippingPlanPage: React.FC = () => {
       render: (v: number) => <span className="font-semibold">{formatMoney(v)}</span>,
     },
     {
-      title: "Trạng thái",
+      title: "Tr?ng th�i",
       dataIndex: "approveStatus",
       key: "approveStatus",
       width: 120,
@@ -107,16 +107,16 @@ export const ShippingPlanPage: React.FC = () => {
       render: (v: ShippingPlan["approveStatus"]) => <ApproveStatusTag value={v} />,
     },
     {
-      title: "Ghi chú",
+      title: "Ghi ch�",
       dataIndex: "note",
       key: "note",
       width: 200,
-      render: (v: string) => v || "—",
+      render: (v: string) => v || "�",
     },
   ];
 
   return (
-    <Panel title="Phương án vận chuyển">
+    <Panel title="Ph��ng �n v?n chuy?n">
       <div className="flex items-center justify-between mb-3">
         <SearchInput value={keyword} onSearch={(kw) => {}} maxWidth={340} />
       </div>

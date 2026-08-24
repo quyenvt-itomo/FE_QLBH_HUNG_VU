@@ -2,7 +2,7 @@ import { EnvelopeIcon, PhoneIcon, UserIcon } from "@heroicons/react/24/outline";
 import { Store } from "../store.model";
 import { Card } from "antd";
 import { Icon } from "@iconify/react";
-import ActionButtons from "@/shared/components/button/ActionButtons";
+import { ActionButtons } from "@/shared";
 import {
   checkSelection,
   DropdownAction,

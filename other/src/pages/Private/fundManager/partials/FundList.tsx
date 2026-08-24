@@ -7,7 +7,7 @@ import { FundCardBase } from "../../../../components/card/Fund";
 import ModalDelete from "../../../../components/modal/ModalDelete";
 import AddUpdateModal from "../components/fund/AddUpdateModal";
 import { PlusIcon, BanknotesIcon } from "@heroicons/react/24/outline";
-import { SortOrderEnum } from "../../../../constants/enum";
+import { SortOrder } from "../../../../constants/enum";
 import { useClientData } from "../../../../hooks/core/useClientData";
 import AddButton from "../../../../components/button/AddButton";
 
@@ -20,7 +20,7 @@ export const FundList: React.FC = () => {
     page: 1,
     size: 9999,
     sortBy: "createdAt",
-    sortOrder: SortOrderEnum.ASC,
+    sortOrder: SortOrder.ASC,
     reload,
     onCloseModal: () => {
       pageAction.handleClose();

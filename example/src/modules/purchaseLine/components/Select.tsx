@@ -6,7 +6,7 @@ import { DropdownColumn } from "@/shared/components/core/CustomSelectLayout";
 import { SmartSelect } from "@/shared/components/core/SmartSelect";
 import { useRemoteSelect } from "@/shared/hooks/useRemoteSelect";
 import { SmartMultipleSelect } from "@/shared/components/core/SmartMultipleSelect";
-import { SortOrderEnum } from "@/shared/constants/enum";
+import { SortOrder } from "@/shared/constants/enum";
 
 const columns: DropdownColumn<PurchaseLine>[] = [
   { label: "Hàng hóa", dataIndex: ["product", "name"], className: "w-48" },
@@ -86,7 +86,7 @@ export const PurchaseLineMultipleSelect: React.FC<
       size: 10,
       isLocked,
       sortBy: "sortOrder",
-      sortOrder: SortOrderEnum.ASC,
+      sortOrder: SortOrder.ASC,
       ...(query || {}),
     }),
     resetPageDeps: [query],

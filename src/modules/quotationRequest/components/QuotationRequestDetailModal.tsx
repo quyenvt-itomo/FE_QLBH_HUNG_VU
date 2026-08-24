@@ -3,7 +3,7 @@ import { Modal, Descriptions, Table, TableProps } from "antd";
 import { QuotationRequest, QuotationRequestLine } from "../quotationRequest.model";
 import { formatDateTime } from "@/shared/utils/date.util";
 import { resolveByPath } from "@/shared/utils/common.util";
-import { ApproveStatusTag } from "@/shared/components/display/Tag";
+import { ApproveStatusTag } from "@/shared";
 
 interface Props {
   open: boolean;

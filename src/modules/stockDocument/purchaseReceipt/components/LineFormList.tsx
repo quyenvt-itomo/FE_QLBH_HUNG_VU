@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { App, Form, FormInstance, Input } from "antd";
-import { FormListTable, FormColumn } from "@/shared/components/form/FormListTable";
-import { InputQuantity } from "@/shared/components/input";
+import { FormListTable, FormColumn } from "@/shared";
+import { InputQuantity } from "@/shared";
 import { randomId, resolveByPath } from "@/shared/utils/common.util";
 import { StockDocument } from "../../stockDocument.model";
 import { StockDocumentLine } from "@/modules/stockDocumentLine";
@@ -12,7 +12,7 @@ import {
 } from "@/modules/purchaseLine";
 import { useAutoResetItem } from "@/shared/hooks/useAutoResetItem";
 import { MagnifyingGlassIcon } from "@/shared/icons";
-import { SortOrderEnum } from "@/shared/constants/enum";
+import { SortOrder } from "@/shared/constants/enum";
 import { formatMoney, formatPercentage, formatQuantity } from "@/shared/utils/number.util";
 import { StockDocumentCalculationUtil } from "../../stockDocument.util";
 import { makeFormListEnterHandler } from "@/shared/utils/formListKeyboard";
@@ -139,7 +139,7 @@ export const PurchaseReceiptLineFormList: React.FC<Props> = ({ form, showImportI
             query={{
               purchaseId: purchase?.id,
               sortBy: "sortOrder",
-              sortOrder: SortOrderEnum.ASC,
+              sortOrder: SortOrder.ASC,
             }}
             placeholder={
               purchase?.id ? "Chọn hàng hóa từ đơn mua hàng" : "Vui lòng chọn đơn mua hàng trước"

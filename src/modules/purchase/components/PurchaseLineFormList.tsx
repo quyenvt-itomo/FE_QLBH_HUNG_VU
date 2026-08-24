@@ -1,18 +1,18 @@
-﻿import React from "react";
+import React from "react";
 import { App, Form, FormInstance, Input, Select } from "antd";
-import { FormListTable, FormColumn } from "@/shared/components/form/FormListTable";
+import { FormListTable, FormColumn } from "@/shared";
 import { Purchase } from "../purchase.model";
 import { collectProduct, collectUnits, Product, ProductMultipleSelect } from "@/modules/product";
-import { InputMoney, InputPercentage, InputQuantity } from "@/shared/components/input";
+import { InputMoney, InputPercentage, InputQuantity } from "@/shared";
 import { resolveByPath, randomId } from "@/shared/utils/common.util";
 import { CalculationUtil } from "@/shared/utils/calculation.util";
 import { formatMoney, formatQuantity } from "@/shared/utils/number.util";
 import { useAutoResetItem } from "@/shared/hooks/useAutoResetItem";
-import { SortOrderEnum } from "@/shared/constants/enum";
+import { SortOrder } from "@/shared/constants/enum";
 import MagnifyingGlassIcon from "@heroicons/react/24/solid/MagnifyingGlassIcon";
 import { makeFormListEnterHandler } from "@/shared/utils/formListKeyboard";
 import { PurchaseLine } from "@/modules/purchaseLine";
-import { AppSelect } from "@/shared/components/select/AppSelect";
+import { AppSelect } from "@/shared";
 
 interface Props {
   form: FormInstance<Purchase>;
@@ -35,7 +35,7 @@ export const PurchaseLineFormList: React.FC<Props> = ({ form, errorCells }) => {
       render: ({ index }) => index + 1,
     },
     {
-      title: "Tên hàng hóa",
+      title: "T�n h�ng h�a",
       dataIndex: "productName",
       width: 180,
       fixed: "left",
@@ -44,7 +44,7 @@ export const PurchaseLineFormList: React.FC<Props> = ({ form, errorCells }) => {
       ),
     },
     {
-      title: "Mã hàng hóa",
+      title: "M? h�ng h�a",
       dataIndex: "productCode",
       width: 100,
       fixed: "left",
@@ -53,7 +53,7 @@ export const PurchaseLineFormList: React.FC<Props> = ({ form, errorCells }) => {
       ),
     },
     {
-      title: "ĐVT",
+      title: "�VT",
       dataIndex: "unitId",
       width: 100,
       align: "center",
@@ -87,7 +87,7 @@ export const PurchaseLineFormList: React.FC<Props> = ({ form, errorCells }) => {
       render: () => <InputQuantity variant="borderless" />,
     },
     {
-      title: "Đơn giá",
+      title: "��n gi�",
       dataIndex: "unitPrice",
       width: 130,
       align: "right",
@@ -95,7 +95,7 @@ export const PurchaseLineFormList: React.FC<Props> = ({ form, errorCells }) => {
       render: () => <InputMoney variant="borderless" />,
     },
     {
-      title: "Thành tiền",
+      title: "Th�nh ti?n",
       dataIndex: "subTotal",
       width: 130,
       align: "right",
@@ -111,21 +111,21 @@ export const PurchaseLineFormList: React.FC<Props> = ({ form, errorCells }) => {
       render: () => <InputPercentage variant="borderless" />,
     },
     {
-      title: "Tiền VAT",
+      title: "Ti?n VAT",
       dataIndex: "taxAmount",
       width: 130,
       align: "right",
       render: ({ record }) => formatMoney(calc.calculateTaxAmount(record)),
     },
     {
-      title: "Tổng tiền",
+      title: "T?ng ti?n",
       dataIndex: "grossAmount",
       width: 130,
       align: "right",
       render: ({ record }) => formatMoney(calc.calculateGrossAmount(record)),
     },
     {
-      title: "%Hoa hồng",
+      title: "%Hoa h?ng",
       dataIndex: "commissionRate",
       width: 100,
       align: "right",
@@ -135,7 +135,7 @@ export const PurchaseLineFormList: React.FC<Props> = ({ form, errorCells }) => {
       render: () => <InputPercentage variant="borderless" />,
     },
     {
-      title: "Tiền hoa hồng",
+      title: "Ti?n hoa h?ng",
       dataIndex: "commissionAmount",
       width: 130,
       align: "right",
@@ -143,18 +143,18 @@ export const PurchaseLineFormList: React.FC<Props> = ({ form, errorCells }) => {
       render: ({ record }) => formatMoney(calc.calculateCommissionAmount(record)),
     },
     {
-      title: "Ghi chú",
+      title: "Ghi ch�",
       dataIndex: "note",
       width: 150,
       editable: true,
-      render: () => <Input placeholder="Nhập ghi chú" variant="borderless" />,
+      render: () => <Input placeholder="Nh?p ghi ch�" variant="borderless" />,
     },
   ];
 
   return (
     <div className="mb-4 px-6">
       <FormListTable
-        title="Danh sách hàng hóa"
+        title="Danh s�ch h�ng h�a"
         form={form}
         fieldName="lines"
         sortable
@@ -166,8 +166,8 @@ export const PurchaseLineFormList: React.FC<Props> = ({ form, errorCells }) => {
           <ProductMultipleSelect
             value={defaultProduct ? [defaultProduct.id] : undefined}
             defaultData={defaultProduct ? [defaultProduct] : undefined}
-            query={{ sortBy: "type", sortOrder: SortOrderEnum.ASC }}
-            placeholder="Tìm kiếm và chọn hàng hóa để thêm"
+            query={{ sortBy: "type", sortOrder: SortOrder.ASC }}
+            placeholder="T?m ki?m v� ch?n h�ng h�a �? th�m"
             hideOptions={hideProducts}
             prefix={<MagnifyingGlassIcon className="w-6 h-6 text-secondary" />}
             suffixIcon={null}
@@ -193,7 +193,7 @@ export const PurchaseLineFormList: React.FC<Props> = ({ form, errorCells }) => {
           return (
             <>
               <td className="border border-l-0 border-b-0 text-center" colSpan={4}>
-                <span className="font-semibold">Tổng</span>
+                <span className="font-semibold">T?ng</span>
               </td>
               <td className="border border-b-0 text-end px-3 font-semibold">
                 {formatQuantity(total.quantity)}
@@ -216,7 +216,7 @@ export const PurchaseLineFormList: React.FC<Props> = ({ form, errorCells }) => {
           );
         }}
         onKeyDown={makeFormListEnterHandler(
-          { type: "select", message: "Vui lòng chọn hàng hóa ở ô tìm kiếm để thêm vào đơn" },
+          { type: "select", message: "Vui l?ng ch?n h�ng h�a ? � t?m ki?m �? th�m v�o ��n" },
           { messageApi: message },
         )}
       />

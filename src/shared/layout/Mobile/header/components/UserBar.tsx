@@ -11,7 +11,7 @@ import ChangePassword from "./ChangePassword";
 import { useAuth } from "@/shared/hooks/useAuth";
 import { publicRoutesName } from "@/shared/constants/routerName";
 import socket from "@/shared/services/socket";
-import UserImage from "@/shared/components/image/UserImage";
+import { UserImage } from "@/shared";
 import { getMainFile } from "@/shared/utils/file.util";
 import { useGlobalData } from "@/shared/hooks/useGlobalData";
 

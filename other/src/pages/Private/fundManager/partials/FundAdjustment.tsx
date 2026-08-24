@@ -12,7 +12,7 @@ import { useFundAdjustmentData } from "../../../../hooks/fund/useFundAdjustmentD
 import FundAdjustmentTable from "../components/fundAdjustment/FundAdjustmentTable";
 import Title from "../../../../components/display/Title";
 import { filterUses, rangerItems, sortItems } from "../components/fundAdjustment/filterItem";
-import { SortOrderEnum } from "../../../../constants/enum";
+import { SortOrder } from "../../../../constants/enum";
 import { useClientData } from "../../../../hooks/core/useClientData";
 import StoreSelect from "../../../../components/select/StoreSelect";
 
@@ -43,7 +43,7 @@ export const FundAdjustment: React.FC = () => {
     pageAction,
   } = usePageState<IFundAdjustment>({
     sortBy: "occurredAt",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     filterUses,
   });
 

@@ -8,7 +8,7 @@ import { resolveByPath, randomId } from "@/shared/utils/common.util";
 import { CalculationUtil } from "@/shared/utils/calculation.util";
 import { formatMoney, formatQuantity } from "@/shared/utils/number.util";
 import { useAutoResetItem } from "@/shared/hooks/useAutoResetItem";
-import { SortOrderEnum } from "@/shared/constants/enum";
+import { SortOrder } from "@/shared/constants/enum";
 import MagnifyingGlassIcon from "@heroicons/react/24/solid/MagnifyingGlassIcon";
 import { makeFormListEnterHandler } from "@/shared/utils/formListKeyboard";
 import { PurchaseLine } from "@/modules/purchaseLine";
@@ -166,7 +166,7 @@ export const PurchaseLineFormList: React.FC<Props> = ({ form, errorCells }) => {
           <ProductMultipleSelect
             value={defaultProduct ? [defaultProduct.id] : undefined}
             defaultData={defaultProduct ? [defaultProduct] : undefined}
-            query={{ sortBy: "type", sortOrder: SortOrderEnum.ASC }}
+            query={{ sortBy: "type", sortOrder: SortOrder.ASC }}
             placeholder="Tìm kiếm và chọn hàng hóa để thêm"
             hideOptions={hideProducts}
             prefix={<MagnifyingGlassIcon className="w-6 h-6 text-secondary" />}

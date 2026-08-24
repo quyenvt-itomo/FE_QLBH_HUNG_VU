@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { collectProduct, collectUnits, Product, ProductTypeTag } from "@/modules/product";
 import { PurchaseRequisition, PurchaseRequisitionLine } from "../purchaseRequisition.model";
-import { DatePickerCustom, InputMoney, InputQuantity } from "@/shared/components/input";
+import { DatePickerCustom, InputMoney, InputQuantity } from "@/shared";
 import { CLASSNAME } from "@/shared/constants/ui";
 import { useAutoResetItem } from "@/shared/hooks/useAutoResetItem";
 import { formatMoney, formatQuantity } from "@/shared/utils/number.util";
@@ -10,7 +10,7 @@ import { Form, FormInstance, Input, Select } from "antd";
 import { makeFormListEnterHandler } from "@/shared/utils/formListKeyboard";
 import { ProductMultipleSelect } from "@/modules/product";
 import { useAppMessage } from "@/shared/hooks/useAppMessage";
-import FormListTable, { FormColumn } from "@/shared/components/form/FormListTable";
+import { FormListTable, FormColumn  } from "@/shared";
 
 interface Props {
   form: FormInstance<PurchaseRequisition>;

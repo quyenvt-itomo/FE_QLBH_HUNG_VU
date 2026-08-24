@@ -1,9 +1,9 @@
-import { TableColumnConfig, ObjectTableProps } from "@/shared/components/table/TableColumnConfig";
+import { TableColumnConfig, ObjectTableProps } from "@/shared";
 import { Organization } from "../organization.model";
-import StoreImage from "@/shared/components/image/StoreImage";
+import { StoreImage } from "@/shared";
 import { getMainFile } from "@/shared/utils/file.util";
 import { getFullAddress } from "@/shared/utils/common.util";
-import ContentTooltip from "@/shared/components/table/ContentTooltip";
+import { ContentTooltip } from "@/shared";
 import { OrganizationTypeTag } from "./Tag";
 
 export const OrganizationTable: React.FC<ObjectTableProps> = ({ ...rest }) => {

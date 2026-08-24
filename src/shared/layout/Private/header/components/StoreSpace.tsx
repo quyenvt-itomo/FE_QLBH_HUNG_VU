@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { privateRoutesName } from "../../../../constants/routerName";
 import { useGlobalData } from "@/shared/hooks/useGlobalData";
-import StoreImage from "@/shared/components/image/StoreImage";
+import { StoreImage } from "@/shared";
 import { getMainFile } from "@/shared/utils/file.util";
 import { checkModule } from "@/shared/utils/permission.util";
 import { ServerStackIcon, XMarkIcon } from "@heroicons/react/24/outline";

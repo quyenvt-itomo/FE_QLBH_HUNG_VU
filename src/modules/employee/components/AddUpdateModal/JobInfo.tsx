@@ -1,11 +1,11 @@
 import { AutoComplete, Button, Form, Input } from "antd";
 import { AddUpdateModalPartialProps } from ".";
-import Label from "@/shared/components/display/Label";
+import { Label } from "@/shared";
 import { CLASSNAME } from "@/shared/constants/ui";
 import { PartialPanel } from "./PartialComponent";
 import { OrganizationSelect } from "@/modules/organization";
 import { JobPositionSelect } from "@/modules/jobPosititon";
-import { DatePickerCustom, InputMoney, InputPercentage } from "@/shared/components/input";
+import { DatePickerCustom, InputMoney, InputPercentage } from "@/shared";
 import {
   EmployeeStatus,
   employeeStatusMap,
@@ -18,9 +18,9 @@ import { ChevronDownIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { bankOptions } from "@/shared/constants/option/bank";
 import { removeVietnameseTones } from "@/shared/utils/search.util";
 import { PlusOutlined } from "@ant-design/icons";
-import { CustomSelect } from "@/shared/components/select/CustomSelect";
+import { CustomSelect } from "@/shared";
 import { randomId } from "@/shared/utils/common.util";
-import { EmployeeContractUpload } from "@/shared/components/upload/EmployeeContractUpload";
+import { EmployeeContractUpload } from "@/shared";
 import { getMainFile } from "@/shared/utils/file.util";
 import { formatMoney } from "@/shared/utils/number.util";
 import { OrganizationTypeEnum } from "@/modules/organization";

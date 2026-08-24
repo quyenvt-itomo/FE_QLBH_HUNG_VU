@@ -11,4 +11,4 @@ const HeaderTooltip: React.FC<{
   );
 };
 
-export default HeaderTooltip;
+export { HeaderTooltip };

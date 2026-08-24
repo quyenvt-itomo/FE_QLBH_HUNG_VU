@@ -1,15 +1,15 @@
 import { Form, Input } from "antd";
 import { AddUpdateModalPartialProps } from ".";
-import Label from "@/shared/components/display/Label";
+import { Label } from "@/shared";
 import { Gender, genderOptions, maritalStatusOptions } from "@/shared/constants/enum";
 import { ethnicityOptions } from "@/shared/constants/option/ethnicity";
 import { getTaxCodeRules } from "@/shared/constants/formItemRule";
 import { religionOptions } from "@/shared/constants/option/religion";
 import { CLASSNAME } from "@/shared/constants/ui";
-import { DatePickerCustom } from "@/shared/components/input";
-import IdentityInput from "@/shared/components/display/IdentityInput";
+import { DatePickerCustom } from "@/shared";
+import { IdentityInput } from "@/shared";
 import { PartialPanel, PartialTitle } from "./PartialComponent";
-import { CustomSelect } from "@/shared/components/select/CustomSelect";
+import { CustomSelect } from "@/shared";
 
 export const BasicInfo: React.FC<AddUpdateModalPartialProps> = ({ form, id }) => {
   return (

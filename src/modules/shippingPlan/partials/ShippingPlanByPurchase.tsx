@@ -5,16 +5,16 @@ import { useShippingPlanStore } from "../shippingPlan.store";
 import { useShippingPlanHandlers } from "../shippingPlan.handlers";
 import { formatMoney, formatQuantity } from "@/shared/utils/number.util";
 import { resolveByPath } from "@/shared/utils/common.util";
-import { TableColumnConfig } from "@/shared/components/table/TableColumnConfig";
-import { ColumnsConfigType } from "@/shared/components/table";
+import { TableColumnConfig } from "@/shared";
+import { ColumnsConfigType } from "@/shared";
 import { Purchase } from "@/modules/purchase";
-import { SortOrderEnum } from "@/shared/constants/enum";
-import AddButton from "@/shared/components/button/AddButton";
+import { SortOrder } from "@/shared/constants/enum";
+import { AddButton } from "@/shared";
 import { usePageState } from "@/shared/hooks/usePageState";
-import { ApproveStatusTag } from "@/shared/components/display/Tag";
+import { ApproveStatusTag } from "@/shared";
 import { ShippingPlanAddUpdateModal } from "../components/ShippingPlanAddUpdateModal";
 import { ShippingPlanDetailModal } from "../components/ShippingPlanDetailModal";
-import { MediaDropdown } from "@/shared/components/dropdown";
+import { MediaDropdown } from "@/shared";
 import { File } from "@/shared/interfaces/file";
 
 interface Props {
@@ -45,7 +45,7 @@ export const ShippingPlanByPurchase: React.FC<Props> = ({ purchase, canCreate, o
       page: 1,
       size: 999,
       sortBy: "plannedAt",
-      sortOrder: SortOrderEnum.DESC,
+      sortOrder: SortOrder.DESC,
       purchaseId: purchase.id,
     },
     () => pageAction.handleClose(),

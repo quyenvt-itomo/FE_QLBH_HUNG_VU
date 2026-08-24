@@ -101,4 +101,4 @@ const IdentityInput: React.FC<IdentityInputProps> = ({
   );
 };
 
-export default IdentityInput;
+export { IdentityInput };

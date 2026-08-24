@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Button, Form, Modal, Table, Descriptions, TableProps } from "antd";
-import { AppDatePicker } from "@/shared/components/input/AppDatePicker";
-import { InputQuantity } from "@/shared/components/input";
+import { AppDatePicker } from "@/shared";
+import { InputQuantity } from "@/shared";
 import { formatDate } from "@/shared/utils/date.util";
 import { formatMoney, formatQuantity } from "@/shared/utils/number.util";
 import { resolveByPath } from "@/shared/utils/common.util";

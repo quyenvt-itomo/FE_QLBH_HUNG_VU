@@ -27,4 +27,4 @@ const SortSelect: React.FC<SelectProps> = ({ ...rest }) => {
   );
 };
 
-export default SortSelect;
+export { SortSelect };

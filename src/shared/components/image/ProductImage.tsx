@@ -66,4 +66,4 @@ const ProductImage: React.FC<ProductImageProps> = ({ image, preview = true, size
   );
 };
 
-export default ProductImage;
+export { ProductImage };

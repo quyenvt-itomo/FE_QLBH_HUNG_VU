@@ -12,7 +12,7 @@ import { useFundTransferData } from "../../../../hooks/fund/useFundTransferData"
 import AddUpdateModal from "../components/fundTransfer/AddUpdateModal";
 import Title from "../../../../components/display/Title";
 import { filterUses, rangerItems, sortItems } from "../components/fundTransfer/filterItem";
-import { SortOrderEnum } from "../../../../constants/enum";
+import { SortOrder } from "../../../../constants/enum";
 
 export const FundTransfer: React.FC = () => {
   const notification = getLocationNotification();
@@ -40,7 +40,7 @@ export const FundTransfer: React.FC = () => {
     pageAction,
   } = usePageState<IFundTransfer>({
     sortBy: "occurredAt",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     filterUses,
   });
 

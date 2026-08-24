@@ -101,4 +101,4 @@ const UserImage: React.FC<UserImageProps> = ({ image, name, size = 32, isHiddenP
   );
 };
 
-export default UserImage;
+export { UserImage };

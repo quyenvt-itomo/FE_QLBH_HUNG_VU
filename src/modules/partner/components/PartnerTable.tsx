@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
-import { TableColumnConfig, ObjectTableProps } from "@/shared/components/table/TableColumnConfig";
-import { ColumnsConfigType } from "@/shared/components/table/handleColumnSelector";
+import { TableColumnConfig, ObjectTableProps } from "@/shared";
+import { ColumnsConfigType } from "@/shared";
 import { getFullAddress } from "@/shared/utils/common.util";
 import { Partner, PartnerType } from "../partner.model";
 import { PartnerTypeTag } from "./Tag";

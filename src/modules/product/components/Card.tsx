@@ -1,4 +1,4 @@
-import ActionButtons from "@/shared/components/button/ActionButtons";
+import { ActionButtons } from "@/shared";
 import { Product } from "../product.model";
 import { checkSelection } from "@/shared/utils/common.util";
 

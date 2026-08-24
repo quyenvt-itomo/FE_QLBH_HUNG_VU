@@ -2,18 +2,18 @@ import React, { useEffect, useMemo, useRef } from "react";
 import { Button, Progress, Typography, notification } from "antd";
 import { CloseOutlined, ImportOutlined, ExportOutlined } from "@ant-design/icons";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { BASE_URL, apiEndpoint } from "@/shared/constants/apiEndpoint";
-import { RootState } from "@/shared/stores";
-import { ImportJobStatus, ExportJobStatus } from "@/modules/excel/excel.enum";
-import type { ExportProgressData, ImportProgressData } from "@/modules/excel/excel.model";
-import { downloadFile } from "@/shared/utils/file.util";
+import { BASE_URL, apiEndpoint } from "../constants/apiEndpoint";
+import { RootState } from "../stores";
+import { ImportJobStatus, ExportJobStatus } from "../../modules/excel/excel.enum";
+import type { ExportProgressData, ImportProgressData } from "../../modules/excel/excel.model";
+import { downloadFile } from "../utils/file.util";
 import {
   importExcelProgress,
   exportExcelProgress,
   removeImportTask,
   removeExportTask,
-} from "@/shared/stores/excel.slice";
-import { showImportResultModal } from "@/modules/excel/components/ImportResult";
+} from "../stores/excel.slice";
+import { showImportResultModal } from "../../modules/excel/components/ImportResult";
 
 const MAX_VISIBLE_TASKS = 5;
 const POLLING_INTERVAL_MS = 3000;
@@ -300,4 +300,4 @@ const ExcelTaskPanel: React.FC = () => {
   );
 };
 
-export default ExcelTaskPanel;
+export { ExcelTaskPanel };

@@ -3,8 +3,8 @@ import { useEffect } from "react";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { Role } from "../role.model";
 import { role } from "@/shared/constants/permission";
-import SubmitButton from "@/shared/components/button/SubmitButton";
-import PermissionSelect from "@/shared/components/uncontrolled_selects/PermissionSelect";
+import { SubmitButton } from "@/shared";
+import { PermissionSelect } from "@/shared";
 
 const { Title } = Typography;
 

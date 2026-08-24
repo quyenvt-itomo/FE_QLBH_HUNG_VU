@@ -1,8 +1,8 @@
 import { SelectProps } from "@/shared/interfaces/common";
 import { JobPosition, JobPositionQuery } from "../jobPosition.model";
 import { useJobPositionStore } from "../jobPosition.store";
-import { DropdownColumn } from "@/shared/components/core/CustomSelectLayout";
-import { SmartSelect } from "@/shared/components/core/SmartSelect";
+import { DropdownColumn } from "@/shared";
+import { SmartSelect } from "@/shared";
 import { useRemoteSelect } from "@/shared/hooks/useRemoteSelect";
 
 export const JobPositionSelect: React.FC<SelectProps<JobPosition, JobPositionQuery>> = ({

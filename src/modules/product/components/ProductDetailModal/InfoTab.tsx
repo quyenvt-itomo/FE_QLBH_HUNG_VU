@@ -1,6 +1,6 @@
 import React from "react";
 import { Tag } from "antd";
-import { InfoField } from "@/shared/components/display/InfoField";
+import { InfoField } from "@/shared";
 import { Product } from "../../product.model";
 import { formatMoney } from "@/shared/utils/number.util";
 import { ProductTypeTag } from "../Tag";

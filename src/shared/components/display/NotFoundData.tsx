@@ -17,4 +17,4 @@ const NotFoundData: React.FC = () => {
   );
 };
 
-export default NotFoundData;
+export { NotFoundData };

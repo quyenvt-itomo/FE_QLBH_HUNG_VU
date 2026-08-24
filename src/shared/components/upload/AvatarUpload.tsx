@@ -7,7 +7,7 @@ import { getBase64 } from "@/shared/utils/base64";
 import { deleteFile, uploads } from "@/shared/utils/file.util";
 import { buildFileUrl } from "@/shared/utils/url.util";
 import { CameraIcon, TrashIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import ImageLoadingSpinner from "../loading/ImageLoadingSpinner";
+import { ImageLoadingSpinner } from "../loading/ImageLoadingSpinner";
 
 type AvatarUploadProps = {
   defaultFile?: IFile | null;

@@ -21,4 +21,4 @@ const TimeFormatSelect: React.FC<SelectProps> = ({ value, onChange, ...rest }) =
   );
 };
 
-export default TimeFormatSelect;
+export { TimeFormatSelect };

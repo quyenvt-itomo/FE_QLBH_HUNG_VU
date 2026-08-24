@@ -1,5 +1,6 @@
 export * from "./add_select";
 export * from "./button";
+export * from "./core";
 export * from "./display";
 export * from "./dropdown";
 export * from "./filters";
@@ -13,3 +14,6 @@ export * from "./select";
 export * from "./table";
 export * from "./uncontrolled_selects";
 export * from "./upload";
+export * from "./CustomPagination";
+export * from "./ExcelTaskPanel";
+export * from "./Logo";

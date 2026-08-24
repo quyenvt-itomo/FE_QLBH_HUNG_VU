@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { getSessionEndDate, getSessionStartDate } from "../../utils/dateUtils";
 import { useParams } from "react-router-dom";
 import socket from "../../services/socket";
-import { SortOrderEnum } from "../../constants/enum";
+import { SortOrder } from "../../constants/enum";
 import { Filter, FilterKey, Ranger, Search, SortValue } from "../../models/base/interface";
 import { useClientData } from "./useClientData";
 import useDebounce from "./useDebounce";
@@ -19,7 +19,7 @@ interface UsePageStateProps {
   keyword?: string;
   rowData?: any;
   sortBy?: string;
-  sortOrder?: SortOrderEnum;
+  sortOrder?: SortOrder;
   startAt?: string;
   endAt?: string;
   filter?: Filter;
@@ -42,9 +42,7 @@ export function usePageState<T extends { id: string } = any>(params?: UsePageSta
   const [status, setStatus] = useState<string>("all");
   const [dataSource, setDataSource] = useState<T[]>([]);
   const [sortBy, setSortField] = useState<string | undefined>(params?.sortBy || undefined);
-  const [sortOrder, setsortOrder] = useState<SortOrderEnum | undefined>(
-    params?.sortOrder || undefined,
-  );
+  const [sortOrder, setsortOrder] = useState<SortOrder | undefined>(params?.sortOrder || undefined);
   const [startAt, setStartAt] = useState<string | undefined>(
     params?.startAt || getSessionStartDate(),
   );

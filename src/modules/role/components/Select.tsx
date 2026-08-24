@@ -1,8 +1,8 @@
 import { SelectProps } from "@/shared/interfaces/common";
 import { Role, RoleQuery } from "../role.model";
 import { useRoleStore } from "../role.store";
-import { DropdownColumn } from "@/shared/components/core/CustomSelectLayout";
-import { SmartSelect } from "@/shared/components/core/SmartSelect";
+import { DropdownColumn } from "@/shared";
+import { SmartSelect } from "@/shared";
 import { useRemoteSelect } from "@/shared/hooks/useRemoteSelect";
 
 interface Props extends SelectProps<Role, RoleQuery> {

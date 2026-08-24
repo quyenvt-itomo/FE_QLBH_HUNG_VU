@@ -12,13 +12,13 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { OrganizationTypeEnum, organizationTypeMap } from "../organization.enum";
 import { Organization } from "../organization.model";
-import { ObjectTableProps } from "@/shared/components/table/TableColumnConfig";
+import { ObjectTableProps } from "@/shared";
 import { buildTree, OrganizationTree } from "../organization.util";
 import { OrganizationActionButtons } from "./OrganizationActionButtons";
 import { COLORS } from "@/shared/constants/ui";
 import { Icon } from "@iconify/react";
 import { getMainFile } from "@/shared/utils/file.util";
-import StoreImage from "@/shared/components/image/StoreImage";
+import { StoreImage } from "@/shared";
 
 type MyNodeComponentProps = {
   node: OrganizationTree;

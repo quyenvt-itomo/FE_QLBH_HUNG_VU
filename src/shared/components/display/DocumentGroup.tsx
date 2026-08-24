@@ -3,8 +3,8 @@ import { Tooltip, Image } from "antd";
 import { EyeIcon, ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 import { File } from "@/shared/interfaces/file";
 import { downloadFile } from "@/shared/utils/file.util";
-import FileTypeIcon from "@/shared/components/dropdown/FileTypeIcon";
-import FilePreviewModal from "@/shared/components/upload/FilePreviewModal";
+import { FileTypeIcon } from "@/shared";
+import { FilePreviewModal } from "@/shared";
 
 interface DocumentGroupProps {
   files?: File[];
@@ -103,4 +103,4 @@ const DocumentGroup: React.FC<DocumentGroupProps> = ({ files }) => {
   );
 };
 
-export default DocumentGroup;
+export { DocumentGroup };

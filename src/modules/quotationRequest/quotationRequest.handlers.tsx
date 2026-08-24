@@ -1,8 +1,8 @@
 import { App, Form, Input, Checkbox } from "antd";
 import { QuotationRequest } from "./quotationRequest.model";
 import { HandlersInput } from "@/shared/interfaces/common";
-import Label from "@/shared/components/display/Label";
-import { FileUploadBox } from "@/shared/components/upload/FileUploadBox";
+import { Label } from "@/shared";
+import { FileUploadBox } from "@/shared";
 import { EntityType, FileCategory } from "@/shared/constants/enum";
 import { deletePendingFiles } from "@/shared/utils/file.util";
 import { useGlobalData } from "@/shared/hooks/useGlobalData";

@@ -21,4 +21,4 @@ const PaymentMethodSelect: React.FC<SelectProps> = ({ value, onChange, ...rest }
   );
 };
 
-export default PaymentMethodSelect;
+export { PaymentMethodSelect };

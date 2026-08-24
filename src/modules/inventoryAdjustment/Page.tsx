@@ -1,10 +1,10 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { usePageState } from "@/shared/hooks/usePageState";
-import { SearchInput } from "@/shared/components/input";
+import { SearchInput } from "@/shared";
 import { useInventoryAdjustmentStore } from "./inventoryAdjustment.store";
 import { InventoryAdjustment } from "./inventoryAdjustment.model";
-import AddButton from "@/shared/components/button/AddButton";
-import { Panel } from "@/shared/components/display/Panel";
+import { AddButton } from "@/shared";
+import { Panel } from "@/shared";
 import {
   InventoryAdjustmentTable,
   AddUpdateInventoryAdjustmentModal,
@@ -27,13 +27,13 @@ const InventoryAdjustmentPage: React.FC = () => {
     <div className="flex flex-col h-full w-full gap-3">
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
         <div className="flex flex-col">
-          <h2 className="text-xl font-bold text-blue-800 dark:text-blue-200">Kiểm kê</h2>
-          <p className="text-xs text-secondary">Quản lý phiếu kiểm kê</p>
+          <h2 className="text-xl font-bold text-blue-800 dark:text-blue-200">Ki?m k�</h2>
+          <p className="text-xs text-secondary">Qu?n l? phi?u ki?m k�</p>
         </div>
         <div className="flex items-center gap-3">
           <SearchInput value={keyword} onSearch={pageAction.handleSearch} maxWidth={340} />
           <AddButton
-            title="Thêm mới"
+            title="Th�m m?i"
             onOpenAdd={() => {
               setRowData(undefined);
               setOpen(true);

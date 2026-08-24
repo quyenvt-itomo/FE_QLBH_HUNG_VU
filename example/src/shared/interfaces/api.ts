@@ -1,5 +1,5 @@
 import { Attribute } from "@/modules/attribute";
-import { SortOrderEnum } from "../constants/enum";
+import { SortOrder } from "../constants/enum";
 
 export interface ApiRequestQuery {
   startAt?: string;
@@ -11,7 +11,7 @@ export interface ApiRequestQuery {
   type?: string;
   status?: string;
   sortBy?: string;
-  sortOrder?: SortOrderEnum;
+  sortOrder?: SortOrder;
   storeId?: string;
   reload?: boolean;
   isLocked?: boolean;

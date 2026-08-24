@@ -19,7 +19,7 @@ export enum FormatValueNumber {
   TwoDecimals = 2,
 }
 
-export enum SortOrderEnum {
+export enum SortOrder {
   ASC = "ASC",
   DESC = "DESC",
 }
@@ -163,6 +163,10 @@ export enum EntityType {
   WAREHOUSE = "warehouse",
   STORE = "store",
   FUND = "fund",
+  EMPLOYEE = "employee",
+  EMPLOYEE_CONTRACT = "employeeContract",
+  EXCEL_IMPORT = "excelImport",
+  ORGANIZATION = "organization",
 }
 
 export enum FileStatus {

@@ -1,10 +1,10 @@
 import React from "react";
 import { usePageState } from "@/shared/hooks/usePageState";
-import { SearchInput } from "@/shared/components/input";
+import { SearchInput } from "@/shared";
 import { usePurchaseRequisitionStore } from "./purchaseRequisition.store";
 import { PurchaseRequisition } from "./purchaseRequisition.model";
-import AddButton from "@/shared/components/button/AddButton";
-import { Panel } from "@/shared/components/display/Panel";
+import { AddButton } from "@/shared";
+import { Panel } from "@/shared";
 import {
   PurchaseRequisitionTable,
   PurchaseRequisitionAddUpdateModal,
@@ -12,11 +12,11 @@ import {
 } from "./components";
 import { approvedStatusLiteItems } from "../shared/business.model";
 import { Tabs } from "antd";
-import DateRangeFilter from "@/shared/components/button/DateRangeFilter";
-import CustomFilter from "@/shared/components/filters";
+import { DateRangeFilter } from "@/shared";
+import { CustomFilter } from "@/shared";
 import { filterUses, rangerItems, sortItems } from "./filterItem";
 import { usePurchaseRequisitionHandlers } from "./purchaseRequisition.handlers";
-import { SortOrderEnum } from "@/shared/constants/enum";
+import { SortOrder } from "@/shared/constants/enum";
 
 export const PurchaseRequisitionPage: React.FC = () => {
   const {
@@ -43,7 +43,7 @@ export const PurchaseRequisitionPage: React.FC = () => {
     pageAction,
   } = usePageState<PurchaseRequisition>({
     sortBy: "timeAt",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     filterUses,
   });
 

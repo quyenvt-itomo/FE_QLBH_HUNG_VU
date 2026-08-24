@@ -4,7 +4,7 @@ import type { Rule, FormListFieldData } from "antd/es/form";
 import { TrashIcon, GripVerticalIcon } from "lucide-react";
 import { useScrollShadow } from "@/shared/hooks/useScrollShadow";
 import { useExcelFillHandle } from "@/shared/hooks/useExcelFillHandle";
-import { ExcelFillHandle } from "@/shared/components/core/ExcelFillHandle";
+import { ExcelFillHandle } from "@/shared";
 import { CLASSNAME } from "@/shared/constants/ui";
 import { SummaryConfig, isSummaryConfig } from "../display/DataTable";
 import {
@@ -871,4 +871,3 @@ export function FormListTable<T extends Record<string, any>>({
   );
 }
 
-export default FormListTable;

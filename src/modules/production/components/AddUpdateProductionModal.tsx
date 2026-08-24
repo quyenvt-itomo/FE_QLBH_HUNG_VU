@@ -1,11 +1,11 @@
-﻿import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Modal, Form, Input } from "antd";
 import { AddUpdateModalProps } from "@/shared/interfaces/common";
 import { Production } from "../production.model";
 import { randomId } from "@/shared/utils/common.util";
 import { setFormErrors } from "@/shared/utils/form.util";
-import SubmitButton from "@/shared/components/button/SubmitButton";
-import Title from "@/shared/components/display/Title";
+import { SubmitButton } from "@/shared";
+import { Title } from "@/shared";
 
 export const AddUpdateProductionModal: React.FC<AddUpdateModalProps<Production>> = ({
   open,
@@ -34,7 +34,7 @@ export const AddUpdateProductionModal: React.FC<AddUpdateModalProps<Production>>
   }, [open, editData, form]);
   return (
     <Modal
-      title={editData ? "Sửa Lệnh sản xuất" : "Thêm Lệnh sản xuất"}
+      title={editData ? "S?a L?nh s?n xu?t" : "Th�m L?nh s?n xu?t"}
       open={open}
       onCancel={onClose}
       footer={null}
@@ -46,11 +46,11 @@ export const AddUpdateProductionModal: React.FC<AddUpdateModalProps<Production>>
         layout="vertical"
         onFinish={(v) => (editData ? onEdit?.({ ...v, id: editData.id }) : onAdd?.(v))}
       >
-        <Title content="Thông tin chung" />
-        <Form.Item name="code" label="Mã">
+        <Title content="Th�ng tin chung" />
+        <Form.Item name="code" label="M?">
           <Input disabled />
         </Form.Item>
-        <Form.Item name="note" label="Ghi chú">
+        <Form.Item name="note" label="Ghi ch�">
           <Input.TextArea rows={3} />
         </Form.Item>
         <div className="flex justify-end mt-4">

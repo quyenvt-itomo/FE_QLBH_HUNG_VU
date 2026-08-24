@@ -1,6 +1,6 @@
 import React from "react";
 import { Image } from "antd";
-import SquareImage from "./SquareImage";
+import { SquareImage } from "./SquareImage";
 import { File } from "@/shared/interfaces/file";
 
 interface SquareImageGroupProps {
@@ -38,4 +38,4 @@ const SquareImageGroup: React.FC<SquareImageGroupProps> = ({ images, size }) => 
   );
 };
 
-export default SquareImageGroup;
+export { SquareImageGroup };

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Form, Input, Modal, Switch } from "antd";
-import SubmitButton from "@/shared/components/button/SubmitButton";
-import Label from "@/shared/components/display/Label";
+import { SubmitButton } from "@/shared";
+import { Label } from "@/shared";
 import { AddUpdateModalProps } from "@/shared/interfaces/common";
 import { setFormErrors } from "@/shared/utils/form.util";
 import { randomId } from "@/shared/utils/common.util";

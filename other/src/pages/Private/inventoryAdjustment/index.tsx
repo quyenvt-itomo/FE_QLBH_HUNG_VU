@@ -17,7 +17,7 @@ import AddButton from "../../../components/button/AddButton";
 import DetailModal from "./components/DetailModal";
 import { IInventoryAdjustment } from "../../../models/store/inventoryAdjustment";
 import CustomPageTitle from "../../../layout/Private/header/components/PageTitle";
-import { ExcelEntityType, SortOrderEnum } from "../../../constants/enum";
+import { ExcelEntityType, SortOrder } from "../../../constants/enum";
 import { filterUses, rangerItems, sortItems } from "./filterItem";
 import { ExcelButton } from "../../../components/button/ExcelButton";
 import dayjs from "dayjs";
@@ -56,7 +56,7 @@ const Page: React.FC = () => {
     pageAction,
   } = usePageState<IInventoryAdjustment>({
     sortBy: "occurredAt",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     filterUses,
   });
   const { currentStore } = useClientData();

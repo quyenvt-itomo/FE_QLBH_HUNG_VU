@@ -1,11 +1,11 @@
-﻿import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Modal, Form, Input } from "antd";
 import { AddUpdateModalProps } from "@/shared/interfaces/common";
 import { CommissionDebtAdjustment } from "../commissionDebtAdjustment.model";
 import { randomId } from "@/shared/utils/common.util";
 import { setFormErrors } from "@/shared/utils/form.util";
-import SubmitButton from "@/shared/components/button/SubmitButton";
-import Title from "@/shared/components/display/Title";
+import { SubmitButton } from "@/shared";
+import { Title } from "@/shared";
 
 export const AddUpdateCommissionDebtAdjustmentModal: React.FC<
   AddUpdateModalProps<CommissionDebtAdjustment>
@@ -27,7 +27,7 @@ export const AddUpdateCommissionDebtAdjustmentModal: React.FC<
   }, [open, editData, form]);
   return (
     <Modal
-      title={editData ? "Sửa Điều chỉnh CN hoa hồng" : "Thêm Điều chỉnh CN hoa hồng"}
+      title={editData ? "S?a �i?u ch?nh CN hoa h?ng" : "Th�m �i?u ch?nh CN hoa h?ng"}
       open={open}
       onCancel={onClose}
       footer={null}
@@ -39,11 +39,11 @@ export const AddUpdateCommissionDebtAdjustmentModal: React.FC<
         layout="vertical"
         onFinish={(v) => (editData ? onEdit?.({ ...v, id: editData.id }) : onAdd?.(v))}
       >
-        <Title content="Thông tin chung" />
-        <Form.Item name="code" label="Mã">
+        <Title content="Th�ng tin chung" />
+        <Form.Item name="code" label="M?">
           <Input disabled />
         </Form.Item>
-        <Form.Item name="note" label="Ghi chú">
+        <Form.Item name="note" label="Ghi ch�">
           <Input.TextArea rows={3} />
         </Form.Item>
         <div className="flex justify-end mt-4">

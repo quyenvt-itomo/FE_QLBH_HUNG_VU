@@ -11,7 +11,7 @@ import { buildUrlWithId } from "../../../../utils/paramUtils";
 import { useCustomerData } from "../../../../hooks/partner/useCustomerData";
 import { checkSelection } from "../../../../utils/common";
 import { ExcelButton } from "../../../../components/button/ExcelButton";
-import { ExcelEntityType, SortOrderEnum } from "../../../../constants/enum";
+import { ExcelEntityType, SortOrder } from "../../../../constants/enum";
 import CustomFilter from "../../../../components/filters";
 import { filterUses, rangerItems, sortItems } from "./filterItem";
 
@@ -35,7 +35,7 @@ const Page: React.FC = () => {
     pageAction,
   } = usePageState<IPartner>({
     sortBy: "createdAt",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     filterUses,
   });
 

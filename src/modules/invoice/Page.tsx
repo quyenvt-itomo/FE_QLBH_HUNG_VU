@@ -1,16 +1,16 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { Tabs } from "antd";
 import { usePageState } from "@/shared/hooks/usePageState";
-import { SearchInput } from "@/shared/components/input";
+import { SearchInput } from "@/shared";
 import { useInvoiceStore } from "./invoice.store";
 import { Invoice, InvoiceType, invoiceTypeOptions } from "./invoice.model";
-import AddButton from "@/shared/components/button/AddButton";
-import { Panel } from "@/shared/components/display/Panel";
+import { AddButton } from "@/shared";
+import { Panel } from "@/shared";
 import { InvoiceTable, AddUpdateInvoiceModal, InvoiceDetailModal } from "./components";
 
 const InvoicePage: React.FC = () => {
   const { keyword, page, size, setPage, setSize, pageAction } = usePageState<Invoice>();
-  // Page luôn giữ Type (vì có dòng tổng), bên trong modal mới chọn SourceType
+  // Page lu�n gi? Type (v? c� d?ng t?ng), b�n trong modal m?i ch?n SourceType
   const [type, setType] = useState<InvoiceType>(InvoiceType.INPUT);
   const [open, setOpen] = useState(false);
   const [openDetail, setOpenDetail] = useState(false);
@@ -34,7 +34,7 @@ const InvoicePage: React.FC = () => {
         <div className="flex items-center gap-3">
           <SearchInput value={keyword} onSearch={pageAction.handleSearch} maxWidth={340} />
           <AddButton
-            title="Thêm mới"
+            title="Th�m m?i"
             onOpenAdd={() => {
               setRowData(undefined);
               setOpen(true);

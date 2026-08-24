@@ -8,14 +8,14 @@ import {
   QuotationRequestLine,
   useQuotationRequestStore,
 } from "@/modules/quotationRequest";
-import StoreImage from "@/shared/components/image/StoreImage";
+import { StoreImage } from "@/shared";
 import { getMainFile } from "@/shared/utils/file.util";
 import { formatDateTime, formatDateTimeDDMMYYYY } from "@/shared/utils/date.util";
 import { formatQuantity } from "@/shared/utils/number.util";
 import { ApproveStatus } from "@/modules/shared/business.model";
 import { resolveByPath } from "@/shared/utils/common.util";
-import DocumentGroup from "@/shared/components/display/DocumentGroup";
-import { ApproveStatusTag } from "@/shared/components/display/Tag";
+import { DocumentGroup } from "@/shared";
+import { ApproveStatusTag } from "@/shared";
 
 const QuotationRequestDetailPage: React.FC = () => {
   const { companyCode, code } = useParams();

@@ -1,11 +1,11 @@
 import { MultipleSelectProps, SelectProps } from "@/shared/interfaces/common";
 import { Organization, OrganizationQuery } from "../organization.model";
 import { useOrganizationStore } from "../organization.store";
-import { DropdownColumn } from "@/shared/components/core/CustomSelectLayout";
-import { SmartSelect } from "@/shared/components/core/SmartSelect";
+import { DropdownColumn } from "@/shared";
+import { SmartSelect } from "@/shared";
 import { useRemoteSelect } from "@/shared/hooks/useRemoteSelect";
 import { organizationTypeMap } from "../organization.enum";
-import { SmartMultipleSelect } from "@/shared/components/core/SmartMultipleSelect";
+import { SmartMultipleSelect } from "@/shared";
 
 const columns: DropdownColumn<Organization>[] = [
   { label: "Tên đơn vị", dataIndex: "name", className: "w-64" },

@@ -1,15 +1,15 @@
-ï»¿import React, { useEffect } from "react";
+import React, { useEffect } from "react";
 import { Button, Form, InputNumber, Modal, Select } from "antd";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { AddUpdateModalProps } from "@/shared/interfaces/common";
 import { BillOfMaterial } from "../billOfMaterial.model";
 import { randomId } from "@/shared/utils/common.util";
 import { setFormErrors } from "@/shared/utils/form.util";
-import SubmitButton from "@/shared/components/button/SubmitButton";
-import Title from "@/shared/components/display/Title";
+import { SubmitButton } from "@/shared";
+import { Title } from "@/shared";
 import { ProductSelect, ProductType, productTypeOptions } from "@/modules/product";
 import { AttributeManagerSelect, AttributeType } from "@/modules/attribute";
-import { InputMoney } from "@/shared/components/input";
+import { InputMoney } from "@/shared";
 
 const materialTypeOptions = productTypeOptions.filter((o) => o.value !== ProductType.FINISHED);
 
@@ -41,7 +41,7 @@ export const AddUpdateBillOfMaterialModal: React.FC<AddUpdateModalProps<BillOfMa
 
   return (
     <Modal
-      title={editData ? "Sá»­a Äá»‹nh má»©c NVL" : "ThÃªm Äá»‹nh má»©c NVL"}
+      title={editData ? "S?a Ð?nh m?c NVL" : "Thêm Ð?nh m?c NVL"}
       open={open}
       onCancel={onClose}
       footer={null}
@@ -54,11 +54,11 @@ export const AddUpdateBillOfMaterialModal: React.FC<AddUpdateModalProps<BillOfMa
         layout="vertical"
         onFinish={(v) => (editData ? onEdit?.({ ...v, id: editData.id }) : onAdd?.(v))}
       >
-        <Title content="HÃ ng hÃ³a" />
+        <Title content="Hàng hóa" />
         <Form.Item
           name="productId"
-          label="HÃ ng hÃ³a (thÃ nh pháº©m)"
-          rules={[{ required: true, message: "Vui lÃ²ng chá»n hÃ ng hÃ³a" }]}
+          label="Hàng hóa (thành ph?m)"
+          rules={[{ required: true, message: "Vui l?ng ch?n hàng hóa" }]}
         >
           <ProductSelect
             query={{ type: ProductType.FINISHED }}
@@ -74,7 +74,7 @@ export const AddUpdateBillOfMaterialModal: React.FC<AddUpdateModalProps<BillOfMa
         <Form.Item name="unitId" hidden />
         <Form.Item name="unit" hidden />
 
-        <Title content="CÃ´ng Ä‘oáº¡n & NguyÃªn váº­t liá»‡u" />
+        <Title content="Công ðo?n & Nguyên v?t li?u" />
         <Form.List name="operations">
           {(opFields, { add: addOperation, remove: removeOperation }) => (
             <div className="flex flex-col gap-3">
@@ -87,9 +87,9 @@ export const AddUpdateBillOfMaterialModal: React.FC<AddUpdateModalProps<BillOfMa
                       <Form.Item
                         {...restField}
                         name={[name, "operationId"]}
-                        label="CÃ´ng Ä‘oáº¡n"
+                        label="Công ðo?n"
                         className="mb-0 flex-1"
-                        rules={[{ required: true, message: "Chá»n cÃ´ng Ä‘oáº¡n" }]}
+                        rules={[{ required: true, message: "Ch?n công ðo?n" }]}
                       >
                         <AttributeManagerSelect
                           type={AttributeType.OPERATION}
@@ -102,7 +102,7 @@ export const AddUpdateBillOfMaterialModal: React.FC<AddUpdateModalProps<BillOfMa
                       <Form.Item
                         {...restField}
                         name={[name, "unitProductionCost"]}
-                        label="GiÃ¡ sáº£n xuáº¥t"
+                        label="Giá s?n xu?t"
                         className="mb-0 w-44"
                       >
                         <InputMoney placeholder="0" />
@@ -116,11 +116,11 @@ export const AddUpdateBillOfMaterialModal: React.FC<AddUpdateModalProps<BillOfMa
                       <Form.Item {...restField} name={[name, "operation"]} hidden />
                     </div>
 
-                    {/* FormList lá»“ng: materials cá»§a cÃ´ng Ä‘oáº¡n nÃ y */}
+                    {/* FormList l?ng: materials c?a công ðo?n này */}
                     <Form.List name={[name, "materials"]}>
                       {(matFields, { add: addMaterial, remove: removeMaterial }) => (
                         <div className="ml-4 border-l pl-3 flex flex-col gap-2">
-                          <div className="text-xs font-semibold text-gray-500">NguyÃªn váº­t liá»‡u</div>
+                          <div className="text-xs font-semibold text-gray-500">Nguyên v?t li?u</div>
                           {matFields.map(({ key: matKey, name: matName, ...matRest }) => {
                             const matType =
                               opMaterials?.[matName]?.type ?? ProductType.SUB_MATERIAL;
@@ -142,7 +142,7 @@ export const AddUpdateBillOfMaterialModal: React.FC<AddUpdateModalProps<BillOfMa
                                     <AttributeManagerSelect
                                       type={AttributeType.MAIN_MATERIAL_GROUP}
                                       defaultData={opMaterials?.[matName]?.materialGroup}
-                                      placeholder="NhÃ³m NVL chÃ­nh"
+                                      placeholder="Nhóm NVL chính"
                                       onChangeData={(v) =>
                                         form.setFieldValue(
                                           [
@@ -166,7 +166,7 @@ export const AddUpdateBillOfMaterialModal: React.FC<AddUpdateModalProps<BillOfMa
                                     <ProductSelect
                                       query={{ type: ProductType.SUB_MATERIAL }}
                                       defaultData={opMaterials?.[matName]?.material}
-                                      placeholder="Chá»n NVL"
+                                      placeholder="Ch?n NVL"
                                       onChangeData={(data) => {
                                         if (!data) return;
                                         form.setFieldValue(
@@ -225,7 +225,7 @@ export const AddUpdateBillOfMaterialModal: React.FC<AddUpdateModalProps<BillOfMa
                             }
                             className="self-start"
                           >
-                            ThÃªm NVL
+                            Thêm NVL
                           </Button>
                         </div>
                       )}
@@ -239,7 +239,7 @@ export const AddUpdateBillOfMaterialModal: React.FC<AddUpdateModalProps<BillOfMa
                 onClick={() => addOperation({ unitProductionCost: 0, materials: [] })}
                 className="self-start"
               >
-                ThÃªm cÃ´ng Ä‘oáº¡n
+                Thêm công ðo?n
               </Button>
             </div>
           )}

@@ -1,8 +1,8 @@
 import { SelectProps } from "@/shared/interfaces/common";
 import { QuotationRequest, QuotationRequestQuery } from "../quotationRequest.model";
 import { useQuotationRequestStore } from "../quotationRequest.store";
-import { DropdownColumn } from "@/shared/components/core/CustomSelectLayout";
-import { SmartSelect } from "@/shared/components/core/SmartSelect";
+import { DropdownColumn } from "@/shared";
+import { SmartSelect } from "@/shared";
 import { useRemoteSelect } from "@/shared/hooks/useRemoteSelect";
 import { formatDateTime } from "@/shared/utils/date.util";
 import { resolveByPath } from "@/shared/utils/common.util";

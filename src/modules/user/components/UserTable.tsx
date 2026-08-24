@@ -1,10 +1,10 @@
-import { TableColumnConfig, ObjectTableProps } from "@/shared/components/table/TableColumnConfig";
+import { TableColumnConfig, ObjectTableProps } from "@/shared";
 import { User } from "../user.model";
-import UserImage from "@/shared/components/image/UserImage";
+import { UserImage } from "@/shared";
 import { getMainFile } from "@/shared/utils/file.util";
 import { formatDate } from "@/shared/utils/date.util";
 import { getFullAddress } from "@/shared/utils/common.util";
-import ContentTooltip from "@/shared/components/table/ContentTooltip";
+import { ContentTooltip } from "@/shared";
 import { generateRoleContent } from "../user.util";
 
 export const UserTable: React.FC<ObjectTableProps> = ({ ...rest }) => {

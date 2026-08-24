@@ -1,5 +1,5 @@
 import { Select } from "antd";
-import { SortOrderEnum } from "../../constants/enum";
+import { SortOrder } from "../../constants/enum";
 import { useEffect } from "react";
 import { SortItem } from "@/shared/interfaces/common";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
@@ -9,9 +9,9 @@ interface SortSelectProps {
   sortItems: SortItem[];
   value?: {
     sortBy?: string;
-    sortOrder?: SortOrderEnum;
+    sortOrder?: SortOrder;
   };
-  onChange?: (value: { sortBy?: string; sortOrder?: SortOrderEnum }) => void;
+  onChange?: (value: { sortBy?: string; sortOrder?: SortOrder }) => void;
 }
 
 export const SortSelect: React.FC<SortSelectProps> = ({ sortItems, value, onChange }) => {
@@ -24,17 +24,17 @@ export const SortSelect: React.FC<SortSelectProps> = ({ sortItems, value, onChan
     if (!value?.sortBy && defaultItem) {
       onChange?.({
         sortBy: defaultItem.value,
-        sortOrder: SortOrderEnum.ASC,
+        sortOrder: SortOrder.ASC,
       });
     }
   }, [defaultItem, value?.sortBy, onChange]);
 
   const handleSortByChange = (sortBy: string) => {
-    const sortOrder = value?.sortOrder ?? SortOrderEnum.ASC;
+    const sortOrder = value?.sortOrder ?? SortOrder.ASC;
     onChange?.({ sortBy, sortOrder });
   };
 
-  const handlesortOrderChange = (sortOrder: SortOrderEnum) => {
+  const handlesortOrderChange = (sortOrder: SortOrder) => {
     const sortBy = value?.sortBy ?? defaultItem?.value;
     onChange?.({ sortBy, sortOrder });
   };
@@ -59,7 +59,7 @@ export const SortSelect: React.FC<SortSelectProps> = ({ sortItems, value, onChan
           onChange={(v) =>
             onChange?.({
               sortBy: v.value,
-              sortOrder: value?.sortOrder ?? SortOrderEnum.ASC,
+              sortOrder: value?.sortOrder ?? SortOrder.ASC,
             })
           }
           options={sortItems.map((item) => ({
@@ -77,11 +77,11 @@ export const SortSelect: React.FC<SortSelectProps> = ({ sortItems, value, onChan
           suffixIcon={<ChevronDownIcon className="h-3.5" />}
           options={[
             {
-              value: SortOrderEnum.ASC,
+              value: SortOrder.ASC,
               label: selectedItem?.ascLabel ?? "Tăng dần",
             },
             {
-              value: SortOrderEnum.DESC,
+              value: SortOrder.DESC,
               label: selectedItem?.descLabel ?? "Giảm dần",
             },
           ]}

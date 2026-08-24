@@ -3,7 +3,7 @@ import { Modal, Tabs } from "antd";
 import { Service, serviceTypeMap } from "../../service.model";
 import { ServiceTypeTag } from "../Tag";
 import { DetailModalProps } from "@/shared/interfaces/common";
-import { InfoField } from "@/shared/components/display/InfoField";
+import { InfoField } from "@/shared";
 import { formatMoney } from "@/shared/utils/number.util";
 
 const InfoTab: React.FC<{ data: Service }> = ({ data }) => (

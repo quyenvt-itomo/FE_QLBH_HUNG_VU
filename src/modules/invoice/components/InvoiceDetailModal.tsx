@@ -1,7 +1,7 @@
-﻿import React from "react";
+import React from "react";
 import { Modal, Descriptions } from "antd";
 import { Invoice } from "../invoice.model";
-import Title from "@/shared/components/display/Title";
+import { Title } from "@/shared";
 import { formatDate } from "@/shared/utils/date.util";
 
 interface Props {
@@ -13,13 +13,13 @@ interface Props {
 export const InvoiceDetailModal: React.FC<Props> = ({ open, data, onClose, onOpenUpdate }) => {
   if (!data) return null;
   const info = [
-    { label: "Mã", value: data.invoiceNumber || "--" },
-    { label: "Ngày tạo", value: data.createdAt ? formatDate(data.createdAt) : "--" },
-    { label: "Ghi chú", value: data.note || "--" },
+    { label: "M?", value: data.invoiceNumber || "--" },
+    { label: "Ng�y t?o", value: data.createdAt ? formatDate(data.createdAt) : "--" },
+    { label: "Ghi ch�", value: data.note || "--" },
   ];
   return (
     <Modal
-      title={"Chi tiết Hóa đơn"}
+      title={"Chi ti?t H�a ��n"}
       open={open}
       onCancel={onClose}
       footer={
@@ -28,7 +28,7 @@ export const InvoiceDetailModal: React.FC<Props> = ({ open, data, onClose, onOpe
             className="text-blue-500 hover:underline text-sm"
             onClick={() => onOpenUpdate(data)}
           >
-            Chỉnh sửa
+            Ch?nh s?a
           </button>
         ) : null
       }

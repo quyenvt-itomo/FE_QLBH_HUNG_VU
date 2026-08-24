@@ -1,14 +1,14 @@
 import React, { useEffect, useRef } from "react";
 import { Input, Modal, Form, FormInstance, Spin } from "antd";
 import { FormProps } from "antd/lib";
-import SubmitButton from "@/shared/components/button/SubmitButton";
+import { SubmitButton } from "@/shared";
 import { FileCategory, EntityType } from "@/shared/constants/enum";
 import { AddUpdateModalProps } from "@/shared/interfaces/common";
 import { Employee } from "../../employee.model";
 import { randomId } from "@/shared/utils/common.util";
 import { setFormErrors } from "@/shared/utils/form.util";
 import { parseFormDataDates } from "@/shared/utils/date.util";
-import AvatarUpload from "@/shared/components/upload/AvatarUpload";
+import { AvatarUpload } from "@/shared";
 import { getMainFile } from "@/shared/utils/file.util";
 import { useAppMessage } from "@/shared/hooks/useAppMessage";
 import { AnchorInfo } from "./Anchor";

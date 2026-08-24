@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Modal, Tabs, Tag } from "antd";
 import { Role } from "../role.model";
 import { DetailModalProps } from "@/shared/interfaces/common";
-import { InfoField } from "@/shared/components/display/InfoField";
+import { InfoField } from "@/shared";
 
 const InfoTab: React.FC<{ data: Role }> = ({ data }) => (
   <div className="pt-4">

@@ -1,10 +1,10 @@
 import { MultipleSelectProps, SelectProps } from "@/shared/interfaces/common";
 import { Service, ServiceQuery } from "../service.model";
 import { useServiceStore } from "../service.store";
-import { DropdownColumn } from "@/shared/components/core/CustomSelectLayout";
-import { SmartSelect } from "@/shared/components/core/SmartSelect";
+import { DropdownColumn } from "@/shared";
+import { SmartSelect } from "@/shared";
 import { useRemoteSelect } from "@/shared/hooks/useRemoteSelect";
-import { SmartMultipleSelect } from "@/shared/components/core/SmartMultipleSelect";
+import { SmartMultipleSelect } from "@/shared";
 import { ServiceTypeTag } from "./Tag";
 
 const columns: DropdownColumn<Service>[] = [

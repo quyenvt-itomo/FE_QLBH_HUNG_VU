@@ -41,4 +41,4 @@ const HeaderWrap: React.FC<HeaderWrapProps> = ({
   return content;
 };
 
-export default HeaderWrap;
+export { HeaderWrap };

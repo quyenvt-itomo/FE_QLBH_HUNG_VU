@@ -1,17 +1,17 @@
 import React, { useEffect } from "react";
 import { Input, Modal, Form, Row, Col, FormInstance } from "antd";
 import { FormProps } from "antd/lib";
-import SubmitButton from "@/shared/components/button/SubmitButton";
+import { SubmitButton } from "@/shared";
 import { AddUpdateModalProps } from "@/shared/interfaces/common";
 import { Service, ServiceType, serviceTypeOptions } from "../../service.model";
 import { randomId } from "@/shared/utils/common.util";
 import { setFormErrors } from "@/shared/utils/form.util";
 import { parseFormDataDates } from "@/shared/utils/date.util";
-import Label from "@/shared/components/display/Label";
+import { Label } from "@/shared";
 import { useAppMessage } from "@/shared/hooks/useAppMessage";
-import { InputPercentage } from "@/shared/components/input";
-import { FormSection } from "@/shared/components/form/FormSection";
-import { AppSelect } from "@/shared/components/select/AppSelect";
+import { InputPercentage } from "@/shared";
+import { FormSection } from "@/shared";
+import { AppSelect } from "@/shared";
 import { ServiceUnitList } from "./ServiceUnitList";
 
 export interface PartialProps {

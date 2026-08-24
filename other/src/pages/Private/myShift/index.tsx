@@ -5,7 +5,7 @@ import { checkSelection } from "../../../utils/common";
 import { usePageState } from "../../../hooks/core/usePageState";
 import { IShift } from "../../../models/store/shift";
 import { useShiftData } from "../../../hooks/useShiftData";
-import { ShiftStatusEnum, SortOrderEnum } from "../../../constants/enum";
+import { ShiftStatusEnum, SortOrder } from "../../../constants/enum";
 import { ShiftTable } from "./components/ShiftTable";
 import { DetailShiftModal } from "./components/DetailModal";
 import { useClientData } from "../../../hooks/core/useClientData";
@@ -42,7 +42,7 @@ const Page: React.FC = () => {
     pageAction,
   } = usePageState<IShift>({
     sortBy: "startAt",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     filterUses,
   });
   const { currentStore } = useClientData();

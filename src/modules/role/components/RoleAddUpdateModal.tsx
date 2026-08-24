@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import { Input, Modal, Form, Row, Col } from "antd";
-import SubmitButton from "@/shared/components/button/SubmitButton";
+import { SubmitButton } from "@/shared";
 import { AddUpdateModalProps } from "@/shared/interfaces/common";
 import { Role } from "../role.model";
 import { randomId } from "@/shared/utils/common.util";
 import { setFormErrors } from "@/shared/utils/form.util";
-import Label from "@/shared/components/display/Label";
+import { Label } from "@/shared";
 import { useAppMessage } from "@/shared/hooks/useAppMessage";
-import { FormSection } from "@/shared/components/form/FormSection";
+import { FormSection } from "@/shared";
 
 export const RoleAddUpdateModal: React.FC<AddUpdateModalProps<Role>> = ({
   open,

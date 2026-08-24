@@ -3,9 +3,9 @@ import { Attribute } from "../attribute.model";
 import { AttributeType, attributeTypeMap } from "../attribute.enum";
 import { MultipleSelectProps, SelectProps } from "@/shared/interfaces/common";
 import { useAttributeStore } from "../attribute.store";
-import ManagerSelect from "@/shared/components/manager_select/ManagerSelect";
-import MultipleManagerSelect from "@/shared/components/multiple_manager_selects/MultipleManagerSelect";
-import { SortOrderEnum } from "@/shared/constants/enum";
+import { ManagerSelect } from "@/shared";
+import { MultipleManagerSelect } from "@/shared";
+import { SortOrder } from "@/shared/constants/enum";
 
 interface AttributeManagerSelectProps extends SelectProps<Attribute> {
   type: AttributeType;
@@ -138,7 +138,7 @@ export const AttributeManagerMultipleSelect: React.FC<AttributeManagerMultipleSe
       isLocked,
       type,
       size: 10000,
-      sortOrder: SortOrderEnum.ASC,
+      sortOrder: SortOrder.ASC,
       sortBy: "name",
     });
 

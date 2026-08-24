@@ -1,6 +1,6 @@
-import AddButton from "@/shared/components/button/AddButton";
-import { Panel } from "@/shared/components/display/Panel";
-import { SearchInput } from "@/shared/components/input";
+import { AddButton } from "@/shared";
+import { Panel } from "@/shared";
+import { SearchInput } from "@/shared";
 import { useUserStore } from "./user.store";
 import { usePageState } from "@/shared/hooks/usePageState";
 import { User } from "./user.model";

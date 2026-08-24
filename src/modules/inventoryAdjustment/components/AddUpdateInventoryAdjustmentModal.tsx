@@ -1,11 +1,11 @@
-﻿import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Modal, Form, Input } from "antd";
 import { AddUpdateModalProps } from "@/shared/interfaces/common";
 import { InventoryAdjustment } from "../inventoryAdjustment.model";
 import { randomId } from "@/shared/utils/common.util";
 import { setFormErrors } from "@/shared/utils/form.util";
-import SubmitButton from "@/shared/components/button/SubmitButton";
-import Title from "@/shared/components/display/Title";
+import { SubmitButton } from "@/shared";
+import { Title } from "@/shared";
 
 export const AddUpdateInventoryAdjustmentModal: React.FC<
   AddUpdateModalProps<InventoryAdjustment>
@@ -27,7 +27,7 @@ export const AddUpdateInventoryAdjustmentModal: React.FC<
   }, [open, editData, form]);
   return (
     <Modal
-      title={editData ? "Sửa Kiểm kê" : "Thêm Kiểm kê"}
+      title={editData ? "S?a Ki?m k�" : "Th�m Ki?m k�"}
       open={open}
       onCancel={onClose}
       footer={null}
@@ -39,11 +39,11 @@ export const AddUpdateInventoryAdjustmentModal: React.FC<
         layout="vertical"
         onFinish={(v) => (editData ? onEdit?.({ ...v, id: editData.id }) : onAdd?.(v))}
       >
-        <Title content="Thông tin chung" />
-        <Form.Item name="code" label="Mã">
+        <Title content="Th�ng tin chung" />
+        <Form.Item name="code" label="M?">
           <Input disabled />
         </Form.Item>
-        <Form.Item name="note" label="Ghi chú">
+        <Form.Item name="note" label="Ghi ch�">
           <Input.TextArea rows={3} />
         </Form.Item>
         <div className="flex justify-end mt-4">

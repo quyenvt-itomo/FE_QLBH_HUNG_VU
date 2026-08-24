@@ -1,4 +1,4 @@
-ï»¿import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { App, Form, FormProps, Modal } from "antd";
 import { AddUpdateModalProps } from "@/shared/interfaces/common";
 import { Quotation, QuotationSortOrderFields } from "../quotation.model";
@@ -7,12 +7,12 @@ import { extractListErrorCells, setFormErrors } from "@/shared/utils/form.util";
 import { formatFormData, parseFormDataDates } from "@/shared/utils/date.util";
 import { QuotationFormBody } from "./QuotationFormBody";
 import { QuotationLineFormList } from "./QuotationLineFormList";
-import SubmitButton from "@/shared/components/button/SubmitButton";
+import { SubmitButton } from "@/shared";
 import { FormInstance } from "antd/lib";
 import { useAppMessage } from "@/shared/hooks/useAppMessage";
 import dayjs from "dayjs";
 import { defaultAdditionalInfo, EntityType, FileCategory } from "@/shared/constants/enum";
-import { FileUploadBox } from "@/shared/components/upload/FileUploadBox";
+import { FileUploadBox } from "@/shared";
 
 export interface PartialProps {
   form: FormInstance<Quotation>;
@@ -40,7 +40,7 @@ export const AddUpdateQuotationModal: React.FC<AddUpdateModalProps<Quotation>> =
       return;
     }
     setFormErrors(form, errors, { scrollToFirst: true });
-    // TrÃ­ch xuáº¥t cÃ¡c cell bá»‹ lá»—i Ä‘á»ƒ highlight
+    // Trích xu?t các cell b? l?i ð? highlight
     const cells = extractListErrorCells(errors, "lines");
     setErrorCells(cells);
   }, [errors, form]);
@@ -49,12 +49,12 @@ export const AddUpdateQuotationModal: React.FC<AddUpdateModalProps<Quotation>> =
     const formattedData = formatFormData({ ...values, id, tempId: id }, QuotationSortOrderFields);
 
     modal.confirm({
-      title: editData ? "XÃ¡c nháº­n sá»­a bÃ¡o giÃ¡?" : "XÃ¡c nháº­n thÃªm bÃ¡o giÃ¡?",
+      title: editData ? "Xác nh?n s?a báo giá?" : "Xác nh?n thêm báo giá?",
       content: editData
-        ? "Báº¡n cÃ³ cháº¯c cháº¯n muá»‘n sá»­a bÃ¡o giÃ¡ nÃ y khÃ´ng?"
-        : "Báº¡n cÃ³ cháº¯c cháº¯n muá»‘n thÃªm bÃ¡o giÃ¡ nÃ y khÃ´ng?",
-      okText: "XÃ¡c nháº­n",
-      cancelText: "Há»§y",
+        ? "B?n có ch?c ch?n mu?n s?a báo giá này không?"
+        : "B?n có ch?c ch?n mu?n thêm báo giá này không?",
+      okText: "Xác nh?n",
+      cancelText: "H?y",
       onOk: () => {
         editData ? onEdit?.(formattedData) : onAdd?.(formattedData);
       },
@@ -63,7 +63,7 @@ export const AddUpdateQuotationModal: React.FC<AddUpdateModalProps<Quotation>> =
 
   return (
     <Modal
-      title={editData ? "Sá»­a bÃ¡o giÃ¡" : "Táº¡o bÃ¡o giÃ¡ má»›i"}
+      title={editData ? "S?a báo giá" : "T?o báo giá m?i"}
       open={open}
       onCancel={() => handleCloseWithPendingFiles(id, onClose)}
       footer={null}

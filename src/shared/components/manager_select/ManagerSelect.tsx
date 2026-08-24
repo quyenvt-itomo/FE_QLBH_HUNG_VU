@@ -1,9 +1,9 @@
 import { Select } from "antd";
 import { useEffect, useState } from "react";
 
-import ManagerModal from "./ManagerModal";
+import { ManagerModal } from "./ManagerModal";
 import { SelectProps } from "antd";
-import ManagerButton from "./ManagerButton";
+import { ManagerButton } from "./ManagerButton";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { removeVietnameseTones } from "@/shared/utils/search.util";
 import { CLASSNAME } from "@/shared/constants/ui";
@@ -132,4 +132,4 @@ const ManagerSelect = <T extends { id: string; name: string }>({
   );
 };
 
-export default ManagerSelect;
+export { ManagerSelect };

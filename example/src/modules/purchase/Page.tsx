@@ -13,7 +13,7 @@ import DateRangeFilter from "@/shared/components/button/DateRangeFilter";
 import CustomFilter from "@/shared/components/filters";
 import { filterUses, rangerItems, sortItems } from "./filterItem";
 import { usePurchaseHandlers } from "./purchase.handlers";
-import { SortOrderEnum } from "@/shared/constants/enum";
+import { SortOrder } from "@/shared/constants/enum";
 
 const PurchasePage: React.FC = () => {
   const location = useLocation();
@@ -45,7 +45,7 @@ const PurchasePage: React.FC = () => {
     pageAction,
   } = usePageState<Purchase>({
     sortBy: "orderedAt",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     filterUses,
   });
 

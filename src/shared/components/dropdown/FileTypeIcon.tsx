@@ -24,4 +24,4 @@ const FileTypeIcon: React.FC<FileTypeIconProps> = ({ fileName, className = "h-8 
   return <img src={src} alt={ext} className={`${className} object-cover shrink-0`} />;
 };
 
-export default FileTypeIcon;
+export { FileTypeIcon };

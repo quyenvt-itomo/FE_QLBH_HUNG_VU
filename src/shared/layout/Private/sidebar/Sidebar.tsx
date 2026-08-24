@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Button, Layout, MenuProps } from "antd";
 import CustomMenu from "./Menu";
 import { useGlobalData } from "@/shared/hooks/useGlobalData";
-import Logo from "@/shared/components/Logo";
+import { Logo } from "@/shared";
 import { Icon } from "@iconify/react";
 import { useNavigate } from "react-router-dom";
 import { privateRoutesName } from "@/shared/constants";

@@ -21,4 +21,4 @@ const DecimalPrecisionSelect: React.FC<SelectProps> = ({ value, onChange, ...res
   );
 };
 
-export default DecimalPrecisionSelect;
+export { DecimalPrecisionSelect };

@@ -2,11 +2,11 @@ import React from "react";
 import { SelectProps } from "@/shared/interfaces/common";
 import { ShippingPlan, ShippingPlanQuery } from "../shippingPlan.model";
 import { useShippingPlanStore } from "../shippingPlan.store";
-import { DropdownColumn } from "@/shared/components/core/CustomSelectLayout";
-import { SmartSelect } from "@/shared/components/core/SmartSelect";
+import { DropdownColumn } from "@/shared";
+import { SmartSelect } from "@/shared";
 import { useRemoteSelect } from "@/shared/hooks/useRemoteSelect";
 import { resolveByPath } from "@/shared/utils/common.util";
-import { ApproveStatusTag } from "@/shared/components/display/Tag";
+import { ApproveStatusTag } from "@/shared";
 
 const columns: DropdownColumn<ShippingPlan>[] = [
   { label: "Mã PA", dataIndex: "code", className: "w-32" },

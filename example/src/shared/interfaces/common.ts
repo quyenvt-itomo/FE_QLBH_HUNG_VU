@@ -2,7 +2,7 @@ import { FormInstance } from "antd";
 import { DefaultOptionType } from "antd/es/select";
 import { SelectProps as AntdSelectProps } from "antd";
 import { ApiRequestQuery, BaseError, PaginationProps, PayloadWithSubId } from "./api";
-import { IdentificationType, SortOrderEnum } from "@/shared/constants/enum";
+import { IdentificationType, SortOrder } from "@/shared/constants/enum";
 import { Entity } from "@/shared/base/entity";
 import { AttributeType } from "@/modules/attribute";
 
@@ -367,7 +367,7 @@ export type Search = {
 
 export interface SortValue {
   sortBy?: string;
-  sortOrder?: SortOrderEnum;
+  sortOrder?: SortOrder;
 }
 export interface SortItem {
   label: string;

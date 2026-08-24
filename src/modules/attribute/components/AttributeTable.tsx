@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { TableColumnConfig, ObjectTableProps } from "@/shared/components/table/TableColumnConfig";
+import { TableColumnConfig, ObjectTableProps } from "@/shared";
 import { Attribute } from "../attribute.model";
 import { AttributeType, attributeTypeMap } from "../attribute.enum";
 import { AttributeTypeTag } from "./Tag";

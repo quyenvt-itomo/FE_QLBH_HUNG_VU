@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Modal, Tabs, Tag } from "antd";
 import { PaymentTerm } from "../paymentTerm.model";
 import { DetailModalProps } from "@/shared/interfaces/common";
-import { InfoField } from "@/shared/components/display/InfoField";
+import { InfoField } from "@/shared";
 import { formatMoney } from "@/shared/utils/number.util";
 
 const InfoTab: React.FC<{ data: PaymentTerm }> = ({ data }) => (

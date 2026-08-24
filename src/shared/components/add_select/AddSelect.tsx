@@ -1,5 +1,5 @@
 import { Select } from "antd";
-import AddButton from "./AddButton";
+import { AddSelectButton } from "./AddButton";
 import { DropdownColumn, DropdownHeader, renderDropdownBody } from "../core/CustomSelectLayout";
 import { SelectProps } from "@/shared/interfaces/common";
 import { CLASSNAME } from "@/shared/constants/ui";
@@ -57,11 +57,11 @@ const AddSelect = <T extends { id: string; name: string }>({
 
       {showAddButton && (
         <>
-          <AddButton onClick={onOpen} disabled={disabled} />
+          <AddSelectButton onClick={onOpen} disabled={disabled} />
           {modal}
         </>
       )}
     </div>
   );
 };
-export default AddSelect;
+export { AddSelect };

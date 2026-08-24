@@ -1,10 +1,10 @@
 import { Checkbox, Form, Input } from "antd";
 import { AddUpdateModalPartialProps } from ".";
-import Label from "@/shared/components/display/Label";
+import { Label } from "@/shared";
 import { CLASSNAME } from "@/shared/constants/ui";
 import { PartialPanel } from "./PartialComponent";
 import { useAddressSelector } from "@/shared/hooks/useAddressSelector";
-import { ProvinceSelect, WardSelect } from "@/shared/components/select/AddressSelect";
+import { ProvinceSelect, WardSelect } from "@/shared";
 import { getPhoneRules, phoneRule } from "@/shared/constants/formItemRule";
 
 const PermanentAddress: React.FC<AddUpdateModalPartialProps> = ({ form, id }) => {

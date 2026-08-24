@@ -1,4 +1,4 @@
-import AddButton from "@/shared/components/button/AddButton";
+import { AddButton, SortOrder } from "@/shared";
 import { useStoreStore } from "./store.store";
 import { App } from "antd";
 import { usePageState } from "@/shared/hooks/usePageState";
@@ -27,6 +27,8 @@ export const StorePage: React.FC = () => {
         page: 1,
         size: 999,
         reload,
+        sortBy: "sortOrder",
+        sortOrder: SortOrder.ASC,
         ...filter,
       },
       () => {

@@ -18,7 +18,7 @@ import { useClientData } from "../../../hooks/core/useClientData";
 import CustomPageTitle from "../../../layout/Private/header/components/PageTitle";
 import CustomFilter from "../../../components/filters";
 import { filterUses, rangerItems, sortItems } from "./filterItem";
-import { ExcelEntityType, SortOrderEnum } from "../../../constants/enum";
+import { ExcelEntityType, SortOrder } from "../../../constants/enum";
 import { ExcelButton } from "../../../components/button/ExcelButton";
 import dayjs from "dayjs";
 import { apiEndpoint, BASE_URL } from "../../../constants/ApiEndpoint";
@@ -49,7 +49,7 @@ const Page: React.FC = () => {
     pageAction,
   } = usePageState<IInventoryReport>({
     sortBy: "closingQty",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     filterUses,
   });
   const { currentStore } = useClientData();

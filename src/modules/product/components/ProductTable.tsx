@@ -1,9 +1,9 @@
 import React, { useMemo } from "react";
-import { TableColumnConfig, ObjectTableProps } from "@/shared/components/table/TableColumnConfig";
+import { TableColumnConfig, ObjectTableProps } from "@/shared";
 import { Product, ProductType, productLabel, productTypeMap } from "../product.model";
 import { formatMoney, formatPercentage } from "@/shared/utils/number.util";
 import { ProductTypeTag } from "./Tag";
-import { TableBooleanCell } from "@/shared/components/display/TableCell";
+import { TableBooleanCell } from "@/shared";
 
 interface Props extends ObjectTableProps {
   type: ProductType;

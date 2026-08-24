@@ -1,19 +1,19 @@
-﻿import React from "react";
+import React from "react";
 import { Button, Tabs, Tooltip } from "antd";
 import { usePageState } from "@/shared/hooks/usePageState";
 import { QuotationRequest } from "./quotationRequest.model";
 import { useQuotationRequestStore } from "./quotationRequest.store";
 import { useQuotationRequestHandlers } from "./quotationRequest.handlers";
-import { Panel } from "@/shared/components/display/Panel";
-import { SearchInput } from "@/shared/components/input";
-import DateRangeFilter from "@/shared/components/button/DateRangeFilter";
-import CustomFilter from "@/shared/components/filters";
+import { Panel } from "@/shared";
+import { SearchInput } from "@/shared";
+import { DateRangeFilter } from "@/shared";
+import { CustomFilter } from "@/shared";
 import { QuotationRequestTable } from "./components/QuotationRequestTable";
 import { QuotationRequestDetailModal } from "./components/QuotationRequestDetailModal";
 import { sortItems, filterUses, rangerItems } from "./filterItem";
 import { approvedStatusLiteItems } from "../shared/business.model";
 import { LinkIcon } from "@heroicons/react/24/outline";
-import { SortOrderEnum } from "@/shared/constants/enum";
+import { SortOrder } from "@/shared/constants/enum";
 
 const QuotationRequestPage: React.FC = () => {
   const {
@@ -38,7 +38,7 @@ const QuotationRequestPage: React.FC = () => {
     pageAction,
   } = usePageState<QuotationRequest>({
     sortBy: "timeAt",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     filterUses,
   });
 
@@ -75,7 +75,7 @@ const QuotationRequestPage: React.FC = () => {
           className="custom-tabs"
         />
         <div className="flex items-center gap-3 flex-shrink-0">
-          <Tooltip title="Link đề nghị báo giá">
+          <Tooltip title="Link �? ngh? b�o gi�">
             <Button onClick={handleCopyLink}>
               <LinkIcon className="w-5 h-5" />
             </Button>

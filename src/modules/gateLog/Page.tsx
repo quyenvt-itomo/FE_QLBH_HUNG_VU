@@ -1,11 +1,11 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { App, Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { usePageState } from "@/shared/hooks/usePageState";
 import { GateLog } from "./gateLog.model";
 import { useGateLogStore } from "./gateLog.store";
-import { Panel } from "@/shared/components/display/Panel";
-import { SearchInput } from "@/shared/components/input";
+import { Panel } from "@/shared";
+import { SearchInput } from "@/shared";
 
 const GateLogPage: React.FC = () => {
   const { modal } = App.useApp();
@@ -15,25 +15,25 @@ const GateLogPage: React.FC = () => {
   const handleDelete = remove
     ? (record: GateLog) => {
         modal.confirm({
-          title: "Xóa",
-          content: "Xác nhận xóa?",
-          okText: "Xóa",
+          title: "X�a",
+          content: "X�c nh?n x�a?",
+          okText: "X�a",
           okButtonProps: { danger: true },
-          cancelText: "Hủy",
+          cancelText: "H?y",
           onOk: () => remove(record.id),
         });
       }
     : undefined;
 
   const columns: ColumnsType<GateLog> = [
-    { title: "Mã", dataIndex: "code", key: "code", width: 120, className: "font-mono" },
+    { title: "M?", dataIndex: "code", key: "code", width: 120, className: "font-mono" },
 
-    { title: "Ngày", dataIndex: "occurredAt", key: "occurredAt", width: 120 },
-    { title: "Biển số", dataIndex: "vehiclePlate", key: "vehiclePlate", width: 120 },
-    { title: "Loại xe", dataIndex: "vehicleType", key: "vehicleType", width: 100 },
+    { title: "Ng�y", dataIndex: "occurredAt", key: "occurredAt", width: 120 },
+    { title: "Bi?n s?", dataIndex: "vehiclePlate", key: "vehiclePlate", width: 120 },
+    { title: "Lo?i xe", dataIndex: "vehicleType", key: "vehicleType", width: 100 },
 
     {
-      title: "Ghi chú",
+      title: "Ghi ch�",
       dataIndex: "note",
       key: "note",
       width: 200,
@@ -48,14 +48,14 @@ const GateLogPage: React.FC = () => {
       render: (_: any, record: GateLog) => (
         <div className="flex gap-1 justify-center">
           {record._actions?.update?.can && (
-            <button className="text-blue-500 hover:text-blue-700 text-xs">Sửa</button>
+            <button className="text-blue-500 hover:text-blue-700 text-xs">S?a</button>
           )}
           {record._actions?.delete?.can && (
             <button
               className="text-red-500 hover:text-red-700 text-xs"
               onClick={() => handleDelete?.(record)}
             >
-              Xóa
+              X�a
             </button>
           )}
         </div>
@@ -64,7 +64,7 @@ const GateLogPage: React.FC = () => {
   ];
 
   return (
-    <Panel title="Nhật ký cổng">
+    <Panel title="Nh?t k? c?ng">
       <div className="flex items-center justify-between mb-3">
         <SearchInput value={keyword} onSearch={pageAction.handleSearch} maxWidth={340} />
       </div>

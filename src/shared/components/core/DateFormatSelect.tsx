@@ -21,4 +21,4 @@ const DateFormatSelect: React.FC<SelectProps> = ({ value, onChange, ...rest }) =
   );
 };
 
-export default DateFormatSelect;
+export { DateFormatSelect };

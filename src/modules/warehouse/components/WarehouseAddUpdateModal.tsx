@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
 import { Input, Modal, Form, Row, Col } from "antd";
-import SubmitButton from "@/shared/components/button/SubmitButton";
+import { SubmitButton } from "@/shared";
 import { AddUpdateModalProps } from "@/shared/interfaces/common";
 import { Warehouse } from "../warehouse.model";
 import { randomId } from "@/shared/utils/common.util";
 import { setFormErrors } from "@/shared/utils/form.util";
 import { formatFormData, parseFormDataDates } from "@/shared/utils/date.util";
-import Label from "@/shared/components/display/Label";
+import { Label } from "@/shared";
 import { useAppMessage } from "@/shared/hooks/useAppMessage";
-import { ProvinceSelect, WardSelect } from "@/shared/components/select/AddressSelect";
+import { ProvinceSelect, WardSelect } from "@/shared";
 import { useAddressSelector } from "@/shared/hooks/useAddressSelector";
 import { getPhoneRules } from "@/shared/constants/formItemRule";
 import { EmployeeSelect } from "@/modules/employee";

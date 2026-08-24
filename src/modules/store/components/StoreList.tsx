@@ -1,4 +1,4 @@
-import { ObjectTableProps } from "@/shared/components/table/TableColumnConfig";
+import { ObjectTableProps } from "@/shared";
 import { StoreCardBase } from "./Card";
 
 export const StoreList: React.FC<ObjectTableProps> = ({ dataSource, onEdit, onDelete }) => {

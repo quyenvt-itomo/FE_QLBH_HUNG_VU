@@ -6,8 +6,8 @@ import { ArrowDownTrayIcon, EyeIcon, TrashIcon } from "@heroicons/react/24/outli
 import { Icon } from "@iconify/react";
 import { deleteFile, uploads, downloadFile } from "@/shared/utils/file.util";
 import { FileCategory, EntityType } from "@/shared/constants/enum";
-import FilePreviewModal from "./FilePreviewModal";
-import FileTypeIcon from "@/shared/components/dropdown/FileTypeIcon";
+import { FilePreviewModal } from "./FilePreviewModal";
+import { FileTypeIcon } from "@/shared";
 import "./FileUploadBox.css";
 
 // ---------- Props ----------

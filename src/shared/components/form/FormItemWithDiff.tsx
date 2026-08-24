@@ -72,4 +72,4 @@ const FormItemWithDiff: React.FC<FormItemWithDiffProps> = ({
   );
 };
 
-export default FormItemWithDiff;
+export { FormItemWithDiff };

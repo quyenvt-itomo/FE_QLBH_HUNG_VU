@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Form, Input } from "antd";
-import Label from "./Label";
+import { Label } from "./Label";
 import { CheckIcon, XMarkIcon, PencilIcon } from "@heroicons/react/24/outline";
 import { CLASSNAME } from "@/shared/constants/ui";
 import { HEIGHT } from "@/shared/constants/ui";
@@ -167,4 +167,4 @@ function EditableInfoRow<T = any>({
   );
 }
 
-export default EditableInfoRow;
+export { EditableInfoRow };

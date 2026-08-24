@@ -11,14 +11,14 @@ import { ShippingPlanByPurchase } from "@/modules/shippingPlan/partials/Shipping
 import { CLASSNAME } from "@/shared/constants/ui";
 import { checkCanPermission } from "@/shared/utils/permission.util";
 import { PurchaseLine } from "@/modules/purchaseLine";
-import { ApproveStatusTag } from "@/shared/components/display/Tag";
+import { ApproveStatusTag } from "@/shared";
 import { UserIcon } from "@heroicons/react/24/solid";
 import { AdditionalInfo } from "@/shared/interfaces/common";
-import DocumentGroup from "@/shared/components/display/DocumentGroup";
+import { DocumentGroup } from "@/shared";
 import { StockDocumentStatus, useStockDocumentStore } from "@/modules/stockDocument";
 import dayjs from "dayjs";
-import { DataTable, DataColumn, SummaryConfig } from "@/shared/components/display/DataTable";
-import { SortOrderEnum } from "@/shared/constants/enum";
+import { DataTable, DataColumn, SummaryConfig } from "@/shared";
+import { SortOrder } from "@/shared/constants/enum";
 import { Icon } from "@iconify/react";
 
 interface Props {
@@ -46,7 +46,7 @@ export const PurchaseDetailModal: React.FC<Props> = ({
     page: 1,
     size: 999,
     sortBy: "actualImportDate",
-    sortOrder: SortOrderEnum.ASC,
+    sortOrder: SortOrder.ASC,
     purchaseId: data?.id,
     status: StockDocumentStatus.COMPLETED,
     isLocked: !data || data.approveStatus !== ApproveStatus.APPROVED,

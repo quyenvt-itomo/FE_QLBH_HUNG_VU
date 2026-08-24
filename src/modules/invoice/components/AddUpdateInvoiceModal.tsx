@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { App, Col, Form, FormProps, Input, Modal, Radio, Row } from "antd";
 import dayjs from "dayjs";
 import { AddUpdateModalProps } from "@/shared/interfaces/common";
@@ -15,12 +15,12 @@ import { handleCloseWithPendingFiles, randomId } from "@/shared/utils/common.uti
 import { extractListErrorCells, setFormErrors } from "@/shared/utils/form.util";
 import { formatFormData, parseFormDataDates } from "@/shared/utils/date.util";
 import { formatMoney, formatPercentage, formatQuantity } from "@/shared/utils/number.util";
-import SubmitButton from "@/shared/components/button/SubmitButton";
-import Label from "@/shared/components/display/Label";
-import { AppDatePicker } from "@/shared/components/input/AppDatePicker";
-import { InputMoney, InputPercentage, InputQuantity } from "@/shared/components/input";
-import { FormSection } from "@/shared/components/form/FormSection";
-import FormListTable, { FormColumn } from "@/shared/components/form/FormListTable";
+import { SubmitButton } from "@/shared";
+import { Label } from "@/shared";
+import { AppDatePicker } from "@/shared";
+import { InputMoney, InputPercentage, InputQuantity } from "@/shared";
+import { FormSection } from "@/shared";
+import { FormListTable, FormColumn } from "@/shared";
 import { Purchase, PurchaseSelect } from "@/modules/purchase";
 import { ShippingPlan, ShippingPlanSelect } from "@/modules/shippingPlan";
 import { Order, OrderSelect } from "@/modules/order";
@@ -32,7 +32,7 @@ import {
   useStockDocumentStore,
 } from "@/modules/stockDocument";
 import { ApproveStatus } from "@/modules/shared/business.model";
-import { AppSelect } from "@/shared/components/select/AppSelect";
+import { AppSelect } from "@/shared";
 import { PartnerSelect } from "@/modules/partner";
 import {
   convertPurchaseToInvoiceLines,
@@ -40,13 +40,13 @@ import {
   convertStockDocumentToInvoiceLines,
   convertShippingPlanToInvoiceLines,
 } from "../invoice.util";
-import { EntityType, FileCategory, SortOrderEnum } from "@/shared/constants/enum";
-import { AddressInput } from "@/shared/components/input/AddressInput";
+import { EntityType, FileCategory, SortOrder } from "@/shared/constants/enum";
+import { AddressInput } from "@/shared";
 import { useAppMessage } from "@/shared/hooks/useAppMessage";
-import { FileUploadBox } from "@/shared/components/upload/FileUploadBox";
+import { FileUploadBox } from "@/shared";
 import { CalculationUtil } from "@/shared/utils/calculation.util";
 
-/** Sinh tự động dòng hóa đơn từ chứng từ nguồn dựa trên Type + SourceType */
+/** Sinh t? �?ng d?ng h�a ��n t? ch?ng t? ngu?n d?a tr�n Type + SourceType */
 function buildLines(
   source: Order | Purchase | ShippingPlan | StockDocument | null | undefined,
   Type: InvoiceType,
@@ -101,12 +101,12 @@ export const AddUpdateInvoiceModal: React.FC<AddUpdateInvoiceModalProps> = ({
   const shippingPlan = Form.useWatch("shippingPlan", form);
   const stockDocument = Form.useWatch("stockDocument", form);
 
-  // Memo hóa params để queryKey ổn định (tránh refetch mỗi render → infinite loop)
+  // Memo h�a params �? queryKey ?n �?nh (tr�nh refetch m?i render ? infinite loop)
   const { data: stockDocuments } = useStockDocumentStore({
     page: 1,
     size: 999,
     sortBy: isInput ? "actualImportDate" : "actualExportDate",
-    sortOrder: SortOrderEnum.ASC,
+    sortOrder: SortOrder.ASC,
     partnerId: partner?.id,
     purchaseId: purchase?.id,
     orderId: order?.id,
@@ -114,7 +114,7 @@ export const AddUpdateInvoiceModal: React.FC<AddUpdateInvoiceModalProps> = ({
     isLocked: sourceType !== InvoiceSourceType.ORDER || (!purchase && !order),
   });
 
-  // Cột lịch sử giao hàng: mỗi phiếu nhập kho 1 cột (billingQuantity) — để đối chiếu khi nhập hóa đơn
+  // C?t l?ch s? giao h�ng: m?i phi?u nh?p kho 1 c?t (billingQuantity) � �? �?i chi?u khi nh?p h�a ��n
   const { moreColumns } = useMemo(() => {
     const docs = stockDocuments || [];
 
@@ -151,17 +151,17 @@ export const AddUpdateInvoiceModal: React.FC<AddUpdateInvoiceModalProps> = ({
       return;
     }
     setFormErrors(form, errors, { scrollToFirst: true });
-    // Trích xuất các cell bị lỗi để highlight
+    // Tr�ch xu?t c�c cell b? l?i �? highlight
     const cells = extractListErrorCells(errors, "lines");
     setErrorCells(cells);
   }, [errors, form]);
 
-  // Option nguồn tùy theo Type
+  // Option ngu?n t�y theo Type
   const sourceTypeOptions = useMemo(() => getInmvoiceOptionsByDirection(type), [type]);
 
   const isManual = sourceType === InvoiceSourceType.OTHER;
 
-  // Áp dụng chứng từ nguồn: sinh dòng + đối tác
+  // �p d?ng ch?ng t? ngu?n: sinh d?ng + �?i t�c
   const applySource = (
     srcData: Order | Purchase | ShippingPlan | StockDocument | null | undefined,
     dir: InvoiceType,
@@ -188,7 +188,7 @@ export const AddUpdateInvoiceModal: React.FC<AddUpdateInvoiceModalProps> = ({
     form.setFieldValue("referenceDate", d);
   };
 
-  // Cột dòng hóa đơn
+  // C?t d?ng h�a ��n
   const lineColumns: FormColumn<InvoiceLine>[] = useMemo(
     () => [
       {
@@ -199,37 +199,37 @@ export const AddUpdateInvoiceModal: React.FC<AddUpdateInvoiceModalProps> = ({
         render: ({ index }) => index + 1,
       },
       {
-        title: "Hàng hóa",
+        title: "H�ng h�a",
         dataIndex: "productName",
         width: 220,
         editable: isManual,
         render: ({ record }) =>
           isManual ? (
-            <Input placeholder="Tên hàng hóa" variant="borderless" />
+            <Input placeholder="T�n h�ng h�a" variant="borderless" />
           ) : (
             record?.productName || "--"
           ),
       },
       {
-        title: "Mã hàng",
+        title: "M? h�ng",
         dataIndex: "productCode",
         width: 100,
         editable: isManual,
         render: ({ record }) =>
           isManual ? (
-            <Input placeholder="Mã hàng" variant="borderless" />
+            <Input placeholder="M? h�ng" variant="borderless" />
           ) : (
             record?.productCode || "--"
           ),
       },
       {
-        title: "ĐVT",
+        title: "�VT",
         dataIndex: "unit",
         width: 70,
         align: "center",
         editable: isManual,
         render: ({ record }) =>
-          isManual ? <Input placeholder="ĐVT" variant="borderless" /> : record?.unit || "--",
+          isManual ? <Input placeholder="�VT" variant="borderless" /> : record?.unit || "--",
       },
       {
         title: "SL",
@@ -245,7 +245,7 @@ export const AddUpdateInvoiceModal: React.FC<AddUpdateInvoiceModalProps> = ({
           ),
       },
       {
-        title: "Đơn giá",
+        title: "��n gi�",
         dataIndex: "unitPrice",
         width: 110,
         align: "right",
@@ -254,7 +254,7 @@ export const AddUpdateInvoiceModal: React.FC<AddUpdateInvoiceModalProps> = ({
           isManual ? <InputMoney variant="borderless" /> : formatMoney(record?.unitPrice),
       },
       {
-        title: "Thành tiền",
+        title: "Th�nh ti?n",
         dataIndex: "subTotal",
         width: 100,
         align: "right",
@@ -277,7 +277,7 @@ export const AddUpdateInvoiceModal: React.FC<AddUpdateInvoiceModalProps> = ({
           ),
       },
       {
-        title: "Tiền VAT",
+        title: "Ti?n VAT",
         dataIndex: "taxAmount",
         width: 100,
         align: "right",
@@ -287,7 +287,7 @@ export const AddUpdateInvoiceModal: React.FC<AddUpdateInvoiceModalProps> = ({
         },
       },
       {
-        title: "Thành tiền",
+        title: "Th�nh ti?n",
         dataIndex: "totalAmount",
         width: 110,
         align: "right",
@@ -297,11 +297,11 @@ export const AddUpdateInvoiceModal: React.FC<AddUpdateInvoiceModalProps> = ({
         },
       },
       {
-        title: "Ghi chú",
+        title: "Ghi ch�",
         dataIndex: "note",
         width: 120,
         editable: true,
-        render: ({ record }) => <Input placeholder="Ghi chú" variant="borderless" />,
+        render: ({ record }) => <Input placeholder="Ghi ch�" variant="borderless" />,
       },
     ],
     [isManual],
@@ -325,7 +325,7 @@ export const AddUpdateInvoiceModal: React.FC<AddUpdateInvoiceModalProps> = ({
           onChangeData={(v) => {
             const canUse = v?._actions?.createInvoice;
             if (v && !canUse?.can) {
-              message.error(canUse?.reason || "Đơn hàng không thể nhập hóa đơn");
+              message.error(canUse?.reason || "��n h�ng kh�ng th? nh?p h�a ��n");
               form.setFieldValue("purchaseId", null);
               return;
             }
@@ -347,7 +347,7 @@ export const AddUpdateInvoiceModal: React.FC<AddUpdateInvoiceModalProps> = ({
           onChangeData={(v) => {
             const canUse = v?._actions?.createInvoice;
             if (v && !canUse?.can) {
-              message.error(canUse?.reason || "Phương án vận chuyển không thể nhập hóa đơn");
+              message.error(canUse?.reason || "Ph��ng �n v?n chuy?n kh�ng th? nh?p h�a ��n");
               form.setFieldValue("shippingPlanId", null);
               return;
             }
@@ -374,7 +374,7 @@ export const AddUpdateInvoiceModal: React.FC<AddUpdateInvoiceModalProps> = ({
           onChangeData={(v) => {
             const canUse = v?._actions?.createInvoice;
             if (v && !canUse?.can) {
-              message.error(canUse?.reason || "Đơn hàng không thể xuất hóa đơn");
+              message.error(canUse?.reason || "��n h�ng kh�ng th? xu?t h�a ��n");
               form.setFieldValue("orderId", null);
               return;
             }
@@ -399,7 +399,7 @@ export const AddUpdateInvoiceModal: React.FC<AddUpdateInvoiceModalProps> = ({
           onChangeData={(v) => {
             const canUse = v?._actions?.createInvoice;
             if (v && !canUse?.can) {
-              message.error(canUse?.reason || "Chứng từ kho không thể nhập hóa đơn");
+              message.error(canUse?.reason || "Ch?ng t? kho kh�ng th? nh?p h�a ��n");
               form.setFieldValue("stockDocumentId", null);
               return;
             }
@@ -413,7 +413,7 @@ export const AddUpdateInvoiceModal: React.FC<AddUpdateInvoiceModalProps> = ({
       );
     } else {
       name = "referenceNumber";
-      children = <Input placeholder="Nhập số chứng từ" />;
+      children = <Input placeholder="Nh?p s? ch?ng t?" />;
     }
 
     return { name, children };
@@ -431,12 +431,12 @@ export const AddUpdateInvoiceModal: React.FC<AddUpdateInvoiceModalProps> = ({
 
     modal.confirm({
       centered: true,
-      title: editData ? "Xác nhận sửa hóa đơn?" : "Xác nhận thêm hóa đơn?",
+      title: editData ? "X�c nh?n s?a h�a ��n?" : "X�c nh?n th�m h�a ��n?",
       content: editData
-        ? "Bạn có chắc chắn muốn sửa hóa đơn này không?"
-        : "Bạn có chắc chắn muốn thêm hóa đơn này không?",
-      okText: "Xác nhận",
-      cancelText: "Hủy",
+        ? "B?n c� ch?c ch?n mu?n s?a h�a ��n n�y kh�ng?"
+        : "B?n c� ch?c ch?n mu?n th�m h�a ��n n�y kh�ng?",
+      okText: "X�c nh?n",
+      cancelText: "H?y",
       onOk: () => {
         const formattedData = formatFormData(payload);
         editData ? onEdit?.(formattedData) : onAdd?.(formattedData);
@@ -444,7 +444,7 @@ export const AddUpdateInvoiceModal: React.FC<AddUpdateInvoiceModalProps> = ({
     });
   };
 
-  // Xóa chứng từ nguồn
+  // X�a ch?ng t? ngu?n
   const handleClearSource = () => {
     form.setFieldValue("purchaseId", null);
     form.setFieldValue("purchase", null);
@@ -459,7 +459,7 @@ export const AddUpdateInvoiceModal: React.FC<AddUpdateInvoiceModalProps> = ({
 
   return (
     <Modal
-      title={`${invoiceTypeMap[type]} - ${editData ? "Chỉnh sửa" : "Nhập mới"}`}
+      title={`${invoiceTypeMap[type]} - ${editData ? "Ch?nh s?a" : "Nh?p m?i"}`}
       open={open}
       onCancel={() => handleCloseWithPendingFiles(id, onClose)}
       footer={null}
@@ -491,13 +491,13 @@ export const AddUpdateInvoiceModal: React.FC<AddUpdateInvoiceModalProps> = ({
           lines: [],
         }}
       >
-        <FormSection title="Thông tin chung">
+        <FormSection title="Th�ng tin chung">
           <Row gutter={[24, 0]}>
             <Col span={10}>
               <Form.Item
                 name="partnerId"
-                label={<Label title="Đối tác" required />}
-                rules={[{ required: true, message: "Vui lòng chọn đối tác" }]}
+                label={<Label title="�?i t�c" required />}
+                rules={[{ required: true, message: "Vui l?ng ch?n �?i t�c" }]}
               >
                 <PartnerSelect
                   defaultData={partner}
@@ -511,7 +511,7 @@ export const AddUpdateInvoiceModal: React.FC<AddUpdateInvoiceModalProps> = ({
               <Form.Item name="partner" hidden />
             </Col>
             <Col span={4}>
-              <Form.Item name="sourceType" label={<Label title="Loại chứng từ" />}>
+              <Form.Item name="sourceType" label={<Label title="Lo?i ch?ng t?" />}>
                 <AppSelect
                   allowClear={false}
                   options={sourceTypeOptions}
@@ -525,8 +525,8 @@ export const AddUpdateInvoiceModal: React.FC<AddUpdateInvoiceModalProps> = ({
             <Col span={5}>
               <Form.Item
                 name={sourceName}
-                label={<Label title="Số chứng từ" required />}
-                rules={[{ required: true, message: "Vui lòng chọn/nhập số chứng từ" }]}
+                label={<Label title="S? ch?ng t?" required />}
+                rules={[{ required: true, message: "Vui l?ng ch?n/nh?p s? ch?ng t?" }]}
               >
                 {sourceChildren}
               </Form.Item>
@@ -538,65 +538,65 @@ export const AddUpdateInvoiceModal: React.FC<AddUpdateInvoiceModalProps> = ({
             </Col>
 
             <Col span={5}>
-              <Form.Item name="referenceDate" label={<Label title="Ngày chứng từ" />}>
+              <Form.Item name="referenceDate" label={<Label title="Ng�y ch?ng t?" />}>
                 <AppDatePicker onlyDate disabled={!isManual} />
               </Form.Item>
             </Col>
 
             <Col span={5}>
-              <Form.Item name={["partner", "code"]} label={<Label title="Mã đối tác" />}>
-                <Input placeholder="Chọn đối tác" disabled />
+              <Form.Item name={["partner", "code"]} label={<Label title="M? �?i t�c" />}>
+                <Input placeholder="Ch?n �?i t�c" disabled />
               </Form.Item>
             </Col>
 
             <Col span={5}>
-              <Form.Item name={["partner", "taxCode"]} label={<Label title="Mã số thuế" />}>
-                <Input placeholder="Mã số thuế" disabled />
+              <Form.Item name={["partner", "taxCode"]} label={<Label title="M? s? thu?" />}>
+                <Input placeholder="M? s? thu?" disabled />
               </Form.Item>
             </Col>
 
             <Col span={4}>
-              <Form.Item name={["partner", "phone"]} label={<Label title="Số điện thoại" />}>
-                <Input placeholder="Số điện thoại" disabled />
+              <Form.Item name={["partner", "phone"]} label={<Label title="S? �i?n tho?i" />}>
+                <Input placeholder="S? �i?n tho?i" disabled />
               </Form.Item>
             </Col>
 
             <Col span={5}>
               <Form.Item
                 name="invoiceNumber"
-                label={<Label title="Số hóa đơn" required />}
-                rules={[{ required: true, message: "Vui lòng nhập số hóa đơn" }]}
+                label={<Label title="S? h�a ��n" required />}
+                rules={[{ required: true, message: "Vui l?ng nh?p s? h�a ��n" }]}
               >
-                <Input placeholder="Số hóa đơn" />
+                <Input placeholder="S? h�a ��n" />
               </Form.Item>
             </Col>
 
             <Col span={5}>
               <Form.Item
                 name="invoiceDate"
-                label={<Label title="Ngày hóa đơn" required />}
-                rules={[{ required: true, message: "Vui lòng chọn ngày hóa đơn" }]}
+                label={<Label title="Ng�y h�a ��n" required />}
+                rules={[{ required: true, message: "Vui l?ng ch?n ng�y h�a ��n" }]}
               >
                 <AppDatePicker onlyDate />
               </Form.Item>
             </Col>
 
             <Col span={10}>
-              <Form.Item name={["partner", "address"]} label={<Label title="Địa chỉ" />}>
+              <Form.Item name={["partner", "address"]} label={<Label title="�?a ch?" />}>
                 <AddressInput disabled />
               </Form.Item>
             </Col>
 
             <Col span={14}>
-              <Form.Item name="note" label={<Label title="Ghi chú" />}>
-                <Input placeholder="Ghi chú" />
+              <Form.Item name="note" label={<Label title="Ghi ch�" />}>
+                <Input placeholder="Ghi ch�" />
               </Form.Item>
             </Col>
           </Row>
         </FormSection>
 
-        {/* Dòng hóa đơn */}
-        <FormSection title="Dòng hóa đơn">
+        {/* D?ng h�a ��n */}
+        <FormSection title="D?ng h�a ��n">
           <FormListTable
             form={form}
             fieldName="lines"
@@ -604,13 +604,13 @@ export const AddUpdateInvoiceModal: React.FC<AddUpdateInvoiceModalProps> = ({
             records={lines}
             showDelete={isManual}
             errorCells={errorCells}
-            emptyText={isManual ? "Chưa có dòng" : "Chọn chứng từ nguồn để sinh dòng tự động"}
+            emptyText={isManual ? "Ch�a c� d?ng" : "Ch?n ch?ng t? ngu?n �? sinh d?ng t? �?ng"}
             renderSummary={() => {
               const total = calc.calculateTotalForArray(lines);
               return (
                 <>
                   <td className="text-center" colSpan={4}>
-                    <span className="font-semibold">Tổng</span>
+                    <span className="font-semibold">T?ng</span>
                   </td>
                   <td className="border-l text-end px-3 font-semibold">
                     {formatQuantity(total.quantity)}

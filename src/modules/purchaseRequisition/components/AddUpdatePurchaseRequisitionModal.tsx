@@ -1,22 +1,22 @@
-﻿import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Modal, Form, Input, FormProps, App, Row, Col } from "antd";
 import { AddUpdateModalProps } from "@/shared/interfaces/common";
 import { PurchaseRequisition } from "../purchaseRequisition.model";
 import { handleCloseWithPendingFiles, randomId } from "@/shared/utils/common.util";
 import { setFormErrors } from "@/shared/utils/form.util";
-import SubmitButton from "@/shared/components/button/SubmitButton";
-import Title from "@/shared/components/display/Title";
+import { SubmitButton } from "@/shared";
+import { Title } from "@/shared";
 import { useAppMessage } from "@/shared/hooks/useAppMessage";
 import { deletePendingFiles } from "@/shared/utils/file.util";
 import { formatFormData, parseFormDataDates } from "@/shared/utils/date.util";
 import { EmployeeSelect } from "@/modules/employee";
-import Label from "@/shared/components/display/Label";
+import { Label } from "@/shared";
 import { OrderSelect } from "@/modules/order";
 import { ProductionSelect } from "@/modules/production";
-import { AppDatePicker } from "@/shared/components/input/AppDatePicker";
+import { AppDatePicker } from "@/shared";
 import dayjs from "dayjs";
 import { departmentTypes, OrganizationSelect } from "@/modules/organization";
-import { FileUploadBox } from "@/shared/components/upload/FileUploadBox";
+import { FileUploadBox } from "@/shared";
 import { EntityType, FileCategory } from "@/shared/constants/enum";
 import { PurchaseRequisitionLineFormList } from "./PurchaseRequisitionLineFormList";
 import { useGlobalData } from "@/shared/hooks/useGlobalData";
@@ -46,13 +46,13 @@ export const PurchaseRequisitionAddUpdateModal: React.FC<
 
     modal.confirm({
       title: editData
-        ? "Xác nhận sửa phiếu đề nghị mua vật tư?"
-        : "Xác nhận thêm phiếu đề nghị mua vật tư?",
+        ? "X�c nh?n s?a phi?u �? ngh? mua v?t t�?"
+        : "X�c nh?n th�m phi?u �? ngh? mua v?t t�?",
       content: editData
-        ? "Bạn có chắc chắn muốn sửa phiếu đề nghị mua vật tư này không?"
-        : "Bạn có chắc chắn muốn thêm phiếu đề nghị mua vật tư này không?",
-      okText: "Xác nhận",
-      cancelText: "Hủy",
+        ? "B?n c� ch?c ch?n mu?n s?a phi?u �? ngh? mua v?t t� n�y kh�ng?"
+        : "B?n c� ch?c ch?n mu?n th�m phi?u �? ngh? mua v?t t� n�y kh�ng?",
+      okText: "X�c nh?n",
+      cancelText: "H?y",
       onOk: () => {
         editData ? onEdit?.(formattedData) : onAdd?.(formattedData);
       },
@@ -61,7 +61,7 @@ export const PurchaseRequisitionAddUpdateModal: React.FC<
 
   return (
     <Modal
-      title={editData ? "Sửa phiếu đề nghị mua vật tư" : "Thêm phiếu đề nghị mua vật tư"}
+      title={editData ? "S?a phi?u �? ngh? mua v?t t�" : "Th�m phi?u �? ngh? mua v?t t�"}
       open={open}
       onCancel={() => handleCloseWithPendingFiles(id, onClose)}
       footer={null}
@@ -95,8 +95,8 @@ export const PurchaseRequisitionAddUpdateModal: React.FC<
             <Col span={8}>
               <Form.Item
                 name="requesterId"
-                label={<Label title="Người đề nghị" required />}
-                rules={[{ required: true, message: "Vui lòng chọn người đề nghị" }]}
+                label={<Label title="Ng�?i �? ngh?" required />}
+                rules={[{ required: true, message: "Vui l?ng ch?n ng�?i �? ngh?" }]}
               >
                 <EmployeeSelect
                   defaultData={requester}
@@ -110,7 +110,7 @@ export const PurchaseRequisitionAddUpdateModal: React.FC<
               <Form.Item name="requester" hidden />
             </Col>
             <Col span={8}>
-              <Form.Item name="orderId" label={<Label title="Mua theo ĐH" />}>
+              <Form.Item name="orderId" label={<Label title="Mua theo �H" />}>
                 <OrderSelect
                   defaultData={order}
                   onChangeData={(val) => {
@@ -123,12 +123,12 @@ export const PurchaseRequisitionAddUpdateModal: React.FC<
               <Form.Item name="order" hidden />
             </Col>
             <Col span={8}>
-              <Form.Item name="code" label={<Label title="Số phiếu" />}>
-                <Input placeholder="Tự động tạo nếu để trống khi lưu" />
+              <Form.Item name="code" label={<Label title="S? phi?u" />}>
+                <Input placeholder="T? �?ng t?o n?u �? tr?ng khi l�u" />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item name={["requester", "code"]} label={<Label title="Mã nhân sự" />}>
+              <Form.Item name={["requester", "code"]} label={<Label title="M? nh�n s?" />}>
                 <Input disabled />
               </Form.Item>
             </Col>
@@ -148,22 +148,22 @@ export const PurchaseRequisitionAddUpdateModal: React.FC<
             <Col span={8}>
               <Form.Item
                 name="timeAt"
-                label={<Label title="Ngày" required />}
-                rules={[{ required: true, message: "Vui lòng chọn ngày" }]}
+                label={<Label title="Ng�y" required />}
+                rules={[{ required: true, message: "Vui l?ng ch?n ng�y" }]}
               >
                 <AppDatePicker />
               </Form.Item>
               <Form.Item name="requester" hidden />
             </Col>
             <Col span={8}>
-              <Form.Item name={["requester", "phone"]} label={<Label title="Số điện thoại" />}>
+              <Form.Item name={["requester", "phone"]} label={<Label title="S? �i?n tho?i" />}>
                 <Input disabled />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item name="departmentId" label={<Label title="Bộ phận đề nghị" />}>
+              <Form.Item name="departmentId" label={<Label title="B? ph?n �? ngh?" />}>
                 <OrganizationSelect
-                  placeholder="Chọn bộ phận"
+                  placeholder="Ch?n b? ph?n"
                   defaultData={department}
                   onChangeData={(val) => form.setFieldValue("department", val)}
                   query={{
@@ -175,8 +175,8 @@ export const PurchaseRequisitionAddUpdateModal: React.FC<
               <Form.Item name="department" hidden />
             </Col>
             <Col span={8}>
-              <Form.Item name="note" label={<Label title="Ghi chú" />}>
-                <Input placeholder="Nhập ghi chú" />
+              <Form.Item name="note" label={<Label title="Ghi ch�" />}>
+                <Input placeholder="Nh?p ghi ch�" />
               </Form.Item>
               <Form.Item name="requester" hidden />
             </Col>

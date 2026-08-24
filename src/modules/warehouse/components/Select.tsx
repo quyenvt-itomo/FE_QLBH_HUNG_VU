@@ -2,8 +2,8 @@ import React from "react";
 import { SelectProps } from "@/shared/interfaces/common";
 import { Warehouse, WarehouseQuery } from "../warehouse.model";
 import { useWarehouseStore } from "../warehouse.store";
-import { DropdownColumn } from "@/shared/components/core/CustomSelectLayout";
-import { SmartSelect } from "@/shared/components/core/SmartSelect";
+import { DropdownColumn } from "@/shared";
+import { SmartSelect } from "@/shared";
 import { useRemoteSelect } from "@/shared/hooks/useRemoteSelect";
 
 const columns: DropdownColumn<Warehouse>[] = [

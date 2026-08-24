@@ -1,13 +1,13 @@
-﻿import React from "react";
+import React from "react";
 import { Modal, Descriptions, Row, Col, Table, TableProps } from "antd";
 import { ReferralCodeList } from "@/modules/referralCode";
 import { PurchaseRequisition } from "../purchaseRequisition.model";
 import { formatDate, formatDateTimeDDMMYYYY } from "@/shared/utils/date.util";
-import DocumentGroup from "@/shared/components/display/DocumentGroup";
+import { DocumentGroup } from "@/shared";
 import { resolveByPath } from "@/shared/utils/common.util";
 import { ProductTypeTag } from "@/modules/product";
 import { formatQuantity } from "@/shared/utils/number.util";
-import { ApproveStatusTag } from "@/shared/components/display/Tag";
+import { ApproveStatusTag } from "@/shared";
 
 interface Props {
   open: boolean;
@@ -25,14 +25,14 @@ export const PurchaseRequisitionDetailModal: React.FC<Props> = ({
   if (!data) return null;
 
   const info = [
-    { label: "Số phiếu", value: data.code ?? "--" },
-    { label: "Ngày đề nghị", value: formatDateTimeDDMMYYYY(data.timeAt) },
-    { label: "Bộ phận", value: resolveByPath(data, ["department", "name"]) ?? "--" },
-    { label: "Người đề nghị", value: resolveByPath(data, ["requester", "name"]) },
-    { label: "Trạng thái", value: <ApproveStatusTag value={data.approveStatus} /> },
-    { label: "Người phê duyệt", value: resolveByPath(data, ["approver", "name"]) },
-    { label: "Ngày phê duyệt", value: data.approvedAt ? formatDate(data.approvedAt) : "--" },
-    { label: "Ghi chú", value: data.note ?? "--" },
+    { label: "S? phi?u", value: data.code ?? "--" },
+    { label: "Ng�y �? ngh?", value: formatDateTimeDDMMYYYY(data.timeAt) },
+    { label: "B? ph?n", value: resolveByPath(data, ["department", "name"]) ?? "--" },
+    { label: "Ng�?i �? ngh?", value: resolveByPath(data, ["requester", "name"]) },
+    { label: "Tr?ng th�i", value: <ApproveStatusTag value={data.approveStatus} /> },
+    { label: "Ng�?i ph� duy?t", value: resolveByPath(data, ["approver", "name"]) },
+    { label: "Ng�y ph� duy?t", value: data.approvedAt ? formatDate(data.approvedAt) : "--" },
+    { label: "Ghi ch�", value: data.note ?? "--" },
   ];
 
   const columns: TableProps["columns"] = [
@@ -45,20 +45,20 @@ export const PurchaseRequisitionDetailModal: React.FC<Props> = ({
       render: (_, __, index) => String(index + 1),
     },
     {
-      title: "Mã hàng hóa",
+      title: "M? h�ng h�a",
       dataIndex: ["product", "code"],
       key: "productCode",
       width: 150,
       fixed: "left",
     },
     {
-      title: "Tên hàng hóa",
+      title: "T�n h�ng h�a",
       dataIndex: ["product", "name"],
       key: "productName",
       width: 280,
     },
     {
-      title: "Loại",
+      title: "Lo?i",
       dataIndex: ["product", "type"],
       key: "productType",
       width: 120,
@@ -66,14 +66,14 @@ export const PurchaseRequisitionDetailModal: React.FC<Props> = ({
       render: (val) => <ProductTypeTag value={val} />,
     },
     {
-      title: "ĐVT",
+      title: "�VT",
       dataIndex: ["unit", "name"],
       key: "unit",
       width: 100,
       align: "center",
     },
     {
-      title: "Số lượng",
+      title: "S? l�?ng",
       dataIndex: "quantity",
       key: "quantity",
       width: 180,
@@ -81,7 +81,7 @@ export const PurchaseRequisitionDetailModal: React.FC<Props> = ({
       render: (val) => formatQuantity(val),
     },
     {
-      title: "Ghi chú",
+      title: "Ghi ch�",
       dataIndex: "note",
       key: "note",
     },
@@ -89,7 +89,7 @@ export const PurchaseRequisitionDetailModal: React.FC<Props> = ({
 
   return (
     <Modal
-      title={"Chi tiết phiếu đề nghị mua vật tư"}
+      title={"Chi ti?t phi?u �? ngh? mua v?t t�"}
       open={open}
       onCancel={onClose}
       footer={null}
@@ -118,7 +118,7 @@ export const PurchaseRequisitionDetailModal: React.FC<Props> = ({
           </Descriptions>
 
           <div className="flex flex-col">
-            <h4 className="mb-2">Chi tiết hàng</h4>
+            <h4 className="mb-2">Chi ti?t h�ng</h4>
             <Table
               pagination={false}
               dataSource={data.lines || []}
@@ -129,13 +129,13 @@ export const PurchaseRequisitionDetailModal: React.FC<Props> = ({
           </div>
           <div className="sticky bottom-0 bg-white dark:bg-gray-900 pt-2 pb-2 ">
             <h4 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
-              Tệp đính kèm
+              T?p ��nh k�m
             </h4>
             <DocumentGroup files={data.document} />
           </div>
         </div>
 
-        {/* Phần mã giới thiệu - partial tự xử lý toàn bộ logic */}
+        {/* Ph?n m? gi?i thi?u - partial t? x? l? to�n b? logic */}
         <div className="w-96 shrink-0 ml-4 border-l pl-4 h-full overflow-y-auto scrollbar-hide">
           <ReferralCodeList purchaseRequisition={data} />
         </div>

@@ -115,4 +115,4 @@ const PermissionSelect: React.FC<PermissionSelectProps> = ({ module, form, disab
   );
 };
 
-export default PermissionSelect;
+export { PermissionSelect };

@@ -1,4 +1,4 @@
-ï»¿import React, { useEffect } from "react";
+import React, { useEffect } from "react";
 import { Form, Modal } from "antd";
 import { AddModalProps } from "@/shared/interfaces/common";
 import { Order } from "../order.model";
@@ -6,7 +6,7 @@ import { formatFormData } from "@/shared/utils/date.util";
 import { randomId } from "@/shared/utils/common.util";
 import { OrderFormBody } from "./OrderFormBody";
 import { OrderLineFormList } from "./OrderLineFormList";
-import SubmitButton from "@/shared/components/button/SubmitButton";
+import { SubmitButton } from "@/shared";
 import { useProductStore } from "@/modules/product/product.store";
 
 export const AddOrderModal: React.FC<AddModalProps<Order>> = ({
@@ -30,7 +30,7 @@ export const AddOrderModal: React.FC<AddModalProps<Order>> = ({
     onAdd(formatFormData({ ...values, lines: values.lines || [] }));
   return (
     <Modal
-      title="Táº¡o Ä‘Æ¡n hÃ ng"
+      title="T?o ðõn hàng"
       open={open}
       onCancel={onClose}
       footer={null}

@@ -1,11 +1,11 @@
 import React from "react";
 import { usePageState } from "@/shared/hooks/usePageState";
-import { SearchInput } from "@/shared/components/input";
+import { SearchInput } from "@/shared";
 import { usePartnerDebtAdjustmentStore } from "./partnerDebtAdjustment.store";
 import { PartnerDebtAdjustment } from "./partnerDebtAdjustment.model";
-import AddButton from "@/shared/components/button/AddButton";
-import { Panel } from "@/shared/components/display/Panel";
-import { TableColumnConfig } from "@/shared/components/table/TableColumnConfig";
+import { AddButton } from "@/shared";
+import { Panel } from "@/shared";
+import { TableColumnConfig } from "@/shared";
 import { formatDate } from "@/shared/utils/date.util";
 
 const PartnerDebtAdjustmentPage: React.FC = () => {

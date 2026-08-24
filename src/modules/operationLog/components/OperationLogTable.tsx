@@ -3,8 +3,8 @@ import { moduleMap, Module } from "@/shared/constants/permission";
 import { logActionMapping, OperationLog } from "../operationLog.model";
 import { Button, Tooltip } from "antd";
 import LogDetailDrawer from "./LogDetailDrawer";
-import { TableColumnConfig, ObjectTableProps } from "@/shared/components/table/TableColumnConfig";
-import { ColumnsConfigType } from "@/shared/components/table/handleColumnSelector";
+import { TableColumnConfig, ObjectTableProps } from "@/shared";
+import { ColumnsConfigType } from "@/shared";
 import { formatDateTimeDDMMYYYY } from "@/shared/utils/date.util";
 
 const formatText = (v?: string | null) => v || "--";

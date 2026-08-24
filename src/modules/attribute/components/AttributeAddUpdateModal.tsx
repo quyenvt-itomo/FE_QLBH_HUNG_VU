@@ -1,17 +1,17 @@
 import React, { useEffect, useMemo } from "react";
 import { Input, Modal, Form, Row, Col } from "antd";
 import { FormProps } from "antd/lib";
-import SubmitButton from "@/shared/components/button/SubmitButton";
+import { SubmitButton } from "@/shared";
 import { AddUpdateModalProps } from "@/shared/interfaces/common";
 import { Attribute } from "../attribute.model";
 import { attributeTypeOptions } from "../attribute.enum";
 import { randomId } from "@/shared/utils/common.util";
 import { setFormErrors } from "@/shared/utils/form.util";
 import { parseFormDataDates } from "@/shared/utils/date.util";
-import Label from "@/shared/components/display/Label";
+import { Label } from "@/shared";
 import { useAppMessage } from "@/shared/hooks/useAppMessage";
-import { FormSection } from "@/shared/components/form/FormSection";
-import { AppSelect } from "@/shared/components/select/AppSelect";
+import { FormSection } from "@/shared";
+import { AppSelect } from "@/shared";
 
 export const AttributeAddUpdateModal: React.FC<AddUpdateModalProps<Attribute>> = ({
   open,

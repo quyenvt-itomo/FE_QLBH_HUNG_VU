@@ -1,10 +1,10 @@
 import React from "react";
 import { usePageState } from "@/shared/hooks/usePageState";
-import { SearchInput } from "@/shared/components/input";
+import { SearchInput } from "@/shared";
 import { useAttributeStore } from "./attribute.store";
 import { Attribute } from "./attribute.model";
-import AddButton from "@/shared/components/button/AddButton";
-import { Panel } from "@/shared/components/display/Panel";
+import { AddButton } from "@/shared";
+import { Panel } from "@/shared";
 import { useAttributeHandlers } from "./attribute.handlers";
 import { AttributeTable, AttributeAddUpdateModal, AttributeDetailModal } from "./components";
 

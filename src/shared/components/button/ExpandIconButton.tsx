@@ -33,4 +33,4 @@ const ExpandIconButton: React.FC<ExpandIconButtonProps> = ({ expanded, onExpand,
   );
 };
 
-export default ExpandIconButton;
+export { ExpandIconButton };

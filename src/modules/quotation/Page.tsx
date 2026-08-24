@@ -1,15 +1,15 @@
-﻿import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { usePageState } from "@/shared/hooks/usePageState";
-import { SearchInput } from "@/shared/components/input";
+import { SearchInput } from "@/shared";
 import { useQuotationStore } from "./quotation.store";
 import { Quotation } from "./quotation.model";
 import { ApproveStatus, approvedStatusOptions } from "../shared/business.model";
-import AddButton from "@/shared/components/button/AddButton";
-import { Panel } from "@/shared/components/display/Panel";
-import CustomFilter from "@/shared/components/filters";
+import { AddButton } from "@/shared";
+import { Panel } from "@/shared";
+import { CustomFilter } from "@/shared";
 import { filterUses, rangerItems, sortItems } from "./filterItem";
-import { SortOrderEnum } from "@/shared/constants/enum";
-import DateRangeFilter from "@/shared/components/button/DateRangeFilter";
+import { SortOrder } from "@/shared/constants/enum";
+import { DateRangeFilter } from "@/shared";
 import { Tabs } from "antd";
 import { QuotationTable, AddUpdateQuotationModal, QuotationDetailModal } from "./components";
 import { useLocation } from "react-router-dom";
@@ -46,7 +46,7 @@ export const QuotationPage: React.FC = () => {
     pageAction,
   } = usePageState<Quotation>({
     sortBy: "effectiveDate",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     filterUses,
   });
 
@@ -128,7 +128,7 @@ export const QuotationPage: React.FC = () => {
             activeKey={status}
             onChange={pageAction.handleStatusChange}
             items={[
-              { label: "Tất cả", key: "all" },
+              { label: "T?t c?", key: "all" },
               ...approvedStatusOptions.map((o: any) => ({ ...o, key: o.value })),
             ]}
           />
@@ -151,7 +151,7 @@ export const QuotationPage: React.FC = () => {
             filterUses={filterUses}
             onClearFilter={pageAction.resetFilter}
           />
-          <AddButton title="Tạo báo giá" onOpenAdd={handleOpenAdd} />
+          <AddButton title="T?o b�o gi�" onOpenAdd={handleOpenAdd} />
         </div>
       </div>
       <Panel>

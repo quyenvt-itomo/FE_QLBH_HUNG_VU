@@ -21,4 +21,4 @@ const NumberFormatSelect: React.FC<SelectProps> = ({ value, onChange, ...rest })
   );
 };
 
-export default NumberFormatSelect;
+export { NumberFormatSelect };

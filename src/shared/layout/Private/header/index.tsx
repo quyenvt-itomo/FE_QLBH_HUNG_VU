@@ -5,7 +5,7 @@ import { MenuOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { setDrawerOpen } from "@/shared/stores/global.slice";
 import { useGlobalData } from "@/shared/hooks/useGlobalData";
-import { CustomTitle } from "@/shared/components/display/CustomTitle";
+import { CustomTitle } from "@/shared";
 import UserBar from "./components/UserBar";
 import Notification from "./components/Notification";
 

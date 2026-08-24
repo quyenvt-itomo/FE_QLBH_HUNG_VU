@@ -1,12 +1,12 @@
 import React, { useMemo } from "react";
-import { TableColumnConfig, ObjectTableProps } from "@/shared/components/table/TableColumnConfig";
+import { TableColumnConfig, ObjectTableProps } from "@/shared";
 import { Invoice } from "../invoice.model";
 import { formatDate } from "@/shared/utils/date.util";
 import { formatMoney } from "@/shared/utils/number.util";
 import { resolveByPath } from "@/shared/utils/common.util";
-import { ColumnsConfigType } from "@/shared/components/table";
+import { ColumnsConfigType } from "@/shared";
 import { InvoiceSourceTypeTag, InvoiceStatusTag } from "./Tag";
-import { EntityInfo } from "@/shared/components/display/EntityInfo";
+import { EntityInfo } from "@/shared";
 
 interface Props extends ObjectTableProps {
   onViewDetail?: (r: Invoice) => void;

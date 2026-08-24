@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { usePageState } from "@/shared/hooks/usePageState";
-import { SortOrderEnum } from "@/shared/constants/enum";
+import { SortOrder } from "@/shared/constants/enum";
 import { Panel } from "@/shared/components/display/Panel";
 
 import { useStockDocumentStore } from "../stockDocument.store";
@@ -20,7 +20,7 @@ const OrderIssuePage: React.FC = () => {
   const type = StockDocumentType.ORDER_ISSUE;
   const { keyword, page, size, setPage, setSize } = usePageState<StockDocument>({
     sortBy: "effectiveDate",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     filterUses,
   });
   const [open, setOpen] = useState(false);

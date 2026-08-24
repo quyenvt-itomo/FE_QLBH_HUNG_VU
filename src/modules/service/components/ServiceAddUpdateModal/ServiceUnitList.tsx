@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Form, InputNumber } from "antd";
 import { MagnifyingGlassIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { FormSection } from "@/shared/components/form/FormSection";
+import { FormSection } from "@/shared";
 import {
   Attribute,
   AttributeManagerMultipleSelect,
@@ -10,7 +10,7 @@ import {
 } from "@/modules/attribute";
 import { FormInstance } from "antd/lib";
 import { Service } from "../../service.model";
-import { InputMoney } from "@/shared/components/input";
+import { InputMoney } from "@/shared";
 import { useAutoResetItem } from "@/shared/hooks/useAutoResetItem";
 
 interface Props {

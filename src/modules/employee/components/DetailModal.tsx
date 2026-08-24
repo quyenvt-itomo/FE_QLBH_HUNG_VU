@@ -2,7 +2,7 @@ import { useMemo, useRef } from "react";
 import { Button, Modal, Spin } from "antd";
 import { DetailModalProps } from "@/shared/interfaces/common";
 import { Employee } from "../employee.model";
-import UserImage from "@/shared/components/image/UserImage";
+import { UserImage } from "@/shared";
 import { getMainFile } from "@/shared/utils/file.util";
 import { AnchorInfo } from "./AddUpdateModal/Anchor";
 import { PartialPanel, PartialTitle } from "./AddUpdateModal/PartialComponent";

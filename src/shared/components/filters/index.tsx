@@ -171,4 +171,3 @@ export const CustomFilter = ({
   );
 };
 
-export default CustomFilter;

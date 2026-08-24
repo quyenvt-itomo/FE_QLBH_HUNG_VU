@@ -1,16 +1,16 @@
-﻿import { usePageState } from "@/shared/hooks/usePageState";
+import { usePageState } from "@/shared/hooks/usePageState";
 import { useNavigate } from "react-router-dom";
 import { InventoryReport, InventoryTransactionRefTypeEnum } from "./inventory.model";
 import { useInventoryReportStore } from "./inventory.store";
-import { SearchInput } from "@/shared/components/input";
-import DateRangeFilter from "@/shared/components/button/DateRangeFilter";
-import { Panel } from "@/shared/components/display/Panel";
+import { SearchInput } from "@/shared";
+import { DateRangeFilter } from "@/shared";
+import { Panel } from "@/shared";
 import { DetailInventoryReportModal, ReportTable } from "./components";
 import { checkSelection } from "@/shared/utils/common.util";
-import CustomFilter from "@/shared/components/filters";
+import { CustomFilter } from "@/shared";
 import { filterUses, rangerItems, sortItems } from "./filterItem";
 import { useState } from "react";
-import { SortOrderEnum } from "@/shared/constants/enum";
+import { SortOrder } from "@/shared/constants/enum";
 import { Tabs } from "antd";
 import { ProductType } from "../product";
 
@@ -39,7 +39,7 @@ export const InventoryPage: React.FC = () => {
     pageAction,
   } = usePageState<InventoryReport>({
     sortBy: "name",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     filterUses,
     size: 20,
   });
@@ -103,11 +103,11 @@ export const InventoryPage: React.FC = () => {
           items={[
             {
               key: "finished",
-              label: "Thành phẩm",
+              label: "Th�nh ph?m",
             },
             {
               key: "material",
-              label: "Nguyên vật liệu",
+              label: "Nguy�n v?t li?u",
             },
           ]}
           className="custom-tabs"

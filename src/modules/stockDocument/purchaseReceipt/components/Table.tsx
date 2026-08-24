@@ -1,12 +1,12 @@
 import React, { useMemo } from "react";
-import { TableColumnConfig, ObjectTableProps } from "@/shared/components/table/TableColumnConfig";
+import { TableColumnConfig, ObjectTableProps } from "@/shared";
 import { StockDocument } from "../../stockDocument.model";
 import { formatDateDDMMYYYY, formatDateTimeDDMMYYYY } from "@/shared/utils/date.util";
 import { formatMoney } from "@/shared/utils/number.util";
 import { resolveByPath } from "@/shared/utils/common.util";
-import { ColumnsConfigType } from "@/shared/components/table";
+import { ColumnsConfigType } from "@/shared";
 import { StockDocumentStatusTag } from "../../components";
-import { EntityInfo } from "@/shared/components/display/EntityInfo";
+import { EntityInfo } from "@/shared";
 import { textColorStyle } from "@/shared/constants/ui";
 
 export const Table: React.FC<ObjectTableProps> = ({ onViewDetail, ...rest }) => {

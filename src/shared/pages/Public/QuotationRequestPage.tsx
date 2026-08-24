@@ -2,29 +2,29 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Button, Col, Form, Input, message, Modal, Row, Select, Spin } from "antd";
 import { Organization, useOrganizationStore } from "@/modules/organization";
-import StoreImage from "@/shared/components/image/StoreImage";
+import { StoreImage } from "@/shared";
 import { getMainFile } from "@/shared/utils/file.util";
 import {
   QuotationRequest,
   QuotationRequestLine,
   useQuotationRequestStore,
 } from "@/modules/quotationRequest";
-import Label from "@/shared/components/display/Label";
-import { FormSection } from "@/shared/components/form/FormSection";
+import { Label } from "@/shared";
+import { FormSection } from "@/shared";
 import { getPhoneRules, getTaxCodeRules, taxCodeRule } from "@/shared/constants/formItemRule";
 import { publicRoutesName } from "@/shared/constants/routerName";
 import { PublicProductMultipleSelect } from "@/modules/product/components/Select";
-import { InputQuantity } from "@/shared/components/input";
-import { FormColumn, FormListTable } from "@/shared/components/form/FormListTable";
+import { InputQuantity } from "@/shared";
+import { FormColumn, FormListTable } from "@/shared";
 import { randomId, resolveByPath } from "@/shared/utils/common.util";
-import { FileUploadBox } from "@/shared/components/upload/FileUploadBox";
+import { FileUploadBox } from "@/shared";
 import { EntityType, FileCategory } from "@/shared/constants/enum";
-import { ProvinceSelect, WardSelect } from "@/shared/components/select/AddressSelect";
+import { ProvinceSelect, WardSelect } from "@/shared";
 import { useAddressSelector } from "@/shared/hooks/useAddressSelector";
 import { useAutoResetItem } from "@/shared/hooks/useAutoResetItem";
 import { collectProduct, collectUnits, Product } from "@/modules/product";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
-import { AppSelect } from "@/shared/components/select/AppSelect";
+import { AppSelect } from "@/shared";
 import { useAppMessage } from "@/shared/hooks/useAppMessage";
 import useDebounce from "@/shared/hooks/useDebounce";
 import { usePartnerStore } from "@/modules/partner/partner.store";

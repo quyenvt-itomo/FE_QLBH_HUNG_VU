@@ -80,4 +80,4 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
   );
 };
 
-export default ActionButtons;
+export { ActionButtons };

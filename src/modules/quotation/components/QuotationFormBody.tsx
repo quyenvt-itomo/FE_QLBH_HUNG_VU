@@ -1,15 +1,15 @@
-﻿import React from "react";
+import React from "react";
 import { Input, Form, Row, Col, Select } from "antd";
-import Label from "@/shared/components/display/Label";
+import { Label } from "@/shared";
 import { PartnerSelect } from "@/modules/partner/components/Select";
 import { PartnerType } from "@/modules/partner/partner.model";
 import { QuotationRequestSelect } from "@/modules/quotationRequest";
 import { generateDefaultQuotationByRequest } from "@/modules/quotationRequest/quotationRequest.utils";
 import { randomId } from "@/shared/utils/common.util";
 import { PartialProps } from "./AddUpdateQuotationModal";
-import { AddressInput } from "@/shared/components/input/AddressInput";
-import { AppDatePicker } from "@/shared/components/input/AppDatePicker";
-import { AppSelect } from "@/shared/components/select/AppSelect";
+import { AddressInput } from "@/shared";
+import { AppDatePicker } from "@/shared";
+import { AppSelect } from "@/shared";
 import { ApproveStatus } from "@/modules/shared/business.model";
 import { EmployeeSelect } from "@/modules/employee";
 
@@ -38,12 +38,12 @@ export const QuotationFormBody: React.FC<PartialProps> = ({ form }) => {
 
   return (
     <Row gutter={96}>
-      {/* ===== CỘT 1: Yêu cầu BG, Khách hàng, MST, Bảng LTH ===== */}
+      {/* ===== C?T 1: Y�u c?u BG, Kh�ch h�ng, MST, B?ng LTH ===== */}
       <Col span={10}>
         <Form.Item
           name="customerId"
-          label={<Label width={132} title="Khách hàng" required />}
-          rules={[{ required: true, message: "Vui lòng chọn khách hàng" }]}
+          label={<Label width={132} title="Kh�ch h�ng" required />}
+          rules={[{ required: true, message: "Vui l?ng ch?n kh�ch h�ng" }]}
         >
           <PartnerSelect
             query={{ type: PartnerType.CUSTOMER }}
@@ -55,11 +55,11 @@ export const QuotationFormBody: React.FC<PartialProps> = ({ form }) => {
           />
         </Form.Item>
         <Form.Item name="customer" hidden />
-        <Form.Item name={["customer", "address"]} label={<Label width={132} title="Địa chỉ" />}>
+        <Form.Item name={["customer", "address"]} label={<Label width={132} title="�?a ch?" />}>
           <AddressInput disabled />
         </Form.Item>
 
-        <Form.Item name="quotationRequestId" label={<Label width={132} title="Đề nghị báo giá" />}>
+        <Form.Item name="quotationRequestId" label={<Label width={132} title="�? ngh? b�o gi�" />}>
           <QuotationRequestSelect
             defaultData={quotationRequest}
             query={{ customerId: customer?.id, approveStatus: ApproveStatus.APPROVED }}
@@ -74,7 +74,7 @@ export const QuotationFormBody: React.FC<PartialProps> = ({ form }) => {
               form.setFieldValue("customerId", data.customerId);
               form.setFieldValue("customer", data.customer);
 
-              // Đổ dữ liệu mặc định từ đề nghị báo giá (KHÔNG clear lines/commissions)
+              // �? d? li?u m?c �?nh t? �? ngh? b�o gi� (KH�NG clear lines/commissions)
               const defaultQuotation = generateDefaultQuotationByRequest(data);
               const defaultLines = (defaultQuotation.lines as any[]) || [];
               if (defaultLines.length) {
@@ -88,7 +88,7 @@ export const QuotationFormBody: React.FC<PartialProps> = ({ form }) => {
                 );
               }
 
-              // Reset bảng thông số LTH (không đụng lines/commissions)
+              // Reset b?ng th�ng s? LTH (kh�ng �?ng lines/commissions)
               form.setFieldValue("meshSpecId", undefined);
               form.setFieldValue("meshSpec", undefined);
             }}
@@ -96,35 +96,35 @@ export const QuotationFormBody: React.FC<PartialProps> = ({ form }) => {
         </Form.Item>
         <Form.Item name="quotationRequest" hidden />
 
-        <Form.Item name="meshSpecId" label={<Label width={132} title="Bảng thông số LTH" />}>
-          <AppSelect allowClear placeholder="Chọn bảng thông số LTH" options={[]} />
+        <Form.Item name="meshSpecId" label={<Label width={132} title="B?ng th�ng s? LTH" />}>
+          <AppSelect allowClear placeholder="Ch?n b?ng th�ng s? LTH" options={[]} />
         </Form.Item>
 
-        <Form.Item name="note" label={<Label width={132} title="Ghi chú" />}>
+        <Form.Item name="note" label={<Label width={132} title="Ghi ch�" />}>
           <Input />
         </Form.Item>
       </Col>
 
-      {/* ===== CỘT 2: Người đại diện của khách hàng ===== */}
+      {/* ===== C?T 2: Ng�?i �?i di?n c?a kh�ch h�ng ===== */}
       <Col span={7}>
-        <Form.Item name={["customer", "code"]} label={<Label width={132} title="Mã khách hàng" />}>
+        <Form.Item name={["customer", "code"]} label={<Label width={132} title="M? kh�ch h�ng" />}>
           <Input disabled />
         </Form.Item>
         <Form.Item
           name={["customer", "taxCode"]}
-          label={<Label width={132} title="MST khách hàng" />}
+          label={<Label width={132} title="MST kh�ch h�ng" />}
         >
           <Input disabled />
         </Form.Item>
         <Form.Item
           name={["customer", "representative", "name"]}
-          label={<Label width={132} title="Người đại diện" />}
+          label={<Label width={132} title="Ng�?i �?i di?n" />}
         >
           <Input disabled />
         </Form.Item>
         <Form.Item
           name={["customer", "representative", "phone"]}
-          label={<Label width={132} title="Số điện thoại" />}
+          label={<Label width={132} title="S? �i?n tho?i" />}
         >
           <Input disabled />
         </Form.Item>
@@ -136,25 +136,25 @@ export const QuotationFormBody: React.FC<PartialProps> = ({ form }) => {
         </Form.Item>
       </Col>
 
-      {/* ===== CỘT 3: Số BG, Ngày, NV, Hiệu lực, Ghi chú ===== */}
+      {/* ===== C?T 3: S? BG, Ng�y, NV, Hi?u l?c, Ghi ch� ===== */}
       <Col span={7}>
-        <Form.Item name="code" label={<Label width={132} title="Số đơn hàng" />}>
-          <Input placeholder="Tự động tạo nếu để trống khi lưu" />
+        <Form.Item name="code" label={<Label width={132} title="S? ��n h�ng" />}>
+          <Input placeholder="T? �?ng t?o n?u �? tr?ng khi l�u" />
         </Form.Item>
         <Form.Item
           name="timeAt"
-          label={<Label width={132} title="Ngày báo giá" required />}
-          rules={[{ required: true, message: "Vui lòng chọn ngày báo giá" }]}
+          label={<Label width={132} title="Ng�y b�o gi�" required />}
+          rules={[{ required: true, message: "Vui l?ng ch?n ng�y b�o gi�" }]}
         >
           <AppDatePicker />
         </Form.Item>
-        <Form.Item name="validUntil" label={<Label width={132} title="Hiệu lực đến" />}>
+        <Form.Item name="validUntil" label={<Label width={132} title="Hi?u l?c �?n" />}>
           <AppDatePicker />
         </Form.Item>
         <Form.Item
           name="staffId"
-          label={<Label width={132} title="Người phụ trách" required />}
-          rules={[{ required: true, message: "Vui lòng chọn người phụ trách" }]}
+          label={<Label width={132} title="Ng�?i ph? tr�ch" required />}
+          rules={[{ required: true, message: "Vui l?ng ch?n ng�?i ph? tr�ch" }]}
         >
           <EmployeeSelect
             defaultData={staff}
@@ -164,7 +164,7 @@ export const QuotationFormBody: React.FC<PartialProps> = ({ form }) => {
           />
         </Form.Item>
         <Form.Item name="staff" hidden />
-        <Form.Item name={["staff", "code"]} label={<Label width={132} title="Mã NV" />}>
+        <Form.Item name={["staff", "code"]} label={<Label width={132} title="M? NV" />}>
           <Input disabled />
         </Form.Item>
       </Col>

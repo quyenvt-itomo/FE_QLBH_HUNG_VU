@@ -10,7 +10,7 @@ import { checkSelection } from "@/shared/utils/common.util";
 import CustomFilter from "@/shared/components/filters";
 import { filterUses, rangerItems, sortItems } from "./filterItem";
 import { useState } from "react";
-import { SortOrderEnum } from "@/shared/constants/enum";
+import { SortOrder } from "@/shared/constants/enum";
 import { Tabs } from "antd";
 import { ProductType } from "../product";
 
@@ -39,7 +39,7 @@ export const InventoryPage: React.FC = () => {
     pageAction,
   } = usePageState<InventoryReport>({
     sortBy: "name",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     filterUses,
     size: 20,
   });

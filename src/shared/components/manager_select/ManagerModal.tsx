@@ -2,7 +2,7 @@ import { App, Button, Form, Input, InputNumber, Modal, Radio } from "antd";
 import { useEffect, useState } from "react";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { PlusOutlined } from "@ant-design/icons";
-import ActionButtons from "../button/ActionButtons";
+import { ActionButtons } from "../button/ActionButtons";
 import { Rule } from "antd/es/form";
 import { ManagerModalProps } from "@/shared/interfaces/common";
 import { CLASSNAME } from "@/shared/constants/ui";
@@ -280,4 +280,4 @@ const ManagerModal = <T extends { id: string; name: string; isDefault?: boolean 
   );
 };
 
-export default ManagerModal;
+export { ManagerModal };

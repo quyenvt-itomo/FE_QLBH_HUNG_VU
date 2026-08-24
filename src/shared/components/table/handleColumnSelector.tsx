@@ -375,4 +375,4 @@ const HandleColumnSelector: React.FC<ColumnSelectorProps> = ({
   );
 };
 
-export default HandleColumnSelector;
+export { HandleColumnSelector };

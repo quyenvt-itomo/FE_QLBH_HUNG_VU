@@ -6,7 +6,7 @@ import { EmployeeSelect } from "../../employee/components/Select";
 import { ProductMultipleSelect } from "../../product/components/Select";
 import { AttributeManagerSelect } from "../../attribute/components/Select";
 import { AttributeType } from "../../attribute/attribute.enum";
-import { FormListTable, FormColumn } from "@/shared/components/form/FormListTable";
+import { FormListTable, FormColumn } from "@/shared";
 
 interface Props {
   initialValues?: Partial<QuotationRequest>;

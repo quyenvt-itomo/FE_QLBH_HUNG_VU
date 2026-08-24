@@ -1,4 +1,4 @@
-﻿import { usePageState } from "@/shared/hooks/usePageState";
+import { usePageState } from "@/shared/hooks/usePageState";
 import { useNavigate } from "react-router-dom";
 import {
   PartnerDebtReport,
@@ -8,9 +8,9 @@ import {
 } from "./partnerDebtReport.model";
 import { usePartnerDebtReportStore } from "./partnerDebtReport.store";
 import { useCurrentDebtReportStore } from "./currentDebtReport.store";
-import { SearchInput } from "@/shared/components/input";
-import DateRangeFilter from "@/shared/components/button/DateRangeFilter";
-import { Panel } from "@/shared/components/display/Panel";
+import { SearchInput } from "@/shared";
+import { DateRangeFilter } from "@/shared";
+import { Panel } from "@/shared";
 import {
   DetailPartnerDebtReportModal,
   ReportTable,
@@ -18,14 +18,14 @@ import {
   CurrentDebtDetailModal,
 } from "./components";
 import { checkSelection } from "@/shared/utils/common.util";
-import CustomFilter from "@/shared/components/filters";
+import { CustomFilter } from "@/shared";
 import { filterUses, rangerItems, sortItems } from "./filterItem";
 import {
   sortItems as currentDebtSortItems,
   filterUses as currentDebtFilterUses,
 } from "./currentDebtFilterItem";
 import { useState } from "react";
-import { DebtSideEnum, debtSideOptions, SortOrderEnum } from "@/shared/constants/enum";
+import { DebtSideEnum, debtSideOptions, SortOrder } from "@/shared/constants/enum";
 import { Radio } from "antd";
 import { InvoiceType, invoiceTypeMap } from "../invoice";
 
@@ -54,7 +54,7 @@ export const PartnerDebtReportPage: React.FC = () => {
     pageAction,
   } = usePageState<PartnerDebtReport>({
     sortBy: "name",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     filterUses,
     size: 20,
   });
@@ -203,7 +203,7 @@ export const CurrentDebtReportPage: React.FC<CurrentDebtReportPageProps> = ({ in
     pageAction,
   } = usePageState<PartnerCurrentDebt>({
     sortBy: "totalDebt",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     filterUses: currentDebtFilterUses,
     size: 20,
   });

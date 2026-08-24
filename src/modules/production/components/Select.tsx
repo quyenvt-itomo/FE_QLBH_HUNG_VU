@@ -1,8 +1,8 @@
 import { SelectProps } from "@/shared/interfaces/common";
 import { Production, ProductionQuery } from "../production.model";
 import { useProductionStore } from "../production.store";
-import { DropdownColumn } from "@/shared/components/core/CustomSelectLayout";
-import { SmartSelect } from "@/shared/components/core/SmartSelect";
+import { DropdownColumn } from "@/shared";
+import { SmartSelect } from "@/shared";
 import { useRemoteSelect } from "@/shared/hooks/useRemoteSelect";
 
 export const ProductionSelect: React.FC<SelectProps<Production, ProductionQuery>> = ({

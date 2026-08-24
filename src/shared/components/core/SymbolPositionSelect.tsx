@@ -21,4 +21,4 @@ const SymbolPositionSelect: React.FC<SelectProps> = ({ value, onChange, ...rest 
   );
 };
 
-export default SymbolPositionSelect;
+export { SymbolPositionSelect };

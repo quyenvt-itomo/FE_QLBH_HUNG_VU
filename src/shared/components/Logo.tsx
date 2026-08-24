@@ -45,4 +45,4 @@ const Logo: React.FC = () => {
   );
 };
 
-export default Logo;
+export { Logo };

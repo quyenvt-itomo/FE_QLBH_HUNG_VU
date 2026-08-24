@@ -1,7 +1,7 @@
 import { FormInstance } from "antd";
 import { BaseError } from "../../stores/baseReducers";
 import { ApiRequestQuery, PaginationProps } from "./api";
-import { ActionType, AttributeTypeEnum, SortOrderEnum, TypeMessage } from "../../constants/enum";
+import { ActionType, AttributeTypeEnum, SortOrder, TypeMessage } from "../../constants/enum";
 import { IEntity } from "./entity";
 
 export interface AddUpdateModalProps<T> {
@@ -199,7 +199,7 @@ export type Search = {
 
 export interface SortValue {
   sortBy?: string;
-  sortOrder?: SortOrderEnum;
+  sortOrder?: SortOrder;
 }
 export interface SortItem {
   label: string;

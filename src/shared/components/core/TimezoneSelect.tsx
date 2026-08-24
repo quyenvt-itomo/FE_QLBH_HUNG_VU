@@ -638,4 +638,4 @@ const TimezoneSelect: React.FC<TimezoneSelectProps> = ({
   );
 };
 
-export default TimezoneSelect;
+export { TimezoneSelect };

@@ -58,4 +58,4 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
   );
 };
 
-export default LanguageSelect;
+export { LanguageSelect };

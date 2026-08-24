@@ -1,6 +1,6 @@
 import React from "react";
 import { Tag } from "antd";
-import { TableColumnConfig, ObjectTableProps } from "@/shared/components/table/TableColumnConfig";
+import { TableColumnConfig, ObjectTableProps } from "@/shared";
 import { QuotationRequest } from "../quotationRequest.model";
 import { formatDateTime, formatDateTimeDDMMYYYY } from "@/shared/utils/date.util";
 import { getFullAddress, resolveByPath } from "@/shared/utils/common.util";
@@ -9,9 +9,9 @@ import {
   approvedStatusMap,
   approvedStatusColorMap,
 } from "../../shared/business.model";
-import { ApproveStatusTag } from "@/shared/components/display/Tag";
-import { EntityInfo } from "@/shared/components/display/EntityInfo";
-import { MediaDropdown } from "@/shared/components/dropdown";
+import { ApproveStatusTag } from "@/shared";
+import { EntityInfo } from "@/shared";
+import { MediaDropdown } from "@/shared";
 import { File } from "@/shared/interfaces/file";
 
 interface Props extends ObjectTableProps {

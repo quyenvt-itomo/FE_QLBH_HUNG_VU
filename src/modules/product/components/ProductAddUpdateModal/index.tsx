@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Input, Modal, Form, Row, Col, FormInstance } from "antd";
 import { FormProps } from "antd/lib";
-import SubmitButton from "@/shared/components/button/SubmitButton";
+import { SubmitButton } from "@/shared";
 import { AddUpdateModalProps } from "@/shared/interfaces/common";
 import {
   Product,
@@ -13,11 +13,11 @@ import {
 import { randomId } from "@/shared/utils/common.util";
 import { setFormErrors } from "@/shared/utils/form.util";
 import { parseFormDataDates } from "@/shared/utils/date.util";
-import Label from "@/shared/components/display/Label";
+import { Label } from "@/shared";
 import { useAppMessage } from "@/shared/hooks/useAppMessage";
 import { AttributeManagerSelect, AttributeType } from "@/modules/attribute";
-import { AppSwitch, InputMoney, InputPercentage } from "@/shared/components/input";
-import { FormSection } from "@/shared/components/form/FormSection";
+import { AppSwitch, InputMoney, InputPercentage } from "@/shared";
+import { FormSection } from "@/shared";
 import { ExtraUnitList } from "./ExtraUnitList";
 
 export interface PartialProps {

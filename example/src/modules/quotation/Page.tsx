@@ -8,7 +8,7 @@ import AddButton from "@/shared/components/button/AddButton";
 import { Panel } from "@/shared/components/display/Panel";
 import CustomFilter from "@/shared/components/filters";
 import { filterUses, rangerItems, sortItems } from "./filterItem";
-import { SortOrderEnum } from "@/shared/constants/enum";
+import { SortOrder } from "@/shared/constants/enum";
 import DateRangeFilter from "@/shared/components/button/DateRangeFilter";
 import { Tabs } from "antd";
 import { QuotationTable, AddUpdateQuotationModal, QuotationDetailModal } from "./components";
@@ -46,7 +46,7 @@ export const QuotationPage: React.FC = () => {
     pageAction,
   } = usePageState<Quotation>({
     sortBy: "effectiveDate",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     filterUses,
   });
 

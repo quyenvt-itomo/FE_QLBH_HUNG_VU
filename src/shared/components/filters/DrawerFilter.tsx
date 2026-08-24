@@ -357,4 +357,4 @@ const DrawerFilter: React.FC<DrawerFilterProps> = ({
   );
 };
 
-export default DrawerFilter;
+export { DrawerFilter };

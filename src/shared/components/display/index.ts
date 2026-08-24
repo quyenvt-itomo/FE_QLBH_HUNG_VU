@@ -4,6 +4,7 @@ export * from "./DataTable";
 export * from "./DocumentGroup";
 export * from "./EditableInfoCol";
 export * from "./EditableInfoRow";
+export * from "./FloatLabel";
 export * from "./EntityInfo";
 export * from "./IdentityInput";
 export * from "./InfoCol";

@@ -1,8 +1,8 @@
 import { SelectProps } from "@/shared/interfaces/common";
 import { User, UserQuery } from "../user.model";
 import { useUserStore } from "../user.store";
-import { DropdownColumn } from "@/shared/components/core/CustomSelectLayout";
-import { SmartSelect } from "@/shared/components/core/SmartSelect";
+import { DropdownColumn } from "@/shared";
+import { SmartSelect } from "@/shared";
 import { useRemoteSelect } from "@/shared/hooks/useRemoteSelect";
 
 const columns: DropdownColumn<User>[] = [

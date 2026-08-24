@@ -19,7 +19,7 @@ export enum FormatValueNumber {
   TwoDecimals = 2,
 }
 
-export enum SortOrderEnum {
+export enum SortOrder {
   ASC = "ASC",
   DESC = "DESC",
 }

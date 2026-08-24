@@ -2,7 +2,7 @@ import { AppSelect } from "./AppSelect";
 import { Row, Col, Form, FormInstance, SelectProps, Input, Popover, Button } from "antd";
 import { EnvironmentOutlined, EditOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import Label from "../display/Label";
+import { Label } from "../display/Label";
 import { useAddressSelector } from "@/shared/hooks/useAddressSelector";
 import { removeVietnameseTones } from "@/shared/utils/search.util";
 

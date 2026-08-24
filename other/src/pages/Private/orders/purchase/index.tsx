@@ -8,7 +8,7 @@ import { App } from "antd";
 import CustomPageTitle from "../../../../layout/Private/header/components/PageTitle";
 import { privateRoutesName } from "../../../../constants/routerName";
 import { buildUrlWithId } from "../../../../utils/paramUtils";
-import { SortOrderEnum } from "../../../../constants/enum";
+import { SortOrder } from "../../../../constants/enum";
 import { filterUses, rangerItems, searchItems, sortItems } from "./filterItem";
 import DateRangeFilter from "../../../../components/button/DateRangeFilter";
 import PurchaseTable from "./components/PurchaseTable";
@@ -45,7 +45,7 @@ const Page: React.FC = () => {
     pageAction,
   } = usePageState<IOrder>({
     sortBy: "orderAt",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     filterUses,
   });
   const { currentStore } = useClientData();

@@ -1,4 +1,4 @@
-import { ObjectTableProps, TableColumnConfig, ColumnsConfigType } from "@/shared/components/table";
+import { ObjectTableProps, TableColumnConfig, ColumnsConfigType } from "@/shared";
 import { PartnerDebtReport } from "../partnerDebtReport.model";
 import { formatMoney, formatQuantity } from "@/shared/utils/number.util";
 import { useMemo } from "react";

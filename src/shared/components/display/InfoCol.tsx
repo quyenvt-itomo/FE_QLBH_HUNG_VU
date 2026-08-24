@@ -1,5 +1,5 @@
 import React from "react";
-import Label from "./Label";
+import { Label } from "./Label";
 import { CLASSNAME } from "@/shared/constants/ui";
 
 interface InfoColProps {
@@ -28,4 +28,4 @@ const InfoCol: React.FC<InfoColProps> = ({ label, value, bold, color, className 
   );
 };
 
-export default InfoCol;
+export { InfoCol };

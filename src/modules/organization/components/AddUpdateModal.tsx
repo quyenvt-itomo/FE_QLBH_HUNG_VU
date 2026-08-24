@@ -7,12 +7,12 @@ import { randomId } from "@/shared/utils/common.util";
 import { useAddressSelector } from "@/shared/hooks/useAddressSelector";
 import { setFormErrors } from "@/shared/utils/form.util";
 import { parseFormDataDates } from "@/shared/utils/date.util";
-import AvatarUpload from "@/shared/components/upload/AvatarUpload";
+import { AvatarUpload } from "@/shared";
 import { FileCategory, EntityType } from "@/shared/constants/enum";
 import { getMainFile, deletePendingFiles } from "@/shared/utils/file.util";
-import Label from "@/shared/components/display/Label";
-import FormItemWithDiff from "@/shared/components/form/FormItemWithDiff";
-import SubmitButton from "@/shared/components/button/SubmitButton";
+import { Label } from "@/shared";
+import { FormItemWithDiff } from "@/shared";
+import { SubmitButton } from "@/shared";
 import { CLASSNAME } from "@/shared/constants/ui";
 import { OrganizationSelect } from "./Select";
 import {
@@ -27,9 +27,9 @@ import { Attribute, AttributeManagerMultipleSelect } from "@/modules/attribute";
 import { useAutoResetItem } from "@/shared/hooks/useAutoResetItem";
 import { AttributeType } from "@/modules/attribute";
 import { EmployeeSelect } from "@/modules/employee";
-import { FileUploadBox } from "@/shared/components/upload/FileUploadBox";
-import { ProvinceSelect, WardSelect } from "@/shared/components/select/AddressSelect";
-import { AppSwitch } from "@/shared/components/input";
+import { FileUploadBox } from "@/shared";
+import { ProvinceSelect, WardSelect } from "@/shared";
+import { AppSwitch } from "@/shared";
 import { phoneRule } from "@/shared/constants/formItemRule";
 
 export const AddUpdateModal: React.FC<AddUpdateModalProps<Organization>> = ({

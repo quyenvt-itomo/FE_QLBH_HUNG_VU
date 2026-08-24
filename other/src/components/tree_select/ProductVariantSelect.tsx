@@ -11,7 +11,7 @@ import { getFullVariantOptionContent } from "../../utils/common";
 import { formatMoney, formatQuantity } from "../../utils/formatNumber";
 import ManagerButton from "../add_select/AddButton";
 import AddModal from "../../pages/Private/product/components/AddModal";
-import { SortOrderEnum } from "../../constants/enum";
+import { SortOrder } from "../../constants/enum";
 
 function buildTreeFromProducts(
   products: IProduct[],
@@ -166,7 +166,7 @@ const ProductVariantSelect: React.FC<Props> = ({
     size: 10,
     offsetAt,
     sortBy: "totalStockQty",
-    sortOrder: SortOrderEnum.DESC,
+    sortOrder: SortOrder.DESC,
     storeId,
     onCloseModal: () => {
       setOpenModal(false);

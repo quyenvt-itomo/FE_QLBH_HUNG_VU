@@ -1,10 +1,10 @@
-﻿import React from "react";
+import React from "react";
 import { usePageState } from "@/shared/hooks/usePageState";
-import { SearchInput } from "@/shared/components/input";
+import { SearchInput } from "@/shared";
 import { usePaymentTermStore } from "./paymentTerm.store";
 import { PaymentTerm } from "./paymentTerm.model";
-import AddButton from "@/shared/components/button/AddButton";
-import { Panel } from "@/shared/components/display/Panel";
+import { AddButton } from "@/shared";
+import { Panel } from "@/shared";
 import { usePaymentTermHandlers } from "./paymentTerm.handlers";
 import { PaymentTermTable, PaymentTermAddUpdateModal, PaymentTermDetailModal } from "./components";
 
@@ -51,8 +51,8 @@ export const PaymentTermPage: React.FC = () => {
     <div className="flex flex-col h-full w-full gap-1">
       <div className="flex justify-between items-start gap-3">
         <div className="flex flex-col">
-          <h2 className="text-xl font-bold text-blue-800">Điều khoản thanh toán</h2>
-          <p className="text-xs text-secondary">Quản lý điều khoản thanh toán</p>
+          <h2 className="text-xl font-bold text-blue-800">�i?u kho?n thanh to�n</h2>
+          <p className="text-xs text-secondary">Qu?n l? �i?u kho?n thanh to�n</p>
         </div>
         <div className="flex items-center gap-3">
           <SearchInput value={keyword} onSearch={pageAction.handleSearch} maxWidth={340} />

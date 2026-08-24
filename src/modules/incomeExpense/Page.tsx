@@ -1,11 +1,11 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { App, Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { usePageState } from "@/shared/hooks/usePageState";
 import { IncomeExpense } from "./incomeExpense.model";
 import { useIncomeExpenseStore } from "./incomeExpense.store";
-import { Panel } from "@/shared/components/display/Panel";
-import { SearchInput } from "@/shared/components/input";
+import { Panel } from "@/shared";
+import { SearchInput } from "@/shared";
 
 const IncomeExpensePage: React.FC = () => {
   const { modal } = App.useApp();
@@ -15,22 +15,22 @@ const IncomeExpensePage: React.FC = () => {
   const handleDelete = remove
     ? (record: IncomeExpense) => {
         modal.confirm({
-          title: "Xóa",
-          content: "Xác nhận xóa?",
-          okText: "Xóa",
+          title: "X�a",
+          content: "X�c nh?n x�a?",
+          okText: "X�a",
           okButtonProps: { danger: true },
-          cancelText: "Hủy",
+          cancelText: "H?y",
           onOk: () => remove(record.id),
         });
       }
     : undefined;
 
   const columns: ColumnsType<IncomeExpense> = [
-    { title: "Mã", dataIndex: "code", key: "code", width: 120, className: "font-mono" },
+    { title: "M?", dataIndex: "code", key: "code", width: 120, className: "font-mono" },
 
-    { title: "Ngày", dataIndex: "occurredAt", key: "occurredAt", width: 120 },
+    { title: "Ng�y", dataIndex: "occurredAt", key: "occurredAt", width: 120 },
     {
-      title: "Loại",
+      title: "Lo?i",
       dataIndex: "type",
       key: "type",
       width: 100,
@@ -38,11 +38,11 @@ const IncomeExpensePage: React.FC = () => {
         <Tag color={t === "income" ? "green" : "red"}>{t === "income" ? "Thu" : "Chi"}</Tag>
       ),
     },
-    { title: "Số tiền", dataIndex: "amount", key: "amount", width: 150, align: "right" },
-    { title: "Mô tả", dataIndex: "description", key: "description", width: 200 },
+    { title: "S? ti?n", dataIndex: "amount", key: "amount", width: 150, align: "right" },
+    { title: "M� t?", dataIndex: "description", key: "description", width: 200 },
 
     {
-      title: "Ghi chú",
+      title: "Ghi ch�",
       dataIndex: "note",
       key: "note",
       width: 200,
@@ -57,14 +57,14 @@ const IncomeExpensePage: React.FC = () => {
       render: (_: any, record: IncomeExpense) => (
         <div className="flex gap-1 justify-center">
           {record._actions?.update?.can && (
-            <button className="text-blue-500 hover:text-blue-700 text-xs">Sửa</button>
+            <button className="text-blue-500 hover:text-blue-700 text-xs">S?a</button>
           )}
           {record._actions?.delete?.can && (
             <button
               className="text-red-500 hover:text-red-700 text-xs"
               onClick={() => handleDelete?.(record)}
             >
-              Xóa
+              X�a
             </button>
           )}
         </div>

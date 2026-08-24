@@ -2,7 +2,7 @@ import { CLASSNAME } from "@/shared/constants/ui";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { Button, ButtonProps } from "antd";
 
-const ManagerButton: React.FC<ButtonProps> = ({ onClick, ...rest }) => {
+export const AddSelectButton: React.FC<ButtonProps> = ({ onClick, ...rest }) => {
   return (
     <Button
       className={`!w-9 ${CLASSNAME.inputHeight} z-0 hover:z-10  manager-btn bg-[#FAFAFA] p-0 translate-x-[-1px] rounded-s-none flex items-center justify-center flex-shrink-0`}
@@ -14,4 +14,3 @@ const ManagerButton: React.FC<ButtonProps> = ({ onClick, ...rest }) => {
   );
 };
 
-export default ManagerButton;

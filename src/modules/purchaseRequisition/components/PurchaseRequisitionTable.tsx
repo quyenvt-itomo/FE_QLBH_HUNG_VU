@@ -1,12 +1,12 @@
 import React, { useMemo } from "react";
-import { TableColumnConfig, ObjectTableProps } from "@/shared/components/table/TableColumnConfig";
+import { TableColumnConfig, ObjectTableProps } from "@/shared";
 import { PurchaseRequisition } from "../purchaseRequisition.model";
 import { formatDateTimeDDMMYYYY } from "@/shared/utils/date.util";
-import { ApproveStatusTag } from "@/shared/components/display/Tag";
-import { ColumnsConfigType } from "@/shared/components/table/handleColumnSelector";
+import { ApproveStatusTag } from "@/shared";
+import { ColumnsConfigType } from "@/shared";
 import { File } from "@/shared/interfaces/file";
-import { MediaDropdown } from "@/shared/components/dropdown";
-import { EntityInfo } from "@/shared/components/display/EntityInfo";
+import { MediaDropdown } from "@/shared";
+import { EntityInfo } from "@/shared";
 
 export const PurchaseRequisitionTable: React.FC<ObjectTableProps> = ({ onViewDetail, ...rest }) => {
   const cols: ColumnsConfigType<PurchaseRequisition> = useMemo(

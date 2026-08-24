@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
 import { Form, FormProps, Input, Modal } from "antd";
-import { AddUpdateModalProps } from "@/shared/interfaces/common";
 import { Store } from "../store.model";
-import SubmitButton from "@/shared/components/button/SubmitButton";
+import { SubmitButton } from "@/shared";
 import {
   AvatarUpload,
   EntityType,
@@ -15,6 +14,7 @@ import {
   setFormErrors,
   useAddressSelector,
   WardSelect,
+  AddUpdateModalProps,
 } from "@/shared";
 
 export const StoreAddUpdateModal: React.FC<AddUpdateModalProps<Store>> = ({

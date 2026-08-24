@@ -1,5 +1,5 @@
-import { TableColumnConfig, ObjectTableProps } from "@/shared/components/table/TableColumnConfig";
-import UserImage from "@/shared/components/image/UserImage";
+import { TableColumnConfig, ObjectTableProps } from "@/shared";
+import { UserImage } from "@/shared";
 import { Employee } from "../employee.model";
 import { getMainFile } from "@/shared/utils/file.util";
 import { genderMap, maritalStatusMap } from "@/shared/constants/enum";

@@ -34,4 +34,4 @@ const ImageLoadingSpinner: React.FC<ImageLoadingSpinnerProps> = ({ size = 40, cl
   );
 };
 
-export default ImageLoadingSpinner;
+export { ImageLoadingSpinner };

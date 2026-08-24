@@ -6,7 +6,7 @@ import { resolveByPath } from "@/shared/utils/common.util";
 import { formatMoney, formatQuantity, formatPercentage } from "@/shared/utils/number.util";
 import { formatDateTime } from "@/shared/utils/date.util";
 import { ApproveStatus } from "@/modules/shared/business.model";
-import { ApproveStatusTag } from "@/shared/components/display/Tag";
+import { ApproveStatusTag } from "@/shared";
 
 export const ShippingPlanDetailModal: React.FC<DetailModalProps<ShippingPlan>> = ({
   open,

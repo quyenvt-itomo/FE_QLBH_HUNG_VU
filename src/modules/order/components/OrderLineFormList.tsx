@@ -1,6 +1,6 @@
-Ôªøimport React from "react";
+import React from "react";
 import { Form, Input, InputNumber, Select } from "antd";
-import { FormListTable, FormColumn } from "@/shared/components/form/FormListTable";
+import { FormListTable, FormColumn } from "@/shared";
 
 interface Props {
   form: any;
@@ -11,7 +11,7 @@ export const OrderLineFormList: React.FC<Props> = ({ form, products }) => {
   const lines = Form.useWatch("lines", form) || [];
   const columns: FormColumn[] = [
     {
-      title: "H√†ng h√≥a",
+      title: "H‡ng hÛa",
       dataIndex: "productId",
       width: 200,
       editable: true,
@@ -19,13 +19,13 @@ export const OrderLineFormList: React.FC<Props> = ({ form, products }) => {
         <Select
           showSearch
           options={products.map((p: any) => ({ value: p.id, label: p.code + " - " + p.name }))}
-          placeholder="Ch·ªçn h√†ng h√≥a"
+          placeholder="Ch?n h‡ng hÛa"
           style={{ width: "100%" }}
         />
       ),
     },
     {
-      title: "ƒêVT",
+      title: "–VT",
       dataIndex: "unitId",
       width: 100,
       editable: true,
@@ -40,7 +40,7 @@ export const OrderLineFormList: React.FC<Props> = ({ form, products }) => {
       render: () => <InputNumber min={1} style={{ width: "100%" }} />,
     },
     {
-      title: "ƒê∆°n gi√°",
+      title: "–ın gi·",
       dataIndex: "unitPrice",
       width: 130,
       align: "right",
@@ -48,23 +48,23 @@ export const OrderLineFormList: React.FC<Props> = ({ form, products }) => {
       render: () => <InputNumber min={0} style={{ width: "100%" }} />,
     },
     {
-      title: "Th√†nh ti·ªÅn",
+      title: "Th‡nh ti?n",
       dataIndex: "subTotal",
       width: 130,
       align: "right",
       render: ({ record }) => ((record.quantity || 0) * (record.unitPrice || 0)).toLocaleString(),
     },
     {
-      title: "Ghi ch√∫",
+      title: "Ghi ch˙",
       dataIndex: "note",
       width: 150,
       editable: true,
-      render: () => <Input placeholder="Ghi ch√∫" />,
+      render: () => <Input placeholder="Ghi ch˙" />,
     },
   ];
   return (
     <div className="mt-4">
-      <h3 className="text-lg font-semibold mb-2">Danh s√°ch h√†ng h√≥a</h3>
+      <h3 className="text-lg font-semibold mb-2">Danh s·ch h‡ng hÛa</h3>
       <FormListTable form={form} fieldName="lines" columns={columns} records={lines} showDelete />
     </div>
   );
