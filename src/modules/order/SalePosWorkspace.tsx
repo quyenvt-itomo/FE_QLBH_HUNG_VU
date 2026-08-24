@@ -1,8 +1,7 @@
-import React, { useEffect, useMemo } from "react";
 import { Badge, Button, Card, Empty, List, Tag, Typography } from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { addOrderCache, setCurrentOrderCache } from "@/shared/stores/orderCache.slice";
-import { RootState } from "@/shared/stores";
+import { PlusOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
+
 import { Order, OrderType } from "./order.model";
 
 interface SalePosWorkspaceProps {
@@ -13,78 +12,56 @@ interface SalePosWorkspaceProps {
   loading: boolean;
 }
 
-export const SalePosWorkspace: React.FC<SalePosWorkspaceProps> = ({
+const SalePosWorkspace = ({
   title,
   description,
   orderType,
   orders,
   loading,
-}) => {
-  const dispatch = useDispatch();
-  const cached = useSelector((state: RootState) => state.OrderCache.cachedOrders);
-  const currentId = useSelector((state: RootState) => state.OrderCache.currentCacheId);
-
-  useEffect(() => {
-    orders.forEach((order) =>
-      dispatch(addOrderCache({ id: order.id, order: { ...order, type: orderType } })),
-    );
-  }, [dispatch, orderType, orders]);
-
-  const cachedOrders = useMemo(
-    () => Object.values(cached).filter((order) => order.type === orderType),
-    [cached, orderType],
-  );
+}: SalePosWorkspaceProps) => {
+  const navigate = useNavigate();
+  const type = orderType === OrderType.SALE_RETURN ? OrderType.SALE_RETURN : OrderType.SALE;
 
   return (
-    <div className="fixed inset-0 z-40 flex flex-col overflow-hidden bg-slate-100 p-4">
-      <div className="mb-3">
-        <Typography.Title level={3} className="!mb-0">
-          {title}
-        </Typography.Title>
-        <Typography.Text type="secondary">{description}</Typography.Text>
+    <div className="flex h-full flex-col p-4">
+      <div className="mb-4 flex items-start justify-between gap-4">
+        <div>
+          <Typography.Title level={3} className="!mb-0">{title}</Typography.Title>
+          <Typography.Text type="secondary">{description}</Typography.Text>
+        </div>
+        <Button type="primary" icon={<PlusOutlined />} onClick={() => navigate(`/pos?type=${type}`)}>
+          Tạo mới
+        </Button>
       </div>
-      <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
-        <Card
-          className="min-h-0 overflow-auto"
-          title={<span>{title}</span>}
-          extra={<Badge count={orders.length} showZero />}
-          loading={loading}
-        >
-          {orders.length ? (
-            <List
-              dataSource={orders}
-              rowKey="id"
-              renderItem={(order) => (
-                <List.Item>
-                  <Button type="link" onClick={() => dispatch(setCurrentOrderCache(order.id))}>
-                    {order.code}
-                  </Button>
-                  <Tag>{order.status}</Tag>
-                  <span>{Number(order.totalAmount || 0).toLocaleString("vi-VN")} đ</span>
-                </List.Item>
-              )}
-            />
-          ) : (
-            <Empty description="Chưa có đơn" />
-          )}
-        </Card>
-        <Card title="Cache POS" className="min-h-0 overflow-auto">
-          {cachedOrders.length ? (
-            <List
-              dataSource={cachedOrders}
-              rowKey={(order) => String(order.id)}
-              renderItem={(order) => (
-                <List.Item className={order.id === currentId ? "bg-blue-50" : ""}>
-                  <span>{order.code || order.id}</span>
-                  <span>{String(order.status || "draft")}</span>
-                </List.Item>
-              )}
-            />
-          ) : (
-            <Empty description="Cache đang trống" />
-          )}
-        </Card>
-      </div>
+      <Card className="min-h-0 flex-1" loading={loading}>
+        {orders.length ? (
+          <List
+            dataSource={orders}
+            rowKey="id"
+            renderItem={(order) => (
+              <List.Item
+                actions={[
+                  <Button key="edit" type="link" onClick={() => navigate(`/pos?type=${type}&editId=${order.id}`, { state: { order } })}>
+                    Chỉnh sửa
+                  </Button>,
+                ]}
+              >
+                <Button type="link" onClick={() => navigate(`/pos?type=${type}&editId=${order.id}`, { state: { order } })}>
+                  {order.code}
+                </Button>
+                <Tag>{order.status}</Tag>
+                <span>{Number(order.totalAmount || 0).toLocaleString("vi-VN")} đ</span>
+              </List.Item>
+            )}
+          />
+        ) : (
+          <Empty description={`Chưa có ${title.toLowerCase()}`}>
+            <Button type="primary" onClick={() => navigate(`/pos?type=${type}`)}>Tạo phiếu đầu tiên</Button>
+          </Empty>
+        )}
+      </Card>
     </div>
   );
 };
+
+export { SalePosWorkspace };

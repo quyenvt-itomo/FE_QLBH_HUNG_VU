@@ -1,1 +1,1 @@
-export { default as PosPage } from "./PosPage";
+export { PosPage } from "./PosPage";

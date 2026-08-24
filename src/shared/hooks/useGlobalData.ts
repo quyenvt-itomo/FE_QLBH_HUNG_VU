@@ -71,7 +71,7 @@ export const useGlobalData = () => {
   const handleSetThemeMode = useCallback((mode: ThemeMode) => {
     dispatch(setThemeMode(mode));
   }, [dispatch]);
-  const handleSetCurrentStore = useCallback((company?: Store | null) => {
+  const handleSetCurrentStore = useCallback((company?: Store | null, redirectPath = privateRoutesName.dashboard) => {
     if (company) {
       sessionStorage.setItem("currentStore", JSON.stringify(company));
     } else {
@@ -79,7 +79,7 @@ export const useGlobalData = () => {
     }
     dispatch(setCurrentStore(company));
     setTimeout(() => {
-      window.location.href = privateRoutesName.dashboard;
+      window.location.href = redirectPath;
     }, 500);
   }, [dispatch]);
 

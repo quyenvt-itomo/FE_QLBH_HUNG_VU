@@ -64,13 +64,18 @@ export interface Order extends Entity {
   totalCost: number;
   refOrderId: string | null;
   returnGrossAmount: number;
+  returnDiscountType: DiscountTypeEnum;
+  returnDiscountValue: number | null;
   returnDiscountAmount: number | null;
   returnNetAmount: number;
+  returnTaxType: DiscountTypeEnum;
+  returnTaxValue: number | null;
   returnTaxAmount: number;
   returnTotalAmount: number;
   returnTotalCost: number;
   settlementAmount: number;
   lines: OrderLine[];
+  returnLines: OrderLine[];
   /** Deprecated aliases used by old print views. */
   timeAt?: string;
   customerId?: string | null;

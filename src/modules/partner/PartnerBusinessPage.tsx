@@ -8,6 +8,8 @@ import { ButtonFilter } from "@/shared/components/filters";
 
 interface PartnerBusinessPageViewProps extends PartnerBusinessPageModel {
   type: PartnerType;
+  title?: string;
+  itemName?: string;
 }
 
 export const PartnerBusinessPageView: React.FC<PartnerBusinessPageViewProps> = ({
@@ -15,6 +17,8 @@ export const PartnerBusinessPageView: React.FC<PartnerBusinessPageViewProps> = (
   store,
   handlers,
   type,
+  title,
+  itemName,
 }) => {
   const sortItems = getSortItems(type);
   const filterUses = getFilterUses(type);
@@ -37,7 +41,7 @@ export const PartnerBusinessPageView: React.FC<PartnerBusinessPageViewProps> = (
   const { data, loading, creating, updating, pagination, getById, create, update } = store;
 
   return (
-    <div className="flex h-full w-full flex-col gap-1">
+    <div className="flex h-full w-full flex-col gap-1" aria-label={title || itemName}>
       <div className="flex items-center justify-between gap-3">
         <SearchInput value={keyword} onSearch={pageAction.handleSearch} />{" "}
         <div className="flex items-center gap-3">
