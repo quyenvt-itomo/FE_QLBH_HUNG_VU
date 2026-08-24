@@ -8,6 +8,7 @@ import { filterUses, sortItems } from "./user.model";
 import { User } from "@/shared/base/entity";
 import { AddUpdateModal, UserTable } from "./components";
 import { useUserHandlers } from "./user.handlers";
+import { SortOrder } from "@/shared/constants";
 
 export const UserPage: React.FC = () => {
   const {
@@ -28,7 +29,11 @@ export const UserPage: React.FC = () => {
     setRowData,
 
     pageAction,
-  } = usePageState<User>();
+  } = usePageState<User>({
+    filterUses,
+    sortBy: "createdAt",
+    sortOrder: SortOrder.DESC,
+  });
 
   const { data, errors, loading, creating, updating, pagination, create, update, remove, getById } =
     useUserStore(

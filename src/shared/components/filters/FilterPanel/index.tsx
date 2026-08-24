@@ -51,7 +51,7 @@ const filterMap: Partial<Record<FilterKey, FilterDefinition>> = {
 };
 
 export const FilterPanel: React.FC<FilterPanelProps> = ({ filterUses, filterLabels }) => {
-  const { filter, handleSetFilter } = useGlobalData();
+  const { currentStore, filter, handleSetFilter } = useGlobalData();
   const [activeKeys, setActiveKeys] = useState<FilterKey[]>(() =>
     filterUses.filter((key) => (filter?.[key]?.length ?? 0) > 0),
   );
@@ -72,36 +72,43 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({ filterUses, filterLabe
   return (
     <Collapse
       bordered={false}
-      className="!bg-transparent custom-filter-collapse"
-      activeKey={activeKeys}
-      onChange={(keys) => handleToggle(keys as string[])}
       expandIcon={({ isActive }) => (
         <CaretRightOutlined
           rotate={isActive ? 90 : 0}
-          className="text-gray-600 transition-transform"
+          className="transition-transform text-gray-600"
         />
       )}
+      className="!bg-transparent custom-filter-collapse"
+      activeKey={activeKeys}
+      onChange={(keys) => handleToggle(keys as string[])}
     >
       {filterUses.map((key) => {
-        const definition = filterMap[key];
-        if (!definition) return null;
-
-        const Component = definition.component;
-        const data = filter?.[key] || [];
+        const filterInfo = filterMap[key];
+        const Component = filterInfo?.component;
+        if (!filterInfo || !Component) return null;
 
         return (
           <Collapse.Panel
             key={key}
-            className="custom-filter-panel"
             header={
               <div
-                className="flex items-center justify-between"
-                onClick={(event) => event.stopPropagation()}
+                className="flex justify-between items-center"
+                onClick={(e) => e.stopPropagation()}
               >
-                <span>{filterLabels?.[key] || definition.defaultLabel}</span>
-                {!!data.length && (
+                <span
+                  onClick={() => {
+                    if (!activeKeys.includes(key)) {
+                      setActiveKeys([...activeKeys, key]);
+                    } else {
+                      handleToggle(activeKeys.filter((k) => k !== key));
+                    }
+                  }}
+                >
+                  {filterLabels?.[key] || filterInfo.defaultLabel}
+                </span>
+
+                {!!filter?.[key]?.length && (
                   <button
-                    type="button"
                     className="font-light"
                     onClick={() => handleSetFilter({ ...filter, [key]: [] })}
                   >
@@ -110,11 +117,13 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({ filterUses, filterLabe
                 )}
               </div>
             }
+            className="custom-filter-panel"
           >
             <div className="pt-2">
               <Component
-                data={data}
-                setData={(nextData: any[]) => handleSetFilter({ ...filter, [key]: nextData })}
+                showStore={!currentStore}
+                data={filter?.[key] || []}
+                setData={(data: any) => handleSetFilter({ ...filter, [key]: data })}
               />
             </div>
           </Collapse.Panel>

@@ -10,7 +10,7 @@ export interface UserQuery extends ApiRequestQuery {
 }
 
 export const sortItems: SortItem[] = [
-  { label: "Ngày tạo", value: "createAt", ascLabel: "Từ cũ đến mới", descLabel: "Từ mới đến cũ" },
+  { label: "Ngày tạo", value: "createAt", ascLabel: "Mới nhất", descLabel: "Cũ nhất" },
   { label: "Mã người dùng", value: "code", ascLabel: "A → Z", descLabel: "Z → A" },
   { label: "Tên người dùng", value: "name", ascLabel: "A → Z", descLabel: "Z → A" },
   { label: "Tên đăng nhập", value: "username", ascLabel: "A → Z", descLabel: "Z → A" },

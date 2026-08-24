@@ -24,13 +24,13 @@ export const StoreFilter: React.FC<PartialFilterProps<Store>> = ({ data, setData
         />
       }
       renderItem={(item) => (
-        <>
+        <div className="flex items-center gap-1 w-[calc(100%-36px)] py-1">
           <StoreImage image={getMainFile(item.logo)} size={28} />
           <div className="flex min-w-0 flex-col w-[calc(100%-36px)]">
-            <span className="truncate">{item.name}</span>
+            <span className="truncate leading-4">{item.name}</span>
             <span className="truncate text-xs text-[#909090]">{item.code}</span>
           </div>
-        </>
+        </div>
       )}
       onRemove={(id) => setData(data.filter((item) => item.id !== id))}
     />

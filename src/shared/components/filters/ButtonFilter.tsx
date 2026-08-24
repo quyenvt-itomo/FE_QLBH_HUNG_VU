@@ -2,9 +2,9 @@ import { Button } from "antd";
 import { useState } from "react";
 import { Icon } from "@iconify/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-
 import { CLASSNAME } from "@/shared/constants/ui";
 import { DrawerFilter, DrawerFilterProps } from "./DrawerFilter";
+import "./ButtonFilter.css";
 
 export interface ButtonFilterProps extends Omit<DrawerFilterProps, "open" | "onClose"> {
   filterActive?: boolean;

@@ -3,6 +3,7 @@ import { User } from "@/shared/base/entity";
 import { UserImage } from "@/shared/components";
 import { getMainFile } from "@/shared/utils/file.util";
 import { ContentTooltip } from "@/shared/components";
+import { UserActiveTag } from "./Tag";
 
 export const UserTable: React.FC<ObjectTableProps> = ({ ...rest }) => {
   const columns: any = [
@@ -62,7 +63,7 @@ export const UserTable: React.FC<ObjectTableProps> = ({ ...rest }) => {
       key: "isActive",
       width: 100,
       fixed: "right",
-      render: (isActive: boolean) => (isActive ? "Hoạt động" : "Ngưng hoạt động"),
+      render: (isActive: boolean) => <UserActiveTag value={isActive} />,
     },
   ];
   return (

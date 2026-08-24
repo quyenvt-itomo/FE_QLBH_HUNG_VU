@@ -2,7 +2,6 @@ import { PartialFilterProps } from "@/shared/interfaces/common";
 import { GenericFilter } from "./GenericFilter";
 import { Role } from "@/modules/role/role.model";
 import { RoleMultipleSelect } from "@/modules/role/components/Select";
-import { RoleTypeTag } from "@/modules/role/components/Tag";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 export const RoleFilter: React.FC<PartialFilterProps<Role>> = ({ data, setData }) => {
@@ -27,11 +26,8 @@ export const RoleFilter: React.FC<PartialFilterProps<Role>> = ({ data, setData }
         />
       }
       renderItem={(item) => (
-        <div className="flex flex-col w-[calc(100%-76px)]">
+        <div className="flex flex-col w-[calc(100%-76px)] py-1">
           <span className="truncate">{item.name}</span>
-          <span className="text-xs text-[#909090] group-hover:text-primary">
-            <RoleTypeTag value={item.type} size="sm" />
-          </span>
         </div>
       )}
       onRemove={handleRemove}

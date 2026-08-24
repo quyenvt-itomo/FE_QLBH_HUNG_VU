@@ -150,7 +150,6 @@ export const RoleMultipleSelect: React.FC<MultipleSelectProps<Role, RoleQuery>> 
   onFocus,
   ...rest
 }) => {
-  const [open, setOpen] = useState<boolean>(false);
   const [expandedKeys, setExpandedKeys] = useState<string[]>(["system", "store"]);
   const { list, loading, unlock } = useRemoteSelect<Role, RoleQuery>({
     defaultData,
@@ -163,7 +162,6 @@ export const RoleMultipleSelect: React.FC<MultipleSelectProps<Role, RoleQuery>> 
       isLocked,
     }),
   });
-  const { errors, newItem, create } = useRoleStore();
 
   const handleChange = (ids: string[]) => {
     onChange?.(ids);
@@ -176,14 +174,6 @@ export const RoleMultipleSelect: React.FC<MultipleSelectProps<Role, RoleQuery>> 
       prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key],
     );
   };
-
-  useEffect(() => {
-    if (!newItem) return;
-    const newIds = [...(value || []), newItem.id];
-    onChange?.(newIds);
-    const data = list.filter((item) => newIds.includes(item.id));
-    onChangeData?.(data);
-  }, [newItem]);
 
   const treeData = useMemo(() => {
     const systemRoles = list.filter((r) => r.type === RoleType.SYSTEM);
@@ -233,7 +223,7 @@ export const RoleMultipleSelect: React.FC<MultipleSelectProps<Role, RoleQuery>> 
     <div className="flex w-full z-0">
       <TreeSelect<any, any>
         multiple
-        className={`role-tree-select ${create ? "w-[calc(100%-40px)] rounded-e-none" : "w-full"} z-10`}
+        className={`role-tree-select w-full z-10`}
         popupClassName="role-tree-dropdown"
         treeData={treeData}
         value={value ?? undefined}
@@ -253,24 +243,6 @@ export const RoleMultipleSelect: React.FC<MultipleSelectProps<Role, RoleQuery>> 
         disabled={disabled}
         {...rest}
       />
-
-      {create && (
-        <>
-          <ManagerButton
-            onClick={() => {
-              setOpen(true);
-            }}
-            disabled={disabled}
-          />
-          <AddRoleModal
-            open={open}
-            loading={loading}
-            errors={errors}
-            onClose={() => setOpen(false)}
-            onAdd={create}
-          />
-        </>
-      )}
     </div>
   );
 };
