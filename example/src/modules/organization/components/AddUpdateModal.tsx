@@ -8,7 +8,7 @@ import { useAddressSelector } from "@/shared/hooks/useAddressSelector";
 import { setFormCode, setFormErrors } from "@/shared/utils/form.util";
 import { parseFormDataDates } from "@/shared/utils/date.util";
 import AvatarUpload from "@/shared/components/upload/AvatarUpload";
-import { FileCategory, EntityFile } from "@/shared/constants/enum";
+import { FileCategory, EntityType } from "@/shared/constants/enum";
 import { getMainFile, deletePendingFiles } from "@/shared/utils/file.util";
 import Label from "@/shared/components/display/Label";
 import FormItemWithDiff from "@/shared/components/form/FormItemWithDiff";
@@ -127,7 +127,7 @@ export const AddUpdateModal: React.FC<AddUpdateModalProps<Organization>> = ({
                 shape="square"
                 size={92}
                 limit={50}
-                entity={EntityFile.ORGANIZATION}
+                entity={EntityType.ORGANIZATION}
                 category={FileCategory.LOGO}
                 defaultFile={getMainFile(editData?.logo)}
                 oId={id}
@@ -376,7 +376,7 @@ export const AddUpdateModal: React.FC<AddUpdateModalProps<Organization>> = ({
               <FileUploadBox
                 defaultFiles={editData?.document}
                 oId={id}
-                entity={EntityFile.ORGANIZATION}
+                entity={EntityType.ORGANIZATION}
                 category={FileCategory.DOCUMENT}
                 onMoveToTrash={(file) => {
                   const trashFileIds: string[] = form?.getFieldValue("__trashFileIds") || [];

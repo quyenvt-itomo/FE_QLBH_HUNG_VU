@@ -53,53 +53,23 @@ export enum SaleLineType {
   SERVICE = "service",
 }
 
-export enum EntityFile {
-  PRODUCT = "product",
-  CUSTOMER = "customer",
-  SUPPLIER = "supplier",
-  EMPLOYEE = "employee",
-  EMPLOYEE_CONTRACT = "employeeContract",
-  DOCUMENT = "document",
+export enum EntityType {
   USER = "user",
-  ORGANIZATION = "organization",
-  EXCEL_IMPORT = "excelImport",
-  // Purchase
-  PURCHASE_REQUISITION = "purchaseRequisition",
-  PURCHASE_QUOTATION = "purchaseQuotation",
-  PURCHASE = "purchase",
-  SHIPPING_PLAN = "shippingPlan",
-  // Sales
-  QUOTATION = "quotation",
-  QUOTATION_REQUEST = "quotationRequest",
-  ORDER = "order",
-  // Inventory
-  STOCK_DOCUMENT = "stockDocument",
-  INVENTORY_ADJUSTMENT = "inventoryAdjustment",
-  INVENTORY_CONVERSION = "inventoryConversion",
-  WAREHOUSE_TRANSFER = "warehouseTransfer",
-  // Production
-  PRODUCTION = "production",
-  BILL_OF_MATERIAL = "billOfMaterial",
-  // Accounting
-  INVOICE = "invoice",
-  PAYMENT_REQUEST = "paymentRequest",
-  INCOME_EXPENSE = "incomeExpense",
-  FUND_ADJUSTMENT = "fundAdjustment",
-  FUND_TRANSFER = "fundTransfer",
-  PARTNER_DEBT_ADJUSTMENT = "partnerDebtAdjustment",
-  PARTNER_DEBT_OFFSET = "partnerDebtOffset",
-  COMMISSION_DEBT_ADJUSTMENT = "commissionDebtAdjustment",
-  VAT_DEBT_ADJUSTMENT = "vatDebtAdjustment",
-  // Other
-  GATE_LOG = "gateLog",
-  REFERRAL_CODE = "referralCode",
-  PARTNER = "partner",
-  SERVICE = "service",
-  WAREHOUSE = "warehouse",
-  JOB_POSITION = "jobPosition",
-  FUND = "fund",
+  NOTIFICATION = "notification",
   ROLE = "role",
   ATTRIBUTE = "attribute",
+  PARTNER = "partner",
+  PRODUCT = "product",
+  STORE = "store",
+  ORDER = "order",
+  INVENTORY_ADJUSTMENT = "inventoryAdjustment",
+  STORE_TRANSFER = "storeTransfer",
+  FUND = "fund",
+  FUND_ADJUSTMENT = "fundAdjustment",
+  FUND_TRANSFER = "fundTransfer",
+  INCOME_EXPENSE = "incomeExpense",
+  DEBT_ADJUSTMENT = "debtAdjustment",
+  VAT_DEBT_ADJUSTMENT = "vatDebtAdjustment",
 }
 
 export enum FileCategory {
@@ -197,21 +167,6 @@ export enum FileType {
   DOCUMENT = "document",
   AUDIO = "audio",
   OTHER = "other",
-}
-
-export enum EntityType {
-  AUTH = "auth",
-  USER = "user",
-  NOTIFICATION = "notification",
-  ROLE = "role",
-  ITEM = "item",
-  SUPPLIER = "supplier",
-  CUSTOMER = "customer",
-  ATTRIBUTE = "attribute",
-  ORDER = "order",
-  WAREHOUSE = "warehouse",
-  STORE = "store",
-  FUND = "fund",
 }
 
 export enum FileStatus {

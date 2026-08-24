@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { Input, Modal, Form, FormInstance, Spin } from "antd";
 import { FormProps } from "antd/lib";
 import SubmitButton from "@/shared/components/button/SubmitButton";
-import { FileCategory, EntityFile } from "@/shared/constants/enum";
+import { FileCategory, EntityType } from "@/shared/constants/enum";
 import { AddUpdateModalProps } from "@/shared/interfaces/common";
 import { Employee } from "../../employee.model";
 import { randomId } from "@/shared/utils/common.util";
@@ -98,7 +98,7 @@ export const AddUpdateModal: React.FC<AddUpdateModalProps<Employee>> = ({
                 shape="circle"
                 size={100}
                 limit={50}
-                entity={EntityFile.EMPLOYEE}
+                entity={EntityType.EMPLOYEE}
                 category={FileCategory.AVATAR}
                 defaultFile={getMainFile(editData?.avatar)}
                 oId={id}

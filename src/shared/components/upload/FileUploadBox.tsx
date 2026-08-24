@@ -5,7 +5,7 @@ import { File } from "@/shared/interfaces/file";
 import { ArrowDownTrayIcon, EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Icon } from "@iconify/react";
 import { deleteFile, uploads, downloadFile } from "@/shared/utils/file.util";
-import { FileCategory, EntityFile } from "@/shared/constants/enum";
+import { FileCategory, EntityType } from "@/shared/constants/enum";
 import FilePreviewModal from "./FilePreviewModal";
 import FileTypeIcon from "@/shared/components/dropdown/FileTypeIcon";
 import "./FileUploadBox.css";
@@ -21,7 +21,7 @@ type FileUploadBoxProps = {
   onMoveToTrash?: (file: File) => void;
   accept?: string;
   maxCount?: number;
-  entity: EntityFile;
+  entity: EntityType;
   category: FileCategory;
   placeholder?: React.ReactNode;
 };

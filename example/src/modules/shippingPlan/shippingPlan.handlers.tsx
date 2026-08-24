@@ -3,7 +3,7 @@ import { ShippingPlan } from "./shippingPlan.model";
 import { HandlersInput } from "@/shared/interfaces/common";
 import Label from "@/shared/components/display/Label";
 import { FileUploadBox } from "@/shared/components/upload/FileUploadBox";
-import { EntityFile, FileCategory } from "@/shared/constants/enum";
+import { EntityType, FileCategory } from "@/shared/constants/enum";
 
 export function useShippingPlanHandlers({
   create,
@@ -64,7 +64,7 @@ export function useShippingPlanHandlers({
                 <Label title="Tài liệu bổ sung" />
                 <FileUploadBox
                   oId={id}
-                  entity={EntityFile.SHIPPING_PLAN}
+                  entity={EntityType.SHIPPING_PLAN}
                   category={FileCategory.DOCUMENT}
                 />
               </div>

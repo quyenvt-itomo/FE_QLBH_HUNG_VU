@@ -11,7 +11,7 @@ import SubmitButton from "@/shared/components/button/SubmitButton";
 import { FormInstance } from "antd/lib";
 import { useAppMessage } from "@/shared/hooks/useAppMessage";
 import dayjs from "dayjs";
-import { defaultAdditionalInfo, EntityFile, FileCategory } from "@/shared/constants/enum";
+import { defaultAdditionalInfo, EntityType, FileCategory } from "@/shared/constants/enum";
 import { FileUploadBox } from "@/shared/components/upload/FileUploadBox";
 
 export interface PartialProps {
@@ -106,7 +106,7 @@ export const AddUpdateQuotationModal: React.FC<AddUpdateModalProps<Quotation>> =
             <FileUploadBox
               defaultFiles={editData?.document}
               oId={id}
-              entity={EntityFile.QUOTATION}
+              entity={EntityType.QUOTATION}
               category={FileCategory.DOCUMENT}
               maxCount={5}
               onMoveToTrash={(file) => {

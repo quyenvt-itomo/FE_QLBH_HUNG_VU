@@ -1,12 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronDownIcon } from "@heroicons/react/24/outline";
-import { icons } from "@/shared/assets/icons";
-import { useGlobalData } from "@/shared/hooks/useGlobalData";
-import { privateRoutesName } from "@/shared/constants/routerName";
-import { APP_NAME } from "../constants/enum";
-import { getMainFile } from "../utils/file.util";
-import StoreImage from "./image/StoreImage";
+import { useGlobalData, privateRoutesName, StoreImage, getMainFile, APP_NAME } from "@/shared";
 
 const logoStyle: React.CSSProperties = {
   position: "sticky",

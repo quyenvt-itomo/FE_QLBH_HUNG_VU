@@ -13,7 +13,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { InboxOutlined } from "@ant-design/icons";
 import { useExcelStore } from "../excel.store";
-import { FileCategory, EntityFile } from "@/shared/constants/enum";
+import { FileCategory, EntityType } from "@/shared/constants/enum";
 import { uploads } from "@/shared/utils/file.util";
 import { File } from "@/shared/interfaces/file";
 import {
@@ -77,7 +77,7 @@ export const ModalImportExcel: React.FC<ModalImportExcelProps> = ({
     try {
       const uploadResult = await uploads({
         files: fileList,
-        entity: EntityFile.EXCEL_IMPORT,
+        entity: EntityType.EXCEL_IMPORT,
         category: FileCategory.DOCUMENT,
       });
       if (uploadResult && uploadResult.length > 0) {

@@ -1,9 +1,12 @@
 import React, { useEffect } from "react";
-import { Layout, MenuProps } from "antd";
+import { Button, Layout, MenuProps } from "antd";
 import CustomMenu from "./Menu";
 import { useGlobalData } from "@/shared/hooks/useGlobalData";
-import { StoreSpace } from "../header/components/StoreSpace";
 import Logo from "@/shared/components/Logo";
+import { Icon } from "@iconify/react";
+import { useNavigate } from "react-router-dom";
+import { privateRoutesName } from "@/shared/constants";
+import "./sidebar.css";
 
 const { Sider } = Layout;
 
@@ -14,7 +17,8 @@ export type SideBarProps = {
 };
 
 const Sidebar: React.FC<SideBarProps> = ({ items }) => {
-  const { collapsed } = useGlobalData();
+  const { collapsed, currentStore } = useGlobalData();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setTimeout(() => {
@@ -31,20 +35,27 @@ const Sidebar: React.FC<SideBarProps> = ({ items }) => {
       theme="dark"
       collapsed={collapsed}
       style={{ background: "#0B2B1C" }}
-      width={220}
-      className="
-        border-r border-black/5
-        shadow-[2px_0_8px_rgba(0,0,0,0.04)]
-        dark:border-gray-700/50
-        dark:shadow-[2px_0_8px_rgba(0,0,0,0.16)]
-        z-20
-      "
+      width={248}
+      collapsedWidth={68}
+      className="app-sidebar"
     >
-      <div className="flex flex-col w-full">
+      <div className="sidebar-shell">
         <Logo />
-        <div className="flex flex-col h-[calc(100dvh-56px)] overflow-y-auto scrollbar-dark pb-6">
+        <div className="p-3.5 pb-1.5">
+          <Button
+            type="primary"
+            htmlType="button"
+            className="sidebar-pos-btn"
+            onClick={() => navigate(privateRoutesName.pos)}
+          >
+            <Icon icon={"material-symbols-light:point-of-sale-rounded"} className="h-5 w-5" />
+            <span className="sidebar-pos-label">Bán hàng (POS)</span>
+          </Button>
+        </div>
+        <div className="sidebar-scroll">
           <CustomMenu items={items} />
         </div>
+        <div className="sidebar-foot">{currentStore?.name || "Chi nhánh trung tâm"} · v1.0</div>
       </div>
     </Sider>
   );

@@ -17,7 +17,7 @@ import { AppDatePicker } from "@/shared/components/input/AppDatePicker";
 import dayjs from "dayjs";
 import { departmentTypes, OrganizationSelect } from "@/modules/organization";
 import { FileUploadBox } from "@/shared/components/upload/FileUploadBox";
-import { EntityFile, FileCategory } from "@/shared/constants/enum";
+import { EntityType, FileCategory } from "@/shared/constants/enum";
 import { PurchaseRequisitionLineFormList } from "./PurchaseRequisitionLineFormList";
 import { useGlobalData } from "@/shared/hooks/useGlobalData";
 
@@ -192,7 +192,7 @@ export const PurchaseRequisitionAddUpdateModal: React.FC<
             <FileUploadBox
               defaultFiles={editData?.document}
               oId={id}
-              entity={EntityFile.PURCHASE_REQUISITION}
+              entity={EntityType.PURCHASE_REQUISITION}
               category={FileCategory.DOCUMENT}
               maxCount={5}
               onMoveToTrash={(file) => {

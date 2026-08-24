@@ -1,4 +1,4 @@
-import { FileCategory, EntityFile } from "@/shared/constants/enum";
+import { FileCategory, EntityType } from "@/shared/constants/enum";
 import { Entity } from "@/shared/base/entity";
 
 export interface FileMetadata {
@@ -24,7 +24,7 @@ export interface File extends Entity {
   mimeType: string;
   size: number;
   type: FileType;
-  entityType: EntityFile;
+  entityType: EntityType;
   entityId: string;
   thumbnailUrl?: string | null;
   metadata: FileMetadata;

@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { useGlobalData } from "./useGlobalData";
 import { useErrorState } from "./useErrorState";
 
+const EMPTY_NOTIFICATIONS: Notification[] = [];
+
 export const useNotification = (params?: { page?: number; size?: number; keyword?: string }) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -69,7 +71,7 @@ export const useNotification = (params?: { page?: number; size?: number; keyword
   });
 
   return {
-    notifications: query.data?.data || [],
+    notifications: query.data?.data ?? EMPTY_NOTIFICATIONS,
     totalUnread: query.data?.summary?.totalUnread || 0,
     pagination: query.data?.pagination,
     loading: query.isLoading,

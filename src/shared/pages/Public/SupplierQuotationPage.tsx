@@ -11,7 +11,7 @@ import {
   usePurchaseQuotationStore,
 } from "@/modules/purchaseQuotation";
 import Label from "@/shared/components/display/Label";
-import { EntityFile, FileCategory } from "@/shared/constants/enum";
+import { EntityType, FileCategory } from "@/shared/constants/enum";
 import { randomId } from "@/shared/utils/common.util";
 import { FormSection } from "@/shared/components/form/FormSection";
 import { ProvinceSelect, WardSelect } from "@/shared/components/select/AddressSelect";
@@ -469,7 +469,7 @@ const SupplierQuotationPage: React.FC = () => {
                     <div className="flex w-full gap-8">
                       <FileUploadBox
                         category={FileCategory.DOCUMENT}
-                        entity={EntityFile.PURCHASE_QUOTATION}
+                        entity={EntityType.PURCHASE_QUOTATION}
                         oId={id}
                         maxCount={1}
                         placeholder={
@@ -483,7 +483,7 @@ const SupplierQuotationPage: React.FC = () => {
                       />
                       <FileUploadBox
                         category={FileCategory.ATTACHMENT}
-                        entity={EntityFile.PURCHASE_QUOTATION}
+                        entity={EntityType.PURCHASE_QUOTATION}
                         oId={id}
                         maxCount={3}
                         placeholder={

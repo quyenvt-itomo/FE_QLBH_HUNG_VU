@@ -10,14 +10,14 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { File as IFile } from "@/shared/interfaces/file";
-import { FileCategory, EntityFile } from "@/shared/constants/enum";
+import { FileCategory, EntityType } from "@/shared/constants/enum";
 import { deleteFile, uploads } from "@/shared/utils/file.util";
 import { buildFileUrl } from "@/shared/utils/url.util";
 
 type EmployeeContractUploadProps = {
   defaultFile?: IFile | null;
   oId?: string;
-  entity?: EntityFile;
+  entity?: EntityType;
   category?: FileCategory;
   isActive?: boolean;
   limit?: number;
@@ -70,7 +70,7 @@ const getFileIcon = (file?: IFile | null) => {
 export const EmployeeContractUpload: React.FC<EmployeeContractUploadProps> = ({
   defaultFile,
   oId,
-  entity = EntityFile.EMPLOYEE_CONTRACT,
+  entity = EntityType.EMPLOYEE_CONTRACT,
   category = FileCategory.DOCUMENT,
   isActive = false,
   limit = 100,

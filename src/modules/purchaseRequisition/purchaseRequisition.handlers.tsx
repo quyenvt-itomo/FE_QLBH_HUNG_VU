@@ -3,7 +3,7 @@ import { PurchaseRequisition } from "./purchaseRequisition.model";
 import { HandlersInput } from "@/shared/interfaces/common";
 import Label from "@/shared/components/display/Label";
 import { FileUploadBox } from "@/shared/components/upload/FileUploadBox";
-import { EntityFile, FileCategory } from "@/shared/constants/enum";
+import { EntityType, FileCategory } from "@/shared/constants/enum";
 import { deletePendingFiles } from "@/shared/utils/file.util";
 
 export function usePurchaseRequisitionHandlers({
@@ -118,7 +118,7 @@ export function usePurchaseRequisitionHandlers({
                 <Label title="Tài liệu bổ sung" />
                 <FileUploadBox
                   oId={id}
-                  entity={EntityFile.PURCHASE_REQUISITION}
+                  entity={EntityType.PURCHASE_REQUISITION}
                   category={FileCategory.DOCUMENT}
                 />
               </div>

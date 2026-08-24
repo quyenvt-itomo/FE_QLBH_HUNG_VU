@@ -35,8 +35,8 @@ export interface PartnerSnapshot {
   phone: string | null;
   taxCode: string | null;
   addresses: Address[];
-  address?: any;
-  representative: any;
+  address?: Address;
+  representative: Representative;
   banks: BankAccount[];
 }
 export interface Partner extends Entity {
@@ -51,8 +51,8 @@ export interface Partner extends Entity {
   taxCode: string | null;
   addresses: Address[];
   /** Legacy single-address alias for retired public quotation screens. */
-  address?: any;
-  representative: any;
+  address?: Address;
+  representative: Representative;
   banks: BankAccount[];
   maxDebtAmount: number | null;
   contacts?: PartnerContact[];

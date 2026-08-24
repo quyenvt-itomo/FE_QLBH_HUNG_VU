@@ -1,19 +1,42 @@
-import { RolePage } from "@/modules/role";
-import { UserPage } from "@/modules/user";
-import { OrderPage } from "@/modules/order";
-import { SalePosPage } from "@/modules/order";
-import { PurchasePage } from "@/modules/order";
-import { InventoryPage } from "@/modules/inventory";
-import { InventoryAdjustmentPage } from "@/modules/inventoryAdjustment";
-import { IncomeExpensePage } from "@/modules/incomeExpense";
-import { FundPage } from "@/modules/fund";
-import { FundAdjustmentPage } from "@/modules/fundAdjustment";
-import { FundTransferPage } from "@/modules/fundTransfer";
-import { PartnerPage } from "@/modules/partner";
-import { ProductPage, ProductPriceHistoryPage } from "@/modules/product";
-import { NotificationPage } from "@/modules/notification";
-import { StorePage } from "@/modules/store";
 import { DashboardPage } from "@/modules/dashboard";
+import { FundAdjustmentPage } from "@/modules/fundAdjustment";
+import { FundPage } from "@/modules/fund";
+import { FundTransferPage } from "@/modules/fundTransfer";
+import { IncomeExpensePage } from "@/modules/incomeExpense";
+import { InventoryAdjustmentPage } from "@/modules/inventoryAdjustment";
+import { InventoryPage } from "@/modules/inventory";
+import {
+  PurchasePage,
+  PurchaseReturnPage,
+  SalePage,
+  SaleReturnPage,
+} from "@/modules/order";
+import { CustomerPage, ShipperPage, SupplierPage } from "@/modules/partner";
+import { ProductPage, ProductPriceHistoryPage } from "@/modules/product";
+import { RolePage } from "@/modules/role";
+import { StorePage } from "@/modules/store";
+import { UserPage } from "@/modules/user";
 import ComingSoonPage from "./ComingSoonPage";
 
-export const desktopPage = { DashboardPage, RolePage, UserPage, OrderPage, SalePosPage, PurchasePage, InventoryPage, InventoryAdjustmentPage, IncomeExpensePage, FundPage, FundAdjustmentPage, FundTransferPage, PartnerPage, ProductPage, ProductPriceHistoryPage, NotificationPage, StorePage, ComingSoonPage };
+export const desktopPage = {
+  DashboardPage,
+  SalePage,
+  SaleReturnPage,
+  ProductPage,
+  InventoryPage,
+  InventoryAdjustmentPage,
+  SupplierPage,
+  PurchasePage,
+  PurchaseReturnPage,
+  CustomerPage,
+  IncomeExpensePage,
+  FundPage,
+  FundAdjustmentPage,
+  FundTransferPage,
+  ShipperPage,
+  ProductPriceHistoryPage,
+  StorePage,
+  UserPage,
+  RolePage,
+  ComingSoonPage,
+};

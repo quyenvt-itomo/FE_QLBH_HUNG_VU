@@ -13,6 +13,17 @@ import dayjs from "dayjs";
 
 const PLACEHOLDER_REGEX = /\{([^}]+)\}/g;
 
+const areNotificationListsEqual = (
+  first: NotificationData[],
+  second: NotificationData[],
+): boolean =>
+  first.length === second.length &&
+  first.every(
+    (notification, index) =>
+      notification.id === second[index]?.id &&
+      notification.isRead === second[index]?.isRead,
+  );
+
 const Highlight: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <span
     className="px-1.5 py-0.5 rounded bg-primary/10 text-primary font-medium"
@@ -116,17 +127,21 @@ const Notification: React.FC = () => {
   const notifyTableRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (pagination?.currentPage === 1) {
-      setNotifications(notificationData);
+    const currentPage = pagination?.currentPage ?? page;
+
+    if (currentPage === 1) {
+      setNotifications((previous) =>
+        areNotificationListsEqual(previous, notificationData) ? previous : notificationData,
+      );
       return;
     }
 
     setNotifications((prevList) => {
       const existingIds = new Set(prevList.map((item) => item.id));
       const newItems = notificationData.filter((item) => !existingIds.has(item.id));
-      return [...prevList, ...newItems];
+      return newItems.length ? [...prevList, ...newItems] : prevList;
     });
-  }, [notificationData, pagination?.currentPage]);
+  }, [notificationData, pagination?.currentPage, page]);
 
   useEffect(() => {
     if (!info?.id) return;

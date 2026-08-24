@@ -14,7 +14,7 @@ import { AppDatePicker } from "@/shared/components/input/AppDatePicker";
 import { CalculationUtil } from "@/shared/utils/calculation.util";
 import dayjs from "dayjs";
 import { FileUploadBox } from "@/shared/components/upload/FileUploadBox";
-import { EntityFile, FileCategory } from "@/shared/constants/enum";
+import { EntityType, FileCategory } from "@/shared/constants/enum";
 
 export const ShippingPlanAddUpdateModal: React.FC<AddUpdateModalProps<ShippingPlan>> = ({
   open,
@@ -132,7 +132,7 @@ export const ShippingPlanAddUpdateModal: React.FC<AddUpdateModalProps<ShippingPl
             <FileUploadBox
               defaultFiles={editData?.document}
               oId={id}
-              entity={EntityFile.SHIPPING_PLAN}
+              entity={EntityType.SHIPPING_PLAN}
               category={FileCategory.DOCUMENT}
               maxCount={2}
               onMoveToTrash={(file) => {

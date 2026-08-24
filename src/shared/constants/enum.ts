@@ -53,55 +53,6 @@ export enum SaleLineType {
   SERVICE = "service",
 }
 
-export enum EntityFile {
-  PRODUCT = "product",
-  CUSTOMER = "customer",
-  SUPPLIER = "supplier",
-  EMPLOYEE = "employee",
-  EMPLOYEE_CONTRACT = "employeeContract",
-  DOCUMENT = "document",
-  USER = "user",
-  ORGANIZATION = "organization",
-  EXCEL_IMPORT = "excelImport",
-  // Purchase
-  PURCHASE_REQUISITION = "purchaseRequisition",
-  PURCHASE_QUOTATION = "purchaseQuotation",
-  PURCHASE = "purchase",
-  SHIPPING_PLAN = "shippingPlan",
-  // Sales
-  QUOTATION = "quotation",
-  QUOTATION_REQUEST = "quotationRequest",
-  ORDER = "order",
-  // Inventory
-  STOCK_DOCUMENT = "stockDocument",
-  INVENTORY_ADJUSTMENT = "inventoryAdjustment",
-  INVENTORY_CONVERSION = "inventoryConversion",
-  WAREHOUSE_TRANSFER = "warehouseTransfer",
-  // Production
-  PRODUCTION = "production",
-  BILL_OF_MATERIAL = "billOfMaterial",
-  // Accounting
-  INVOICE = "invoice",
-  PAYMENT_REQUEST = "paymentRequest",
-  INCOME_EXPENSE = "incomeExpense",
-  FUND_ADJUSTMENT = "fundAdjustment",
-  FUND_TRANSFER = "fundTransfer",
-  PARTNER_DEBT_ADJUSTMENT = "partnerDebtAdjustment",
-  PARTNER_DEBT_OFFSET = "partnerDebtOffset",
-  COMMISSION_DEBT_ADJUSTMENT = "commissionDebtAdjustment",
-  VAT_DEBT_ADJUSTMENT = "vatDebtAdjustment",
-  // Other
-  GATE_LOG = "gateLog",
-  REFERRAL_CODE = "referralCode",
-  PARTNER = "partner",
-  SERVICE = "service",
-  WAREHOUSE = "warehouse",
-  JOB_POSITION = "jobPosition",
-  FUND = "fund",
-  ROLE = "role",
-  ATTRIBUTE = "attribute",
-}
-
 export enum FileCategory {
   AVATAR = "avatar",
   RECEIPT = "receipt",

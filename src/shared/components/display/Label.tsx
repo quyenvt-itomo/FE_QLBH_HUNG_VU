@@ -1,4 +1,4 @@
-const Label: React.FC<{
+export const Label: React.FC<{
   title?: string;
   required?: boolean;
   width?: number;
@@ -23,5 +23,3 @@ const Label: React.FC<{
     </span>
   );
 };
-
-export default Label;

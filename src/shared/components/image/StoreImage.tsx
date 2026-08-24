@@ -19,13 +19,13 @@ const getInitials = (name?: string) => {
 
 interface StoreImageProps {
   size?: number;
-  image?: File | null;
+  image?: File | string | null;
   isHiddenPreview?: boolean;
   name?: string;
   shape?: "circle" | "square";
 }
 
-const StoreImage: React.FC<StoreImageProps> = ({
+export const StoreImage: React.FC<StoreImageProps> = ({
   image,
   name,
   size = 32,
@@ -42,14 +42,23 @@ const StoreImage: React.FC<StoreImageProps> = ({
     setHasError(true);
   };
 
-  const thumbnailSrc =
-    !hasError && image?.thumbnailUrl
-      ? buildFileUrl(image.thumbnailUrl)
-      : !hasError && image?.url
-        ? buildFileUrl(image.url)
-        : undefined;
+  const thumbnailSrc = !hasError
+    ? typeof image === "string"
+      ? buildFileUrl(image)
+      : image?.thumbnailUrl
+        ? buildFileUrl(image.thumbnailUrl)
+        : image?.url
+          ? buildFileUrl(image.url)
+          : undefined
+    : undefined;
 
-  const fullImageSrc = !hasError && image?.url ? buildFileUrl(image.url) : undefined;
+  const fullImageSrc = !hasError
+    ? typeof image === "string"
+      ? buildFileUrl(image)
+      : image?.url
+        ? buildFileUrl(image.url)
+        : undefined
+    : undefined;
 
   const initials = getInitials(name);
   const showImage = Boolean(thumbnailSrc);

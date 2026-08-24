@@ -7,7 +7,7 @@ import { formatFormData, parseFormDataDates, formatDateDDMMYYYY } from "@/shared
 import { FormSection } from "@/shared/components/form/FormSection";
 import dayjs from "dayjs";
 import { FileUploadBox } from "@/shared/components/upload/FileUploadBox";
-import { EntityFile, FileCategory } from "@/shared/constants/enum";
+import { EntityType, FileCategory } from "@/shared/constants/enum";
 import SubmitButton from "@/shared/components/button/SubmitButton";
 import FormListTable, { FormColumn } from "@/shared/components/form/FormListTable";
 import { StockDocumentLine } from "@/modules/stockDocumentLine";
@@ -368,7 +368,7 @@ export const ConfirmImportModal: React.FC<Props> = ({
           <div className="flex w-[520px]">
             <FileUploadBox
               oId={id}
-              entity={EntityFile.STOCK_DOCUMENT}
+              entity={EntityType.STOCK_DOCUMENT}
               category={FileCategory.DOCUMENT}
               placeholder={
                 <div className="flex flex-col">

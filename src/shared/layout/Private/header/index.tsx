@@ -28,7 +28,7 @@ const AppHeader: React.FC = () => {
         <Button
           icon={<MenuOutlined />}
           onClick={() => dispatch(setDrawerOpen(!drawerOpen))}
-          className="mr-4 hidden md:flex lg:hidden"
+          className="mr-4 flex lg:hidden"
         />
         <button
           className="w-5 h-5 rounded border-[1.2px] hover:border-primary transition-colors ease-in-out mr-4 hidden lg:flex relative overflow-hidden group"

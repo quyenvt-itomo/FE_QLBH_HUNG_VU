@@ -3,7 +3,7 @@ import { PurchaseQuotation } from "./purchaseQuotation.model";
 import { HandlersInput } from "@/shared/interfaces/common";
 import Label from "@/shared/components/display/Label";
 import { FileUploadBox } from "@/shared/components/upload/FileUploadBox";
-import { EntityFile, FileCategory } from "@/shared/constants/enum";
+import { EntityType, FileCategory } from "@/shared/constants/enum";
 import { deletePendingFiles } from "@/shared/utils/file.util";
 import { useGlobalData } from "@/shared/hooks/useGlobalData";
 import { handleCopy } from "@/shared/utils/common.util";
@@ -63,7 +63,7 @@ export function usePurchaseQuotationHandlers({
                 <Label title="Tài liệu bổ sung" />
                 <FileUploadBox
                   oId={id}
-                  entity={EntityFile.PURCHASE_REQUISITION}
+                  entity={EntityType.PURCHASE_REQUISITION}
                   category={FileCategory.DOCUMENT}
                 />
               </div>

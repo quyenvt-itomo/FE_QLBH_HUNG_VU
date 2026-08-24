@@ -40,7 +40,7 @@ import {
   convertStockDocumentToInvoiceLines,
   convertShippingPlanToInvoiceLines,
 } from "../invoice.util";
-import { EntityFile, FileCategory, SortOrderEnum } from "@/shared/constants/enum";
+import { EntityType, FileCategory, SortOrderEnum } from "@/shared/constants/enum";
 import { AddressInput } from "@/shared/components/input/AddressInput";
 import { useAppMessage } from "@/shared/hooks/useAppMessage";
 import { FileUploadBox } from "@/shared/components/upload/FileUploadBox";
@@ -650,7 +650,7 @@ export const AddUpdateInvoiceModal: React.FC<AddUpdateInvoiceModalProps> = ({
             <FileUploadBox
               defaultFiles={editData?.document}
               oId={id}
-              entity={EntityFile.PURCHASE}
+              entity={EntityType.PURCHASE}
               category={FileCategory.DOCUMENT}
               maxCount={5}
               onMoveToTrash={(file) => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Upload, Button, Image, Spin, message, UploadFile, UploadProps } from "antd";
 import { InboxOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
-import { FileCategory, EntityFile } from "@/shared/constants/enum";
+import { FileCategory, EntityType } from "@/shared/constants/enum";
 import { uploads, deleteFile, deletePendingFiles } from "@/shared/utils/file.util";
 import type { File } from "@/shared/interfaces/file";
 
@@ -10,7 +10,7 @@ const { Dragger } = Upload;
 interface UploadInputProps {
   value?: File[];
   onChange?: (files: File[]) => void;
-  entityType: EntityFile;
+  entityType: EntityType;
   category: FileCategory;
   entityId?: string;
   maxCount?: number;

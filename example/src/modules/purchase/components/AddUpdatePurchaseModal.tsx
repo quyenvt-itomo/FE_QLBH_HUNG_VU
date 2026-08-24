@@ -10,7 +10,7 @@ import {
 import {
   defaultAdditionalInfo,
   DiscountTypeEnum,
-  EntityFile,
+  EntityType,
   FileCategory,
 } from "@/shared/constants/enum";
 import { handleCloseWithPendingFiles, randomId } from "@/shared/utils/common.util";
@@ -320,7 +320,7 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
             <FileUploadBox
               defaultFiles={editData?.document}
               oId={id}
-              entity={EntityFile.PURCHASE}
+              entity={EntityType.PURCHASE}
               category={FileCategory.DOCUMENT}
               maxCount={5}
               onMoveToTrash={(file) => {

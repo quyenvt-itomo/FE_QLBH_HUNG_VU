@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Avatar, Image, Tooltip } from "antd";
 import { EyeOutlined } from "@ant-design/icons";
-import defaultUser from "@/assets/defaultAvatar.jpg";
+import defaultUser from "@/shared/assets/defaultAvatar.jpg";
 import { HOST_URL } from "@/shared/constants/apiEndpoint";
 import { COLORS } from "@/shared/constants/ui";
 

@@ -18,7 +18,7 @@ import { InputQuantity } from "@/shared/components/input";
 import { FormColumn, FormListTable } from "@/shared/components/form/FormListTable";
 import { randomId, resolveByPath } from "@/shared/utils/common.util";
 import { FileUploadBox } from "@/shared/components/upload/FileUploadBox";
-import { EntityFile, FileCategory } from "@/shared/constants/enum";
+import { EntityType, FileCategory } from "@/shared/constants/enum";
 import { ProvinceSelect, WardSelect } from "@/shared/components/select/AddressSelect";
 import { useAddressSelector } from "@/shared/hooks/useAddressSelector";
 import { useAutoResetItem } from "@/shared/hooks/useAutoResetItem";
@@ -396,7 +396,7 @@ const QuotationRequestPage: React.FC = () => {
                     <div className="flex w-full gap-8">
                       <FileUploadBox
                         category={FileCategory.DOCUMENT}
-                        entity={EntityFile.PURCHASE_QUOTATION}
+                        entity={EntityType.PURCHASE_QUOTATION}
                         oId={id}
                         maxCount={1}
                         placeholder={
@@ -410,7 +410,7 @@ const QuotationRequestPage: React.FC = () => {
                       />
                       <FileUploadBox
                         category={FileCategory.ATTACHMENT}
-                        entity={EntityFile.PURCHASE_QUOTATION}
+                        entity={EntityType.PURCHASE_QUOTATION}
                         oId={id}
                         maxCount={3}
                         placeholder={

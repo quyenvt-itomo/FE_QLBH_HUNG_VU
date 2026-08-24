@@ -18,7 +18,7 @@ import { StockDocument, StockDocumentStatus, StockDocumentType } from "../../sto
 import { FormSection } from "@/shared/components/form/FormSection";
 import { ApproveStatus } from "@/modules/shared/business.model";
 import { FileUploadBox } from "@/shared/components/upload/FileUploadBox";
-import { EntityFile, FileCategory } from "@/shared/constants/enum";
+import { EntityType, FileCategory } from "@/shared/constants/enum";
 import FormListTable, { FormColumn } from "@/shared/components/form/FormListTable";
 import { StockDocumentLine } from "@/modules/stockDocumentLine";
 import { formatMoney, formatPercentage, formatQuantity } from "@/shared/utils/number.util";
@@ -622,7 +622,7 @@ export const AddUpdateModal: React.FC<AddUpdateModalProps<StockDocument>> = ({
             <FileUploadBox
               defaultFiles={editData?.document}
               oId={id}
-              entity={EntityFile.PURCHASE}
+              entity={EntityType.PURCHASE}
               category={FileCategory.DOCUMENT}
               maxCount={5}
               onMoveToTrash={(file) => {

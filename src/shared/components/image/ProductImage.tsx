@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Image } from "antd";
-import defaultProduct from "@/assets/defaultProduct.jpg";
+import defaultProduct from "@/shared/assets/defaultProduct.jpg";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import { File } from "@/shared/interfaces/file";
 import { buildFileUrl } from "@/shared/utils/url.util";

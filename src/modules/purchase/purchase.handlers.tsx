@@ -3,7 +3,7 @@ import { Purchase } from "./purchase.model";
 import { HandlersInput } from "@/shared/interfaces/common";
 import Label from "@/shared/components/display/Label";
 import { FileUploadBox } from "@/shared/components/upload/FileUploadBox";
-import { EntityFile, FileCategory } from "@/shared/constants/enum";
+import { EntityType, FileCategory } from "@/shared/constants/enum";
 import { deletePendingFiles } from "@/shared/utils/file.util";
 import { PurchaseFile } from "./purchase.file";
 import { useGlobalData } from "@/shared/hooks/useGlobalData";
@@ -95,7 +95,7 @@ export function usePurchaseHandlers({
                 <Label title="Tài liệu bổ sung" />
                 <FileUploadBox
                   oId={id}
-                  entity={EntityFile.PURCHASE}
+                  entity={EntityType.PURCHASE}
                   category={FileCategory.DOCUMENT}
                 />
               </div>

@@ -60,7 +60,7 @@ export const apiEndpoint = {
   jobPosition: { base: "/job-position" },
   user: { base: "/user" },
   employee: { base: "/employee" },
-  partner: { base: "/customer", customer: "/customer", supplier: "/supplier", shipper: "/shipper" },
+  partner: { base: "/partner", customer: "/customer", supplier: "/supplier", shipper: "/shipper" },
   partnerContact: { base: "/partner-contact" },
   product: {
     base: "/product",
@@ -108,7 +108,15 @@ export const apiEndpoint = {
     approve: "/purchase-requisition/:id/approve",
     reject: "/purchase-requisition/:id/reject",
   },
-  order: { base: "/sale", sale: "/sale", saleReturn: "/sale-return", purchase: "/purchase", purchaseReturn: "/purchase-return", cancel: "/sale/:id/cancel", complete: "/sale/:id/complete" },
+  order: {
+    base: "/sale",
+    sale: "/sale",
+    saleReturn: "/sale-return",
+    purchase: "/purchase",
+    purchaseReturn: "/purchase-return",
+    cancel: "/sale/:id/cancel",
+    complete: "/sale/:id/complete",
+  },
   purchase: {
     base: "/purchase",
     line: "/purchase/:purchaseId/line",

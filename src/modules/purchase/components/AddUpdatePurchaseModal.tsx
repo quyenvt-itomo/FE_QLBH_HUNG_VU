@@ -10,7 +10,7 @@ import {
 import {
   defaultAdditionalInfo,
   DiscountTypeEnum,
-  EntityFile,
+  EntityType,
   FileCategory,
 } from "@/shared/constants/enum";
 import { handleCloseWithPendingFiles, randomId } from "@/shared/utils/common.util";
@@ -251,7 +251,12 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
 
             <Col span={7}>
               <Form.Item name="discountType" label={<Label width={120} title="Chiết khấu" />}>
-                <AppSelect options={[{ value: DiscountTypeEnum.AMOUNT, label: "Số tiền" }, { value: DiscountTypeEnum.PERCENT, label: "%" }]} />
+                <AppSelect
+                  options={[
+                    { value: DiscountTypeEnum.AMOUNT, label: "Số tiền" },
+                    { value: DiscountTypeEnum.PERCENT, label: "%" },
+                  ]}
+                />
               </Form.Item>
             </Col>
             <Col span={7}>
@@ -261,7 +266,12 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
             </Col>
             <Col span={7}>
               <Form.Item name="taxType" label={<Label width={120} title="VAT tính theo" />}>
-                <AppSelect options={[{ value: DiscountTypeEnum.AMOUNT, label: "Số tiền" }, { value: DiscountTypeEnum.PERCENT, label: "%" }]} />
+                <AppSelect
+                  options={[
+                    { value: DiscountTypeEnum.AMOUNT, label: "Số tiền" },
+                    { value: DiscountTypeEnum.PERCENT, label: "%" },
+                  ]}
+                />
               </Form.Item>
             </Col>
             <Col span={7}>
@@ -342,7 +352,7 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
             <FileUploadBox
               defaultFiles={editData?.document}
               oId={id}
-              entity={EntityFile.PURCHASE}
+              entity={EntityType.PURCHASE}
               category={FileCategory.DOCUMENT}
               maxCount={5}
               onMoveToTrash={(file) => {

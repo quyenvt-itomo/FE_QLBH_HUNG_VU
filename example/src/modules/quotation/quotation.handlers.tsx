@@ -3,7 +3,7 @@ import { Quotation } from "./quotation.model";
 import { HandlersInput } from "@/shared/interfaces/common";
 import Label from "@/shared/components/display/Label";
 import { FileUploadBox } from "@/shared/components/upload/FileUploadBox";
-import { EntityFile, FileCategory } from "@/shared/constants/enum";
+import { EntityType, FileCategory } from "@/shared/constants/enum";
 import { deletePendingFiles } from "@/shared/utils/file.util";
 
 export function useQuotationHandlers({
@@ -88,7 +88,7 @@ export function useQuotationHandlers({
                 <Label title="Tài liệu bổ sung" />
                 <FileUploadBox
                   oId={id}
-                  entity={EntityFile.QUOTATION}
+                  entity={EntityType.QUOTATION}
                   category={FileCategory.DOCUMENT}
                 />
               </div>

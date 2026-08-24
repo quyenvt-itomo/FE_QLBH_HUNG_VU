@@ -1,6 +1,6 @@
 import { UploadFile } from "antd";
 import dayjs from "dayjs";
-import { FileCategory, EntityFile } from "@/shared/constants/enum";
+import { FileCategory, EntityType } from "@/shared/constants/enum";
 import { BASE_URL, HOST_URL, apiEndpoint } from "@/shared/constants/apiEndpoint";
 import { buildUrlWithId } from "@/shared/utils/url.util";
 import { File } from "@/shared/interfaces/file";
@@ -74,7 +74,7 @@ export const mapFileList = (files: string[]): UploadFile[] => {
 interface UploadProps {
   files: UploadFile[];
   oId?: string;
-  entity: EntityFile;
+  entity: EntityType;
   category: FileCategory;
   isActive?: boolean;
   messageApi?: {

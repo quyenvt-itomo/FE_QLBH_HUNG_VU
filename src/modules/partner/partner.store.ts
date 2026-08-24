@@ -13,7 +13,6 @@ export const usePartnerStore = createBaseStore<
 >({
   key: "partners",
   apiUrl: apiEndpoint.partner.base,
-  permissionModule: "customer",
   extend: ({ onError }) => ({
     getByTaxCode: async (code: string) => {
       try {
@@ -39,7 +38,11 @@ export const usePartnerStore = createBaseStore<
   }),
 });
 
-export const useCustomerStore = usePartnerStore;
+export const useCustomerStore = createBaseStore<Partner, PartnerQuery>({
+  key: "customers",
+  apiUrl: apiEndpoint.partner.customer,
+  permissionModule: "customer",
+});
 export const useSupplierStore = createBaseStore<Partner, PartnerQuery>({
   key: "suppliers",
   apiUrl: apiEndpoint.partner.supplier,

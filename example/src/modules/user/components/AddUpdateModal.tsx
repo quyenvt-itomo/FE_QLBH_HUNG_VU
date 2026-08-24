@@ -2,7 +2,7 @@ import React, { useEffect, useMemo } from "react";
 import { Input, Modal, Form, Row, Col } from "antd";
 import { FormProps } from "antd/lib";
 import SubmitButton from "@/shared/components/button/SubmitButton";
-import { FileCategory, EntityFile } from "@/shared/constants/enum";
+import { FileCategory, EntityType } from "@/shared/constants/enum";
 import { AddUpdateModalProps } from "@/shared/interfaces/common";
 import { User } from "../user.model";
 import { randomId } from "@/shared/utils/common.util";
@@ -119,7 +119,7 @@ export const AddUpdateModal: React.FC<AddUpdateModalProps<User>> = ({
               shape="circle"
               size={86}
               limit={50}
-              entity={EntityFile.USER}
+              entity={EntityType.USER}
               category={FileCategory.AVATAR}
               defaultFile={getMainFile(editData?.avatar)}
               oId={id}

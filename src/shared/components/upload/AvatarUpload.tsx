@@ -2,7 +2,7 @@ import { App, Upload } from "antd";
 import { useState, useEffect } from "react";
 import { UploadProps } from "antd/lib";
 import { File as IFile } from "@/shared/interfaces/file";
-import { FileCategory, EntityFile } from "@/shared/constants/enum";
+import { FileCategory, EntityType } from "@/shared/constants/enum";
 import { getBase64 } from "@/shared/utils/base64";
 import { deleteFile, uploads } from "@/shared/utils/file.util";
 import { buildFileUrl } from "@/shared/utils/url.util";
@@ -14,7 +14,7 @@ type AvatarUploadProps = {
   size?: number;
   shape?: "circle" | "square";
   oId?: string;
-  entity: EntityFile;
+  entity: EntityType;
   category: FileCategory;
   isActive?: boolean;
   limit?: number;
@@ -22,7 +22,7 @@ type AvatarUploadProps = {
   onMoveToTrash?: (file: IFile) => void;
 };
 
-const AvatarUpload: React.FC<AvatarUploadProps> = ({
+export const AvatarUpload: React.FC<AvatarUploadProps> = ({
   defaultFile,
   size = 110,
   shape = "square",
@@ -220,5 +220,3 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({
     </div>
   );
 };
-
-export default AvatarUpload;
