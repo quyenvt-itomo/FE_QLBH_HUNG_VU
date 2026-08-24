@@ -92,8 +92,8 @@ const UserBar: React.FC<UserBarProps> = ({}) => {
           </div>
           <div className="hidden md:flex flex-row items-center">
             <div className="flex flex-col select-none">
-              <Text className="font-semibold">{info?.name}</Text>
-              <Text className="text-gray-400 truncate">
+              <Text className="font-semibold leading-5">{info?.name}</Text>
+              <Text className="text-gray-400 truncate leading-5">
                 {info?.role?.name || info?.username || info?.code}
               </Text>
             </div>

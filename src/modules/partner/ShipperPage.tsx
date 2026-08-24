@@ -8,8 +8,6 @@ const ShipperPage: React.FC = () => (
   <PartnerBusinessPageView
     {...usePartnerBusinessPage(useShipperStore, PartnerType.SHIPPER)}
     type={PartnerType.SHIPPER}
-    title="Đơn vị vận chuyển"
-    itemName="đơn vị vận chuyển"
   />
 );
 

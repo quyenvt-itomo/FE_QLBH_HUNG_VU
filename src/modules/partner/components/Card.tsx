@@ -123,9 +123,6 @@ export const PartnerCardBase: React.FC<PartnerCardProps> = ({
         </div>
       </div>
 
-      {/* Divider */}
-      <div className="border-t border-gray-100 dark:border-gray-700 my-2" />
-
       {/* Actions */}
       <div className="absolute top-1 right-1 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
         <ActionButtons

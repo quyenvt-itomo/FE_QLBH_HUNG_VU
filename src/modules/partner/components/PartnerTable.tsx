@@ -3,7 +3,7 @@ import React, { useMemo } from "react";
 import { ObjectTableProps, TableColumnConfig, ColumnsConfigType } from "@/shared/components";
 import { getFullAddress } from "@/shared/utils/common.util";
 
-import { Partner, PartnerType } from "../partner.model";
+import { Partner, PartnerType, partnerTypeMap } from "../partner.model";
 
 interface PartnerTableProps extends ObjectTableProps {
   partnerType?: PartnerType;
@@ -61,11 +61,10 @@ export const PartnerTable: React.FC<PartnerTableProps> = ({
   return (
     <TableColumnConfig
       columns={columns}
-      itemName={itemName}
+      itemName={partnerType ? partnerTypeMap[partnerType] : "đối tác"}
       tableKey={`partner-${partnerType || "all"}-table`}
       onViewDetail={onViewDetail}
       {...rest}
     />
   );
 };
-

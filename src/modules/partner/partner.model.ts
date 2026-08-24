@@ -1,6 +1,12 @@
 import { Entity } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
-import { Address, BankAccount, Representative } from "@/shared/interfaces/common";
+import {
+  Address,
+  BankAccount,
+  FilterKey,
+  Representative,
+  SortItem,
+} from "@/shared/interfaces/common";
 import { getOptionsByMap } from "@/shared/constants/enum";
 import type { Attribute } from "../attribute/attribute.model";
 import type { PartnerContact } from "../partnerContact/partnerContact.model";
@@ -22,6 +28,7 @@ export interface PartnerQuery extends ApiRequestQuery {
   type?: PartnerType;
   types?: PartnerType[];
   groupId?: string;
+  isOrganization?: boolean;
 }
 export interface PartnerSnapshot {
   id: string;
@@ -62,3 +69,34 @@ export interface Partner extends Entity {
   zaloLink?: string | null;
   paymentTerm?: { maxDebtAmount?: number; maxDebtDays?: number; depositRate?: number } | null;
 }
+
+export const getSortItems = (type: PartnerType): SortItem[] => {
+  const text = partnerTypeMap[type]?.toLowerCase() || "đối tác";
+
+  return [
+    { label: "Ngày tạo", value: "createdAt", ascLabel: "Mới nhất", descLabel: "Cũ nhất" },
+    { label: `Mã ${text}`, value: "code", ascLabel: "A → Z", descLabel: "Z → A" },
+    { label: `Tên ${text}`, value: "name", ascLabel: "A → Z", descLabel: "Z → A" },
+  ];
+};
+
+export const getFilterUses = (type: PartnerType): FilterKey[] => {
+  const result: FilterKey[] = ["creatorIds"];
+
+  switch (type) {
+    case PartnerType.CUSTOMER:
+      result.push("customerGroupIds");
+      break;
+    case PartnerType.SUPPLIER:
+      result.push("supplierGroupIds");
+      break;
+    case PartnerType.SHIPPER:
+      result.push("shipperGroupIds");
+      break;
+
+    default:
+      break;
+  }
+
+  return result;
+};

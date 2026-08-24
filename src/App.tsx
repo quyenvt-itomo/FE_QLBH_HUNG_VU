@@ -14,6 +14,7 @@ import NotFoundPage from "./shared/pages/Public/error/NotFound/NotFoundPage";
 import PublicLayout from "./shared/layout/Public";
 import AuthMiddleware from "./shared/middleware/AuthMiddleware";
 import PrivateLayout from "./shared/layout/Private";
+import { privateRoutesName } from "./shared/constants";
 
 dayjs.locale("vi");
 
@@ -161,9 +162,13 @@ const App: React.FC = () => {
                   path={route.path}
                   element={
                     <AuthMiddleware>
-                      <PrivateLayout>
+                      {route.path === privateRoutesName.pos ? (
                         <Page />
-                      </PrivateLayout>
+                      ) : (
+                        <PrivateLayout>
+                          <Page />
+                        </PrivateLayout>
+                      )}
                     </AuthMiddleware>
                   }
                 />

@@ -22,6 +22,31 @@ import type { StatusItem } from "./filter.types";
 import { CLASSNAME } from "@/shared/constants/ui";
 import { FilterPanel } from "./FilterPanel";
 
+/** Một item trong enum filter — click để toggle chọn/bỏ chọn */
+export interface EnumFilterItem {
+  key: string;
+  label: string;
+  count?: number;
+}
+
+/** Cấu hình một bộ lọc enum */
+interface EnumFilterConfigBase {
+  label: string;
+  items: EnumFilterItem[];
+}
+
+export type EnumFilterConfig =
+  | (EnumFilterConfigBase & {
+      /** Single-select mode. */
+      value?: string;
+      onChange: (value?: string) => void;
+    })
+  | (EnumFilterConfigBase & {
+      /** Multi-select mode. */
+      value: string[];
+      onChange: (value: string[]) => void;
+    });
+
 type DatePreset = { label: string; start: ReturnType<typeof dayjs>; end: ReturnType<typeof dayjs> };
 
 const getDatePresets = (): DatePreset[] => [
@@ -102,6 +127,9 @@ export interface DrawerFilterProps {
   /** Nội dung bộ lọc tuỳ chỉnh render trong phần "Lọc theo" */
   filterContent?: React.ReactNode;
 
+  /** Bộ lọc enum — click toggle chọn/bỏ chọn, không có "Tất cả" */
+  enumFilters?: EnumFilterConfig[];
+
   onClearFilter?: () => void;
 }
 
@@ -134,6 +162,8 @@ const DrawerFilter: React.FC<DrawerFilterProps> = ({
   onSearchChange,
 
   filterContent,
+
+  enumFilters = [],
 
   onClearFilter,
 }) => {
@@ -292,6 +322,70 @@ const DrawerFilter: React.FC<DrawerFilterProps> = ({
             </div>
           </div>
         )}
+
+        {enumFilters.map((config) => {
+          const selectedValues = Array.isArray(config.value)
+            ? config.value
+            : config.value
+              ? [config.value]
+              : [];
+          const isMultiple = Array.isArray(config.value);
+          const hasSelection = selectedValues.length > 0;
+          const change = (value: string | string[]) =>
+            (config.onChange as (value: string | string[]) => void)(value);
+          return (
+            <div key={config.label} className="flex flex-col w-full h-fit gap-3 p-4">
+              <div className="flex items-center justify-between">
+                <span className="font-semibold">{config.label}</span>
+                {hasSelection && (
+                  <button
+                    type="button"
+                    className="text-xs text-blue-600 hover:text-blue-800"
+                    onClick={() => change(isMultiple ? [] : "")}
+                  >
+                    Bỏ lọc
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {config.items.map((item) => {
+                  const isSelected = selectedValues.includes(item.key);
+                  return (
+                    <button
+                      key={item.key}
+                      type="button"
+                      onClick={() => {
+                        if (!isMultiple) {
+                          change(isSelected ? "" : item.key);
+                        } else if (isSelected) {
+                          change(selectedValues.filter((k) => k !== item.key));
+                        } else {
+                          change([...selectedValues, item.key]);
+                        }
+                      }}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
+                        isSelected
+                          ? "bg-blue-600 text-white border-blue-600"
+                          : "text-gray-600 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-blue-400 hover:text-blue-600"
+                      }`}
+                    >
+                      {item.label}
+                      {item.count !== undefined && (
+                        <span
+                          className={`text-[10px] ${
+                            isSelected ? "text-blue-200" : "text-gray-400"
+                          }`}
+                        >
+                          ({item.count})
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
 
         {filterContent && (
           <div className="flex flex-col w-full h-fit gap-4 p-4">

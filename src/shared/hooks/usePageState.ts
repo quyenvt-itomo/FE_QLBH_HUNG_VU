@@ -24,6 +24,7 @@ interface UsePageStateProps {
   sortOrder?: SortOrder;
   startAt?: string;
   endAt?: string;
+  status?: string;
   filter?: Filter;
 
   filterUses?: FilterKey[];
@@ -42,7 +43,7 @@ export function usePageState<T extends Entity = any>(params?: UsePageStateProps)
   const [keyword, setKeyword] = useState<string>(params?.keyword || "");
   const [rowData, setRowData] = useState<T | undefined>(params?.rowData || undefined);
   const [defaultData, setDefaultData] = useState<Partial<T> | undefined>(undefined);
-  const [status, setStatus] = useState<string>("all");
+  const [status, setStatus] = useState<string>(params?.status ?? "all");
   const [type, setType] = useState<string>("all");
   const [dataSource, setDataSource] = useState<T[]>([]);
   const [sortBy, setSortField] = useState<string | undefined>(params?.sortBy || undefined);

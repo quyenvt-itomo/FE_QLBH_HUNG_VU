@@ -7,3 +7,4 @@ export { default as PurchasePage } from "./PurchasePage";
 export { default as SalePage } from "./SalePage";
 export { default as SaleReturnPage } from "./SaleReturnPage";
 export { default as PurchaseReturnPage } from "./PurchaseReturnPage";
+export * from "./PosPage";

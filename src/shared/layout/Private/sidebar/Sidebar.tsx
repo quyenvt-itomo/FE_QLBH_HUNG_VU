@@ -41,11 +41,11 @@ const Sidebar: React.FC<SideBarProps> = ({ items }) => {
     >
       <div className="sidebar-shell">
         <Logo />
-        <div className="p-3.5 pb-1.5">
+        <div className="sidebar-pos-wrap">
           <Button
             type="primary"
             htmlType="button"
-            className="sidebar-pos-btn"
+            className="sidebar-pos-btn p-0"
             onClick={() => navigate(privateRoutesName.pos)}
           >
             <Icon icon={"material-symbols-light:point-of-sale-rounded"} className="h-5 w-5" />
@@ -55,7 +55,7 @@ const Sidebar: React.FC<SideBarProps> = ({ items }) => {
         <div className="sidebar-scroll">
           <CustomMenu items={items} />
         </div>
-        <div className="sidebar-foot">{currentStore?.name || "Chi nhánh trung tâm"} · v1.0</div>
+        <div className="sidebar-foot">{currentStore?.name || "Toàn hệ thống"} · v1.0</div>
       </div>
     </Sider>
   );

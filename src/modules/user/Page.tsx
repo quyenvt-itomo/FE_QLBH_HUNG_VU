@@ -20,6 +20,7 @@ export const UserPage: React.FC = () => {
     sortOrder,
     filter,
     reload,
+    status,
     setPage,
     setSize,
 
@@ -33,6 +34,7 @@ export const UserPage: React.FC = () => {
     filterUses,
     sortBy: "createdAt",
     sortOrder: SortOrder.DESC,
+    status: "active",
   });
 
   const { data, errors, loading, creating, updating, pagination, create, update, remove, getById } =
@@ -42,6 +44,9 @@ export const UserPage: React.FC = () => {
         page,
         size,
         reload,
+        sortBy,
+        sortOrder,
+        isActive: status === "active" ? true : status === "inactive" ? false : undefined,
         ...filter,
       },
       () => {
@@ -57,6 +62,7 @@ export const UserPage: React.FC = () => {
     setOpen,
     setRowData,
   });
+  console.log({ status });
 
   return (
     <div className="flex flex-col h-full w-full gap-3">
@@ -64,12 +70,26 @@ export const UserPage: React.FC = () => {
         <SearchInput value={keyword} onSearch={pageAction.handleSearch} />
         <div className="flex items-center gap-3">
           <ButtonFilter
-            filterActive={isFilterActive}
+            filterActive={isFilterActive || status !== "all"}
             sortItems={sortItems}
             sortValue={{ sortBy, sortOrder }}
             onSortChange={pageAction.handleSortChange}
             filterUses={filterUses}
-            onClearFilter={pageAction.resetFilter}
+            onClearFilter={() => {
+              pageAction.resetFilter();
+              pageAction.handleStatusChange("all");
+            }}
+            enumFilters={[
+              {
+                label: "Trạng thái hoạt động",
+                items: [
+                  { label: "Đang hoạt động", key: "active" },
+                  { label: "Ngừng hoạt động", key: "inactive" },
+                ],
+                value: status === "all" ? undefined : status,
+                onChange: (value?: string) => pageAction.handleStatusChange(value || "all"),
+              },
+            ]}
           />
           <AddButton onOpenAdd={handleOpenAdd} />
         </div>

@@ -9,6 +9,7 @@ export const publicRoutes = [
 ];
 export const privateRoutes: { path: string; component: React.FC }[] = [
   { path: privateRoutesName.dashboard, component: desktopPage.DashboardPage },
+  { path: privateRoutesName.pos, component: desktopPage.PosPage },
   { path: privateRoutesName.sale, component: desktopPage.SalePage },
   { path: privateRoutesName.saleReturn, component: desktopPage.SaleReturnPage },
   { path: privateRoutesName.product, component: desktopPage.ProductPage },

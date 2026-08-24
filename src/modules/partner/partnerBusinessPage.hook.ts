@@ -1,13 +1,11 @@
 import { BaseStoreReturn } from "@/shared/base/createBaseStore";
 import { usePageState } from "@/shared/hooks/usePageState";
 
-import { Partner, PartnerQuery, PartnerType } from "./partner.model";
+import { getFilterUses, Partner, PartnerQuery, PartnerType } from "./partner.model";
 import { usePartnerHandlers } from "./partner.handlers";
+import { SortOrder } from "@/shared/constants";
 
-type PartnerStoreHook = (
-  params?: PartnerQuery,
-  onSuccess?: () => void,
-) => BaseStoreReturn<Partner>;
+type PartnerStoreHook = (params?: PartnerQuery, onSuccess?: () => void) => BaseStoreReturn<Partner>;
 
 export interface PartnerBusinessPageModel {
   pageState: ReturnType<typeof usePageState<Partner>>;
@@ -19,8 +17,13 @@ export const usePartnerBusinessPage = (
   storeHook: PartnerStoreHook,
   type: PartnerType,
 ): PartnerBusinessPageModel => {
-  const pageState = usePageState<Partner>();
-  const { page, size, keyword, sortBy, sortOrder, reload, pageAction } = pageState;
+  const filterUses = getFilterUses(type);
+  const pageState = usePageState<Partner>({
+    filterUses,
+    sortBy: "createdAt",
+    sortOrder: SortOrder.DESC,
+  });
+  const { page, size, keyword, sortBy, sortOrder, filter, reload, pageAction, status } = pageState;
   const store = storeHook(
     {
       page,
@@ -30,6 +33,8 @@ export const usePartnerBusinessPage = (
       sortOrder,
       reload,
       type,
+      isOrganization: status === "organizatil" ? true : status === "individual" ? false : undefined,
+      ...filter,
     },
     pageAction.handleClose,
   );
@@ -45,4 +50,3 @@ export const usePartnerBusinessPage = (
 
   return { pageState, store, handlers };
 };
-
