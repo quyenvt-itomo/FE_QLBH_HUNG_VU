@@ -8,7 +8,7 @@ import { getPageTitle } from "@/shared/utils/common.util";
 const { Title, Text } = Typography;
 
 export const CustomTitle: React.FC = () => {
-  const { totalUnreadNotifications, customTitle, currentCompany } = useGlobalData();
+  const { totalUnreadNotifications, customTitle, currentStore } = useGlobalData();
   const currentUrl = location.pathname;
   const matchedRoute = Object.values(routeTitleMap)
     .sort((a, b) => {
@@ -25,7 +25,7 @@ export const CustomTitle: React.FC = () => {
   const blinkRef = useRef<number | null>(null);
   const showingUnread = useRef(false);
 
-  const pageTitle = getPageTitle(matchedRoute?.title || customTitle, currentCompany?.name);
+  const pageTitle = getPageTitle(matchedRoute?.title || customTitle, currentStore?.name);
 
   useEffect(() => {
     document.title = pageTitle;

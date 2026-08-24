@@ -69,7 +69,7 @@ export const useAuth = () => {
     handleSetInfo(null);
     opts?.onSuccess?.();
     localStorage.removeItem("loginData");
-    localStorage.removeItem("currentCompany");
+    localStorage.removeItem("currentStore");
     sessionStorage.removeItem("loginData");
 
     logoutMutation.mutate(data, {

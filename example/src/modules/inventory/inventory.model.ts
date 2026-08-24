@@ -1,4 +1,4 @@
-﻿import { EntityWithCompany } from "@/shared/base/entity";
+﻿import { EntityWithStore } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { Product, ProductType } from "../product";
 import { TransactionType } from "@/shared/constants/enum";
@@ -39,7 +39,7 @@ export interface InventoryReport extends Product {
   openingQuantity: number;
 }
 
-export interface InventoryTransaction extends EntityWithCompany {
+export interface InventoryTransaction extends EntityWithStore {
   occurredAt: string;
 
   productId: string;

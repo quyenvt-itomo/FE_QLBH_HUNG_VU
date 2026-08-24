@@ -24,7 +24,7 @@ export function usePurchaseQuotationHandlers({
   const { modal, message } = App.useApp();
   const [form] = Form.useForm<any>();
   const navigate = useNavigate();
-  const { currentCompany, permissions } = useGlobalData();
+  const { currentStore, permissions } = useGlobalData();
   const canCreatePurchase = checkPermission(permissions, "purchase", "create");
 
   const handleOpenDetail = (record: PurchaseQuotation) => {
@@ -123,8 +123,8 @@ export function usePurchaseQuotationHandlers({
     : undefined;
 
   const handleCopyLink = () => {
-    if (!currentCompany) return;
-    const url = publicRoutesName.supplierQuotation.replace(":companyCode", currentCompany.code);
+    if (!currentStore) return;
+    const url = publicRoutesName.supplierQuotation.replace(":companyCode", currentStore.code);
     const fullUrl = `${FE_BASE_URL}${url}`;
     handleCopy(fullUrl, message);
   };

@@ -29,7 +29,7 @@ const DEFAULT_ROW_HEIGHT = 21;
 
 // ── PurchaseFile ──
 export class PurchaseFile {
-  static async exportExcel(purchase: Purchase, currentCompany?: Organization | null) {
+  static async exportExcel(purchase: Purchase, currentStore?: Organization | null) {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Đơn đặt hàng", {
       pageSetup: {
@@ -54,9 +54,9 @@ export class PurchaseFile {
     worksheet.getColumn("H").width = 12 + PAD;
     worksheet.getColumn("I").width = 14 + PAD;
 
-    await this.buildHeader(worksheet, purchase, workbook, currentCompany);
+    await this.buildHeader(worksheet, purchase, workbook, currentStore);
     this.buildSupplier(worksheet, purchase);
-    this.buildIntro(worksheet, purchase, currentCompany);
+    this.buildIntro(worksheet, purchase, currentStore);
     const tableStartRow = this.buildTableHeader(worksheet);
     const bodyEndRow = this.buildLines(worksheet, purchase, tableStartRow);
     const totalRow = bodyEndRow + 1;
@@ -92,11 +92,11 @@ export class PurchaseFile {
     worksheet: ExcelJS.Worksheet,
     purchase: Purchase,
     workbook: ExcelJS.Workbook,
-    currentCompany?: Organization | null,
+    currentStore?: Organization | null,
   ) {
-    const company = currentCompany ?? purchase.company;
+    const company = currentStore ?? purchase.company;
 
-    // Row 1-3: Logo (A1:B3) + Company info
+    // Row 1-3: Logo (A1:B3) + Store info
     worksheet.mergeCells("A1:B3");
 
     worksheet.getRow(1).height = 20;
@@ -141,7 +141,7 @@ export class PurchaseFile {
       }
     }
 
-    // C1:I1: Company name (TCVN3 encoding for .VnUniverseH font)
+    // C1:I1: Store name (TCVN3 encoding for .VnUniverseH font)
     worksheet.mergeCells("C1:I1");
     setCell(worksheet, "C1", unicodeToTCVN3((company?.name || "").toUpperCase()), {
       font: font(15, true, ".VnUniverseH"),
@@ -260,10 +260,10 @@ export class PurchaseFile {
   private static buildIntro(
     worksheet: ExcelJS.Worksheet,
     purchase: Purchase,
-    currentCompany?: Organization | null,
+    currentStore?: Organization | null,
   ) {
     worksheet.mergeCells("B10:I10");
-    const company = currentCompany ?? purchase.company;
+    const company = currentStore ?? purchase.company;
     setCell(
       worksheet,
       "B10",

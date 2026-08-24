@@ -18,7 +18,7 @@ export function useOrderHandlers({
   cancel?: (id: string) => Promise<any>;
 }) {
   const { modal } = App.useApp();
-  const { currentCompany } = useGlobalData();
+  const { currentStore } = useGlobalData();
 
   const handleOpenDetail = (record: Order) => {
     if (!!getById) {

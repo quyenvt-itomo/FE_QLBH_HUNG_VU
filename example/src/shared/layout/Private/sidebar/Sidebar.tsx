@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Layout, MenuProps } from "antd";
 import CustomMenu from "./Menu";
 import { useGlobalData } from "@/shared/hooks/useGlobalData";
-import { CompanySpace } from "./CompanySpace";
+import { StoreSpace } from "./StoreSpace";
 
 const { Sider } = Layout;
 
@@ -42,7 +42,7 @@ const Sidebar: React.FC<SideBarProps> = ({ items }) => {
     >
       <div className="flex flex-col w-full">
         <div className="flex h-14 px-2">
-          <CompanySpace />
+          <StoreSpace />
         </div>
         <div className="flex flex-col h-[calc(100dvh-56px)] overflow-y-auto scrollbar-dark pb-6">
           <CustomMenu items={items} />

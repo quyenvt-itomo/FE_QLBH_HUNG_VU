@@ -1,7 +1,7 @@
 import { FormInstance } from "antd";
 import { BaseError } from "../interfaces/api";
 import { apiEndpoint, BASE_URL } from "../constants/apiEndpoint";
-import { getInitialCurrentCompany } from "../stores/global.slice";
+import { getInitialCurrentStore } from "../stores/global.slice";
 
 interface DefaultProvinceValue {
   id?: string;
@@ -215,11 +215,11 @@ interface SetFormCodeParams {
 
 export const setFormCode = async ({ form, type, field }: SetFormCodeParams) => {
   try {
-    const currentCompany = getInitialCurrentCompany();
+    const currentStore = getInitialCurrentStore();
     const ipAddress = sessionStorage.getItem("ipAddress");
     const deviceId = localStorage.getItem("deviceId") || "1";
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const storeId = currentCompany?.id || "";
+    const storeId = currentStore?.id || "";
     const response = await fetch(`${BASE_URL}${apiEndpoint.code}?type=${type}&storeId=${storeId}`, {
       method: "GET",
       credentials: "include",

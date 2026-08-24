@@ -13,5 +13,7 @@ import { PartnerPage } from "@/modules/partner";
 import { ProductPage, ProductPriceHistoryPage } from "@/modules/product";
 import { NotificationPage } from "@/modules/notification";
 import { StorePage } from "@/modules/store";
+import { DashboardPage } from "@/modules/dashboard";
+import ComingSoonPage from "./ComingSoonPage";
 
-export const desktopPage = { RolePage, UserPage, OrderPage, SalePosPage, PurchasePage, InventoryPage, InventoryAdjustmentPage, IncomeExpensePage, FundPage, FundAdjustmentPage, FundTransferPage, PartnerPage, ProductPage, ProductPriceHistoryPage, NotificationPage, StorePage };
+export const desktopPage = { DashboardPage, RolePage, UserPage, OrderPage, SalePosPage, PurchasePage, InventoryPage, InventoryAdjustmentPage, IncomeExpensePage, FundPage, FundAdjustmentPage, FundTransferPage, PartnerPage, ProductPage, ProductPriceHistoryPage, NotificationPage, StorePage, ComingSoonPage };

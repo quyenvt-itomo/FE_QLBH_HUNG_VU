@@ -1,4 +1,4 @@
-export * from "./CompanyImage";
+export * from "./StoreImage";
 export * from "./ProductImage";
 export * from "./SquareImage";
 export * from "./SquareImageGroup";

@@ -23,7 +23,7 @@ export interface TeamOperation extends Entity {
   operation: Attribute;
 }
 
-export interface CompanyUser extends Entity {
+export interface StoreUser extends Entity {
   storeId: string;
   company: Organization;
 
@@ -76,7 +76,7 @@ export interface Organization extends Entity {
 
   operations: TeamOperation[];
 
-  companyUsers: CompanyUser[];
+  companyUsers: StoreUser[];
 
   roles: Role[];
 }
@@ -86,7 +86,7 @@ export interface SortPayload {
   sortOrder: number;
 }
 
-export interface EntityWithCompany extends Entity {
+export interface EntityWithStore extends Entity {
   storeId: string;
   company: Organization;
 }

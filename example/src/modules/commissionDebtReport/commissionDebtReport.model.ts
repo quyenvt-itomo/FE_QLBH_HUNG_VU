@@ -1,11 +1,11 @@
-﻿import { EntityWithCompany } from "@/shared/base/entity";
+﻿import { EntityWithStore } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 
 export interface commissionDebtReportQuery extends ApiRequestQuery {
   moreQuery?: any;
 }
 
-export interface CommissionDebtReport extends EntityWithCompany {
+export interface CommissionDebtReport extends EntityWithStore {
   code: string;
   note?: string | null;
   partnerContactId: string | null;

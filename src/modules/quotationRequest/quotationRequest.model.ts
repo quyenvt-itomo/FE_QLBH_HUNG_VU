@@ -1,5 +1,5 @@
 ﻿import { ApiRequestQuery } from "@/shared/interfaces/api";
-import { Entity, EntityWithCompany } from "@/shared/base/entity";
+import { Entity, EntityWithStore } from "@/shared/base/entity";
 import { Partner, PartnerSnapshot } from "../partner";
 import { Employee, EmployeeSnapshot } from "../employee";
 import { Product, ProductSnapshot } from "../product";
@@ -34,7 +34,7 @@ export interface QuotationRequestQuery extends ApiRequestQuery {
 }
 
 // ── Main Entity ──
-export interface QuotationRequest extends EntityWithCompany {
+export interface QuotationRequest extends EntityWithStore {
   timeAt: Date;
   code: string;
 

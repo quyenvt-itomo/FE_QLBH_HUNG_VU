@@ -15,7 +15,7 @@ export const publicRoutesName = {
   auth: "auth",
   refreshToken: "auth/refresh-token",
 
-  // For Company
+  // For Store
   quotationRequest: "/:companyCode/quotation-request",
   quotationRequestDetail: "/:companyCode/quotation-request/:code",
 

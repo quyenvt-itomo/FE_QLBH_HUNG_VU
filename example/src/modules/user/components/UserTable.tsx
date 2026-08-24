@@ -55,8 +55,8 @@ export const UserTable: React.FC<ObjectTableProps> = ({ ...rest }) => {
     },
     {
       title: "Công ty quản lý",
-      dataIndex: ["sourceCompany", "name"],
-      key: "sourceCompany",
+      dataIndex: ["sourceStore", "name"],
+      key: "sourceStore",
       width: 200,
     },
     {

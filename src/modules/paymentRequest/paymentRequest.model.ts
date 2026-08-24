@@ -1,12 +1,14 @@
-﻿import { Entity, EntityWithCompany } from "@/shared/base/entity";
+﻿import { Entity, EntityWithStore } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { ApproveStatus } from "../shared/business.model";
-import { EmployeeSnapshot } from "../employee";
 import { PartnerSnapshot } from "../partner";
-import { PartnerContactSnapshot } from "../partnerContact";
-import { Invoice, InvoiceSnapshot } from "../invoice";
 import { Order, OrderSnapshot } from "../order";
-import { InvoiceAllocation } from "../incomeExpense";
+
+export interface EmployeeSnapshot { id: string; code: string; name: string; phone?: string | null; email?: string | null; }
+export interface PartnerContactSnapshot { id: string; name: string; phone: string | null; email: string | null; }
+export interface InvoiceSnapshot { id: string; invoiceNumber: string; invoiceDate: string | Date; totalAmount: number; }
+export interface Invoice extends EntityWithStore { invoiceNumber: string; invoiceDate: string | Date; totalAmount: number; }
+export interface InvoiceAllocation { id: string; amount: number; invoiceId: string | null; }
 
 export enum PaymentRequestTypeEnum {
   INVOICE = "invoice",
@@ -55,7 +57,7 @@ export interface PaymentRequestQuery extends ApiRequestQuery {
   type?: PaymentRequestTypeEnum;
   approveStatus?: ApproveStatus;
 }
-export interface PaymentRequest extends EntityWithCompany {
+export interface PaymentRequest extends EntityWithStore {
   timeAt: string;
   code: string;
   type: PaymentRequestTypeEnum;

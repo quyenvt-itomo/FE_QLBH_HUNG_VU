@@ -1,4 +1,4 @@
-﻿import { EntityWithCompany } from "@/shared/base/entity";
+﻿import { EntityWithStore } from "@/shared/base/entity";
 import { getOptionsByMap } from "@/shared/constants/enum";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { BankAccount } from "@/shared/interfaces/common";
@@ -27,7 +27,7 @@ export interface FundSnapshot {
   storeId: string | null;
 }
 
-export interface Fund extends EntityWithCompany {
+export interface Fund extends EntityWithStore {
   code: string;
   note?: string | null;
   name: string;

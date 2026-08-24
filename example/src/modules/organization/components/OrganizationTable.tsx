@@ -1,6 +1,6 @@
 import { TableColumnConfig, ObjectTableProps } from "@/shared/components/table/TableColumnConfig";
 import { Organization } from "../organization.model";
-import CompanyImage from "@/shared/components/image/CompanyImage";
+import StoreImage from "@/shared/components/image/StoreImage";
 import { getMainFile } from "@/shared/utils/file.util";
 import { getFullAddress } from "@/shared/utils/common.util";
 import ContentTooltip from "@/shared/components/table/ContentTooltip";
@@ -15,7 +15,7 @@ export const OrganizationTable: React.FC<ObjectTableProps> = ({ ...rest }) => {
       width: 250,
       render: (name: string, record: Organization) => (
         <div className="w-64 flex items-center gap-2">
-          <CompanyImage size={24} image={getMainFile(record.logo)} />
+          <StoreImage size={24} image={getMainFile(record.logo)} />
           <span className="block truncate">{name}</span>
         </div>
       ),

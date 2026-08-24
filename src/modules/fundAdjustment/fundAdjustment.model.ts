@@ -1,11 +1,11 @@
-﻿import { EntityWithCompany } from "@/shared/base/entity";
+﻿import { EntityWithStore } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 
 export interface fundAdjustmentQuery extends ApiRequestQuery {
   moreQuery?: any;
 }
 
-export interface FundAdjustment extends EntityWithCompany {
+export interface FundAdjustment extends EntityWithStore {
   code: string;
   note?: string | null;
   fundId: string | null;

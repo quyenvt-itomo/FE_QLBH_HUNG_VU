@@ -25,7 +25,7 @@ export const PurchaseRequisitionAddUpdateModal: React.FC<
   AddUpdateModalProps<PurchaseRequisition>
 > = ({ open, editData, loading, errors, onAdd, onEdit, onClose }) => {
   const { showFormErrorMessages } = useAppMessage();
-  const { currentCompany } = useGlobalData();
+  const { currentStore } = useGlobalData();
   const { modal } = App.useApp();
   const [form] = Form.useForm<PurchaseRequisition>();
   const requester = Form.useWatch("requester", form);
@@ -168,7 +168,7 @@ export const PurchaseRequisitionAddUpdateModal: React.FC<
                   onChangeData={(val) => form.setFieldValue("department", val)}
                   query={{
                     types: departmentTypes,
-                    parentId: currentCompany?.id,
+                    parentId: currentStore?.id,
                   }}
                 />
               </Form.Item>

@@ -1,11 +1,11 @@
-﻿import { EntityWithCompany } from "@/shared/base/entity";
+﻿import { EntityWithStore } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 
 export interface PaymentTermQuery extends ApiRequestQuery {
   moreQuery?: any;
 }
 
-export interface PaymentTerm extends EntityWithCompany {
+export interface PaymentTerm extends EntityWithStore {
   code: string;
   name: string;
   depositRate: number;

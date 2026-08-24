@@ -1,4 +1,4 @@
-import { Entity, EntityWithCompany } from "@/shared/base/entity";
+import { Entity, EntityWithStore } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { CommissionMode, SaleLineType } from "@/shared/constants/enum";
 import { AdditionalInfo } from "@/shared/interfaces/common";
@@ -72,7 +72,7 @@ export interface QuotationQuery extends ApiRequestQuery {
 // ───────────────────────────────────────────────────
 // Quotation (Main Entity)
 // ───────────────────────────────────────────────────
-export interface Quotation extends EntityWithCompany {
+export interface Quotation extends EntityWithStore {
   timeAt: string;
   code: string;
 

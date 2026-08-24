@@ -22,10 +22,7 @@ const TOTAL_COLS = 7; // A -> G
 const PAD = 0.71;
 
 export class QuotationRequestFile {
-  static async exportExcel(
-    quotationRequest: QuotationRequest,
-    currentCompany?: Organization | null,
-  ) {
+  static async exportExcel(quotationRequest: QuotationRequest, currentStore?: Organization | null) {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Đề nghị báo giá", {
       pageSetup: {
@@ -47,7 +44,7 @@ export class QuotationRequestFile {
     worksheet.getColumn("F").width = 12 + PAD;
     worksheet.getColumn("G").width = 14 + PAD;
 
-    await this.buildHeader(worksheet, quotationRequest, workbook, currentCompany);
+    await this.buildHeader(worksheet, quotationRequest, workbook, currentStore);
     this.buildCustomerInfo(worksheet, quotationRequest);
     this.buildTableHeader(worksheet);
     const bodyEndRow = this.buildLines(worksheet, quotationRequest, 8);
@@ -78,9 +75,9 @@ export class QuotationRequestFile {
     worksheet: ExcelJS.Worksheet,
     quotationRequest: QuotationRequest,
     workbook: ExcelJS.Workbook,
-    currentCompany?: Organization | null,
+    currentStore?: Organization | null,
   ) {
-    const company = currentCompany;
+    const company = currentStore;
 
     worksheet.mergeCells("A1:B3");
     worksheet.getRow(1).height = 20;

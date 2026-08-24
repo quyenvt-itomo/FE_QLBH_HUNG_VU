@@ -18,7 +18,7 @@ import { OrganizationActionButtons } from "./OrganizationActionButtons";
 import { COLORS } from "@/shared/constants/ui";
 import { Icon } from "@iconify/react";
 import { getMainFile } from "@/shared/utils/file.util";
-import CompanyImage from "@/shared/components/image/CompanyImage";
+import StoreImage from "@/shared/components/image/StoreImage";
 
 type MyNodeComponentProps = {
   node: OrganizationTree;
@@ -58,7 +58,7 @@ const MyNodeComponent: React.FC<MyNodeComponentProps> = ({
       <div className="mb-4 w-[200px]">
         <div className="flex items-center gap-1 mb-2">
           {getMainFile(node.logo) && (
-            <CompanyImage size={42} image={getMainFile(node.logo)} shape="square" />
+            <StoreImage size={42} image={getMainFile(node.logo)} shape="square" />
           )}
           <div className="font-semibold h-[42px] flex-1 line-clamp-2">{node?.name}</div>
         </div>

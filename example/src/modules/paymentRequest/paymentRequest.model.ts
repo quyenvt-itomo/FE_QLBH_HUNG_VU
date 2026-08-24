@@ -1,4 +1,4 @@
-﻿import { Entity, EntityWithCompany } from "@/shared/base/entity";
+﻿import { Entity, EntityWithStore } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { ApproveStatus } from "../shared/business.model";
 import { EmployeeSnapshot } from "../employee";
@@ -55,7 +55,7 @@ export interface PaymentRequestQuery extends ApiRequestQuery {
   type?: PaymentRequestTypeEnum;
   approveStatus?: ApproveStatus;
 }
-export interface PaymentRequest extends EntityWithCompany {
+export interface PaymentRequest extends EntityWithStore {
   timeAt: string;
   code: string;
   type: PaymentRequestTypeEnum;

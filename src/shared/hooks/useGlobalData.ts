@@ -11,7 +11,7 @@ import {
   setInfo,
   setIsMobile,
   clearState,
-  setCurrentCompany,
+  setCurrentStore,
 } from "@/shared/stores/global.slice";
 import { ThemeMode } from "@/shared/interfaces/common";
 import { UserInfo } from "../interfaces/auth";
@@ -32,7 +32,7 @@ export const useGlobalData = () => {
     customTitle,
     themeMode,
     filter,
-    currentCompany,
+    currentStore,
   } = useSelector((state: RootState) => state.Global, shallowEqual);
 
   const handleSetIsMobile = (isMobile: boolean) => {
@@ -70,9 +70,9 @@ export const useGlobalData = () => {
   const handleSetThemeMode = (mode: ThemeMode) => {
     dispatch(setThemeMode(mode));
   };
-  const handleSetCurrentCompany = (company?: Organization) => {
-    if (company) localStorage.setItem("currentCompany", JSON.stringify(company));
-    dispatch(setCurrentCompany(company));
+  const handleSetCurrentStore = (company?: Organization) => {
+    if (company) localStorage.setItem("currentStore", JSON.stringify(company));
+    dispatch(setCurrentStore(company));
     setTimeout(() => {
       window.location.href = privateRoutesName.dashboard;
     }, 500);
@@ -83,7 +83,7 @@ export const useGlobalData = () => {
   };
 
   return {
-    currentCompany,
+    currentStore,
     horizontal,
     collapsed,
     drawerOpen,
@@ -107,7 +107,7 @@ export const useGlobalData = () => {
     handleSetCollapsed,
     handleSetThemeMode,
     handleSetDrawerOpen,
-    handleSetCurrentCompany,
+    handleSetCurrentStore,
     handleClearState,
   };
 };

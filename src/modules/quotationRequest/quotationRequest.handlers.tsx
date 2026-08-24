@@ -24,7 +24,7 @@ export function useQuotationRequestHandlers({
   const { modal, message } = App.useApp();
   const [form] = Form.useForm<any>();
   const navigate = useNavigate();
-  const { currentCompany, permissions } = useGlobalData();
+  const { currentStore, permissions } = useGlobalData();
   const canCreateQuotation = checkPermission(permissions, "quotation", "create");
 
   const handleOpenDetail = (record: QuotationRequest) => {
@@ -105,8 +105,8 @@ export function useQuotationRequestHandlers({
     : undefined;
 
   const handleCopyLink = () => {
-    if (!currentCompany) return;
-    const url = publicRoutesName.quotationRequest.replace(":companyCode", currentCompany.code);
+    if (!currentStore) return;
+    const url = publicRoutesName.quotationRequest.replace(":companyCode", currentStore.code);
     const fullUrl = `${FE_BASE_URL}${url}`;
     handleCopy(fullUrl, message);
   };

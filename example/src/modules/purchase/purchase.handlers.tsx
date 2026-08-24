@@ -23,7 +23,7 @@ export function usePurchaseHandlers({
   complete?: (id: string) => Promise<any>;
 }) {
   const { modal } = App.useApp();
-  const { currentCompany } = useGlobalData();
+  const { currentStore } = useGlobalData();
   const [form] = Form.useForm<any>();
 
   const handleOpenDetail = (record: Purchase) => {
@@ -170,11 +170,11 @@ export function usePurchaseHandlers({
       getById(record.id, {
         onSuccess: async (data) => {
           if (!data) return;
-          await PurchaseFile.exportExcel(data, currentCompany);
+          await PurchaseFile.exportExcel(data, currentStore);
         },
       });
     } else {
-      await PurchaseFile.exportExcel(record, currentCompany);
+      await PurchaseFile.exportExcel(record, currentStore);
     }
   };
 

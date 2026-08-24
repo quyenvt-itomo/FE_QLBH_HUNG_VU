@@ -57,16 +57,7 @@ export const ModulePermissions = {
   purchaseQuotation: ["read", "create", "update"] as const,
 
   // Bán hàng
-  order: [
-    "read",
-    "create",
-    "update",
-    "delete",
-    "confirm",
-    "cancel",
-    "fulfill",
-    "close",
-  ] as const,
+  order: ["read", "create", "update", "delete", "confirm", "cancel", "fulfill", "close"] as const,
   quotation: ["read", "create", "update"] as const,
 
   // Sản xuất
@@ -101,8 +92,7 @@ export const ModulePermissions = {
 } as const;
 
 export type ModuleKey = keyof typeof ModulePermissions;
-export type PermissionAction<T extends ModuleKey> =
-  (typeof ModulePermissions)[T][number];
+export type PermissionAction<T extends ModuleKey> = (typeof ModulePermissions)[T][number];
 
 /** Build tên permission đầy đủ: `product.read`, `order.confirm`, ... */
 export const buildPermission = <T extends ModuleKey>(
@@ -115,7 +105,7 @@ export const PERMISSION_WILDCARD = "*";
 
 /**
  * Default roles theo BE docs.
- * BE sẽ seed các role này khi khởi tạo Company.
+ * BE sẽ seed các role này khi khởi tạo Store.
  */
 export const DefaultRoleCodes = {
   SUPER: "SUPER",

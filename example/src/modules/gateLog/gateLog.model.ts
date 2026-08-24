@@ -1,11 +1,11 @@
-﻿import { EntityWithCompany } from "@/shared/base/entity";
+﻿import { EntityWithStore } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 
 export interface gateLogQuery extends ApiRequestQuery {
   moreQuery?: any;
 }
 
-export interface GateLog extends EntityWithCompany {
+export interface GateLog extends EntityWithStore {
   code: string;
   note?: string | null;
   occurredAt: string;

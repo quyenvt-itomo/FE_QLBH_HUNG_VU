@@ -39,7 +39,7 @@ export function createBaseCurrentDebtStore<
   return function useBaseCurrentDebtStore(
     params?: TQuery,
   ): BaseCurrentDebtStoreReturn<TPartner, TInvoice> {
-    const { permissions, currentCompany } = useGlobalData();
+    const { permissions, currentStore } = useGlobalData();
 
     const can = config.permissionModule
       ? (permission: Permission) =>
@@ -48,7 +48,7 @@ export function createBaseCurrentDebtStore<
 
     const paramsWithStore = {
       ...params,
-      storeId: currentCompany?.id ?? params?.storeId,
+      storeId: currentStore?.id ?? params?.storeId,
     };
 
     const partnerQuery = useQuery<ApiResponse<TPartner[]>, BaseFailurePayload>({

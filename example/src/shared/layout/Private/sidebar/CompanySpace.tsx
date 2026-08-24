@@ -4,47 +4,47 @@ import { useNavigate } from "react-router-dom";
 import { privateRoutesName } from "../../../constants/routerName";
 import { CaretDownFilled } from "@ant-design/icons";
 import { useGlobalData } from "@/shared/hooks/useGlobalData";
-import CompanyImage from "@/shared/components/image/CompanyImage";
+import StoreImage from "@/shared/components/image/StoreImage";
 import { getMainFile } from "@/shared/utils/file.util";
 import { checkModule } from "@/shared/utils/permission.util";
 import { CheckIcon, ServerStackIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { CSS } from "@/shared/constants/ui";
 
-export const CompanySpace: React.FC = () => {
-  const [showCompanys, setShowCompanys] = useState<boolean>(false);
-  const CompanyIconRef = useRef<HTMLDivElement>(null);
-  const CompanyTableRef = useRef<HTMLDivElement>(null);
+export const StoreSpace: React.FC = () => {
+  const [showStores, setShowStores] = useState<boolean>(false);
+  const StoreIconRef = useRef<HTMLDivElement>(null);
+  const StoreTableRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   const {
     info,
     permissions,
-    currentCompany,
+    currentStore,
     isMobile,
     collapsed,
     horizontal,
-    handleSetCurrentCompany,
+    handleSetCurrentStore,
   } = useGlobalData();
 
   const showSpace = !collapsed || horizontal;
 
-  const allCompanys = info?.allCompanys || [];
+  const allStores = info?.allStores || [];
 
   useEffect(() => {
     if (isMobile) return;
 
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        CompanyIconRef.current &&
-        !CompanyIconRef.current.contains(event.target as Node) &&
-        CompanyTableRef.current &&
-        !CompanyTableRef.current.contains(event.target as Node)
+        StoreIconRef.current &&
+        !StoreIconRef.current.contains(event.target as Node) &&
+        StoreTableRef.current &&
+        !StoreTableRef.current.contains(event.target as Node)
       ) {
-        setShowCompanys(false);
+        setShowStores(false);
       }
     };
 
-    if (showCompanys) {
+    if (showStores) {
       document.addEventListener("mousedown", handleClickOutside);
     } else {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -53,7 +53,7 @@ export const CompanySpace: React.FC = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [showCompanys, isMobile]);
+  }, [showStores, isMobile]);
 
   return (
     <div
@@ -61,7 +61,7 @@ export const CompanySpace: React.FC = () => {
     >
       {/* Avatar */}
       <div className="h-8 w-8 justify-center items-center">
-        <CompanyImage image={getMainFile(currentCompany?.logo)} size={32} shape="square" />
+        <StoreImage image={getMainFile(currentStore?.logo)} size={32} shape="square" />
       </div>
 
       {/* Dropdown trigger */}
@@ -74,8 +74,8 @@ export const CompanySpace: React.FC = () => {
           transition-all ease-in-out z-50
         "
           style={{ width: "calc(100% - 40px)" }}
-          ref={CompanyIconRef}
-          onClick={() => setShowCompanys((prev) => !prev)}
+          ref={StoreIconRef}
+          onClick={() => setShowStores((prev) => !prev)}
         >
           <Typography.Text
             className="
@@ -83,10 +83,10 @@ export const CompanySpace: React.FC = () => {
             font-medium text-xs text-white line-clamp-2
           "
           >
-            {currentCompany?.name || ""}
+            {currentStore?.name || ""}
           </Typography.Text>
           {/* Dropdown */}
-          {showCompanys && (
+          {showStores && (
             <div
               className="
                 absolute flex flex-col min-w-[342px] gap-4
@@ -94,7 +94,7 @@ export const CompanySpace: React.FC = () => {
                 bg-white dark:bg-gray-800
                 drop-shadow-2xl rounded-xl z-50 w-28
               "
-              ref={CompanyTableRef}
+              ref={StoreTableRef}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
@@ -107,7 +107,7 @@ export const CompanySpace: React.FC = () => {
                     rounded
                     text-gray-400 hover:text-gray-500 dark:hover:text-gray-300
                   "
-                  onClick={() => setShowCompanys(false)}
+                  onClick={() => setShowStores(false)}
                 >
                   <XMarkIcon />
                 </button>
@@ -115,8 +115,8 @@ export const CompanySpace: React.FC = () => {
 
               {/* List */}
               <div className="flex flex-col gap-1 h-[200px] overflow-y-auto">
-                {allCompanys.map((item) => {
-                  const selected = currentCompany?.id === item.id;
+                {allStores.map((item) => {
+                  const selected = currentStore?.id === item.id;
                   return (
                     <div
                       key={item.id}
@@ -128,12 +128,12 @@ export const CompanySpace: React.FC = () => {
                         `}
                       onClick={(e) => {
                         e.stopPropagation();
-                        setShowCompanys(false);
+                        setShowStores(false);
                         if (selected) return;
-                        handleSetCurrentCompany?.(item);
+                        handleSetCurrentStore?.(item);
                       }}
                     >
-                      <CompanyImage image={getMainFile(item?.logo)} size={28} shape="square" />
+                      <StoreImage image={getMainFile(item?.logo)} size={28} shape="square" />
 
                       <span
                         className={`w-[calc(100%-36px)] truncate text-gray-800 dark:text-gray-200 ${selected ? "font-medium" : ""}`}
@@ -161,7 +161,7 @@ export const CompanySpace: React.FC = () => {
                   onClick={(e) => {
                     e.stopPropagation();
                     navigate(privateRoutesName.establish.organization);
-                    setShowCompanys(false);
+                    setShowStores(false);
                   }}
                 >
                   <ServerStackIcon className="h-6 w-6" />

@@ -1,4 +1,4 @@
-﻿import { Entity, EntityWithCompany } from "@/shared/base/entity";
+﻿import { Entity, EntityWithStore } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { ApproveStatus } from "../shared/business.model";
 import { Partner, PartnerSnapshot } from "../partner";
@@ -57,7 +57,7 @@ export interface PurchaseQuotationQuery extends ApiRequestQuery {
   staffId?: string;
   approveStatus?: string;
 }
-export interface PurchaseQuotation extends EntityWithCompany {
+export interface PurchaseQuotation extends EntityWithStore {
   timeAt: Date;
   code: string;
   type: PurchaseQuotationType;

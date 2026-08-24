@@ -1,11 +1,11 @@
-﻿import { EntityWithCompany } from "@/shared/base/entity";
+﻿import { EntityWithStore } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 
 export interface deviceWhitelistQuery extends ApiRequestQuery {
   moreQuery?: any;
 }
 
-export interface DeviceWhitelist extends EntityWithCompany {
+export interface DeviceWhitelist extends EntityWithStore {
   code: string;
   note?: string | null;
   userId: string;

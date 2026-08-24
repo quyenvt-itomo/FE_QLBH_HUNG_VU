@@ -8,7 +8,7 @@ import {
   QuotationRequestLine,
   useQuotationRequestStore,
 } from "@/modules/quotationRequest";
-import CompanyImage from "@/shared/components/image/CompanyImage";
+import StoreImage from "@/shared/components/image/StoreImage";
 import { getMainFile } from "@/shared/utils/file.util";
 import { formatDateTime, formatDateTimeDDMMYYYY } from "@/shared/utils/date.util";
 import { formatQuantity } from "@/shared/utils/number.util";
@@ -19,7 +19,7 @@ import { ApproveStatusTag } from "@/shared/components/display/Tag";
 
 const QuotationRequestDetailPage: React.FC = () => {
   const { companyCode, code } = useParams();
-  const [company, setCompany] = useState<Organization | null>(null);
+  const [company, setStore] = useState<Organization | null>(null);
   const [data, setData] = useState<QuotationRequest | null>(null);
   const [loading, setLoading] = useState(true);
   const { getByCode: getOrgByCode } = useOrganizationStore({ isLocked: true });
@@ -29,7 +29,7 @@ const QuotationRequestDetailPage: React.FC = () => {
     if (!companyCode) return;
     (async () => {
       const org = await getOrgByCode(companyCode);
-      setCompany(org);
+      setStore(org);
       if (org) localStorage.setItem("x-company-id", org.id);
     })();
   }, [companyCode]);
@@ -107,7 +107,7 @@ const QuotationRequestDetailPage: React.FC = () => {
       <div className="flex justify-center left-0 w-full h-14 xl:h-16 flex-shrink-0 bg-white border-b shadow-sm">
         <div className="flex justify-between items-center w-full max-w-7xl h-full px-6">
           <div className="flex items-center gap-4">
-            <CompanyImage image={getMainFile(company?.logo)} />
+            <StoreImage image={getMainFile(company?.logo)} />
             <span className="text-gray-800 text-lg font-bold uppercase tracking-wide">
               {company?.name}
             </span>

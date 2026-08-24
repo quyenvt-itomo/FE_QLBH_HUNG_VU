@@ -1,4 +1,4 @@
-﻿import { Entity, EntityWithCompany } from "@/shared/base/entity";
+﻿import { Entity, EntityWithStore } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { Partner, PartnerSnapshot } from "../partner";
 import { Order, OrderSnapshot } from "../order";
@@ -119,7 +119,7 @@ export interface InvoiceQuery extends ApiRequestQuery {
   partnerId?: string;
   direction?: InvoiceType;
 }
-export interface Invoice extends EntityWithCompany {
+export interface Invoice extends EntityWithStore {
   invoiceDate: Date;
   invoiceNumber: string;
 

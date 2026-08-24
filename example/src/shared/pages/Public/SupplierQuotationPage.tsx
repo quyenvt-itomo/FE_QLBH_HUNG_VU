@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button, Col, Form, Input, message, Row, Spin } from "antd";
 import { FileUploadBox } from "@/shared/components/upload/FileUploadBox";
 import { Organization, useOrganizationStore } from "@/modules/organization";
-import CompanyImage from "@/shared/components/image/CompanyImage";
+import StoreImage from "@/shared/components/image/StoreImage";
 import { getMainFile } from "@/shared/utils/file.util";
 import {
   PurchaseQuotation,
@@ -36,7 +36,7 @@ const SupplierQuotationPage: React.FC = () => {
   const { companyCode } = useParams();
   const id = randomId();
   const [form] = Form.useForm<PurchaseQuotation>();
-  const [company, setCompany] = useState<Organization | null>(null);
+  const [company, setStore] = useState<Organization | null>(null);
   const [loading, setLoading] = useState(true);
   const { getByCode: getOrgByCode } = useOrganizationStore({ isLocked: true });
   const { getByTaxCode: getPartnerByTaxCode } = usePartnerStore({
@@ -62,10 +62,10 @@ const SupplierQuotationPage: React.FC = () => {
   const [successModalOpen, setSuccessModalOpen] = useState(false);
   const [createdCode, setCreatedCode] = useState("");
 
-  const handleFetchCompany = async (code: string) => {
+  const handleFetchStore = async (code: string) => {
     const companyData = await getOrgByCode(code);
 
-    setCompany(companyData);
+    setStore(companyData);
     setLoading(false);
     if (!companyData) {
       localStorage.removeItem("x-company-id");
@@ -76,7 +76,7 @@ const SupplierQuotationPage: React.FC = () => {
 
   useEffect(() => {
     if (!companyCode) return;
-    handleFetchCompany(companyCode);
+    handleFetchStore(companyCode);
   }, [companyCode]);
 
   // Debounce: khi nhập mã số thuế → tìm partner → auto-fill form
@@ -315,7 +315,7 @@ const SupplierQuotationPage: React.FC = () => {
       <div className="flex justify-center left-0 w-full h-12 xl:h-16 flex-shrink-0 bg-primary shadow-sm">
         <div className="flex justify-between items-center w-full max-w-7xl h-full px-4">
           <div className="flex items-center gap-6">
-            <CompanyImage image={getMainFile(company?.logo)} />
+            <StoreImage image={getMainFile(company?.logo)} />
             <span className="text-white text-base md:text-xl lg:text-2xl font-bold text-left uppercase">
               {company?.name}
             </span>

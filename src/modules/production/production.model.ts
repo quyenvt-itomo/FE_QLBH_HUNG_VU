@@ -1,4 +1,4 @@
-﻿import { Entity, EntityWithCompany } from "@/shared/base/entity";
+﻿import { Entity, EntityWithStore } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { AdditionalInfo } from "@/shared/interfaces/common";
 import { getOptionsByMap } from "@/shared/constants/enum";
@@ -85,7 +85,7 @@ export interface ProductionSnapshot {
   factorySnapshot: OrganizationSnapshot | null;
 }
 
-export interface Production extends EntityWithCompany {
+export interface Production extends EntityWithStore {
   code: string;
   timeAt: string;
   type: ProductionTypeEnum;

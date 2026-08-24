@@ -76,7 +76,7 @@ export type Entity = {
   [K in FileCategoryKey]?: any[];
 };
 
-export interface EntityWithCompany extends Entity {
+export interface EntityWithStore extends Entity {
   /** Kept as a source-compatible name for existing screens; BE is store-scoped. */
   storeId?: string | null;
 }

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { publicRoutesName } from "../constants/routerName";
 import { BASE_URL } from "../constants/apiEndpoint";
-import { getInitialCurrentCompany } from "../stores/global.slice";
+import { getInitialCurrentStore } from "../stores/global.slice";
 
 const apiInstance = axios.create({
   baseURL: BASE_URL,
@@ -13,7 +13,7 @@ const apiInstance = axios.create({
 });
 
 export async function attachInfo(config: any) {
-  const currentCompany = getInitialCurrentCompany();
+  const currentStore = getInitialCurrentStore();
   const deviceId = localStorage.getItem("deviceId") || "1";
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const ipAddress = sessionStorage.getItem("ipAddress");
@@ -22,7 +22,7 @@ export async function attachInfo(config: any) {
     ...config,
     headers: {
       ...config.headers,
-      "x-company-id": currentCompany?.id,
+      "x-company-id": currentStore?.id,
       "x-device-id": deviceId,
       "x-timezone": timeZone,
       "x-ip-address": ipAddress,

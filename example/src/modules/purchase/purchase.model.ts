@@ -3,7 +3,7 @@ import { Partner, PartnerSnapshot } from "../partner";
 import { Employee, EmployeeSnapshot } from "../employee";
 import { DiscountTypeEnum, getOptionsByMap } from "@/shared/constants/enum";
 import { AdditionalInfo } from "@/shared/interfaces/common";
-import { EntityWithCompany } from "@/shared/base/entity";
+import { EntityWithStore } from "@/shared/base/entity";
 import { ApproveStatus } from "../shared/business.model";
 import { Invoice } from "../invoice";
 import { PartnerContact, PartnerContactSnapshot } from "../partnerContact";
@@ -46,7 +46,7 @@ export interface PurchaseQuery extends ApiRequestQuery {
   isCompleted?: boolean;
 }
 
-export interface Purchase extends EntityWithCompany {
+export interface Purchase extends EntityWithStore {
   orderedAt: Date; // Ngày đặt hàng
   code: string;
 

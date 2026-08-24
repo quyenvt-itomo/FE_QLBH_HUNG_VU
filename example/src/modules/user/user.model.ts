@@ -1,6 +1,6 @@
 import { Entity } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
-import { CompanyUser, Organization } from "../organization";
+import { StoreUser, Organization } from "../organization";
 import { File } from "@/shared/interfaces/file";
 import { Role } from "../role";
 import { Employee } from "../employee";
@@ -17,12 +17,12 @@ export interface User extends Entity {
   phone: string | null;
   password: string;
   avatar: File[];
-  sourceCompanyId: string | null;
-  sourceCompany?: Organization | null;
+  sourceStoreId: string | null;
+  sourceStore?: Organization | null;
 
   isActive: boolean;
 
-  companyUsers: CompanyUser[];
+  companyUsers: StoreUser[];
 
   // for current company context
   roleId?: string | null;

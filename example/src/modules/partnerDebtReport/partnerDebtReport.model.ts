@@ -1,4 +1,4 @@
-﻿import { EntityWithCompany } from "@/shared/base/entity";
+﻿import { EntityWithStore } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { Partner } from "../partner";
 import { Invoice, InvoiceType } from "../invoice";
@@ -33,7 +33,7 @@ export interface PartnerDebtReport extends Partner {
   openingAmount: number;
 }
 
-export interface DebtTransaction extends EntityWithCompany {
+export interface DebtTransaction extends EntityWithStore {
   side: DebtSideEnum;
 
   occurredAt: Date;

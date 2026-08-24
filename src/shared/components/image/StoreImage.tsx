@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Image } from "antd";
-import defaultCompany from "/logo.png";
+import defaultStore from "/logo.png";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import { File } from "@/shared/interfaces/file";
 import { buildFileUrl } from "@/shared/utils/url.util";
@@ -17,7 +17,7 @@ const getInitials = (name?: string) => {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 };
 
-interface CompanyImageProps {
+interface StoreImageProps {
   size?: number;
   image?: File | null;
   isHiddenPreview?: boolean;
@@ -25,7 +25,7 @@ interface CompanyImageProps {
   shape?: "circle" | "square";
 }
 
-const CompanyImage: React.FC<CompanyImageProps> = ({
+const StoreImage: React.FC<StoreImageProps> = ({
   image,
   name,
   size = 32,
@@ -104,7 +104,7 @@ const CompanyImage: React.FC<CompanyImageProps> = ({
         <span>{initials}</span>
       ) : (
         <img
-          src={defaultCompany}
+          src={defaultStore}
           width={size}
           height={size}
           style={{ objectFit: "cover", borderRadius }}
@@ -114,4 +114,4 @@ const CompanyImage: React.FC<CompanyImageProps> = ({
   );
 };
 
-export default CompanyImage;
+export default StoreImage;

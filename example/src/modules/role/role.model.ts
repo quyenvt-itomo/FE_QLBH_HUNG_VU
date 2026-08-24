@@ -10,13 +10,13 @@
  */
 import { Module, PermissionStructure } from "@/shared/constants/permission";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
-import { EntityWithCompany } from "../organization";
+import { EntityWithStore } from "../organization";
 
 // import { EntityWithUser } from "./entityWithUser";
 
 export interface RoleQuery extends ApiRequestQuery {}
 
-export interface Role extends EntityWithCompany {
+export interface Role extends EntityWithStore {
   name: string;
   permissions: PermissionStructure;
   importExcel: Module[];

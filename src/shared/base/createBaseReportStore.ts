@@ -35,7 +35,7 @@ export function createBaseReportStore<
   return function useBaseReportStore(
     params?: TQuery,
   ): BaseReportStoreReturn<TReport, TTransaction> {
-    const { permissions, currentCompany } = useGlobalData();
+    const { permissions, currentStore } = useGlobalData();
 
     const can = config.permissionModule
       ? (permission: Permission) =>
@@ -44,7 +44,7 @@ export function createBaseReportStore<
 
     const paramsWithStore = {
       ...params,
-      storeId: currentCompany?.id ?? params?.storeId,
+      storeId: currentStore?.id ?? params?.storeId,
     };
     const reportQuery = useQuery<ApiResponse<TReport[]>, BaseFailurePayload>({
       queryKey: [config.key, "report", paramsWithStore],

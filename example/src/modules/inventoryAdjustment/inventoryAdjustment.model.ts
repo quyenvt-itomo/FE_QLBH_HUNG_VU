@@ -1,4 +1,4 @@
-﻿import { Entity, EntityWithCompany } from "@/shared/base/entity";
+﻿import { Entity, EntityWithStore } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { AdditionalInfo } from "@/shared/interfaces/common";
 import { getOptionsByMap } from "@/shared/constants/enum";
@@ -33,7 +33,7 @@ export interface inventoryAdjustmentQuery extends ApiRequestQuery {
 }
 
 // ── Main Entity ──
-export interface InventoryAdjustment extends EntityWithCompany {
+export interface InventoryAdjustment extends EntityWithStore {
   code: string;
   effectiveDate: string;
   status: string;

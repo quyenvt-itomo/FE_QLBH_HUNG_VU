@@ -33,7 +33,7 @@ export const AddUpdateModal: React.FC<AddUpdateModalProps<User>> = ({
   onClose,
 }) => {
   const { message } = useAppMessage();
-  const { info, currentCompany } = useGlobalData();
+  const { info, currentStore } = useGlobalData();
   const isAdmin = info?.isAdmin;
   const [form] = Form.useForm<User>();
   const id = editData?.id || randomId();
@@ -87,16 +87,16 @@ export const AddUpdateModal: React.FC<AddUpdateModalProps<User>> = ({
           setFormCode({ form, type: "user", field: "code" });
           return;
         }
-        const currentCompanyUser = editData.companyUsers?.find(
-          (cu) => cu.company?.id === currentCompany?.id,
+        const currentStoreUser = editData.companyUsers?.find(
+          (cu) => cu.company?.id === currentStore?.id,
         );
         const formattedData: any = parseFormDataDates({
           ...editData,
           password: editData?.password ? "********" : undefined,
-          roleId: currentCompanyUser?.roleId,
-          role: currentCompanyUser?.role,
-          employeeId: currentCompanyUser?.employeeId,
-          employee: currentCompanyUser?.employee,
+          roleId: currentStoreUser?.roleId,
+          role: currentStoreUser?.role,
+          employeeId: currentStoreUser?.employeeId,
+          employee: currentStoreUser?.employee,
         });
         form.setFieldsValue(formattedData);
       }}
@@ -377,7 +377,7 @@ export const AddUpdateModal: React.FC<AddUpdateModalProps<User>> = ({
                           <RoleSelect
                             defaultData={role}
                             onChangeData={(val) => (form as any).setFieldValue("role", val)}
-                            query={{ storeId: currentCompany?.id }}
+                            query={{ storeId: currentStore?.id }}
                           />
                         </Form.Item>
                         <Form.Item name="role" hidden />
@@ -387,7 +387,7 @@ export const AddUpdateModal: React.FC<AddUpdateModalProps<User>> = ({
                           <EmployeeSelect
                             defaultData={employee}
                             onChangeData={(val) => (form as any).setFieldValue("employee", val)}
-                            query={{ storeId: currentCompany?.id }}
+                            query={{ storeId: currentStore?.id }}
                           />
                         </Form.Item>
                         <Form.Item name="employee" hidden />

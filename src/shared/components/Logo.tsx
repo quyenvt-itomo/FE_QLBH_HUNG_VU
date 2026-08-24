@@ -6,7 +6,7 @@ import { useGlobalData } from "@/shared/hooks/useGlobalData";
 import { privateRoutesName } from "@/shared/constants/routerName";
 import { APP_NAME } from "../constants/enum";
 import { getMainFile } from "../utils/file.util";
-import CompanyImage from "./image/CompanyImage";
+import StoreImage from "./image/StoreImage";
 
 const logoStyle: React.CSSProperties = {
   position: "sticky",
@@ -16,8 +16,8 @@ const logoStyle: React.CSSProperties = {
 
 const Logo: React.FC = () => {
   const navigate = useNavigate();
-  const { currentCompany, horizontal, collapsed } = useGlobalData();
-  const currentLogo = getMainFile(currentCompany?.logo);
+  const { currentStore, horizontal, collapsed } = useGlobalData();
+  const currentLogo = getMainFile(currentStore?.logo);
 
   return (
     <div className={`h-14 ${horizontal ? "pr-8" : ""}`} style={logoStyle}>
@@ -33,16 +33,16 @@ const Logo: React.FC = () => {
           onClick={() => navigate(privateRoutesName.dashboard)}
         >
           {currentLogo ? (
-            <CompanyImage size={28} image={currentLogo} shape="square" />
+            <StoreImage size={28} image={currentLogo} shape="square" />
           ) : (
             <img src="/logo.png" alt="Logo" className="w-7" />
           )}
           {!collapsed && (
             <span
-              className={`font-mono font-bold text-white text-wrap ${currentCompany?.name ? "text-xs" : ""}`}
-              title={currentCompany?.name || APP_NAME}
+              className={`font-mono font-bold text-white text-wrap ${currentStore?.name ? "text-xs" : ""}`}
+              title={currentStore?.name || APP_NAME}
             >
-              {currentCompany?.name || APP_NAME}
+              {currentStore?.name || APP_NAME}
             </span>
           )}
         </div>

@@ -1,4 +1,4 @@
-﻿import { Entity, EntityWithCompany } from "@/shared/base/entity";
+﻿import { Entity, EntityWithStore } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { ApproveStatus } from "../shared/business.model";
 import { Partner, PartnerSnapshot } from "../partner";
@@ -19,7 +19,7 @@ export interface ShippingPlanSnapshot {
   unitPrice: number;
 }
 
-export interface ShippingPlan extends EntityWithCompany {
+export interface ShippingPlan extends EntityWithStore {
   code: string;
   plannedAt: string;
 

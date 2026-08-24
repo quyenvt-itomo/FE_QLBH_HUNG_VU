@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Button, Col, Form, Input, message, Modal, Row, Select, Spin } from "antd";
 import { Organization, useOrganizationStore } from "@/modules/organization";
-import CompanyImage from "@/shared/components/image/CompanyImage";
+import StoreImage from "@/shared/components/image/StoreImage";
 import { getMainFile } from "@/shared/utils/file.util";
 import {
   QuotationRequest,
@@ -49,7 +49,7 @@ const QuotationRequestPage: React.FC = () => {
   const lines = Form.useWatch("lines", form) || [];
   const state = Form.useWatch(["customerSnapshot", "address", "state"], form);
   const [defaultProduct, setDefaultProduct] = useAutoResetItem<Product>();
-  const [company, setCompany] = useState<Organization | null>(null);
+  const [company, setStore] = useState<Organization | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [successModalOpen, setSuccessModalOpen] = useState(false);
@@ -62,7 +62,7 @@ const QuotationRequestPage: React.FC = () => {
     if (!companyCode) return;
     (async () => {
       const org = await getOrgByCode(companyCode);
-      setCompany(org);
+      setStore(org);
       if (org) localStorage.setItem("x-company-id", org.id);
       setLoading(false);
     })();
@@ -234,7 +234,7 @@ const QuotationRequestPage: React.FC = () => {
       <div className="flex justify-center left-0 w-full h-12 xl:h-16 flex-shrink-0 bg-primary shadow-sm">
         <div className="flex justify-between items-center w-full max-w-7xl h-full px-4">
           <div className="flex items-center gap-6">
-            <CompanyImage image={getMainFile(company?.logo)} />
+            <StoreImage image={getMainFile(company?.logo)} />
             <span className="text-white text-base md:text-xl lg:text-2xl font-bold uppercase">
               {company?.name}
             </span>

@@ -1,4 +1,4 @@
-import { Entity, EntityWithCompany } from "@/shared/base/entity";
+import { Entity, EntityWithStore } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { AdditionalInfo } from "@/shared/interfaces/common";
 import { Partner, PartnerSnapshot } from "../partner";
@@ -58,7 +58,7 @@ export interface OrderSnapshot {
 }
 
 // ── Order ──
-export interface Order extends EntityWithCompany {
+export interface Order extends EntityWithStore {
   timeAt: Date;
   code: string;
 

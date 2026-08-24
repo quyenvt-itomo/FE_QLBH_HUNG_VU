@@ -77,7 +77,7 @@ export type Entity = {
   [K in FileCategoryKey]?: any[];
 };
 
-export interface EntityWithCompany extends Entity {
+export interface EntityWithStore extends Entity {
   storeId?: string | null;
   company?: Organization | null;
 }

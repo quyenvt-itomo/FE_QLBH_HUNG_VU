@@ -1,4 +1,4 @@
-﻿import { Entity, EntityWithCompany } from "@/shared/base/entity";
+﻿import { Entity, EntityWithStore } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { Employee, EmployeeSnapshot } from "../employee";
 import { Partner, PartnerSnapshot } from "../partner";
@@ -64,7 +64,7 @@ export interface CommissionAllocation extends Entity {
   allocatedAt: Date;
 }
 
-export interface IncomeExpense extends EntityWithCompany {
+export interface IncomeExpense extends EntityWithStore {
   occurredAt: Date;
 
   //? số phiếu

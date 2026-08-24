@@ -1,4 +1,4 @@
-﻿import { Entity, EntityWithCompany } from "@/shared/base/entity";
+﻿import { Entity, EntityWithStore } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { Attribute, AttributeSnapshot } from "../attribute";
 import { ProductSnapshot } from "../product";
@@ -31,7 +31,7 @@ export interface warehouseTransferQuery extends ApiRequestQuery {
 }
 
 // ── Main Entity ──
-export interface WarehouseTransfer extends EntityWithCompany {
+export interface WarehouseTransfer extends EntityWithStore {
   code: string;
   effectiveDate: string;
   status: string;

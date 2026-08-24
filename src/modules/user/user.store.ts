@@ -8,7 +8,7 @@ export const useUserStore = createBaseStore<
   UserQuery,
   {
     banUser?: (id: string) => void;
-    assignCompanyUser?: (
+    assignStoreUser?: (
       id: string,
       data: { roleId?: string | null; employeeId?: string | null },
     ) => Promise<void>;
@@ -21,7 +21,7 @@ export const useUserStore = createBaseStore<
     banUser: async (id: string) => {
       await postData(`/users/${id}/ban`, {});
     },
-    assignCompanyUser: async (
+    assignStoreUser: async (
       id: string,
       data: { roleId?: string | null; employeeId?: string | null },
     ) => {

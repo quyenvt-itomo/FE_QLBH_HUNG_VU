@@ -73,8 +73,8 @@ export interface UserInfo extends User {
   employee?: Employee;
   permissions: PermissionStructure | null;
 
-  allCompanys: Organization[];
-  currentCompany: Organization | null;
+  allStores: Organization[];
+  currentStore: Organization | null;
 
   defaultWeightUnit?: Attribute;
   defaultMeshUnit?: Attribute;

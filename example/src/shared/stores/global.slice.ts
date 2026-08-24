@@ -17,7 +17,7 @@ export interface GlobalState {
   customTitle: string | null;
   themeMode: ThemeMode;
   filter: Filter;
-  currentCompany?: Organization | null;
+  currentStore?: Organization | null;
 }
 
 const getDefaultTheme = (): ThemeMode => {
@@ -34,13 +34,13 @@ const getDefaultCollapsed = (): boolean => {
   return false;
 };
 
-export const getInitialCurrentCompany = (): Organization | undefined => {
-  const saved = localStorage.getItem("currentCompany");
+export const getInitialCurrentStore = (): Organization | undefined => {
+  const saved = localStorage.getItem("currentStore");
   if (saved) {
     try {
       return JSON.parse(saved) as Organization;
     } catch (error) {
-      console.error("Failed to parse currentCompany from localStorage:", error);
+      console.error("Failed to parse currentStore from localStorage:", error);
       return undefined;
     }
   }
@@ -61,7 +61,7 @@ const initialState: GlobalState = {
   // themeMode: getDefaultTheme(),
   themeMode: "light",
   filter: {},
-  currentCompany: getInitialCurrentCompany(),
+  currentStore: getInitialCurrentStore(),
 };
 
 const clientSlice = createSlice({
@@ -71,7 +71,7 @@ const clientSlice = createSlice({
     clearState: (state) => {
       state.info = null;
       state.permissions = null;
-      state.currentCompany = null;
+      state.currentStore = null;
       state.totalUnread = 0;
       state.customTitle = null;
       state.filter = {};
@@ -94,9 +94,9 @@ const clientSlice = createSlice({
     setInfo: (state, action: PayloadAction<UserInfo | null | undefined>) => {
       state.info = action.payload || null;
       state.permissions = action.payload?.permissions || null;
-      state.currentCompany = action.payload?.currentCompany || null;
-      if (action.payload?.currentCompany) {
-        localStorage.setItem("currentCompany", JSON.stringify(action.payload.currentCompany));
+      state.currentStore = action.payload?.currentStore || null;
+      if (action.payload?.currentStore) {
+        localStorage.setItem("currentStore", JSON.stringify(action.payload.currentStore));
       }
     },
     setFormat: (state, action: PayloadAction<FormatData>) => {
@@ -118,8 +118,8 @@ const clientSlice = createSlice({
     setFilter: (state, action: PayloadAction<Filter>) => {
       state.filter = action.payload;
     },
-    setCurrentCompany: (state, action: PayloadAction<Organization | null | undefined>) => {
-      state.currentCompany = action.payload;
+    setCurrentStore: (state, action: PayloadAction<Organization | null | undefined>) => {
+      state.currentStore = action.payload;
     },
   },
 });
@@ -137,7 +137,7 @@ export const {
   setCustomTitle,
   setThemeMode,
   setFilter,
-  setCurrentCompany,
+  setCurrentStore,
 } = clientSlice.actions;
 
 export default clientSlice.reducer;
