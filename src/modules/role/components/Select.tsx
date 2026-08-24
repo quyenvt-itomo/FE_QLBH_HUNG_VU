@@ -1,8 +1,6 @@
 import { MultipleSelectProps, SelectProps } from "@/shared/interfaces/common";
 import { Role, RoleQuery, RoleType } from "../role.model";
 import { useRoleStore } from "../role.store";
-import { DropdownColumn } from "@/shared";
-import { SmartSelect } from "@/shared";
 import { useRemoteSelect } from "@/shared/hooks/useRemoteSelect";
 import { useEffect, useMemo, useState } from "react";
 import { TreeSelect } from "antd";

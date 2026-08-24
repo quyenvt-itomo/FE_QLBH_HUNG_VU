@@ -8,9 +8,9 @@
  * - Kiểu RoleQuery để truy vấn danh sách vai trò
  * - Kiểu RoleResponse để định dạng phản hồi API
  */
+import { EntityWithStore } from "@/shared";
 import { Module, PermissionStructure } from "@/shared/constants/permission";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
-import { EntityWithStore } from "../organization";
 
 export enum RoleType {
   SYSTEM = "system",

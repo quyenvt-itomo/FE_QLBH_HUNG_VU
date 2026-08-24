@@ -1,7 +1,0 @@
-.table-h-full.product-history-table .ant-table-tbody > tr:not(:first-child) > td {
-  border: none;
-  border-bottom: 1px dashed #ccc !important;
-  border-right: 1px dashed #ccc !important;
-  padding-top: 2px !important;
-  padding-bottom: 2px !important;
-}
