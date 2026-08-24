@@ -1,6 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useGlobalData, privateRoutesName, StoreImage, getMainFile, APP_NAME } from "@/shared";
+import { StoreImage } from "./image/StoreImage";
+import { useGlobalData } from "@/shared/hooks";
+import { privateRoutesName } from "@/shared/constants";
+import { APP_NAME } from "@/shared/constants/enum";
+import { getMainFile } from "@/shared/utils";
 
 const logoStyle: React.CSSProperties = {
   position: "sticky",
@@ -14,7 +18,7 @@ const Logo: React.FC = () => {
   const currentLogo = getMainFile(currentStore?.logo);
 
   return (
-    <div className={`h-14 ${horizontal ? "pr-8" : ""}`} style={logoStyle}>
+    <div className={`h-14 border-b border-white/10 ${horizontal ? "pr-8" : ""}`} style={logoStyle}>
       <div
         className={`flex ${
           collapsed ? "px-[25px]" : "px-2"

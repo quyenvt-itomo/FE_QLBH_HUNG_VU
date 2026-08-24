@@ -1,4 +1,4 @@
-import { Attribute } from "@/modules/attribute";
+import { Attribute } from "@/modules/attribute/attribute.model";
 import { SortOrder } from "../constants/enum";
 
 export interface ApiRequestQuery {

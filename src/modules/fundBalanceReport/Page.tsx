@@ -1,11 +1,11 @@
 import React from "react";
 import { usePageState } from "@/shared/hooks/usePageState";
-import { SearchInput } from "@/shared";
+import { SearchInput } from "@/shared/components";
 import { useFundBalanceReportStore } from "./fundBalanceReport.store";
 import { FundBalanceReport } from "./fundBalanceReport.model";
-import { AddButton } from "@/shared";
-import { Panel } from "@/shared";
-import { TableColumnConfig } from "@/shared";
+import { AddButton } from "@/shared/components";
+import { Panel } from "@/shared/components";
+import { TableColumnConfig } from "@/shared/components";
 import { formatDate } from "@/shared/utils/date.util";
 
 const FundBalanceReportPage: React.FC = () => {

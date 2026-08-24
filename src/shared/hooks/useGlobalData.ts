@@ -16,7 +16,7 @@ import {
 } from "@/shared/stores/global.slice";
 import { ThemeMode } from "@/shared/interfaces/common";
 import { UserInfo } from "../interfaces/auth";
-import { Organization } from "@/modules/organization";
+import { Store } from "@/shared/base/entity";
 import { privateRoutesName } from "../constants/routerName";
 
 export const useGlobalData = () => {
@@ -71,7 +71,7 @@ export const useGlobalData = () => {
   const handleSetThemeMode = useCallback((mode: ThemeMode) => {
     dispatch(setThemeMode(mode));
   }, [dispatch]);
-  const handleSetCurrentStore = useCallback((company?: Organization) => {
+  const handleSetCurrentStore = useCallback((company?: Store | null) => {
     if (company) {
       sessionStorage.setItem("currentStore", JSON.stringify(company));
     } else {

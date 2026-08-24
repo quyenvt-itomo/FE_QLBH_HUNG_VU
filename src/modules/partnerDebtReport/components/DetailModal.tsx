@@ -10,10 +10,10 @@ import { PaginationProps, SummaryData } from "@/shared/interfaces/api";
 import { CLASSNAME } from "@/shared/constants/ui";
 import { formatMoney } from "@/shared/utils/number.util";
 import { formatDateDDMMYYYY } from "@/shared/utils/date.util";
-import { DateRangeFilter } from "@/shared";
+import { DateRangeFilter } from "@/shared/components";
 import { PartnerCardLite } from "@/modules/partner";
 import { useGlobalData } from "@/shared/hooks/useGlobalData";
-import { CustomPagination } from "@/shared";
+import { CustomPagination } from "@/shared/components";
 import { RefTypeFilter } from "./RefTypeFilter";
 import { DebtSideEnum, debtSideMap, TransactionType } from "@/shared/constants/enum";
 

@@ -3,8 +3,8 @@ import { Tooltip, Image } from "antd";
 import { EyeIcon, ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 import { File } from "@/shared/interfaces/file";
 import { downloadFile } from "@/shared/utils/file.util";
-import { FileTypeIcon } from "@/shared";
-import { FilePreviewModal } from "@/shared";
+import { FileTypeIcon } from "../dropdown/FileTypeIcon";
+import { FilePreviewModal } from "../upload/FilePreviewModal";
 
 interface DocumentGroupProps {
   files?: File[];

@@ -1,11 +1,11 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
+import { Attribute } from "@/modules/attribute/attribute.model";
+import { AttributeType } from "@/modules/attribute/attribute.enum";
 import {
-  Attribute,
   AttributeMultipleSelect,
-  AttributeType,
   ProductGroupMultipleSelect,
-} from "@/modules/attribute";
+} from "@/modules/attribute/components/Select";
 import { PartialFilterProps } from "@/shared/interfaces/common";
 import { GenericFilter } from "./GenericFilter";
 

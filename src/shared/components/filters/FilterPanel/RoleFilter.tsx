@@ -1,7 +1,8 @@
 import { PartialFilterProps } from "@/shared/interfaces/common";
 import { GenericFilter } from "./GenericFilter";
-import { Role, RoleTypeTag } from "@/modules/role";
-import { RoleMultipleSelect } from "@/modules/role";
+import { Role } from "@/modules/role/role.model";
+import { RoleMultipleSelect } from "@/modules/role/components/Select";
+import { RoleTypeTag } from "@/modules/role/components/Tag";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 export const RoleFilter: React.FC<PartialFilterProps<Role>> = ({ data, setData }) => {

@@ -1,12 +1,14 @@
 import React from "react";
 import { Form, InputNumber } from "antd";
 import { MagnifyingGlassIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { FormSection } from "@/shared";
-import { Attribute, AttributeManagerMultipleSelect, AttributeType } from "@/modules/attribute";
+import { FormSection } from "@/shared/components";
+import { Attribute } from "@/modules/attribute/attribute.model";
+import { AttributeManagerMultipleSelect } from "@/modules/attribute/components/Select";
+import { AttributeType } from "@/modules/attribute/attribute.enum";
 import { PartialProps } from ".";
 import { useAutoResetItem } from "@/shared/hooks/useAutoResetItem";
 import { collectUnits } from "../../product.util";
-import { InputMoney, InputQuantity } from "@/shared";
+import { InputMoney, InputQuantity } from "@/shared/components";
 
 export const ExtraUnitList: React.FC<PartialProps> = ({ form }) => {
   const formValues = Form.useWatch([], form) || {};

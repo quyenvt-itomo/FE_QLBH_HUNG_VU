@@ -11,8 +11,8 @@ import {
   MultipleManagerSelect,
   SmartMultipleSelect,
   buildTree,
-  useRemoteSelect,
-} from "@/shared";
+} from "@/shared/components";
+import { useRemoteSelect } from "@/shared/hooks";
 import { SortOrder } from "@/shared/constants/enum";
 import { removeVietnameseTones } from "@/shared/utils/search.util";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";

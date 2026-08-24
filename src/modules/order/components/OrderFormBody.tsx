@@ -4,7 +4,7 @@ import { calculateOrder } from "../order.util";
 import { PartnerSelect } from "@/modules/partner/components/Select";
 import { PartnerType } from "@/modules/partner/partner.model";
 import { formatMoney } from "@/shared/utils/number.util";
-import { AppSelect } from "@/shared";
+import { AppSelect } from "@/shared/components";
 import { DiscountTypeEnum } from "@/shared/constants/enum";
 
 interface Props {

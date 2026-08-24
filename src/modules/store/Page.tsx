@@ -1,8 +1,9 @@
-import { AddButton, SortOrder } from "@/shared";
+import { AddButton } from "@/shared/components";
+import { SortOrder } from "@/shared/constants/enum";
 import { useStoreStore } from "./store.store";
 import { App } from "antd";
 import { usePageState } from "@/shared/hooks/usePageState";
-import { Store } from "./store.model";
+import { Store } from "@/shared/base/entity";
 import { StoreAddUpdateModal, StoreList } from "./components";
 import { useAuth } from "@/shared/hooks/useAuth";
 

@@ -4,7 +4,7 @@ import { SelectProps as AntdSelectProps } from "antd";
 import { ApiRequestQuery, BaseError, PaginationProps, PayloadWithSubId } from "./api";
 import { IdentificationType, SortOrder } from "@/shared/constants/enum";
 import { Entity } from "@/shared/base/entity";
-import { AttributeType } from "@/modules/attribute";
+import { AttributeType } from "@/modules/attribute/attribute.enum";
 
 export type ThemeMode = "light" | "dark";
 export type TagVariant = "default" | "outline" | "solid";

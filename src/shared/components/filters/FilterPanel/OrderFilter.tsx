@@ -1,6 +1,7 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
-import { Order, OrderMultipleSelect } from "@/modules/order";
+import { Order } from "@/modules/order/order.model";
+import { OrderMultipleSelect } from "@/modules/order/components/Select";
 import { PartialFilterProps } from "@/shared/interfaces/common";
 import { GenericFilter } from "./GenericFilter";
 

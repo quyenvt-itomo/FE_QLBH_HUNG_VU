@@ -2,22 +2,21 @@ import React, { useEffect } from "react";
 import { Col, Empty, Form, Input, Modal, Row, Switch } from "antd";
 import {
   AppSwitch,
-  formatFormData,
-  makeFormListEnterHandler,
-  parseFormDataDates,
   SortableItem,
   SubmitButton,
   Title,
-  useAppMessage,
-  useAutoResetItem,
-} from "@/shared";
-import { Label } from "@/shared";
+} from "@/shared/components";
+import { Label } from "@/shared/components";
 import { AddUpdateModalProps } from "@/shared/interfaces/common";
 import { setFormErrors } from "@/shared/utils/form.util";
 import { handleCloseWithPendingFiles, randomId } from "@/shared/utils/common.util";
-import { RoleSelect, RoleType } from "@/modules/role";
+import { formatFormData, makeFormListEnterHandler, parseFormDataDates } from "@/shared/utils";
+import { useAppMessage, useAutoResetItem } from "@/shared/hooks";
+import { RoleSelect } from "@/modules/role/components/Select";
+import { RoleType } from "@/modules/role/role.model";
 import { User } from "../user.model";
-import { Store, StoreMultipleSelect } from "@/modules/store";
+import { Store } from "@/shared/base/entity";
+import { StoreMultipleSelect } from "@/modules/store/components/Select";
 import { MagnifyingGlassIcon, TrashIcon } from "@/shared/icons";
 import { ReactSortable } from "react-sortablejs";
 
@@ -35,7 +34,9 @@ export const AddUpdateModal: React.FC<AddUpdateModalProps<User>> = ({
   const id = editData?.id || randomId();
   const role = Form.useWatch("role", form);
   const storeUsers = Form.useWatch("storeUsers", form) || [];
-  const hideStores = storeUsers.map((storeUser) => storeUser.store);
+  const hideStores = storeUsers
+    .map((storeUser) => storeUser.store)
+    .filter((store): store is Store => Boolean(store));
 
   const { message, showFormErrorMessages } = useAppMessage();
 

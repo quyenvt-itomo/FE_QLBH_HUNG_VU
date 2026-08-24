@@ -1,4 +1,4 @@
-import { ObjectTableProps, TableColumnConfig, ColumnsConfigType } from "@/shared";
+import { ObjectTableProps, TableColumnConfig, ColumnsConfigType } from "@/shared/components";
 import { InventoryReport } from "../inventory.model";
 import { formatMoney, formatQuantity } from "@/shared/utils/number.util";
 import { useMemo } from "react";

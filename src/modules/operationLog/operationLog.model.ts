@@ -1,6 +1,6 @@
 import { Entity, UserSnapshot } from "@/shared/base/entity";
 import { ApiRequestQuery, BaseError } from "@/shared/interfaces/api";
-import { User } from "../user";
+import { User } from "@/shared/base/entity";
 
 export interface OperationLogQuery extends ApiRequestQuery {
   moreQuery?: any;

@@ -4,7 +4,7 @@ import { CheckIcon, XMarkIcon, LockClosedIcon, ChevronDownIcon } from "@heroicon
 import { PlusOutlined } from "@ant-design/icons";
 import "./index.css";
 import { Role, RoleType, roleTypeMap } from "../role.model";
-import { ActionButtons } from "@/shared";
+import { ActionButtons } from "@/shared/components";
 
 const { Title, Text } = Typography;
 

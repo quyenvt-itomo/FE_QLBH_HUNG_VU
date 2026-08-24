@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { TableColumnConfig, ObjectTableProps } from "@/shared";
+import { TableColumnConfig, ObjectTableProps } from "@/shared/components";
 import { Role } from "../role.model";
 
 interface Props extends ObjectTableProps {

@@ -1,11 +1,11 @@
 import React from "react";
 import { usePageState } from "@/shared/hooks/usePageState";
-import { SearchInput } from "@/shared";
+import { SearchInput } from "@/shared/components";
 import { useFundTransferStore } from "./fundTransfer.store";
 import { FundTransfer } from "./fundTransfer.model";
-import { AddButton } from "@/shared";
-import { Panel } from "@/shared";
-import { TableColumnConfig } from "@/shared";
+import { AddButton } from "@/shared/components";
+import { Panel } from "@/shared/components";
+import { TableColumnConfig } from "@/shared/components";
 import { formatDate } from "@/shared/utils/date.util";
 
 const FundTransferPage: React.FC = () => {

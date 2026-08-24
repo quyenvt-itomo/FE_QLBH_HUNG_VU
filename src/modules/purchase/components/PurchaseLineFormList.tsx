@@ -1,9 +1,11 @@
 import React from "react";
 import { App, Form, FormInstance, Input, Select } from "antd";
-import { FormListTable, FormColumn } from "@/shared";
+import { FormListTable, FormColumn } from "@/shared/components";
 import { Purchase } from "../purchase.model";
-import { collectProduct, collectUnits, Product, ProductMultipleSelect } from "@/modules/product";
-import { InputMoney, InputPercentage, InputQuantity } from "@/shared";
+import { collectProduct, collectUnits } from "@/modules/product/product.util";
+import { Product } from "@/modules/product/product.model";
+import { ProductMultipleSelect } from "@/modules/product/components/Select";
+import { InputMoney, InputPercentage, InputQuantity } from "@/shared/components";
 import { resolveByPath, randomId } from "@/shared/utils/common.util";
 import { CalculationUtil } from "@/shared/utils/calculation.util";
 import { formatMoney, formatQuantity } from "@/shared/utils/number.util";
@@ -12,7 +14,7 @@ import { SortOrder } from "@/shared/constants/enum";
 import MagnifyingGlassIcon from "@heroicons/react/24/solid/MagnifyingGlassIcon";
 import { makeFormListEnterHandler } from "@/shared/utils/formListKeyboard";
 import { PurchaseLine } from "@/modules/purchaseLine";
-import { AppSelect } from "@/shared";
+import { AppSelect } from "@/shared/components";
 
 interface Props {
   form: FormInstance<Purchase>;

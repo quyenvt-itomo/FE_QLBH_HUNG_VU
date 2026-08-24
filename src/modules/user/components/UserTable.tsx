@@ -1,8 +1,8 @@
-import { TableColumnConfig, ObjectTableProps } from "@/shared";
-import { User } from "../user.model";
-import { UserImage } from "@/shared";
+import { TableColumnConfig, ObjectTableProps } from "@/shared/components";
+import { User } from "@/shared/base/entity";
+import { UserImage } from "@/shared/components";
 import { getMainFile } from "@/shared/utils/file.util";
-import { ContentTooltip } from "@/shared";
+import { ContentTooltip } from "@/shared/components";
 
 export const UserTable: React.FC<ObjectTableProps> = ({ ...rest }) => {
   const columns: any = [

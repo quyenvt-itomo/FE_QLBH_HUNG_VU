@@ -9,7 +9,7 @@ import { useAuth } from "@/shared/hooks/useAuth";
 import { setFormErrors } from "@/shared/utils/form.util";
 import { icons } from "@/shared/assets/icons";
 import { APP_NAME } from "@/shared/constants/enum";
-import { FloatLabel } from "@/shared";
+import { FloatLabel } from "@/shared/components";
 
 const LoginPage: React.FC = () => {
   const [form] = Form.useForm<LoginRequest>();

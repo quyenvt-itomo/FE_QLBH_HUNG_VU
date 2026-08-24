@@ -1,23 +1,23 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button, Col, Form, Input, message, Row, Spin } from "antd";
-import { FileUploadBox } from "@/shared";
+import { FileUploadBox } from "@/shared/components";
 import { Organization, useOrganizationStore } from "@/modules/organization";
-import { StoreImage } from "@/shared";
+import { StoreImage } from "@/shared/components";
 import { getMainFile } from "@/shared/utils/file.util";
 import {
   PurchaseQuotation,
   PurchaseQuotationLine,
   usePurchaseQuotationStore,
 } from "@/modules/purchaseQuotation";
-import { Label } from "@/shared";
+import { Label } from "@/shared/components";
 import { EntityType, FileCategory } from "@/shared/constants/enum";
 import { randomId } from "@/shared/utils/common.util";
-import { FormSection } from "@/shared";
-import { ProvinceSelect, WardSelect } from "@/shared";
+import { FormSection } from "@/shared/components";
+import { ProvinceSelect, WardSelect } from "@/shared/components";
 import { useAddressSelector } from "@/shared/hooks/useAddressSelector";
-import { FormListTable, FormColumn } from "@/shared";
-import { InputMoney, InputPercentage } from "@/shared";
+import { FormListTable, FormColumn } from "@/shared/components";
+import { InputMoney, InputPercentage } from "@/shared/components";
 import { formatMoney, formatQuantity } from "@/shared/utils/number.util";
 import { CLASSNAME } from "@/shared/constants/ui";
 import { makeFormListEnterHandler } from "@/shared/utils/formListKeyboard";

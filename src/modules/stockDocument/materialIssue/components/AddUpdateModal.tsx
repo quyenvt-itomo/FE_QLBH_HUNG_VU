@@ -5,7 +5,7 @@ import { StockDocument, StockDocumentType } from "../../stockDocument.model";
 import { handleCloseWithPendingFiles, randomId } from "@/shared/utils/common.util";
 import { setFormErrors } from "@/shared/utils/form.util";
 import { formatFormData, parseFormDataDates } from "@/shared/utils/date.util";
-import { SubmitButton } from "@/shared";
+import { SubmitButton } from "@/shared/components";
 import { BodyMaterialIssue } from "./Body";
 import { MaterialIssueLineFormList } from "./LineFormList";
 

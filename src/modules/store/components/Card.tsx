@@ -1,17 +1,14 @@
 import { EnvelopeIcon, PhoneIcon, UserIcon } from "@heroicons/react/24/outline";
-import { Store } from "../store.model";
 import { Card } from "antd";
-import { Icon } from "@iconify/react";
-import { ActionButtons } from "@/shared";
+import { ActionButtons } from "@/shared/components";
+import { Store } from "@/shared/base/entity";
 import {
-  checkSelection,
   DropdownAction,
   EmailButton,
-  getFullAddress,
-  getMainImage,
-  PhoneButton,
   StoreImage,
-} from "@/shared";
+} from "@/shared/components";
+import { checkSelection, getFullAddress, getMainImage } from "@/shared/utils";
+import { PhoneButton } from "@/shared/components";
 
 interface StoreCardProps {
   item: Store;

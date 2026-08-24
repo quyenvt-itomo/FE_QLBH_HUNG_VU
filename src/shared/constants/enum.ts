@@ -169,6 +169,22 @@ export enum EntityType {
   ORGANIZATION = "organization",
 }
 
+export enum ApproveStatus {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+  CUSTOMER_APPROVED = "CUSTOMER_APPROVED",
+  CUSTOMER_REJECTED = "CUSTOMER_REJECTED",
+}
+
+export const approvedStatusMap: Record<ApproveStatus, string> = {
+  [ApproveStatus.PENDING]: "Chờ duyệt",
+  [ApproveStatus.APPROVED]: "Đã duyệt",
+  [ApproveStatus.REJECTED]: "Từ chối",
+  [ApproveStatus.CUSTOMER_APPROVED]: "KH đã duyệt",
+  [ApproveStatus.CUSTOMER_REJECTED]: "KH từ chối",
+};
+
 export enum FileStatus {
   PENDING = "pending",
   ACTIVE = "active",

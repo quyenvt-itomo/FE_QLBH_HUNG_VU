@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { AddButton, Panel, SearchInput } from "@/shared";
+import { AddButton, Panel, SearchInput } from "@/shared/components";
 import { usePageState } from "@/shared/hooks/usePageState";
 import { Attribute } from "./attribute.model";
 import { useAttributeStore } from "./attribute.store";

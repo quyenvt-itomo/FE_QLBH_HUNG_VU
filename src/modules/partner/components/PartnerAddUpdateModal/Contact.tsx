@@ -2,10 +2,10 @@ import React from "react";
 import { Button, Col, Form, Input, Row } from "antd";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { CreditCardIcon, PhoneIcon, PlusIcon } from "@heroicons/react/24/outline";
-import { FormSection } from "@/shared";
-import { Label } from "@/shared";
+import { FormSection } from "@/shared/components";
+import { Label } from "@/shared/components";
 import { PartialProps } from ".";
-import { BankSelect } from "@/shared";
+import { BankSelect } from "@/shared/components";
 import { getPhoneRules } from "@/shared/constants/formItemRule";
 
 export const ContactList: React.FC<PartialProps> = ({ form }) => {

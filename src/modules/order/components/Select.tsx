@@ -1,8 +1,8 @@
 import { MultipleSelectProps, SelectProps } from "@/shared/interfaces/common";
 import { Order, OrderQuery } from "../order.model";
 import { useOrderStore } from "../order.store";
-import { DropdownColumn } from "@/shared";
-import { SmartMultipleSelect, SmartSelect } from "@/shared";
+import { DropdownColumn } from "@/shared/components";
+import { SmartMultipleSelect, SmartSelect } from "@/shared/components";
 import { useRemoteSelect } from "@/shared/hooks/useRemoteSelect";
 
 export const OrderSelect: React.FC<SelectProps<Order, OrderQuery>> = ({

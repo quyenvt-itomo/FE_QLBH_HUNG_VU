@@ -1,6 +1,6 @@
 import { Button, Form, FormProps, Input } from "antd";
 import React, { useEffect } from "react";
-import { FloatLabel } from "@/shared";
+import { FloatLabel } from "@/shared/components";
 import "./index.css";
 import { Icon } from "@iconify/react";
 import { useNavigate } from "react-router-dom";

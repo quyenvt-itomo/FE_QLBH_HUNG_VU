@@ -12,9 +12,9 @@ import { formatDateDDMMYYYY } from "@/shared/utils/date.util";
 import { PartnerCardLite } from "@/modules/partner";
 import { InvoiceType, invoiceStatusMap, invoiceTypeMap } from "@/modules/invoice";
 import { useGlobalData } from "@/shared/hooks/useGlobalData";
-import { CustomPagination } from "@/shared";
+import { CustomPagination } from "@/shared/components";
 import { TransactionType } from "@/shared/constants/enum";
-import { InputMoney } from "@/shared";
+import { InputMoney } from "@/shared/components";
 import {
   AddUpdatePaymentRequestModal,
   PaymentRequest,

@@ -3,7 +3,7 @@ import { FormatData } from "@/shared/interfaces/format";
 import { PermissionStructure } from "@/shared/constants/permission";
 import { Filter, ThemeMode } from "@/shared/interfaces/common";
 import { UserInfo } from "../interfaces/auth";
-import { Organization } from "@/modules/organization";
+import { Store } from "@/shared/base/entity";
 
 export interface GlobalState {
   horizontal: boolean;
@@ -17,7 +17,7 @@ export interface GlobalState {
   customTitle: string | null;
   themeMode: ThemeMode;
   filter: Filter;
-  currentStore?: Organization | null;
+  currentStore?: Store | null;
 }
 
 const getDefaultTheme = (): ThemeMode => {
@@ -34,11 +34,11 @@ const getDefaultCollapsed = (): boolean => {
   return false;
 };
 
-export const getInitialCurrentStore = (): Organization | undefined => {
+export const getInitialCurrentStore = (): Store | undefined => {
   const saved = sessionStorage.getItem("currentStore");
   if (saved) {
     try {
-      return JSON.parse(saved) as Organization;
+      return JSON.parse(saved) as Store;
     } catch (error) {
       console.error("Failed to parse currentStore from localStorage:", error);
       return undefined;
@@ -118,7 +118,7 @@ const clientSlice = createSlice({
     setFilter: (state, action: PayloadAction<Filter>) => {
       state.filter = action.payload;
     },
-    setCurrentStore: (state, action: PayloadAction<Organization | null | undefined>) => {
+    setCurrentStore: (state, action: PayloadAction<Store | null | undefined>) => {
       state.currentStore = action.payload;
     },
   },

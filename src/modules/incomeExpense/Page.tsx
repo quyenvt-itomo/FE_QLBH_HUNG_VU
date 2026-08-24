@@ -4,8 +4,8 @@ import type { ColumnsType } from "antd/es/table";
 import { usePageState } from "@/shared/hooks/usePageState";
 import { IncomeExpense } from "./incomeExpense.model";
 import { useIncomeExpenseStore } from "./incomeExpense.store";
-import { Panel } from "@/shared";
-import { SearchInput } from "@/shared";
+import { Panel } from "@/shared/components";
+import { SearchInput } from "@/shared/components";
 
 const IncomeExpensePage: React.FC = () => {
   const { modal } = App.useApp();

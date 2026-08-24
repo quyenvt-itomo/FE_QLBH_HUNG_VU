@@ -1,7 +1,7 @@
 import React from "react";
-import { TableColumnConfig, ObjectTableProps } from "@/shared";
+import { TableColumnConfig, ObjectTableProps } from "@/shared/components";
 import { Order } from "../order.model";
-import { Tag } from "@/shared";
+import { Tag } from "@/shared/components";
 import { formatMoney } from "@/shared/utils/number.util";
 import { formatDate } from "@/shared/utils/date.util";
 

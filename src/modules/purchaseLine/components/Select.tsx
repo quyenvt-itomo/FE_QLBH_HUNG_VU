@@ -2,10 +2,10 @@ import React from "react";
 import { MultipleSelectProps, SelectProps } from "@/shared/interfaces/common";
 import { PurchaseLine, PurchaseLineQuery } from "../purchaseLine.model";
 import { usePurchaseLineStore } from "../purchaseLine.store";
-import { DropdownColumn } from "@/shared";
-import { SmartSelect } from "@/shared";
+import { DropdownColumn } from "@/shared/components";
+import { SmartSelect } from "@/shared/components";
 import { useRemoteSelect } from "@/shared/hooks/useRemoteSelect";
-import { SmartMultipleSelect } from "@/shared";
+import { SmartMultipleSelect } from "@/shared/components";
 import { SortOrder } from "@/shared/constants/enum";
 
 const columns: DropdownColumn<PurchaseLine>[] = [

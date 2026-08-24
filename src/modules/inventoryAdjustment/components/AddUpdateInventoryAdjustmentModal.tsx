@@ -4,8 +4,8 @@ import { AddUpdateModalProps } from "@/shared/interfaces/common";
 import { InventoryAdjustment } from "../inventoryAdjustment.model";
 import { randomId } from "@/shared/utils/common.util";
 import { setFormErrors } from "@/shared/utils/form.util";
-import { SubmitButton } from "@/shared";
-import { Title } from "@/shared";
+import { SubmitButton } from "@/shared/components";
+import { Title } from "@/shared/components";
 
 export const AddUpdateInventoryAdjustmentModal: React.FC<
   AddUpdateModalProps<InventoryAdjustment>

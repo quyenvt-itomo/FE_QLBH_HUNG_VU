@@ -3,7 +3,6 @@ export * from "./button";
 export * from "./core";
 export * from "./display";
 export * from "./dropdown";
-export * from "./filters";
 export * from "./form";
 export * from "./image";
 export * from "./input";

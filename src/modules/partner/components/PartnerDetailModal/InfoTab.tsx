@@ -20,7 +20,7 @@ import { Partner, partnerTypeMap } from "../../partner.model";
 import { PartnerTypeTag } from "../../components/Tag";
 import { getFullAddress } from "@/shared/utils/common.util";
 import { formatMoney } from "@/shared/utils/number.util";
-import { InfoField } from "@/shared";
+import { InfoField } from "@/shared/components";
 
 // ──── Helpers ────
 

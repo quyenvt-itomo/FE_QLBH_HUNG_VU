@@ -1,7 +1,9 @@
 import React, { useEffect } from "react";
 import { Input, Modal, Form, Radio } from "antd";
 import { FormProps } from "antd/lib";
-import { AddUpdateModalProps, Label, setFormErrors, SubmitButton } from "@/shared";
+import { Label, SubmitButton } from "@/shared/components";
+import { AddUpdateModalProps } from "@/shared/interfaces";
+import { setFormErrors } from "@/shared/utils";
 import { Role, RoleType } from "../role.model";
 import { Icon } from "@iconify/react";
 

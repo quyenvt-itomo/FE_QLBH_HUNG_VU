@@ -1,7 +1,7 @@
 import React from "react";
 import { Form, Input, Row, Col } from "antd";
-import { Label } from "@/shared";
-import { AppDatePicker } from "@/shared";
+import { Label } from "@/shared/components";
+import { AppDatePicker } from "@/shared/components";
 import { WarehouseSelect } from "@/modules/warehouse/components";
 import { ProductionSelect } from "@/modules/production/components/Select";
 import { EmployeeSelect } from "@/modules/employee";

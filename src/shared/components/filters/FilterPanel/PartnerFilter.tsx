@@ -1,10 +1,7 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
-import {
-  Partner,
-  PartnerMultipleSelect,
-  PartnerType,
-} from "@/modules/partner";
+import { Partner, PartnerType } from "@/modules/partner/partner.model";
+import { PartnerMultipleSelect } from "@/modules/partner/components/Select";
 import { PartialFilterProps } from "@/shared/interfaces/common";
 import { GenericFilter } from "./GenericFilter";
 

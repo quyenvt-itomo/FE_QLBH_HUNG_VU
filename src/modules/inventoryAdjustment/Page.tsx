@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { usePageState } from "@/shared/hooks/usePageState";
-import { SearchInput } from "@/shared";
+import { SearchInput } from "@/shared/components";
 import { useInventoryAdjustmentStore } from "./inventoryAdjustment.store";
 import { InventoryAdjustment } from "./inventoryAdjustment.model";
-import { AddButton } from "@/shared";
-import { Panel } from "@/shared";
+import { AddButton } from "@/shared/components";
+import { Panel } from "@/shared/components";
 import {
   InventoryAdjustmentTable,
   AddUpdateInventoryAdjustmentModal,

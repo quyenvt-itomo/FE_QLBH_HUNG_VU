@@ -1,8 +1,11 @@
 ﻿import { createBaseStore } from "@/shared/base/createBaseStore";
 import { apiEndpoint } from "@/shared/constants/apiEndpoint";
-import { InventoryAdjustment, inventoryAdjustmentQuery } from "./inventoryAdjustment.model";
+import { InventoryAdjustment, InventoryAdjustmentQuery } from "./inventoryAdjustment.model";
 
-export const useInventoryAdjustmentStore = createBaseStore<InventoryAdjustment, inventoryAdjustmentQuery>({
+export const useInventoryAdjustmentStore = createBaseStore<
+  InventoryAdjustment,
+  InventoryAdjustmentQuery
+>({
   key: "inventoryadjustments",
   apiUrl: apiEndpoint.inventoryAdjustment.base,
   permissionModule: "inventoryAdjustment",

@@ -1,6 +1,7 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
-import { Product, ProductMultipleSelect } from "@/modules/product";
+import { Product } from "@/modules/product/product.model";
+import { ProductMultipleSelect } from "@/modules/product/components/Select";
 import { PartialFilterProps } from "@/shared/interfaces/common";
 import { GenericFilter } from "./GenericFilter";
 

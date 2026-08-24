@@ -1,8 +1,8 @@
 import { App, Form, Input } from "antd";
 import { Purchase } from "./purchase.model";
 import { HandlersInput } from "@/shared/interfaces/common";
-import { Label } from "@/shared";
-import { FileUploadBox } from "@/shared";
+import { Label } from "@/shared/components";
+import { FileUploadBox } from "@/shared/components";
 import { EntityType, FileCategory } from "@/shared/constants/enum";
 import { deletePendingFiles } from "@/shared/utils/file.util";
 import { PurchaseFile } from "./purchase.file";

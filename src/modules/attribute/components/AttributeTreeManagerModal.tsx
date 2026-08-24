@@ -3,7 +3,7 @@ import { App, Button, Form, Input, Modal, Radio } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
-import { ActionButtons } from "@/shared";
+import { ActionButtons } from "@/shared/components";
 import { CLASSNAME } from "@/shared/constants/ui";
 import { Attribute } from "../attribute.model";
 

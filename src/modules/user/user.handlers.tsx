@@ -1,5 +1,5 @@
 import { App } from "antd";
-import { User } from "./user.model";
+import { User } from "@/shared/base/entity";
 import { HandlersInput } from "@/shared/interfaces/common";
 
 export function useUserHandlers({

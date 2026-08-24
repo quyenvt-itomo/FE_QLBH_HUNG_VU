@@ -1,7 +1,6 @@
-import { Entity } from "@/shared/base/entity";
+import { Entity, Store } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { AttributeType } from "./attribute.enum";
-import { Store } from "../store";
 
 export const DEFAULT_WEIGHT_UNIT = "Kg";
 export const DEFAULT_MESH_UNIT = "Tấm";

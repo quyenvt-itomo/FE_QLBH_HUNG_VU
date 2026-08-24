@@ -1,21 +1,17 @@
 import React, { useEffect } from "react";
 import { Form, FormProps, Input, Modal } from "antd";
-import { Store } from "../store.model";
-import { SubmitButton } from "@/shared";
+import { Store } from "@/shared/base/entity";
+import { SubmitButton } from "@/shared/components";
 import {
   AvatarUpload,
-  EntityType,
-  FileCategory,
-  getMainFile,
   Label,
-  parseFormDataDates,
   ProvinceSelect,
-  randomId,
-  setFormErrors,
-  useAddressSelector,
   WardSelect,
-  AddUpdateModalProps,
-} from "@/shared";
+} from "@/shared/components";
+import { EntityType, FileCategory } from "@/shared/constants";
+import { getMainFile, parseFormDataDates, randomId, setFormErrors } from "@/shared/utils";
+import { useAddressSelector } from "@/shared/hooks";
+import { AddUpdateModalProps } from "@/shared/interfaces";
 
 export const StoreAddUpdateModal: React.FC<AddUpdateModalProps<Store>> = ({
   open,

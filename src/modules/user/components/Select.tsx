@@ -1,8 +1,9 @@
 import { MultipleSelectProps, SelectProps } from "@/shared/interfaces/common";
-import { User, UserQuery } from "../user.model";
+import { User } from "@/shared/base/entity";
+import { UserQuery } from "../user.model";
 import { useUserStore } from "../user.store";
-import { DropdownColumn, SmartMultipleSelect } from "@/shared";
-import { SmartSelect } from "@/shared";
+import { DropdownColumn, SmartMultipleSelect } from "@/shared/components";
+import { SmartSelect } from "@/shared/components";
 import { useRemoteSelect } from "@/shared/hooks/useRemoteSelect";
 
 const columns: DropdownColumn<User>[] = [

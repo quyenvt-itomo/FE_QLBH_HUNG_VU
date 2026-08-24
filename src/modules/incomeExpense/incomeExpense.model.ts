@@ -1,18 +1,62 @@
-﻿import { Entity, EntityWithStore } from "@/shared/base/entity";
+﻿import { Entity, StoreEntity } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { Partner, PartnerSnapshot } from "../partner";
 import { Order, OrderSnapshot } from "../order";
 import { Attribute, AttributeSnapshot } from "../attribute";
 import { Fund, FundSnapshot } from "../fund";
 
-export interface EmployeeSnapshot { id: string; code: string; name: string; phone?: string | null; email?: string | null; }
-export interface Employee { id: string; name: string; }
-export interface PurchaseSnapshot { id: string; code: string; orderedAt: string | Date; supplierId: string | null; supplierSnapshot: PartnerSnapshot | null; totalAmount: number; }
-export interface Purchase extends EntityWithStore { code: string; totalAmount: number; }
-export interface InvoiceSnapshot { id: string; invoiceNumber: string; invoiceDate: string | Date; totalAmount: number; }
-export interface Invoice extends EntityWithStore { invoiceNumber: string; invoiceDate: string | Date; totalAmount: number; }
-export interface PaymentRequestLineSnapshot { id: string; paymentRequestId: string; code: string; invoiceId: string | null; invoiceSnapshot: InvoiceSnapshot | null; orderId: string | null; orderSnapshot: OrderSnapshot | null; }
-export interface PaymentRequestLine extends Entity { paymentRequestId: string; code: string; amount: number; invoiceId: string | null; invoiceSnapshot: InvoiceSnapshot | null; orderId: string | null; orderSnapshot: OrderSnapshot | null; }
+export interface EmployeeSnapshot {
+  id: string;
+  code: string;
+  name: string;
+  phone?: string | null;
+  email?: string | null;
+}
+export interface Employee {
+  id: string;
+  name: string;
+}
+export interface PurchaseSnapshot {
+  id: string;
+  code: string;
+  orderedAt: string | Date;
+  supplierId: string | null;
+  supplierSnapshot: PartnerSnapshot | null;
+  totalAmount: number;
+}
+export interface Purchase extends StoreEntity {
+  code: string;
+  totalAmount: number;
+}
+export interface InvoiceSnapshot {
+  id: string;
+  invoiceNumber: string;
+  invoiceDate: string | Date;
+  totalAmount: number;
+}
+export interface Invoice extends StoreEntity {
+  invoiceNumber: string;
+  invoiceDate: string | Date;
+  totalAmount: number;
+}
+export interface PaymentRequestLineSnapshot {
+  id: string;
+  paymentRequestId: string;
+  code: string;
+  invoiceId: string | null;
+  invoiceSnapshot: InvoiceSnapshot | null;
+  orderId: string | null;
+  orderSnapshot: OrderSnapshot | null;
+}
+export interface PaymentRequestLine extends Entity {
+  paymentRequestId: string;
+  code: string;
+  amount: number;
+  invoiceId: string | null;
+  invoiceSnapshot: InvoiceSnapshot | null;
+  orderId: string | null;
+  orderSnapshot: OrderSnapshot | null;
+}
 
 export enum IncomeExpenseTypeEnum {
   INCOME = "income",
@@ -69,7 +113,7 @@ export interface CommissionAllocation extends Entity {
   allocatedAt: Date;
 }
 
-export interface IncomeExpense extends EntityWithStore {
+export interface IncomeExpense extends StoreEntity {
   occurredAt: Date;
 
   //? số phiếu

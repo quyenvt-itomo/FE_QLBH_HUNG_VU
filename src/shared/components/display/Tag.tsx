@@ -1,4 +1,4 @@
-import { approvedStatusMap, ApproveStatus } from "@/modules/shared/business.model";
+import { approvedStatusMap, ApproveStatus } from "@/shared/constants/enum";
 import { tagSizeStyleMap, tagStyle } from "@/shared/constants/ui";
 import { TagStyleValue, TagVariant } from "@/shared/interfaces/common";
 import React from "react";

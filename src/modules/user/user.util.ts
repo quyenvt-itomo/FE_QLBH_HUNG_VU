@@ -1,4 +1,4 @@
-import { User } from "./user.model";
+import { User } from "@/shared/base/entity";
 
 export const generateRoleContent = (user?: User | null): string => {
   if (!user) return "";

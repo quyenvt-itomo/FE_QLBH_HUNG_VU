@@ -1,6 +1,8 @@
 import { PartialFilterProps } from "@/shared/interfaces/common";
 import { GenericFilter } from "./GenericFilter";
-import { Attribute, AttributeMultipleSelect, AttributeType } from "@/modules/attribute";
+import { Attribute } from "@/modules/attribute/attribute.model";
+import { AttributeType } from "@/modules/attribute/attribute.enum";
+import { AttributeMultipleSelect } from "@/modules/attribute/components/Select";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 export const UnitFilter: React.FC<PartialFilterProps<Attribute>> = ({ data, setData }) => {

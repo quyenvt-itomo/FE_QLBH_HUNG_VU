@@ -1,8 +1,6 @@
-import { Attribute } from "@/modules/attribute";
-import { Employee } from "@/modules/employee";
-import { Organization } from "@/modules/organization";
-import { Role } from "@/modules/role";
-import { User } from "@/modules/user";
+import { Attribute as AttributeModel } from "@/modules/attribute/attribute.model";
+import { Role } from "@/modules/role/role.model";
+import { User, Store } from "@/shared/base/entity";
 import { Module, PermissionStructure } from "@/shared/constants/permission";
 import { FormatData } from "@/shared/interfaces/format";
 
@@ -69,16 +67,15 @@ export interface UserInfo extends User {
 
   isAdmin?: boolean;
 
-  role?: Role;
-  employee?: Employee;
+  role: Role | null;
   permissions: PermissionStructure | null;
 
-  allStores: Organization[];
-  currentStore: Organization | null;
+  allStores: Store[];
+  currentStore: Store | null;
 
-  defaultWeightUnit?: Attribute;
-  defaultMeshUnit?: Attribute;
-  defaultAreaUnit?: Attribute;
+  defaultWeightUnit?: AttributeModel;
+  defaultMeshUnit?: AttributeModel;
+  defaultAreaUnit?: AttributeModel;
 
   importExcel?: Module[];
   exportExcel?: Module[];

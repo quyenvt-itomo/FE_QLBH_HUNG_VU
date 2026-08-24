@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { usePageState } from "@/shared/hooks/usePageState";
-import { SearchInput } from "@/shared";
-import { Panel } from "@/shared";
+import { SearchInput } from "@/shared/components";
+import { Panel } from "@/shared/components";
 import { Tabs } from "antd";
 import { useStockDocumentLineStore } from "./stockDocumentLine.store";
 import {

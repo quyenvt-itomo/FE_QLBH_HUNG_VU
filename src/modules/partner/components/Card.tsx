@@ -1,6 +1,8 @@
-import { ActionButtons, checkCanPermission, getMainFile, UserImage } from "@/shared";
+import { ActionButtons, UserImage } from "@/shared/components";
 import { Partner } from "../partner.model";
 import { checkSelection } from "@/shared/utils/common.util";
+import { checkCanPermission } from "@/shared/utils/permission.util";
+import { getMainFile } from "@/shared/utils/file.util";
 import { PartnerTypeTag } from "./Tag";
 import { PhoneOutlined } from "@ant-design/icons";
 

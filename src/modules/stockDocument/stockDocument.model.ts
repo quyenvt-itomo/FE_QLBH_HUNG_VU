@@ -1,4 +1,4 @@
-﻿import { EntityWithStore } from "@/shared/base/entity";
+﻿import { StoreEntity } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { getOptionsByMap } from "@/shared/constants/enum";
 import { Representative } from "@/shared/interfaces/common";
@@ -77,7 +77,7 @@ export interface StockDocumentQuery extends ApiRequestQuery {
   status?: string;
 }
 
-export interface StockDocument extends EntityWithStore {
+export interface StockDocument extends StoreEntity {
   // Ngày hiệu lực dự kiến (Ngày nhập đối với nhập mua, ngày xuất dự kiến đối với xuất bán)
   effectiveDate: Date | null;
   code: string;

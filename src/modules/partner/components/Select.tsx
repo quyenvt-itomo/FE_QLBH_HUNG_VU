@@ -1,11 +1,11 @@
 import { MultipleSelectProps, SelectProps } from "@/shared/interfaces/common";
 import { Partner, PartnerQuery, PartnerType } from "../partner.model";
 import { useCustomerStore, usePartnerStore } from "../partner.store";
-import { DropdownColumn } from "@/shared";
-import { SmartMultipleSelect, SmartSelect } from "@/shared";
+import { DropdownColumn } from "@/shared/components";
+import { SmartMultipleSelect, SmartSelect } from "@/shared/components";
 import { useRemoteSelect } from "@/shared/hooks/useRemoteSelect";
-import { AddMultipleSelect } from "@/shared";
-import { AddSelect } from "@/shared";
+import { AddMultipleSelect } from "@/shared/components";
+import { AddSelect } from "@/shared/components";
 import { PartnerAddUpdateModal } from "./PartnerAddUpdateModal";
 import { CustomerAddModal } from "./CustomerAddModal";
 import { useEffect, useState } from "react";

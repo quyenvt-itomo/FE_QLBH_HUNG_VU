@@ -1,15 +1,17 @@
 import React, { useMemo, useState } from "react";
 import { usePageState } from "@/shared/hooks/usePageState";
-import { PanelFilter, SearchInput, SortOrder } from "@/shared";
-import { DateRangeFilter } from "@/shared";
-import { AddButton } from "@/shared";
-import { Panel } from "@/shared";
+import { SearchInput } from "@/shared/components";
+import { PanelFilter } from "@/shared/components/filters";
+import { DateRangeFilter } from "@/shared/components";
+import { AddButton } from "@/shared/components";
+import { Panel } from "@/shared/components";
 import { Tabs, Table } from "antd";
-import { CustomPagination } from "@/shared";
+import { CustomPagination } from "@/shared/components";
 import { formatMoney } from "@/shared/utils/number.util";
 import dayjs from "dayjs";
 import { CLASSNAME } from "@/shared/constants/ui";
-import { DropdownAction } from "@/shared";
+import { SortOrder } from "@/shared/constants/enum";
+import { DropdownAction } from "@/shared/components";
 
 import "./index.css";
 import { useProductHandlers } from "./product.handlers";

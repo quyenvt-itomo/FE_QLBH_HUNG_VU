@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import { usePageState } from "@/shared/hooks/usePageState";
 import { SortOrder } from "@/shared/constants/enum";
-import { Panel } from "@/shared";
+import { Panel } from "@/shared/components";
 
 import { useStockDocumentStore } from "../stockDocument.store";
 import { StockDocument, StockDocumentType } from "../stockDocument.model";

@@ -1,6 +1,7 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
-import { User, UserMultipleSelect } from "@/modules/user";
+import { User } from "@/shared/base/entity";
+import { UserMultipleSelect } from "@/modules/user/components/Select";
 import { PartialFilterProps } from "@/shared/interfaces/common";
 import { UserImage } from "../../image";
 import { getMainFile } from "@/shared/utils/file.util";

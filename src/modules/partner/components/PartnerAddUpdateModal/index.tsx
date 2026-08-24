@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import { Col, Form, Input, Modal, Radio, Row, Switch } from "antd";
 import type { FormProps } from "antd";
 
-import { AttributeManagerSelect, AttributeType } from "@/modules/attribute";
+import { AttributeManagerSelect } from "@/modules/attribute/components/Select";
+import { AttributeType } from "@/modules/attribute/attribute.enum";
 import {
   FormSection,
   InputMoney,
@@ -11,7 +12,7 @@ import {
   SubmitButton,
   WardSelect,
   PhoneInput,
-} from "@/shared";
+} from "@/shared/components";
 import { AddUpdateModalProps } from "@/shared/interfaces/common";
 import { getPhoneRules, getTaxCodeRules } from "@/shared/constants/formItemRule";
 import { handleCloseWithPendingFiles, randomId } from "@/shared/utils/common.util";

@@ -5,7 +5,7 @@ import { publicRoutesName } from "../../../constants/routerName";
 import "./index.css";
 import { Icon } from "@iconify/react";
 import { icons } from "../../../assets/icons";
-import { FloatLabel } from "@/shared";
+import { FloatLabel } from "@/shared/components";
 import { useAuth } from "@/shared/hooks/useAuth";
 import { APP_NAME } from "@/shared/constants/enum";
 

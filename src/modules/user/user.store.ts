@@ -1,5 +1,6 @@
 import { createBaseStore } from "@/shared/base/createBaseStore";
-import { User, UserQuery } from "./user.model";
+import { User } from "@/shared/base/entity";
+import { UserQuery } from "./user.model";
 import { postData, putData } from "@/shared/api/apiClient";
 import { apiEndpoint } from "@/shared/constants/apiEndpoint";
 

@@ -16,11 +16,11 @@ import {
   PurchaseQuotationLine,
   usePurchaseQuotationStore,
 } from "@/modules/purchaseQuotation";
-import { StoreImage } from "@/shared";
+import { StoreImage } from "@/shared/components";
 import { getMainFile } from "@/shared/utils/file.util";
 import { formatDate } from "@/shared/utils/date.util";
 import { formatMoney, formatQuantity } from "@/shared/utils/number.util";
-import { ApproveStatus } from "@/modules/shared/business.model";
+import { ApproveStatus } from "@/shared/constants/enum";
 import { CalculationUtil } from "@/shared/utils/calculation.util";
 import { getTaxCodeRules, getPhoneRules } from "@/shared/constants/formItemRule";
 import { maskText, resolveByPath } from "@/shared/utils/common.util";

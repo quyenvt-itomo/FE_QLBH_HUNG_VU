@@ -1,6 +1,7 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
-import { Fund, FundMultipleSelect } from "@/modules/fund";
+import { Fund } from "@/modules/fund/fund.model";
+import { FundMultipleSelect } from "@/modules/fund/components/Select";
 import { PartialFilterProps } from "@/shared/interfaces/common";
 import { GenericFilter } from "./GenericFilter";
 

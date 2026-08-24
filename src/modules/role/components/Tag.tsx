@@ -1,6 +1,7 @@
 import React from "react";
 import { RoleType, roleTypeMap } from "../role.model";
-import { tagSizeStyleMap, tagStyle, TagStyleValue, TagVariant } from "@/shared";
+import { tagSizeStyleMap, tagStyle } from "@/shared/constants/ui";
+import { TagStyleValue, TagVariant } from "@/shared/interfaces";
 
 const typeStyleMap: Record<RoleType, TagStyleValue> = {
   [RoleType.SYSTEM]: tagStyle("green"),

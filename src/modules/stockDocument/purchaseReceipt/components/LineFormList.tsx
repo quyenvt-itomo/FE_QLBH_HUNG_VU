@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { App, Form, FormInstance, Input } from "antd";
-import { FormListTable, FormColumn } from "@/shared";
-import { InputQuantity } from "@/shared";
+import { FormListTable, FormColumn } from "@/shared/components";
+import { InputQuantity } from "@/shared/components";
 import { randomId, resolveByPath } from "@/shared/utils/common.util";
 import { StockDocument } from "../../stockDocument.model";
 import { StockDocumentLine } from "@/modules/stockDocumentLine";

@@ -1,8 +1,7 @@
-import { Attribute } from "@/modules/attribute";
-import { Role } from "@/modules/role";
+import type { Notification } from "@/modules/notification/notification.model";
+import type { Role } from "@/modules/role/role.model";
 import { FileCategory, Gender } from "@/shared/constants/enum";
 import { Address } from "@/shared/interfaces/common";
-import { File } from "@/shared/interfaces/file";
 
 export type ActionKey =
   | "update"
@@ -76,33 +75,27 @@ export type Entity = {
   [K in FileCategoryKey]?: any[];
 };
 
-export interface EntityWithStore extends Entity {
-  /** Kept as a source-compatible name for existing screens; BE is store-scoped. */
-  storeId?: string | null;
-}
-
 export interface User extends Entity {
   code: string;
   name: string;
-  avatar: File[];
+
+  username: string;
+  password: string;
+
   email: string | null;
   phone: string | null;
   gender: Gender | null;
   dob: Date | null;
   address: Address | null;
 
-  positionId: string | null;
-  position: Attribute | null;
+  roleId: string | null;
+  role: Role | null;
 
   isActive: boolean;
 
-  // TODO: Thông tin đăng nhập
-  canLogin: boolean;
-  username: string;
-  password: string;
+  notifications?: Notification[];
 
-  roleId: string | null;
-  role: Role | null;
+  storeUsers?: StoreUser[];
 }
 
 // ── Snapshots (dữ liệu rút gọn để nhúng vào các entity khác) ──
@@ -111,9 +104,35 @@ export interface UserSnapshot {
   id: string;
   code: string;
   name: string;
-  username?: string | null;
-  // FE extended fields (may be returned by API)
-  avatar?: File[];
-  email?: string | null;
-  phone?: string | null;
+
+  username: string;
+  password: string;
+
+  email: string | null;
+  phone: string | null;
+  gender: Gender | null;
+  dob: Date | null;
+}
+
+export interface Store extends Entity {
+  code: string;
+  name: string;
+  email: string | null;
+  phone: string | null;
+  taxCode: string | null;
+  address: Address | null;
+  isActive: boolean;
+
+  userCount: number;
+}
+
+export interface StoreUser extends Entity {
+  userId: string;
+  storeId: string;
+  store?: Store | null;
+}
+
+export interface StoreEntity extends Entity {
+  storeId: string;
+  store: Store;
 }

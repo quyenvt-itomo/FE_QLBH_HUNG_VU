@@ -1,5 +1,5 @@
 import { MultipleSelectProps, SelectProps } from "@/shared/interfaces/common";
-import { DropdownColumn, SmartMultipleSelect, SmartSelect } from "@/shared";
+import { DropdownColumn, SmartMultipleSelect, SmartSelect } from "@/shared/components";
 import { useRemoteSelect } from "@/shared/hooks/useRemoteSelect";
 import { Fund, fundQuery } from "../fund.model";
 import { useFundStore } from "../fund.store";

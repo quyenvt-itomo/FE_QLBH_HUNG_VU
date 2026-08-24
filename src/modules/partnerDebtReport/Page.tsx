@@ -8,9 +8,9 @@ import {
 } from "./partnerDebtReport.model";
 import { usePartnerDebtReportStore } from "./partnerDebtReport.store";
 import { useCurrentDebtReportStore } from "./currentDebtReport.store";
-import { SearchInput } from "@/shared";
-import { DateRangeFilter } from "@/shared";
-import { Panel } from "@/shared";
+import { SearchInput } from "@/shared/components";
+import { DateRangeFilter } from "@/shared/components";
+import { Panel } from "@/shared/components";
 import {
   DetailPartnerDebtReportModal,
   ReportTable,
@@ -18,7 +18,7 @@ import {
   CurrentDebtDetailModal,
 } from "./components";
 import { checkSelection } from "@/shared/utils/common.util";
-import { PanelFilter } from "@/shared";
+import { PanelFilter } from "@/shared/components";
 import { filterUses, rangerItems, sortItems } from "./filterItem";
 import {
   sortItems as currentDebtSortItems,

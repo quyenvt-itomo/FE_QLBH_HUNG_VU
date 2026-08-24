@@ -3,7 +3,7 @@ import { EyeIcon, ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { File } from "@/shared/interfaces/file";
 import { downloadFile } from "@/shared/utils/file.util";
-import { FilePreviewModal } from "@/shared";
+import { FilePreviewModal } from "../upload/FilePreviewModal";
 import { FileTypeIcon } from "./FileTypeIcon";
 
 interface MediaDropdownProps {

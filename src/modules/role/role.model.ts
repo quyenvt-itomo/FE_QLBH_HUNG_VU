@@ -8,7 +8,7 @@
  * - Kiểu RoleQuery để truy vấn danh sách vai trò
  * - Kiểu RoleResponse để định dạng phản hồi API
  */
-import { EntityWithStore } from "@/shared";
+import { StoreEntity } from "@/shared/base/entity";
 import { Module, PermissionStructure } from "@/shared/constants/permission";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 
@@ -23,7 +23,7 @@ export const roleTypeMap: Record<RoleType, string> = {
 
 export interface RoleQuery extends ApiRequestQuery {}
 
-export interface Role extends EntityWithStore {
+export interface Role extends StoreEntity {
   name: string;
   permissions: PermissionStructure;
   importExcel: Module[];

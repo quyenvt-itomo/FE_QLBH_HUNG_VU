@@ -6,7 +6,7 @@ import { formatFormData } from "@/shared/utils/date.util";
 import { randomId } from "@/shared/utils/common.util";
 import { OrderFormBody } from "./OrderFormBody";
 import { OrderLineFormList } from "./OrderLineFormList";
-import { SubmitButton } from "@/shared";
+import { SubmitButton } from "@/shared/components";
 import { useProductStore } from "@/modules/product/product.store";
 
 export const AddOrderModal: React.FC<AddModalProps<Order>> = ({

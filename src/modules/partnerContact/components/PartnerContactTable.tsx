@@ -1,9 +1,9 @@
 import React, { useMemo } from "react";
-import { TableColumnConfig, ObjectTableProps } from "@/shared";
-import { ColumnsConfigType } from "@/shared";
+import { TableColumnConfig, ObjectTableProps } from "@/shared/components";
+import { ColumnsConfigType } from "@/shared/components";
 import { PartnerContact } from "../partnerContact.model";
 import { Partner } from "@/modules/partner/partner.model";
-import { PartnerTypeTag } from "@/modules/partner/components";
+import { PartnerTypeTag } from "@/modules/partner/components/Tag";
 
 export const PartnerContactTable: React.FC<ObjectTableProps> = ({ onViewDetail, ...rest }) => {
   const columns: ColumnsConfigType<PartnerContact> = useMemo(

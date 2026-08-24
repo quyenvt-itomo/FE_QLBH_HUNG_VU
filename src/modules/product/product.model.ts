@@ -2,7 +2,7 @@ import { Entity } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { Attribute } from "../attribute/attribute.model";
 import { AttributeType } from "../attribute/attribute.enum";
-import { FilterKey, SortItem } from "@/shared";
+import { FilterKey, SortItem } from "@/shared/interfaces";
 
 export interface ProductQuery extends ApiRequestQuery {
   groupId?: string;

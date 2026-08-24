@@ -1,9 +1,11 @@
-import { AddButton, ButtonFilter } from "@/shared";
-import { Panel } from "@/shared";
-import { SearchInput } from "@/shared";
+import { AddButton } from "@/shared/components";
+import { ButtonFilter } from "@/shared/components/filters";
+import { Panel } from "@/shared/components";
+import { SearchInput } from "@/shared/components";
 import { useUserStore } from "./user.store";
 import { usePageState } from "@/shared/hooks/usePageState";
-import { filterUses, sortItems, User } from "./user.model";
+import { filterUses, sortItems } from "./user.model";
+import { User } from "@/shared/base/entity";
 import { AddUpdateModal, UserTable } from "./components";
 import { useUserHandlers } from "./user.handlers";
 

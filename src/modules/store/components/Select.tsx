@@ -1,10 +1,11 @@
 import { MultipleSelectProps, SelectProps } from "@/shared/interfaces/common";
-import { Store, StoreQuery } from "../store.model";
+import { Store } from "@/shared/base/entity";
+import { StoreQuery } from "../store.model";
 import { useStoreStore } from "../store.store";
 import { DropdownColumn } from "@/shared/components/core/CustomSelectLayout";
 import { SmartSelect } from "@/shared/components/core/SmartSelect";
 import { useRemoteSelect } from "@/shared/hooks/useRemoteSelect";
-import { SmartMultipleSelect } from "@/shared";
+import { SmartMultipleSelect } from "@/shared/components";
 
 interface Props extends SelectProps<Store, StoreQuery> {
   showPayableDebt?: boolean;

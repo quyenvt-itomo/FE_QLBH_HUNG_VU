@@ -4,7 +4,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
   plugins: [
-    react({ fastRefresh: true }),
+    react(),
     tsconfigPaths(), // 👈 quan trọng
   ],
   server: {

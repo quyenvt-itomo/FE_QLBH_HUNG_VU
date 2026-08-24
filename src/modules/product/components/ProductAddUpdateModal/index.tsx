@@ -1,17 +1,18 @@
 import React, { useEffect } from "react";
 import { Input, Modal, Form, Row, Col, FormInstance } from "antd";
 import { FormProps } from "antd/lib";
-import { SubmitButton } from "@/shared";
+import { SubmitButton } from "@/shared/components";
 import { AddUpdateModalProps } from "@/shared/interfaces/common";
 import { Product, ProductType, productLabel, productTypeMap } from "../../product.model";
 import { randomId } from "@/shared/utils/common.util";
 import { setFormErrors } from "@/shared/utils/form.util";
 import { parseFormDataDates } from "@/shared/utils/date.util";
-import { Label } from "@/shared";
+import { Label } from "@/shared/components";
 import { useAppMessage } from "@/shared/hooks/useAppMessage";
-import { AttributeManagerSelect, AttributeType, ProductGroupSelect } from "@/modules/attribute";
-import { AppSwitch, InputMoney, InputPercentage } from "@/shared";
-import { FormSection } from "@/shared";
+import { AttributeManagerSelect, ProductGroupSelect } from "@/modules/attribute/components/Select";
+import { AttributeType } from "@/modules/attribute/attribute.enum";
+import { AppSwitch, InputMoney, InputPercentage } from "@/shared/components";
+import { FormSection } from "@/shared/components";
 import { ExtraUnitList } from "./ExtraUnitList";
 
 export interface PartialProps {

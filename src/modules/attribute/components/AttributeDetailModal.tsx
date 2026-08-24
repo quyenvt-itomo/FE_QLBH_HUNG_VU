@@ -3,7 +3,7 @@ import { Modal, Tabs, Tag } from "antd";
 import { Attribute } from "../attribute.model";
 import { attributeTypeMap } from "../attribute.enum";
 import { DetailModalProps } from "@/shared/interfaces/common";
-import { InfoField } from "@/shared";
+import { InfoField } from "@/shared/components";
 import { AttributeTypeTag } from "./Tag";
 
 const InfoTab: React.FC<{ data: Attribute }> = ({ data }) => (

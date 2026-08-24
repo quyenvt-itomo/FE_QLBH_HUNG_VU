@@ -7,7 +7,7 @@ import { ManagerButton } from "./ManagerButton";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { removeVietnameseTones } from "@/shared/utils/search.util";
 import { CLASSNAME } from "@/shared/constants/ui";
-import { AttributeType } from "@/modules/attribute";
+import { AttributeType } from "@/modules/attribute/attribute.enum";
 
 interface ManagerSelectProps<T> extends Omit<SelectProps<string>, "options"> {
   ref?: React.Ref<any>;

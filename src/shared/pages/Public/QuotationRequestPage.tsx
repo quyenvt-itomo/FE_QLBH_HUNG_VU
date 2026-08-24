@@ -2,29 +2,29 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Button, Col, Form, Input, message, Modal, Row, Select, Spin } from "antd";
 import { Organization, useOrganizationStore } from "@/modules/organization";
-import { StoreImage } from "@/shared";
+import { StoreImage } from "@/shared/components";
 import { getMainFile } from "@/shared/utils/file.util";
 import {
   QuotationRequest,
   QuotationRequestLine,
   useQuotationRequestStore,
 } from "@/modules/quotationRequest";
-import { Label } from "@/shared";
-import { FormSection } from "@/shared";
+import { Label } from "@/shared/components";
+import { FormSection } from "@/shared/components";
 import { getPhoneRules, getTaxCodeRules, taxCodeRule } from "@/shared/constants/formItemRule";
 import { publicRoutesName } from "@/shared/constants/routerName";
 import { PublicProductMultipleSelect } from "@/modules/product/components/Select";
-import { InputQuantity } from "@/shared";
-import { FormColumn, FormListTable } from "@/shared";
+import { InputQuantity } from "@/shared/components";
+import { FormColumn, FormListTable } from "@/shared/components";
 import { randomId, resolveByPath } from "@/shared/utils/common.util";
-import { FileUploadBox } from "@/shared";
+import { FileUploadBox } from "@/shared/components";
 import { EntityType, FileCategory } from "@/shared/constants/enum";
-import { ProvinceSelect, WardSelect } from "@/shared";
+import { ProvinceSelect, WardSelect } from "@/shared/components";
 import { useAddressSelector } from "@/shared/hooks/useAddressSelector";
 import { useAutoResetItem } from "@/shared/hooks/useAutoResetItem";
 import { collectProduct, collectUnits, Product } from "@/modules/product";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
-import { AppSelect } from "@/shared";
+import { AppSelect } from "@/shared/components";
 import { useAppMessage } from "@/shared/hooks/useAppMessage";
 import useDebounce from "@/shared/hooks/useDebounce";
 import { usePartnerStore } from "@/modules/partner/partner.store";

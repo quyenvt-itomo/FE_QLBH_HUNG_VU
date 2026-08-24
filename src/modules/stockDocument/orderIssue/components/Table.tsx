@@ -1,10 +1,10 @@
 import React, { useMemo } from "react";
-import { TableColumnConfig, ObjectTableProps } from "@/shared";
+import { TableColumnConfig, ObjectTableProps } from "@/shared/components";
 import { StockDocument, stockDocumentStatusMap } from "../../stockDocument.model";
 import { formatDateTimeDDMMYYYY } from "@/shared/utils/date.util";
 import { formatMoney } from "@/shared/utils/number.util";
 import { resolveByPath } from "@/shared/utils/common.util";
-import { EntityInfo } from "@/shared";
+import { EntityInfo } from "@/shared/components";
 
 export const Table: React.FC<ObjectTableProps> = ({ onViewDetail, ...rest }) => {
   const cols = useMemo(

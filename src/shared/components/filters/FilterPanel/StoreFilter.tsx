@@ -1,6 +1,7 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
-import { Store, StoreMultipleSelect } from "@/modules/store";
+import { Store } from "@/shared/base/entity";
+import { StoreMultipleSelect } from "@/modules/store/components/Select";
 import { PartialFilterProps } from "@/shared/interfaces/common";
 import { GenericFilter } from "./GenericFilter";
 import { StoreImage } from "../../image";

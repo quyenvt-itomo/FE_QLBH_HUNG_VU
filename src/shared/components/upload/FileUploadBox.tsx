@@ -7,7 +7,7 @@ import { Icon } from "@iconify/react";
 import { deleteFile, uploads, downloadFile } from "@/shared/utils/file.util";
 import { FileCategory, EntityType } from "@/shared/constants/enum";
 import { FilePreviewModal } from "./FilePreviewModal";
-import { FileTypeIcon } from "@/shared";
+import { FileTypeIcon } from "../dropdown/FileTypeIcon";
 import "./FileUploadBox.css";
 
 // ---------- Props ----------

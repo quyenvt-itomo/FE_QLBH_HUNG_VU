@@ -1,8 +1,8 @@
-import { ObjectTableProps, TableColumnConfig, ColumnsConfigType } from "@/shared";
+import { ObjectTableProps, TableColumnConfig, ColumnsConfigType } from "@/shared/components";
 import { PartnerCurrentDebt } from "../partnerDebtReport.model";
 import { formatMoney } from "@/shared/utils/number.util";
 import { useMemo } from "react";
-import { EntityInfo } from "@/shared";
+import { EntityInfo } from "@/shared/components";
 
 interface DataType extends Partial<PartnerCurrentDebt> {
   children?: Partial<DataType>[];

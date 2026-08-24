@@ -1,6 +1,6 @@
 import React from "react";
 import { Form, Input, InputNumber, Select } from "antd";
-import { FormListTable, FormColumn } from "@/shared";
+import { FormListTable, FormColumn } from "@/shared/components";
 
 interface Props {
   form: any;

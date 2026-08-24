@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import { Input, Modal, Form, Row, Col } from "antd";
 import { FormProps } from "antd/lib";
-import { SubmitButton, useGlobalData } from "@/shared";
+import { SubmitButton } from "@/shared/components";
+import { useGlobalData } from "@/shared/hooks";
 import { AddUpdateModalProps } from "@/shared/interfaces/common";
 import { Attribute } from "../attribute.model";
 import { AttributeType, attributeTypeMap, attributeTypeOptions } from "../attribute.enum";
@@ -9,11 +10,11 @@ import { ProductGroupSelect } from "./Select";
 import { randomId } from "@/shared/utils/common.util";
 import { setFormErrors } from "@/shared/utils/form.util";
 import { parseFormDataDates } from "@/shared/utils/date.util";
-import { Label } from "@/shared";
+import { Label } from "@/shared/components";
 import { useAppMessage } from "@/shared/hooks/useAppMessage";
-import { FormSection } from "@/shared";
-import { AppSelect } from "@/shared";
-import { StoreSelect } from "@/modules/store";
+import { FormSection } from "@/shared/components";
+import { AppSelect } from "@/shared/components";
+import { StoreSelect } from "@/modules/store/components/Select";
 
 interface Props extends AddUpdateModalProps<Attribute> {
   type: AttributeType;

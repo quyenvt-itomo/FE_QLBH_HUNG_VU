@@ -1,6 +1,6 @@
 import React from "react";
-import { AddButton } from "@/shared";
-import { SearchInput } from "@/shared";
+import { AddButton } from "@/shared/components";
+import { SearchInput } from "@/shared/components";
 import { PartnerType } from "./partner.model";
 import { PartnerBusinessPageModel } from "./partnerBusinessPage.hook";
 import { PartnerAddUpdateModal, PartnerDetailModal, PartnerList, PartnerTable } from "./components";

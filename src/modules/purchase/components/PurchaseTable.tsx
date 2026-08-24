@@ -1,14 +1,14 @@
 import React, { useMemo } from "react";
-import { TableColumnConfig, ObjectTableProps } from "@/shared";
+import { TableColumnConfig, ObjectTableProps } from "@/shared/components";
 import { Purchase, paymentMethodMap } from "../purchase.model";
 import { formatDateTimeDDMMYYYY } from "@/shared/utils/date.util";
 import { formatMoney, formatPercentage } from "@/shared/utils/number.util";
-import { ColumnsConfigType } from "@/shared";
+import { ColumnsConfigType } from "@/shared/components";
 import { resolveByPath } from "@/shared/utils/common.util";
-import { ApproveStatusTag } from "@/shared";
-import { MediaDropdown } from "@/shared";
+import { ApproveStatusTag } from "@/shared/components";
+import { MediaDropdown } from "@/shared/components";
 import { File } from "@/shared/interfaces/file";
-import { EntityInfo } from "@/shared";
+import { EntityInfo } from "@/shared/components";
 import { Progress } from "antd";
 
 interface Props extends ObjectTableProps {

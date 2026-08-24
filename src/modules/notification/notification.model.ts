@@ -1,4 +1,4 @@
-﻿import { EntityWithStore } from "@/shared/base/entity";
+﻿import { StoreEntity } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { ActionType, NotificationType } from "@/shared/constants/enum";
 
@@ -6,7 +6,7 @@ export interface notificationQuery extends ApiRequestQuery {
   moreQuery?: any;
 }
 
-export interface Notification extends EntityWithStore {
+export interface Notification extends StoreEntity {
   userId: string;
   type: NotificationType;
   action: ActionType | null;
