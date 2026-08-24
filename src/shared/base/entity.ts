@@ -1,5 +1,4 @@
-import type { Notification } from "@/modules/notification/notification.model";
-import type { Role } from "@/modules/role/role.model";
+import { Role } from "@/modules/role";
 import { FileCategory, Gender } from "@/shared/constants/enum";
 import { Address } from "@/shared/interfaces/common";
 
@@ -126,13 +125,11 @@ export interface Store extends Entity {
   userCount: number;
 }
 
-export interface StoreUser extends Entity {
-  userId: string;
-  storeId: string;
-  store?: Store | null;
-}
-
 export interface StoreEntity extends Entity {
   storeId: string;
   store: Store;
+}
+
+export interface StoreUser extends StoreEntity {
+  userId: string;
 }
