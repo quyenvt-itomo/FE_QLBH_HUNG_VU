@@ -30,7 +30,7 @@ const QuotationRequestDetailPage: React.FC = () => {
     (async () => {
       const org = await getOrgByCode(companyCode);
       setStore(org);
-      if (org) localStorage.setItem("x-company-id", org.id);
+      if (org) localStorage.setItem("x-store-id", org.id);
     })();
   }, [companyCode]);
 

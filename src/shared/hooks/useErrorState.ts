@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { BaseError } from "../interfaces/api";
 import { handleErrorMessage } from "../utils/handleMessageError";
 import useSmartNotification from "./useSmartNotification";
@@ -16,12 +16,12 @@ export const useErrorState = () => {
     }
   }, [errors]);
 
-  const onError = (err: any) => {
+  const onError = useCallback((err: any) => {
     const errorData = handleErrorMessage(err);
     if (!errorData) return;
     notify("error", errorData.message);
     setErrors(errorData.errors);
-  };
+  }, [notify]);
 
   return { notify, errors, setErrors, onError };
 };

@@ -4,7 +4,7 @@ import { usePageState } from "@/shared/hooks/usePageState";
 import { SortOrder } from "@/shared/constants/enum";
 import { SearchInput } from "@/shared";
 import { DateRangeFilter } from "@/shared";
-import { CustomFilter } from "@/shared";
+import { PanelFilter } from "@/shared";
 import { AddButton } from "@/shared";
 
 import { filterUses, rangerItems, sortItems, statusItems } from "./filterItem";
@@ -112,7 +112,7 @@ export const PurchaseReceiptPage: React.FC = () => {
             endDate={endAt}
             onRangeChange={pageAction.handleDateRangerChange}
           />
-          <CustomFilter
+          <PanelFilter
             filterActive={isFilterActive}
             sortItems={sortItems}
             sortValue={{ sortBy, sortOrder }}

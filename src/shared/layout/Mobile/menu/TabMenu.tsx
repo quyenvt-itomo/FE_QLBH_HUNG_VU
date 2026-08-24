@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Dropdown, MenuProps } from "antd";
-import { sideBarMenuItem } from "@/shared/layout/Private/sidebar/MenuItem";
+import { SideBarMenuItems } from "@/shared/layout/Private/sidebar/MenuItem";
 import { privateRoutesName } from "@/shared/constants/routerName";
 import { Icon } from "@iconify/react";
 
@@ -27,7 +27,7 @@ const isActivePath = (paths: string | string[]): boolean => {
 const MobileTabMenu: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const menuItems = sideBarMenuItem();
+  const menuItems = SideBarMenuItems();
   const [indicatorLeft, setIndicatorLeft] = useState<number>(2);
   const [indicatorWidth, setIndicatorWidth] = useState<number>(window.innerWidth / 5 - 4);
 

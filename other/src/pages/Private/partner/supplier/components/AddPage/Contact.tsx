@@ -66,11 +66,7 @@ const ContactList: React.FC<ContactListProps> = ({ form, onFormChange }) => {
                       width={164}
                     />
 
-                    <InfoRow
-                      label="Email"
-                      value={contacts[field.name]?.email}
-                      width={164}
-                    />
+                    <InfoRow label="Email" value={contacts[field.name]?.email} width={164} />
 
                     <InfoRow
                       label="Số điện thoại"
@@ -80,36 +76,30 @@ const ContactList: React.FC<ContactListProps> = ({ form, onFormChange }) => {
                   </Col>
 
                   <Col lg={12} xs={24}>
-                    <Form.Item
-                      label={<Label width={164} title="Tài khoản ngân hàng" />}
-                    >
+                    <Form.Item label={<Label width={164} title="Tài khoản ngân hàng" />}>
                       <div className="space-y-2">
                         {(contacts[field.name]?.banks || []).length === 0 ? (
-                          <span className="text-gray-400 italic">
-                            Chưa có tài khoản ngân hàng
-                          </span>
+                          <span className="text-gray-400 italic">Chưa có tài khoản ngân hàng</span>
                         ) : (
-                          contacts[field.name].banks.map(
-                            (bank: any, idx: number) => (
-                              <div
-                                key={idx}
-                                className="flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-lg"
-                                style={CSS.container}
-                              >
-                                <CreditCardIcon className="w-6 h-6 text-gray-500" />
+                          contacts[field.name].banks.map((bank: any, idx: number) => (
+                            <div
+                              key={idx}
+                              className="flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-lg"
+                              style={CSS.container}
+                            >
+                              <CreditCardIcon className="w-6 h-6 text-gray-500" />
 
-                                <div className="flex flex-col text-sm">
-                                  <span className="font-medium">
-                                    {bank.accountHolder} – {bank.accountNumber}
-                                  </span>
-                                  <span className="text-gray-500">
-                                    {bank.bankName}
-                                    {bank.branch ? ` – ${bank.branch}` : ""}
-                                  </span>
-                                </div>
+                              <div className="flex flex-col text-sm">
+                                <span className="font-medium">
+                                  {bank.accountHolder} – {bank.accountNumber}
+                                </span>
+                                <span className="text-gray-500">
+                                  {bank.bankName}
+                                  {bank.branch ? ` – ${bank.branch}` : ""}
+                                </span>
                               </div>
-                            ),
-                          )
+                            </div>
+                          ))
                         )}
                       </div>
                     </Form.Item>

@@ -13,7 +13,7 @@ import {
 import { approvedStatusLiteItems } from "../shared/business.model";
 import { Tabs } from "antd";
 import { DateRangeFilter } from "@/shared";
-import { CustomFilter } from "@/shared";
+import { PanelFilter } from "@/shared";
 import { filterUses, rangerItems, sortItems } from "./filterItem";
 import { usePurchaseRequisitionHandlers } from "./purchaseRequisition.handlers";
 import { SortOrder } from "@/shared/constants/enum";
@@ -114,7 +114,7 @@ export const PurchaseRequisitionPage: React.FC = () => {
             endDate={endAt}
             onRangeChange={pageAction.handleDateRangerChange}
           />
-          <CustomFilter
+          <PanelFilter
             filterActive={isFilterActive}
             sortItems={sortItems}
             sortValue={{ sortBy, sortOrder }}

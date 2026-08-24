@@ -68,10 +68,10 @@ const SupplierQuotationPage: React.FC = () => {
     setStore(companyData);
     setLoading(false);
     if (!companyData) {
-      localStorage.removeItem("x-company-id");
+      localStorage.removeItem("x-store-id");
       return;
     }
-    localStorage.setItem("x-company-id", companyData.id);
+    localStorage.setItem("x-store-id", companyData.id);
   };
 
   useEffect(() => {

@@ -6,7 +6,7 @@ import { useScrollShadow } from "@/shared/hooks/useScrollShadow";
 import { useExcelFillHandle } from "@/shared/hooks/useExcelFillHandle";
 import { ExcelFillHandle } from "@/shared";
 import { CLASSNAME } from "@/shared/constants/ui";
-import { SummaryConfig, isSummaryConfig } from "../display/DataTable";
+import { SummaryConfig, isSummaryConfig } from "../display/DataTable.util";
 import {
   DndContext,
   closestCenter,

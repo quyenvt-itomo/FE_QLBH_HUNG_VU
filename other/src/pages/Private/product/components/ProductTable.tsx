@@ -9,7 +9,7 @@ import { getMainImage } from "../../../../utils/fileUtil";
 import SquareImageGroup from "../../../../components/image/SquareImageGroup";
 import { IProduct } from "../../../../models/product";
 import { useEffect, useMemo, useState } from "react";
-import { getProductCategoryContent, getVariantOptionContent } from "../../../../utils/common";
+import { getProductGroupContent, getVariantOptionContent } from "../../../../utils/common";
 import { IAttribute } from "../../../../models/base/attribute";
 import { Icon } from "@iconify/react";
 import { Checkbox } from "antd";
@@ -133,7 +133,7 @@ const ProductTable: React.FC<Props> = ({
           key: "category",
           width: 250,
           render: (category: IAttribute) => (
-            <ContentTooltip content={getProductCategoryContent(category)} width={250} />
+            <ContentTooltip content={getProductGroupContent(category)} width={250} />
           ),
         },
         {

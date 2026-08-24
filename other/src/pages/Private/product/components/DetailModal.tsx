@@ -11,7 +11,7 @@ import EditableInfoCol from "../../../../components/display/EditableInfoCol";
 import { useProductVariantData } from "../../../../hooks/product/useProductVariantData";
 import { formatMoney, formatPercentage } from "../../../../utils/formatNumber";
 import SquareImageGroup from "../../../../components/image/SquareImageGroup";
-import ProductCategorySelect from "../../../../components/tree_select/ProductCategorySelect";
+import ProductGroupSelect from "../../../../components/tree_select/ProductGroupSelect";
 
 interface Props extends AddUpdateModalProps<IProduct> {
   onReload?: () => void;
@@ -76,7 +76,7 @@ const DetailModal: React.FC<Props> = ({ open, editData, onEdit, onReload, onClos
               value={editData.category?.name}
               fieldKey={"categoryId"}
               required
-              editComponent={<ProductCategorySelect defaultData={editData.category} />}
+              editComponent={<ProductGroupSelect defaultData={editData.category} />}
               onUpdate={handleUpdate}
             />
           </Col>

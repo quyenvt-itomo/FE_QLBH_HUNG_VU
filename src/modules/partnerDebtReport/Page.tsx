@@ -18,7 +18,7 @@ import {
   CurrentDebtDetailModal,
 } from "./components";
 import { checkSelection } from "@/shared/utils/common.util";
-import { CustomFilter } from "@/shared";
+import { PanelFilter } from "@/shared";
 import { filterUses, rangerItems, sortItems } from "./filterItem";
 import {
   sortItems as currentDebtSortItems,
@@ -123,7 +123,7 @@ export const PartnerDebtReportPage: React.FC = () => {
             endDate={endAt}
             onRangeChange={pageAction.handleDateRangerChange}
           />
-          <CustomFilter
+          <PanelFilter
             filterActive={isFilterActive}
             sortItems={sortItems}
             sortValue={{ sortBy, sortOrder }}
@@ -242,7 +242,7 @@ export const CurrentDebtReportPage: React.FC<CurrentDebtReportPageProps> = ({ in
         <div className="text-base font-semibold">{invoiceTypeMap[invoiceType]}</div>
         <div className="flex items-center gap-3 flex-shrink-0">
           <SearchInput value={keyword} onSearch={pageAction.handleSearch} maxWidth={480} />
-          <CustomFilter
+          <PanelFilter
             filterActive={isFilterActive}
             sortItems={currentDebtSortItems}
             sortValue={{ sortBy, sortOrder }}

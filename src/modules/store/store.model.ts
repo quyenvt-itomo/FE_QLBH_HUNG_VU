@@ -13,6 +13,12 @@ export interface Store extends Entity {
 
   userCount: number;
 }
+
+export interface StoreEntity extends Entity {
+  storeId: string;
+  store: Store;
+}
+
 export interface StoreQuery extends ApiRequestQuery {
   isActive?: boolean;
 }

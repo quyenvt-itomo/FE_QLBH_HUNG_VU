@@ -1,6 +1,7 @@
 import { Entity } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { AttributeType } from "./attribute.enum";
+import { Store } from "../store";
 
 export const DEFAULT_WEIGHT_UNIT = "Kg";
 export const DEFAULT_MESH_UNIT = "Tấm";
@@ -21,6 +22,7 @@ export const EXPENSE_PROFIT_DISTRIBUTION = "Phân phối lợi nhuận";
 export interface AttributeQuery extends ApiRequestQuery {
   moreQuery?: any;
   type?: AttributeType;
+  showStatistics?: boolean;
 }
 
 export interface AttributeSnapshot {
@@ -32,4 +34,13 @@ export interface AttributeSnapshot {
 export interface Attribute extends Entity {
   name: string;
   type: AttributeType;
+  productCount?: number;
+  partnerCount?: number;
+  incomeExpenseCount?: number;
+  incomeExpenseAmount?: number;
+  storeId?: string | null;
+  store?: Store | null;
+  parentId?: string | null;
+  parent?: Attribute | null;
+  children?: Attribute[];
 }

@@ -5,7 +5,7 @@ import { useAttributeData } from "../../hooks/core/useAttributeData";
 import ManagerSelect from "./ManagerSelect";
 import { AttributeTypeEnum, attributeTypeMap } from "../../constants/enum";
 
-const ProductCategorySelect: React.FC<SelectProps<IAttribute>> = ({
+const ProductGroupSelect: React.FC<SelectProps<IAttribute>> = ({
   value,
   defaultData,
   placeholder,
@@ -101,4 +101,4 @@ const ProductCategorySelect: React.FC<SelectProps<IAttribute>> = ({
   );
 };
 
-export default ProductCategorySelect;
+export default ProductGroupSelect;

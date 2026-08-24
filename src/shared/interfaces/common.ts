@@ -248,22 +248,20 @@ export type FilterKey =
   | "customerIds"
   | "shipperIds"
   | "partnerIds"
-  | "employeeIds"
+  | "customerGroupIds"
+  | "supplierGroupIds"
+  | "shipperGroupIds"
   | "fundIds"
-  | "categoryIds"
-  | "unitIds"
-  | "partnerGroupIds"
   | "orderIds"
-  | "ingredientIds"
   | "itemIds"
-  | "tableIds"
-  | "areaIds"
-  | "modifierGroupIds"
-  | "menuIds"
-  | "warehouseIds"
-  | "branchIds"
+  | "storeIds"
+  | "roleIds"
   | "productIds"
-  | "partnerIds";
+  | "productGroupIds"
+  | "unitIds"
+  | "brandIds"
+  | "locationIds";
+
 export type Filter = {
   [key in FilterKey]?: any[];
 };

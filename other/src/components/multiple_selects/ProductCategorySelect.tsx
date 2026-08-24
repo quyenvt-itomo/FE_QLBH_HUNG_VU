@@ -9,7 +9,7 @@ import { buildTree } from "../tree_select/ManagerSelect";
 import { IconArrowDown } from "../icon/ArrowDown";
 import { removeVietnameseTones } from "../../utils/searchUtils";
 
-export const ProductCategorySelect: React.FC<MultipleSelectProps<IAttribute>> = ({
+export const ProductGroupSelect: React.FC<MultipleSelectProps<IAttribute>> = ({
   value,
   defaultData,
   placeholder,

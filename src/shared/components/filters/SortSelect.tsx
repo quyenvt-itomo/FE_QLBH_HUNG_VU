@@ -11,10 +11,16 @@ interface SortSelectProps {
     sortBy?: string;
     sortOrder?: SortOrder;
   };
+  size?: "default" | "small";
   onChange?: (value: { sortBy?: string; sortOrder?: SortOrder }) => void;
 }
 
-export const SortSelect: React.FC<SortSelectProps> = ({ sortItems, value, onChange }) => {
+export const SortSelect: React.FC<SortSelectProps> = ({
+  sortItems,
+  value,
+  size = "default",
+  onChange,
+}) => {
   const defaultItem = sortItems[0];
 
   const selectedItem = sortItems.find((x) => x.value === value?.sortBy) ?? defaultItem;
@@ -34,47 +40,37 @@ export const SortSelect: React.FC<SortSelectProps> = ({ sortItems, value, onChan
     onChange?.({ sortBy, sortOrder });
   };
 
-  const handlesortOrderChange = (sortOrder: SortOrder) => {
+  const handleSortOrderChange = (sortOrder: SortOrder) => {
     const sortBy = value?.sortBy ?? defaultItem?.value;
     onChange?.({ sortBy, sortOrder });
   };
 
   return (
-    <div className="flex flex-col w-full gap-2 p-4">
+    <div className="flex flex-col w-full gap-2 p-4 pt-2">
       <span className="font-semibold">Sắp xếp theo</span>
 
       <div className="flex gap-2 w-full">
         {/* SORT BY */}
         <Select
+          size={size === "small" ? "small" : "middle"}
           className={`${CLASSNAME.inputHeight} w-1/2`}
-          value={
-            value?.sortBy
-              ? {
-                  value: value.sortBy,
-                  label: selectedItem?.label,
-                }
-              : undefined
-          }
+          value={value?.sortBy}
           labelInValue
-          onChange={(v) =>
-            onChange?.({
-              sortBy: v.value,
-              sortOrder: value?.sortOrder ?? SortOrder.ASC,
-            })
-          }
+          onChange={handleSortByChange}
           options={sortItems.map((item) => ({
             label: item.label,
             value: item.value,
           }))}
-          suffixIcon={<ChevronDownIcon className="h-3.5" />}
+          suffixIcon={size === "small" ? null : <ChevronDownIcon className="h-3.5" />}
         />
 
         {/* SORT ORDER */}
         <Select
+          size={size === "small" ? "small" : "middle"}
           className={`${CLASSNAME.inputHeight} w-1/2`}
           value={value?.sortOrder}
-          onChange={handlesortOrderChange}
-          suffixIcon={<ChevronDownIcon className="h-3.5" />}
+          onChange={handleSortOrderChange}
+          suffixIcon={size === "small" ? null : <ChevronDownIcon className="h-3.5" />}
           options={[
             {
               value: SortOrder.ASC,

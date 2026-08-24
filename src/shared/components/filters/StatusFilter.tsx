@@ -1,5 +1,5 @@
 import { formatQuantity } from "@/shared/utils/number.util";
-import { StatusItem } from ".";
+import type { StatusItem } from "./filter.types";
 import { CLASSNAME } from "@/shared/constants/ui";
 
 interface StatusFilterProps {

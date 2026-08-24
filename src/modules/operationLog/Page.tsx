@@ -7,7 +7,7 @@ import { useOperationLogStore } from "./operationLog.store";
 import { OperationLog, logActionMapping, targetEntityMapping } from "./operationLog.model";
 import { Panel } from "@/shared";
 import { checkSelection } from "@/shared/utils/common.util";
-import { CustomFilter } from "@/shared";
+import { PanelFilter } from "@/shared";
 import { filterUses, rangerItems, sortItems } from "./filterItem";
 import { SortOrder } from "@/shared/constants/enum";
 import { ClipboardDocumentListIcon } from "@/shared/icons";
@@ -74,7 +74,7 @@ export const OperationLogPage: React.FC = () => {
             endDate={endAt}
             onRangeChange={pageAction.handleDateRangerChange}
           />
-          <CustomFilter
+          <PanelFilter
             filterUses={filterUses}
             filterActive={
               Object.values(filter).some((v) => v && v.length > 0) ||

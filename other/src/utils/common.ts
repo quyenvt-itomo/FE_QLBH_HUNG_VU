@@ -427,7 +427,7 @@ export const stringToAcronym = (str: string): string => {
   return acronym;
 };
 
-export const getProductCategoryContent = (attribute?: IAttribute | null): string => {
+export const getProductGroupContent = (attribute?: IAttribute | null): string => {
   if (!attribute) return "";
 
   const names: string[] = [];

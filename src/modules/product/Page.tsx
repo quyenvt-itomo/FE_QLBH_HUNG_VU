@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { usePageState } from "@/shared/hooks/usePageState";
-import { SearchInput } from "@/shared";
+import { PanelFilter, SearchInput, SortOrder } from "@/shared";
 import { DateRangeFilter } from "@/shared";
 import { AddButton } from "@/shared";
 import { Panel } from "@/shared";
@@ -13,7 +13,7 @@ import { DropdownAction } from "@/shared";
 
 import "./index.css";
 import { useProductHandlers } from "./product.handlers";
-import { Product, ProductType, productTypeOptions } from "./product.model";
+import { filterUses, Product, ProductType, productTypeOptions, sortItems } from "./product.model";
 import { useProductPriceHistoryStore, useProductStore } from "./product.store";
 import {
   ProductTable,
@@ -24,28 +24,35 @@ import {
 
 export const ProductPage: React.FC = () => {
   const {
+    isFilterActive,
     keyword,
     page,
     size,
     sortBy,
     sortOrder,
+    filter,
+    reload,
     setPage,
     setSize,
+
     open,
     setOpen,
     openDetail,
     setOpenDetail,
     rowData,
     setRowData,
-    reload,
     pageAction,
-  } = usePageState<Product>();
+  } = usePageState<Product>({
+    sortBy: "createAt",
+    sortOrder: SortOrder.DESC,
+    filterUses,
+  });
 
   // Type is always known for product - attribute group depends on it
   const [type, setType] = useState<ProductType>(ProductType.FINISHED);
 
   const { data, loading, creating, updating, errors, pagination, getById, create, update, remove } =
-    useProductStore({ page, size, keyword, sortBy, sortOrder, reload, type }, () =>
+    useProductStore({ page, size, keyword, sortBy, sortOrder, reload, type, ...filter }, () =>
       pageAction.handleClose(),
     );
 
@@ -53,50 +60,52 @@ export const ProductPage: React.FC = () => {
     useProductHandlers({ getById, create, update, remove, setOpen, setOpenDetail, setRowData });
 
   return (
-    <div className="flex flex-col h-full w-full gap-1">
-      <div className="flex justify-between items-start gap-3">
-        <Tabs
-          activeKey={type}
-          onChange={(key) => setType(key as ProductType)}
-          items={productTypeOptions}
-          className="custom-tabs"
-        />
-        <div className="flex items-center gap-3">
+    <div className="flex gap-3 w-full h-full">
+      <PanelFilter
+        filterActive={isFilterActive}
+        sortItems={sortItems}
+        sortValue={{ sortBy, sortOrder }}
+        onSortChange={pageAction.handleSortChange}
+        filterUses={filterUses}
+        onClearFilter={pageAction.resetFilter}
+      />
+      <div className="flex flex-col h-full w-[calc(100%-266px)] gap-3">
+        <div className="flex justify-between items-start gap-3">
           <SearchInput value={keyword} onSearch={pageAction.handleSearch} maxWidth={340} />
           <AddButton onOpenAdd={handleOpenAdd} />
         </div>
-      </div>
-      <Panel>
-        <ProductTable
-          dataSource={data}
-          loading={loading}
-          pagination={pagination}
-          setPage={setPage}
-          setSize={setSize}
+        <Panel>
+          <ProductTable
+            dataSource={data}
+            loading={loading}
+            pagination={pagination}
+            setPage={setPage}
+            setSize={setSize}
+            type={type}
+            onEdit={handleOpenEdit}
+            onViewDetail={handleOpenDetail}
+            onDelete={handleDelete}
+          />
+        </Panel>
+
+        <ProductAddUpdateModal
+          open={open}
+          editData={rowData}
+          loading={creating || updating}
+          errors={errors}
           type={type}
-          onEdit={handleOpenEdit}
-          onViewDetail={handleOpenDetail}
-          onDelete={handleDelete}
+          onAdd={create}
+          onEdit={update}
+          onClose={() => pageAction.handleClose(false)}
         />
-      </Panel>
 
-      <ProductAddUpdateModal
-        open={open}
-        editData={rowData}
-        loading={creating || updating}
-        errors={errors}
-        type={type}
-        onAdd={create}
-        onEdit={update}
-        onClose={() => pageAction.handleClose(false)}
-      />
-
-      <ProductDetailModal
-        open={openDetail}
-        data={rowData}
-        onClose={pageAction.handleClose}
-        onOpenUpdate={handleEditFromDetail}
-      />
+        <ProductDetailModal
+          open={openDetail}
+          data={rowData}
+          onClose={pageAction.handleClose}
+          onOpenUpdate={handleEditFromDetail}
+        />
+      </div>
     </div>
   );
 };
@@ -220,7 +229,7 @@ export const ProductPriceHistoryPage: React.FC = () => {
         className: "font-mono",
       },
       {
-        title: "Tên hàng",
+        title: "Tï¿½n hï¿½ng",
         dataIndex: "name",
         key: "name",
         fixed: "left",
@@ -228,7 +237,7 @@ export const ProductPriceHistoryPage: React.FC = () => {
         ellipsis: true,
       },
       {
-        title: "ÐVT",
+        title: "ï¿½VT",
         dataIndex: ["baseUnit", "name"],
         key: "baseUnit",
         width: 80,
@@ -253,7 +262,7 @@ export const ProductPriceHistoryPage: React.FC = () => {
       width: 120,
       align: "right" as const,
       render: (v: number | null) =>
-        v != null ? formatMoney(v) : <span className="text-gray-300">—</span>,
+        v != null ? formatMoney(v) : <span className="text-gray-300">ï¿½</span>,
     }));
 
     return [
@@ -323,7 +332,7 @@ export const ProductPriceHistoryPage: React.FC = () => {
             className="table-h-full product-history-table"
             footer={() => (
               <CustomPagination
-                itemName="hàng hóa"
+                itemName="hï¿½ng hï¿½a"
                 length={data?.length}
                 pagination={pagination}
                 setPage={setPage}

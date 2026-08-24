@@ -35,7 +35,7 @@ const getDefaultCollapsed = (): boolean => {
 };
 
 export const getInitialCurrentStore = (): Organization | undefined => {
-  const saved = localStorage.getItem("currentStore");
+  const saved = sessionStorage.getItem("currentStore");
   if (saved) {
     try {
       return JSON.parse(saved) as Organization;
@@ -96,7 +96,7 @@ const clientSlice = createSlice({
       state.permissions = action.payload?.permissions || null;
       state.currentStore = action.payload?.currentStore || null;
       if (action.payload?.currentStore) {
-        localStorage.setItem("currentStore", JSON.stringify(action.payload.currentStore));
+        sessionStorage.setItem("currentStore", JSON.stringify(action.payload.currentStore));
       }
     },
     setFormat: (state, action: PayloadAction<FormatData>) => {

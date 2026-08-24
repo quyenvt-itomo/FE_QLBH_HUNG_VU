@@ -23,7 +23,7 @@ export const BankList: React.FC<PartialProps> = ({ form }) => {
             </Button>
           }
         >
-          <Row gutter={[132, 24]} className="pb-4">
+          <Row gutter={[64, 24]} className="pb-4">
             {fields.length === 0 && (
               <Col xs={24}>
                 <p className="text-gray-400 text-sm italic">Chưa có tài khoản ngân hàng nào</p>

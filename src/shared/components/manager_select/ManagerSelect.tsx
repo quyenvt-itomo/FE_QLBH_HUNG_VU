@@ -25,7 +25,7 @@ interface ManagerSelectProps<T> extends Omit<SelectProps<string>, "options"> {
   onChangeData?: (data: T | undefined) => void;
 }
 
-const ManagerSelect = <T extends { id: string; name: string }>({
+export const ManagerSelect = <T extends { id: string; name: string }>({
   ref,
   options,
   label,
@@ -131,5 +131,3 @@ const ManagerSelect = <T extends { id: string; name: string }>({
     </div>
   );
 };
-
-export { ManagerSelect };

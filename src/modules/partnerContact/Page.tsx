@@ -15,7 +15,7 @@ import { ExcelButton, ExcelEntityType } from "@/modules/excel";
 import { partnerTypeOptions } from "../partner/partner.model";
 import { PartnerContact } from "./partnerContact.model";
 
-export const statusItems = [
+const statusItems = [
   {
     label: "T?t c?",
     key: "all",

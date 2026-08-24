@@ -12,7 +12,7 @@ import Label from "../../../../components/display/Label";
 import { IProduct } from "../../../../models/product";
 import { InputMoney, InputPercentage } from "../../../../components/input";
 import ImageUploadBox from "../../../../components/upload/ImageUploadBox";
-import ProductCategorySelect from "../../../../components/tree_select/ProductCategorySelect";
+import ProductGroupSelect from "../../../../components/tree_select/ProductGroupSelect";
 import { useClientData } from "../../../../hooks/core/useClientData";
 import { checkAnyModule } from "../../../../utils/permissionUtils";
 
@@ -108,7 +108,7 @@ const AddModal: React.FC<AddUpdateModalProps<IProduct>> = ({
               label={<Label title="Danh mục" required />}
               rules={[{ required: true, message: "Vui lòng chọn danh mục" }]}
             >
-              <ProductCategorySelect />
+              <ProductGroupSelect />
             </Form.Item>
           </Col>
           <Col span={12}>

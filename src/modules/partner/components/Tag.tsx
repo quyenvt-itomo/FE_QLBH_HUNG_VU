@@ -6,7 +6,7 @@ import { TagStyleValue, TagVariant } from "@/shared/interfaces/common";
 const styleMap: Record<PartnerType, TagStyleValue> = {
   [PartnerType.CUSTOMER]: tagStyle("blue"),
   [PartnerType.SUPPLIER]: tagStyle("emerald"),
-  [PartnerType.SHIPPING_PROVIDER]: tagStyle("amber"),
+  [PartnerType.SHIPPER]: tagStyle("amber"),
 };
 
 export const PartnerTypeTag: React.FC<{

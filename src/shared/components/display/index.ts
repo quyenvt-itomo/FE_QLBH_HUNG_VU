@@ -1,6 +1,7 @@
 export * from "./CustomRadioButtonGroup";
 export * from "./CustomTitle";
 export * from "./DataTable";
+export * from "./DataTable.util";
 export * from "./DocumentGroup";
 export * from "./EditableInfoCol";
 export * from "./EditableInfoRow";

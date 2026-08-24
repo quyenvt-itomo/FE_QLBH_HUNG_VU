@@ -2,10 +2,7 @@ import { TableColumnConfig, ObjectTableProps } from "@/shared";
 import { User } from "../user.model";
 import { UserImage } from "@/shared";
 import { getMainFile } from "@/shared/utils/file.util";
-import { formatDate } from "@/shared/utils/date.util";
-import { getFullAddress } from "@/shared/utils/common.util";
 import { ContentTooltip } from "@/shared";
-import { generateRoleContent } from "../user.util";
 
 export const UserTable: React.FC<ObjectTableProps> = ({ ...rest }) => {
   const columns: any = [
@@ -20,7 +17,7 @@ export const UserTable: React.FC<ObjectTableProps> = ({ ...rest }) => {
       title: "Tên ND",
       dataIndex: "name",
       key: "name",
-      width: 250,
+      width: 150,
       render: (name: string, record: User) => (
         <div className="flex items-center gap-2">
           <UserImage size={24} image={getMainFile(record.avatar || [])} />
@@ -32,32 +29,25 @@ export const UserTable: React.FC<ObjectTableProps> = ({ ...rest }) => {
       title: "Tên đăng nhập",
       dataIndex: "username",
       key: "username",
-      width: 150,
+      width: 120,
     },
     {
       title: "Email",
       dataIndex: "email",
       key: "email",
-      width: 200,
-      render: (email: string) => <ContentTooltip content={email} width={200} />,
+      width: 100,
     },
     {
       title: "Số điện thoại",
       dataIndex: "phone",
       key: "phone",
-      width: 130,
+      width: 120,
     },
     {
       title: "Vai trò hệ thống",
-      key: "companyUsers",
-      width: 450,
-      render: (user: User) => <ContentTooltip content={generateRoleContent(user)} width={450} />,
-    },
-    {
-      title: "Công ty quản lý",
-      dataIndex: ["sourceStore", "name"],
-      key: "sourceStore",
-      width: 200,
+      dataIndex: ["role", "name"],
+      key: "roleName",
+      width: 150,
     },
     {
       title: "Ghi chú",
@@ -65,6 +55,14 @@ export const UserTable: React.FC<ObjectTableProps> = ({ ...rest }) => {
       key: "note",
       width: 150,
       render: (note: string) => <ContentTooltip width={150} content={note} />,
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "isActive",
+      key: "isActive",
+      width: 100,
+      fixed: "right",
+      render: (isActive: boolean) => (isActive ? "Hoạt động" : "Ngưng hoạt động"),
     },
   ];
   return (

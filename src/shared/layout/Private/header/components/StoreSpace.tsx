@@ -3,10 +3,11 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { privateRoutesName } from "../../../../constants/routerName";
 import { useGlobalData } from "@/shared/hooks/useGlobalData";
-import { StoreImage } from "@/shared";
+import { CSS, StoreImage } from "@/shared";
 import { getMainFile } from "@/shared/utils/file.util";
 import { checkModule } from "@/shared/utils/permission.util";
-import { ServerStackIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { CheckIcon, ServerStackIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { CaretDownFilled } from "@ant-design/icons";
 
 export const StoreSpace: React.FC = () => {
   const [showStores, setShowStores] = useState<boolean>(false);
@@ -25,7 +26,6 @@ export const StoreSpace: React.FC = () => {
   } = useGlobalData();
 
   const showSpace = !collapsed || horizontal;
-
   const allStores = info?.allStores || [];
 
   useEffect(() => {
@@ -54,122 +54,116 @@ export const StoreSpace: React.FC = () => {
   }, [showStores, isMobile]);
 
   return (
-    <div
-      className={`flex gap-1 items-center w-full ${showSpace ? "justify-between" : "justify-center"} relative`}
-    >
-      {/* Avatar */}
-      <div className="h-8 w-8 justify-center items-center">
-        <StoreImage image={getMainFile(currentStore?.logo)} size={32} shape="square" />
+    <div className="flex gap-2 items-center w-56">
+      <div className="rounded-full flex h-7 w-7 justify-center items-center overflow-hidden bg-gray-100">
+        {currentStore ? (
+          <StoreImage image={getMainFile(currentStore.image)} size={28} shape="circle" />
+        ) : (
+          <ServerStackIcon className="h-4 w-4 text-gray-500" />
+        )}
       </div>
-
-      {/* Dropdown trigger */}
-      {showSpace && (
-        <section
-          className="
-          flex items-center cursor-pointer relative select-none
-          h-10 py-1 px-2 rounded-lg slide-left
-          md:hover:bg-gray-100/10 md:dark:hover:bg-gray-700
-          transition-all ease-in-out z-50
-        "
-          style={{ width: "calc(100% - 40px)" }}
-          ref={StoreIconRef}
-          onClick={() => setShowStores((prev) => !prev)}
-        >
-          <Typography.Text
-            className="
-            flex w-full justify-between gap-2
-            font-medium text-xs text-white line-clamp-2
-          "
+      <section
+        className={`flex items-center cursor-pointer relative select-none h-8 p-1 pr-3 rounded-lg ${
+          horizontal ? "hover:bg-[#b9d1e4]" : "hover:bg-gray-100"
+        } transition-all ease-in-out`}
+        style={{
+          width: "calc(100% - 40px)",
+        }}
+        ref={StoreIconRef}
+        onClick={() => setShowStores((prev) => !prev)}
+      >
+        <Typography.Text className="flex w-full justify-between gap-2 font-medium text-sm text-[#333] truncate">
+          <span
+            className="truncate min-w-[56px] max-w-[140px]"
+            title={currentStore ? currentStore.name : "Toàn hệ thống"}
           >
-            {currentStore?.name || ""}
-          </Typography.Text>
-          {/* Dropdown */}
-          {showStores && (
-            <div
-              className="
-                absolute flex flex-col min-w-[342px] gap-4
-                left-0 p-3 top-12 sm:right-0 -mt-2 border
-                bg-white dark:bg-gray-800
-                drop-shadow-2xl rounded-xl z-50 w-28
-              "
-              ref={StoreTableRef}
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Header */}
-              <div className="flex justify-between items-center h-8 text-gray-800 dark:text-gray-200">
-                <span className="font-medium">Danh sách công ty</span>
-                <button
-                  className="
-                    h-8 w-8 p-[6px]
-                    bg-slate-100 dark:bg-gray-700
-                    rounded
-                    text-gray-400 hover:text-gray-500 dark:hover:text-gray-300
-                  "
-                  onClick={() => setShowStores(false)}
-                >
-                  <XMarkIcon />
-                </button>
-              </div>
+            {currentStore ? currentStore.name : "Toàn hệ thống"}
+          </span>
+          <CaretDownFilled className="text-[#666]" />
+        </Typography.Text>
 
-              {/* List */}
-              <div className="flex flex-col gap-1 h-[200px] overflow-y-auto">
-                {allStores.map((item) => {
-                  const selected = currentStore?.id === item.id;
-                  return (
-                    <div
-                      key={item.id}
-                      className={`
-                        flex gap-2 h-10 px-2 py-[6px] items-center
-                        transition-all ease-in-out rounded-md
-                        hover:bg-gray-100 dark:hover:bg-gray-700
-                        ${selected ? "bg-gray-100 dark:bg-gray-700" : ""}
-                        `}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setShowStores(false);
-                        if (selected) return;
-                        handleSetCurrentStore?.(item);
-                      }}
-                    >
-                      <StoreImage image={getMainFile(item?.logo)} size={28} shape="square" />
-
-                      <span
-                        className={`w-[calc(100%-36px)] truncate text-gray-800 dark:text-gray-200 ${selected ? "font-medium" : ""}`}
-                        title={item.name}
-                      >
-                        {item.name}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Footer */}
+        {showStores && (
+          <div
+            className="
+            absolute flex flex-col min-w-[342px] gap-4 -left-10 xl:left-auto xl:right-0 p-3
+            top-14 sm:right-0 -mt-2 bg-white drop-shadow-2xl rounded-normal z-50 store__table w-28"
+            ref={StoreTableRef}
+            onClick={(e) => e.stopPropagation()}
+            style={CSS.container}
+          >
+            <div className="flex justify-between items-center h-8 text-[#333]">
+              <span className="font-medium">Chuyển cửa hàng</span>
+              <button
+                className="h-8 w-8 p-[6px] bg-slate-100 rounded text-gray-400 hover:text-gray-500"
+                onClick={(e) => setShowStores(false)}
+              >
+                <XMarkIcon />
+              </button>
+            </div>
+            <div className="flex flex-col gap-1 h-[200px] overflow-y-auto">
               {checkModule(permissions, "store") && (
-                <button
-                  className="
-                    flex h-10 justify-center items-center
-                    bg-gray-50 dark:bg-gray-700
-                    border dark:border-gray-600
-                    hover:bg-gray-100 dark:hover:bg-gray-600
-                    transition-all ease-in-out
-                    font-medium gap-2 rounded-md
-                    text-gray-600 dark:text-gray-200
-                  "
+                <div
+                  className="flex gap-2 h-10 px-2 py-[6px] items-center transition-all ease-in-out hover:bg-gray-100 rounded-normal"
                   onClick={(e) => {
                     e.stopPropagation();
-                    navigate(privateRoutesName.setup.store);
                     setShowStores(false);
+                    handleSetCurrentStore();
                   }}
                 >
-                  <ServerStackIcon className="h-6 w-6" />
-                  Thiết lập cửa hàng
-                </button>
+                  <div className="flex items-center justify-center h-6 w-6">
+                    {currentStore === null && <CheckIcon className="text-gray-500 h-4 w-4" />}
+                  </div>
+
+                  <div className="flex items-center justify-center h-7 w-7">
+                    <ServerStackIcon className="h-6 w-6 text-gray-500" />
+                  </div>
+
+                  <span className="w-[calc(100%-68px)] font-medium truncate">Toàn hệ thống</span>
+                </div>
               )}
+              {allStores.map((item, index) => {
+                return (
+                  <div
+                    key={item.id}
+                    className="flex gap-2 h-10 px-2 py-[6px] items-center transition-all ease-in-out hover:bg-gray-100 rounded-normal"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowStores(false);
+                      if (currentStore?.id === item.id) return;
+                      handleSetCurrentStore(item);
+                    }}
+                  >
+                    <div className="flex items-center justify-center h-6 w-6">
+                      {currentStore?.id === item.id && (
+                        <CheckIcon className="text-gray-500 h-4 w-4" />
+                      )}
+                    </div>
+                    <div className="rounded-full flex gap-2 h-7 w-7 justify-center items-center overflow-hidden">
+                      <StoreImage image={getMainFile(item?.image)} size={28} shape="circle" />
+                    </div>
+                    <span className="w-[calc(100%-68px)] truncate" title={item.name}>
+                      {item.name}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
-          )}
-        </section>
-      )}
+            {checkModule(permissions, "store") && (
+              <button
+                className="flex h-10 justify-center items-center bg-gray-50 border hover:bg-gray-100 transition-all ease-in-out font-medium gap-2 rounded-md text-[#666]"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(privateRoutesName.setup.store);
+                  setShowStores(false);
+                  handleSetCurrentStore();
+                }}
+              >
+                <ServerStackIcon className="h-6 w-6" /> Quản lý cửa hàng
+              </button>
+            )}
+          </div>
+        )}
+      </section>
     </div>
   );
 };

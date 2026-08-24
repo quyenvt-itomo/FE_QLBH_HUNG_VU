@@ -35,7 +35,7 @@ const getDefaultCollapsed = (): boolean => {
 };
 
 export const getInitialCurrentStore = (): Organization | undefined => {
-  const saved = localStorage.getItem("currentStore");
+  const saved = sessionStorage.getItem("currentStore");
   if (saved) {
     try {
       return JSON.parse(saved) as Organization;

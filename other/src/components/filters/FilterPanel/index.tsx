@@ -12,7 +12,7 @@ import CustomerFilter from "./CustomerFilter";
 import ShipperFilter from "./ShipperFilter";
 import ProductFilter from "./ProductFilter";
 import UnitFilter from "./UnitFilter";
-import ProductCategoryFilter from "./ProductCategoryFilter";
+import ProductGroupFilter from "./ProductGroupFilter";
 
 interface FilterPanelProps {
   filterUses: FilterKey[];
@@ -311,7 +311,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({ filterUses, filterLabe
           className="custom-filter-panel"
         >
           <div className="pt-2">
-            <ProductCategoryFilter
+            <ProductGroupFilter
               data={filter?.productCategoryIds || []}
               setData={(productCategoryIds) =>
                 handleSetFilter({

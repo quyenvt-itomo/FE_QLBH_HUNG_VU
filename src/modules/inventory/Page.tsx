@@ -7,7 +7,7 @@ import { DateRangeFilter } from "@/shared";
 import { Panel } from "@/shared";
 import { DetailInventoryReportModal, ReportTable } from "./components";
 import { checkSelection } from "@/shared/utils/common.util";
-import { CustomFilter } from "@/shared";
+import { PanelFilter } from "@/shared";
 import { filterUses, rangerItems, sortItems } from "./filterItem";
 import { useState } from "react";
 import { SortOrder } from "@/shared/constants/enum";
@@ -119,7 +119,7 @@ export const InventoryPage: React.FC = () => {
             endDate={endAt}
             onRangeChange={pageAction.handleDateRangerChange}
           />
-          <CustomFilter
+          <PanelFilter
             filterActive={isFilterActive}
             sortItems={sortItems}
             sortValue={{ sortBy, sortOrder }}

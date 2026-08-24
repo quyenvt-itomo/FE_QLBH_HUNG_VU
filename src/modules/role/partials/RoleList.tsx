@@ -1,13 +1,12 @@
-import { Form, Input, Spin, Typography, Collapse, Tag, App } from "antd";
+import { App, Collapse, Form, Input, Spin, Typography } from "antd";
 import { useEffect, useState, useMemo } from "react";
 import { CheckIcon, XMarkIcon, LockClosedIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import { PlusOutlined } from "@ant-design/icons";
 import "./index.css";
-import { Role } from "../role.model";
+import { Role, RoleType, roleTypeMap } from "../role.model";
 import { ActionButtons } from "@/shared";
 
 const { Title, Text } = Typography;
-const { Panel } = Collapse;
 
 interface RoleListProps {
   loading: boolean;
@@ -18,20 +17,6 @@ interface RoleListProps {
   onEdit?: (record: Role) => void;
   onDelete?: (id: string) => void;
 }
-
-// Hàm lấy màu sắc ngẫu nhiên cho icon giống trong ảnh
-const getRoleVisuals = (index: number) => {
-  const styles = [
-    { bg: "bg-red-100", dot: "bg-red-500" },
-    { bg: "bg-purple-100", dot: "bg-purple-500" },
-    { bg: "bg-amber-100", dot: "bg-amber-500" },
-    { bg: "bg-cyan-100", dot: "bg-cyan-500" },
-    { bg: "bg-green-100", dot: "bg-green-500" },
-    { bg: "bg-blue-100", dot: "bg-blue-600" },
-    { bg: "bg-slate-200", dot: "bg-slate-500" },
-  ];
-  return styles[index % styles.length];
-};
 
 export const RoleList: React.FC<RoleListProps> = ({
   loading,
@@ -45,17 +30,32 @@ export const RoleList: React.FC<RoleListProps> = ({
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
   const [editData, setEditData] = useState<Role | null>(null);
-  const [adding, setAdding] = useState<boolean>(false);
+  const [addingType, setAddingType] = useState<RoleType | null>(null);
   const { modal } = App.useApp();
 
-  const renderAddSection = () => {
-    if (adding) {
+  const groupedRoles = useMemo(
+    () =>
+      [RoleType.SYSTEM, RoleType.STORE]
+        .map((type) => ({
+          type,
+          roles: dataSource.filter((role) => role.type === type),
+        }))
+        .filter(({ roles, type }) => roles.length > 0 || Boolean(onAdd) || addingType === type),
+    [addingType, dataSource, onAdd],
+  );
+
+  useEffect(() => {
+    if (!addingType) addForm.resetFields();
+  }, [addForm, addingType]);
+
+  const renderAddSection = (type: RoleType) => {
+    if (addingType === type) {
       return (
         <Form
           form={addForm}
           onFinish={(v) => {
-            onAdd?.(v);
-            setAdding(false);
+            onAdd?.({ ...v, type } as Role);
+            setAddingType(null);
           }}
           className="mt-2"
         >
@@ -70,7 +70,7 @@ export const RoleList: React.FC<RoleListProps> = ({
             <button type="submit" className="text-green-500">
               <CheckIcon className="h-6 w-6" />
             </button>
-            <button type="button" onClick={() => setAdding(false)} className="text-red-400">
+            <button type="button" onClick={() => setAddingType(null)} className="text-red-400">
               <XMarkIcon className="h-6 w-6" />
             </button>
           </div>
@@ -81,8 +81,8 @@ export const RoleList: React.FC<RoleListProps> = ({
     return (
       onAdd && (
         <button
-          disabled={!!editData || !!adding}
-          onClick={() => setAdding(true)}
+          disabled={!!editData || Boolean(addingType)}
+          onClick={() => setAddingType(type)}
           className="w-full h-[57.2px]  mt-2 py-3 border-2 border-dashed border-gray-200 dark:border-slate-700 rounded-xl text-slate-500 dark:text-gray-300 hover:border-blue-400 dark:hover:border-blue-500 hover:text-blue-500 dark:hover:text-blue-300 hover:bg-blue-50/30 dark:hover:bg-blue-900/20 transition-all flex items-center justify-center gap-2 font-semibold text-[14px] disabled:opacity-60 disabled:cursor-not-allowed"
         >
           <PlusOutlined /> Tạo vai trò tùy chỉnh
@@ -201,10 +201,31 @@ export const RoleList: React.FC<RoleListProps> = ({
             <Spin />
           </div>
         ) : (
-          dataSource.map((role, idx) => renderRoleCard(role, idx))
+          <Collapse
+            ghost
+            defaultActiveKey={groupedRoles.map(({ type }) => type)}
+            className="role-collapse"
+            expandIcon={({ isActive }) => (
+              <ChevronDownIcon
+                className={`h-4 w-4 text-gray-400 transition-transform duration-300 ${isActive ? "rotate-180" : ""}`}
+              />
+            )}
+          >
+            {groupedRoles.map(({ type, roles }) => (
+              <Collapse.Panel
+                key={type}
+                header={
+                  <span className="text-[11px] font-bold text-gray-400 dark:text-gray-500 tracking-widest">
+                    {roleTypeMap[type]}
+                  </span>
+                }
+              >
+                {roles.map((role, idx) => renderRoleCard(role, idx))}
+                {renderAddSection(type)}
+              </Collapse.Panel>
+            ))}
+          </Collapse>
         )}
-
-        {renderAddSection()}
       </div>
     </div>
   );

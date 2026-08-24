@@ -5,4 +5,4 @@ export const sortItems: SortItem[] = [
   { label: "Mã", value: "code", ascLabel: "Từ A đến Z", descLabel: "Từ Z đến A" },
 ];
 export const rangerItems: RangerItem[] = [];
-export const filterUses: FilterKey[] = ["employeeIds", "customerIds", "creatorIds"];
+export const filterUses: FilterKey[] = ["userIds", "customerIds", "creatorIds"];

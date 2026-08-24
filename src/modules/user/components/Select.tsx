@@ -1,7 +1,7 @@
-import { SelectProps } from "@/shared/interfaces/common";
+import { MultipleSelectProps, SelectProps } from "@/shared/interfaces/common";
 import { User, UserQuery } from "../user.model";
 import { useUserStore } from "../user.store";
-import { DropdownColumn } from "@/shared";
+import { DropdownColumn, SmartMultipleSelect } from "@/shared";
 import { SmartSelect } from "@/shared";
 import { useRemoteSelect } from "@/shared/hooks/useRemoteSelect";
 
@@ -47,6 +47,56 @@ export const UserSelect: React.FC<SelectProps<User, UserQuery>> = ({
 
   return (
     <SmartSelect<User>
+      dataSource={list}
+      columns={columns}
+      value={value}
+      onChange={handleChange}
+      onPopupScroll={handlePopupScroll}
+      placeholder="Chọn người dùng"
+      loading={loading}
+      onSearch={setKeywordTemp}
+      onFocus={(e) => {
+        unlock();
+        onFocus?.(e);
+      }}
+      {...rest}
+    />
+  );
+};
+
+export const UserMultipleSelect: React.FC<MultipleSelectProps<User, UserQuery>> = ({
+  value,
+  defaultData,
+  query,
+  onChange,
+  onChangeData,
+  onFocus,
+  ...rest
+}) => {
+  const { list, loading, setKeywordTemp, unlock, handlePopupScroll } = useRemoteSelect<
+    User,
+    UserQuery
+  >({
+    defaultData,
+    queryHook: useUserStore,
+    buildParams: ({ keyword, page, isLocked }) => ({
+      ...(query || {}),
+      keyword,
+      page,
+      size: 10,
+      isLocked,
+    }),
+    resetPageDeps: [query],
+  });
+
+  const handleChange = (ids: string[]) => {
+    onChange?.(ids);
+    const selectedData = list.filter((item) => ids.includes(item.id));
+    onChangeData?.(selectedData);
+  };
+
+  return (
+    <SmartMultipleSelect<User>
       dataSource={list}
       columns={columns}
       value={value}

@@ -22,7 +22,7 @@ export async function attachInfo(config: any) {
     ...config,
     headers: {
       ...config.headers,
-      "x-company-id": currentStore?.id,
+      "x-store-id": currentStore?.id,
       "x-device-id": deviceId,
       "x-timezone": timeZone,
       "x-ip-address": ipAddress,

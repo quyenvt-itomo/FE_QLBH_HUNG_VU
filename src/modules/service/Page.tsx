@@ -12,7 +12,7 @@ import { useServiceHandlers } from "./service.handlers";
 import { Service, serviceTypeOptions } from "./service.model";
 import { ServiceTable, ServiceAddUpdateModal, ServiceDetailModal } from "./components";
 
-export const statusItems = [{ label: "T?t c?", key: "all", value: "all" }, ...serviceTypeOptions];
+const statusItems = [{ label: "T?t c?", key: "all", value: "all" }, ...serviceTypeOptions];
 
 export const ServicePage: React.FC = () => {
   const {

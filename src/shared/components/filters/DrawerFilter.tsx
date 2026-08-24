@@ -18,12 +18,13 @@ import {
   SortValue,
 } from "@/shared/interfaces/common";
 import { TouchToClose } from "@/shared/hooks/useTouchToClose";
-import { StatusItem } from ".";
+import type { StatusItem } from "./filter.types";
 import { CLASSNAME } from "@/shared/constants/ui";
+import { FilterPanel } from "./FilterPanel";
 
 type DatePreset = { label: string; start: ReturnType<typeof dayjs>; end: ReturnType<typeof dayjs> };
 
-export const getDatePresets = (): DatePreset[] => [
+const getDatePresets = (): DatePreset[] => [
   { label: "Hôm nay", start: dayjs().startOf("day"), end: dayjs().endOf("day") },
   {
     label: "Hôm qua",
@@ -44,7 +45,7 @@ export const getDatePresets = (): DatePreset[] => [
   },
 ];
 
-export const getActiveDatePresetLabel = (
+const getActiveDatePresetLabel = (
   startAt?: string | null,
   endAt?: string | null,
 ): string | null => {
@@ -137,8 +138,8 @@ const DrawerFilter: React.FC<DrawerFilterProps> = ({
   onClearFilter,
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [isAtBottom, setIsAtBottom] = useState(false);
-  const [isAtTop, setIsAtTop] = useState(false);
+  const [isAtBottom, setIsAtBottom] = useState(true);
+  const [isAtTop, setIsAtTop] = useState(true);
 
   // Date preset state
   const activeDatePreset = getActiveDatePresetLabel(startAt, endAt);
@@ -155,7 +156,6 @@ const DrawerFilter: React.FC<DrawerFilterProps> = ({
       const reachedBottom = canScroll
         ? el.scrollHeight - el.scrollTop <= el.clientHeight + 10
         : true;
-
       setIsAtTop(reachedTop);
       setIsAtBottom(reachedBottom);
     };
@@ -164,7 +164,7 @@ const DrawerFilter: React.FC<DrawerFilterProps> = ({
     handleScroll(); // sync lần đầu
 
     return () => el.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [scrollRef]);
 
   return (
     <Drawer
@@ -304,9 +304,7 @@ const DrawerFilter: React.FC<DrawerFilterProps> = ({
             <div className="flex flex-col w-full !justify-between gap-2">
               <span className="font-semibold">Lọc theo</span>
 
-              <div className="text-sm text-secondary italic">
-                Bộ lọc nâng cao (xem FilterPanel - chưa migrate)
-              </div>
+              <FilterPanel filterUses={filterUses} filterLabels={filterLabels} />
             </div>
           </div>
         )}

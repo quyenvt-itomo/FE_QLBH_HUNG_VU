@@ -125,6 +125,11 @@ const Notification: React.FC = () => {
 
   const bellIconRef = useRef<HTMLDivElement>(null);
   const notifyTableRef = useRef<HTMLDivElement>(null);
+  const totalUnreadRef = useRef(totalUnreadNotifications);
+
+  useEffect(() => {
+    totalUnreadRef.current = totalUnreadNotifications;
+  }, [totalUnreadNotifications]);
 
   useEffect(() => {
     const currentPage = pagination?.currentPage ?? page;
@@ -153,7 +158,8 @@ const Notification: React.FC = () => {
         if (prevList.some((n) => n.id === newNotification.id)) return prevList;
         return [newNotification, ...prevList];
       });
-      handleSetTotalUnread(totalUnreadNotifications + 1);
+      totalUnreadRef.current += 1;
+      handleSetTotalUnread(totalUnreadRef.current);
     };
 
     socket.on("notification", handleNewNotification);
@@ -161,7 +167,7 @@ const Notification: React.FC = () => {
     return () => {
       socket.off("notification", handleNewNotification);
     };
-  }, [info?.id]);
+  }, [handleSetTotalUnread, info?.id]);
 
   const handleViewMore = useCallback((e: React.MouseEvent) => {
     e.preventDefault();

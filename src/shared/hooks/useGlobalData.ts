@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/shared/stores";
 import {
@@ -35,52 +36,56 @@ export const useGlobalData = () => {
     currentStore,
   } = useSelector((state: RootState) => state.Global, shallowEqual);
 
-  const handleSetIsMobile = (isMobile: boolean) => {
+  const handleSetIsMobile = useCallback((isMobile: boolean) => {
     dispatch(setIsMobile(isMobile));
-  };
+  }, [dispatch]);
 
-  const handleSetTotalUnread = (count: number) => {
+  const handleSetTotalUnread = useCallback((count: number) => {
     dispatch(setTotalUnread(count));
-  };
+  }, [dispatch]);
 
-  const handleSetCustomTitle = (title: string | null) => {
+  const handleSetCustomTitle = useCallback((title: string | null) => {
     dispatch(setCustomTitle(title));
-  };
+  }, [dispatch]);
 
-  const handleSetFilter = (filterData: typeof filter) => {
+  const handleSetFilter = useCallback((filterData: typeof filter) => {
     dispatch(setFilter(filterData));
-  };
+  }, [dispatch]);
 
-  const handleClearFilter = () => {
+  const handleClearFilter = useCallback(() => {
     dispatch(setFilter({}));
-  };
+  }, [dispatch]);
 
-  const handleSetInfo = (data?: UserInfo | null) => {
+  const handleSetInfo = useCallback((data?: UserInfo | null) => {
     dispatch(setInfo(data));
-  };
-  const handleSetHorizontal = (isHorizontal: boolean) => {
+  }, [dispatch]);
+  const handleSetHorizontal = useCallback((isHorizontal: boolean) => {
     dispatch(setHorizontal(isHorizontal));
-  };
-  const handleSetCollapsed = (isCollapsed: boolean) => {
+  }, [dispatch]);
+  const handleSetCollapsed = useCallback((isCollapsed: boolean) => {
     dispatch(setCollapsed(isCollapsed));
-  };
-  const handleSetDrawerOpen = (isOpen: boolean) => {
+  }, [dispatch]);
+  const handleSetDrawerOpen = useCallback((isOpen: boolean) => {
     dispatch(setDrawerOpen(isOpen));
-  };
-  const handleSetThemeMode = (mode: ThemeMode) => {
+  }, [dispatch]);
+  const handleSetThemeMode = useCallback((mode: ThemeMode) => {
     dispatch(setThemeMode(mode));
-  };
-  const handleSetCurrentStore = (company?: Organization) => {
-    if (company) localStorage.setItem("currentStore", JSON.stringify(company));
+  }, [dispatch]);
+  const handleSetCurrentStore = useCallback((company?: Organization) => {
+    if (company) {
+      sessionStorage.setItem("currentStore", JSON.stringify(company));
+    } else {
+      sessionStorage.removeItem("currentStore");
+    }
     dispatch(setCurrentStore(company));
     setTimeout(() => {
       window.location.href = privateRoutesName.dashboard;
     }, 500);
-  };
+  }, [dispatch]);
 
-  const handleClearState = () => {
+  const handleClearState = useCallback(() => {
     dispatch(clearState());
-  };
+  }, [dispatch]);
 
   return {
     currentStore,
@@ -95,8 +100,6 @@ export const useGlobalData = () => {
     customTitle,
     themeMode,
     filter,
-    showBranch: false,
-    filterBranch: null,
     handleSetIsMobile,
     handleSetTotalUnread,
     handleSetCustomTitle,

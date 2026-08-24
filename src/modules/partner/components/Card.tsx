@@ -1,7 +1,8 @@
-import { ActionButtons } from "@/shared";
+import { ActionButtons, checkCanPermission, getMainFile, UserImage } from "@/shared";
 import { Partner } from "../partner.model";
 import { checkSelection } from "@/shared/utils/common.util";
 import { PartnerTypeTag } from "./Tag";
+import { PhoneOutlined } from "@ant-design/icons";
 
 interface PartnerCardProps {
   item: Partner;
@@ -30,6 +31,8 @@ export const PartnerCardLite: React.FC<PartnerCardProps> = ({
   onEdit,
   onDelete,
 }) => {
+  const canEdit = !!onEdit && checkCanPermission(item, "update");
+  const canDelete = !!onDelete && checkCanPermission(item, "delete");
   return (
     <div
       onClick={() => {
@@ -71,9 +74,63 @@ export const PartnerCardLite: React.FC<PartnerCardProps> = ({
       </div>
 
       <ActionButtons
-        onEdit={onEdit ? () => onEdit(item) : undefined}
-        onDelete={onDelete ? () => onDelete(item) : undefined}
+        onEdit={canEdit ? () => onEdit(item) : undefined}
+        onDelete={canDelete ? () => onDelete(item) : undefined}
       />
+    </div>
+  );
+};
+
+export const PartnerCardBase: React.FC<PartnerCardProps> = ({
+  item,
+  className = "",
+  style,
+  onClick,
+  onEdit,
+  onDelete,
+}) => {
+  const canEdit = !!onEdit && checkCanPermission(item, "update");
+  const canDelete = !!onDelete && checkCanPermission(item, "delete");
+
+  return (
+    <div
+      onClick={() => onClick?.(item)}
+      className={`
+        relative bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700
+        shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer p-4
+        ${className}
+      `}
+      style={style}
+    >
+      {/* Header: Avatar + Actions */}
+      <div className="flex items-start justify-between mb-3">
+        <div className="flex items-center gap-3">
+          <UserImage image={getMainFile(item.avatar)} size={40} name={item.name} />
+
+          {/* Name + Phone */}
+          <div className="min-w-0">
+            <h4 className="font-semibold text-gray-900 dark:text-gray-100 truncate text-sm">
+              {item.name}
+            </h4>
+            <span className="flex items-center gap-1 text-xs text-gray-500">{item.code}</span>
+            <div className="flex items-center gap-1 text-xs text-gray-500">
+              <PhoneOutlined className="h-3 w-3" />
+              <span>{item.phone || "--"}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Divider */}
+      <div className="border-t border-gray-100 dark:border-gray-700 my-2" />
+
+      {/* Actions */}
+      <div className="absolute top-1 right-1 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+        <ActionButtons
+          onEdit={canEdit ? () => onEdit?.(item) : undefined}
+          onDelete={canDelete ? () => onDelete?.(item) : undefined}
+        />
+      </div>
     </div>
   );
 };

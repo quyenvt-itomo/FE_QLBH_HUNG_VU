@@ -27,7 +27,7 @@ export const RolePage: React.FC = () => {
 
   return (
     <div className="flex flex-row h-full gap-3">
-      <Card className="w-80" classNames={{ body: "!p-3 h-full" }}>
+      <Card className="w-72" classNames={{ body: "!p-3 h-full" }}>
         <RoleList
           dataSource={data}
           loading={loading || creating || updating || deleting}

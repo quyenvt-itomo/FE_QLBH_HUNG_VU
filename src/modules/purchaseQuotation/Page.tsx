@@ -12,7 +12,7 @@ import { PurchaseQuotationTable, PurchaseQuotationDetailModal } from "./componen
 import { Button, Radio, Tabs, Tooltip } from "antd";
 import { approvedStatusLiteItems } from "../shared/business.model";
 import { DateRangeFilter } from "@/shared";
-import { CustomFilter } from "@/shared";
+import { PanelFilter } from "@/shared";
 import { filterUses, rangerItems, sortItems } from "./filterItem";
 import { usePurchaseQuotationHandlers } from "./purchaseQuotation.handlers";
 import { LinkIcon } from "@heroicons/react/24/outline";
@@ -91,7 +91,7 @@ export const PurchaseQuotationPage: React.FC = () => {
             endDate={endAt}
             onRangeChange={pageAction.handleDateRangerChange}
           />
-          <CustomFilter
+          <PanelFilter
             filterActive={isFilterActive}
             sortItems={sortItems}
             sortValue={{ sortBy, sortOrder }}

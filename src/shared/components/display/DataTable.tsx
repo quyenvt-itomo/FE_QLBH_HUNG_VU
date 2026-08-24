@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { Empty } from "antd";
 import { EmptyCell } from "./TableCell";
 import { useScrollShadow } from "@/shared/hooks/useScrollShadow";
+import { isSummaryConfig, SummaryConfig } from "./DataTable.util";
 
 // ──── Types ────
 
@@ -69,11 +70,6 @@ export interface DataColumn<T = any> {
   render?: (ctx: CellContext<T>) => React.ReactNode;
 }
 
-export type SummaryConfig = {
-  summaryColKey: string;
-  [key: string]: React.ReactNode;
-};
-
 export interface DataTableProps<T = any> {
   /** Định nghĩa các cột */
   columns: DataColumn<T>[];
@@ -132,10 +128,6 @@ function getRowKey<T>(
 }
 
 /** Check if summary is config object */
-export function isSummaryConfig(s: any): s is SummaryConfig {
-  return s && typeof s === "object" && "summaryColKey" in s;
-}
-
 // ──── Column tree helpers ────
 
 /** Flatten column tree → leaf columns */

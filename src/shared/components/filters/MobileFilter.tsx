@@ -1,12 +1,14 @@
 import "./MobileFilter.css";
-import { DrawerFilter, DrawerFilterProps, getActiveDatePresetLabel } from "./DrawerFilter";
+import { DrawerFilter, DrawerFilterProps } from "./DrawerFilter";
+import { getActiveDatePresetLabel } from "./datePreset.util";
 import { useState } from "react";
 import { SearchInput } from "../input";
 import { StatusFilter } from "./StatusFilter";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { formatDateDDMMYYYY } from "@/shared/utils/date.util";
 
-export interface MobileFilterProps extends Omit<DrawerFilterProps, "open" | "onClose"> {
+export interface MobileFilterProps
+  extends Omit<DrawerFilterProps, "open" | "onClose"> {
   filterActive?: boolean;
   keyword?: string;
   onSearch: (value: string) => void;
@@ -86,6 +88,7 @@ const MobileFilter: React.FC<MobileFilterProps> = ({
         <StatusFilter status={status} items={statusItems} onChangeStatus={onChangeStatus} />
       )}
       <DrawerFilter
+        {...rest}
         open={open}
         onClose={() => setOpen(false)}
         startAt={startAt}
@@ -96,7 +99,6 @@ const MobileFilter: React.FC<MobileFilterProps> = ({
         status={status}
         onChangeStatus={onChangeStatus}
         onClearFilter={filterActive ? onClearFilter : undefined}
-        {...rest}
       />
     </div>
   );

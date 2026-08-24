@@ -224,7 +224,7 @@ export const setFormCode = async ({ form, type, field }: SetFormCodeParams) => {
       method: "GET",
       credentials: "include",
       headers: {
-        "x-company-id": storeId,
+        "x-store-id": storeId,
         "x-device-id": deviceId || "",
         "x-timezone": timeZone,
         "x-ip-address": ipAddress || "",

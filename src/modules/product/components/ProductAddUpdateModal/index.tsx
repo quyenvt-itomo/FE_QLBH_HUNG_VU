@@ -3,19 +3,13 @@ import { Input, Modal, Form, Row, Col, FormInstance } from "antd";
 import { FormProps } from "antd/lib";
 import { SubmitButton } from "@/shared";
 import { AddUpdateModalProps } from "@/shared/interfaces/common";
-import {
-  Product,
-  ProductType,
-  productGroupAttributeMap,
-  productLabel,
-  productTypeMap,
-} from "../../product.model";
+import { Product, ProductType, productLabel, productTypeMap } from "../../product.model";
 import { randomId } from "@/shared/utils/common.util";
 import { setFormErrors } from "@/shared/utils/form.util";
 import { parseFormDataDates } from "@/shared/utils/date.util";
 import { Label } from "@/shared";
 import { useAppMessage } from "@/shared/hooks/useAppMessage";
-import { AttributeManagerSelect, AttributeType } from "@/modules/attribute";
+import { AttributeManagerSelect, AttributeType, ProductGroupSelect } from "@/modules/attribute";
 import { AppSwitch, InputMoney, InputPercentage } from "@/shared";
 import { FormSection } from "@/shared";
 import { ExtraUnitList } from "./ExtraUnitList";
@@ -32,10 +26,9 @@ export const ProductAddUpdateModal: React.FC<
   const [form] = Form.useForm<Product>();
   const id = editData?.id || randomId();
   const group = Form.useWatch("group", form);
+  const brand = Form.useWatch("brand", form);
   const baseUnit = Form.useWatch("baseUnit", form);
   const extraUnits = Form.useWatch("extraUnits", form) || [];
-
-  const groupAttributeType = productGroupAttributeMap[type];
 
   useEffect(() => {
     if (!errors) return;
@@ -112,13 +105,22 @@ export const ProductAddUpdateModal: React.FC<
                     },
                   ]}
                 >
-                  <AttributeManagerSelect
-                    type={groupAttributeType}
+                  <ProductGroupSelect
                     defaultData={group}
                     onChangeData={(v) => form.setFieldValue("group", v)}
                   />
                 </Form.Item>
                 <Form.Item name="group" hidden />
+              </Col>
+              <Col xs={24}>
+                <Form.Item name="brandId" label={<Label title="Thương hiệu" />}>
+                  <AttributeManagerSelect
+                    type={AttributeType.BRAND}
+                    defaultData={brand}
+                    onChangeData={(value) => form.setFieldValue("brand", value)}
+                  />
+                </Form.Item>
+                <Form.Item name="brand" hidden />
               </Col>
               <Col xs={24}>
                 <Form.Item

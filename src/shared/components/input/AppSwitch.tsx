@@ -15,7 +15,7 @@ export const AppSwitch: React.FC<AppSwitchProps> = ({ checked, onChange, label, 
       }}
       className={`
         flex items-center gap-3 w-full px-3 transition-colors ease-in-out
-        ${checked ? "bg-slate-200 border-slate-400" : "bg-gray-200 border-gray-400"}
+        ${checked ? "bg-green-200 border-green-400" : "bg-gray-200 border-gray-400"}
       `}
     >
       <Switch checked={checked} onChange={onChange} {...props} />
@@ -24,7 +24,7 @@ export const AppSwitch: React.FC<AppSwitchProps> = ({ checked, onChange, label, 
         <span
           style={{
             fontSize: token.fontSize,
-            color: checked ? token.colorPrimary : token.colorText,
+            color: checked ? token.colorPrimary : token.colorTextSecondary,
             cursor: "pointer",
           }}
           onClick={() => onChange?.(!checked, {} as any)}

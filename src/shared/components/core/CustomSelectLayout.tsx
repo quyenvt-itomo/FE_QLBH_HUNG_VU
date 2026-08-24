@@ -94,14 +94,21 @@ export interface DropdownBodyProps<T> {
   columns: DropdownColumn<T>[];
 }
 
-export function renderDropdownBody<T extends Record<string, any>>({
-  dataSource,
-  keyField = "id",
-  labelField = "name",
-  columns,
-}: DropdownBodyProps<T>) {
-  return dataSource.map((item) => (
-    <Option key={item[keyField]} value={item[keyField]} label={item[labelField]}>
+/**
+ * Ant Design parses `Select` options from the Select's direct `options` prop
+ * (or direct Option children).  Do not hide Option elements behind a custom
+ * component: rc-select cannot discover them and the dropdown becomes empty.
+ */
+export function buildDropdownOptions<T extends Record<string, any>>(
+  dataSource: T[],
+  columns: DropdownColumn<T>[],
+  keyField: keyof T = "id" as keyof T,
+  labelField: keyof T = "name" as keyof T,
+) {
+  return dataSource.map((item) => ({
+    key: String(item[keyField]),
+    value: String(item[keyField]),
+    label: (
       <div className="flex items-center text-sm">
         {columns.map((col, index) => {
           const content = col.render
@@ -109,6 +116,7 @@ export function renderDropdownBody<T extends Record<string, any>>({
             : col.dataIndex
               ? getColumnValueFromItem(item, col.dataIndex, col.dataType)
               : "";
+
           return (
             <div
               key={index}
@@ -124,6 +132,44 @@ export function renderDropdownBody<T extends Record<string, any>>({
           );
         })}
       </div>
-    </Option>
-  ));
+    ),
+    title: item[labelField] == null ? "" : String(item[labelField]),
+  }));
 }
+
+export const DropdownBody = <T extends Record<string, any>>({
+  dataSource,
+  keyField = "id",
+  labelField = "name",
+  columns,
+}: DropdownBodyProps<T>) => (
+  <>
+    {dataSource.map((item) => (
+      <Option key={item[keyField]} value={item[keyField]} label={item[labelField]}>
+        <div className="flex items-center text-sm">
+          {columns.map((col, index) => {
+            const content = col.render
+              ? col.render(item)
+              : col.dataIndex
+                ? getColumnValueFromItem(item, col.dataIndex, col.dataType)
+                : "";
+
+            return (
+              <div
+                key={index}
+                className={`${col.className} truncate ${dataTypeClassMap[col.dataType || "string"]}`}
+                title={
+                  typeof content === "string" || typeof content === "number"
+                    ? String(content)
+                    : undefined
+                }
+              >
+                {content}
+              </div>
+            );
+          })}
+        </div>
+      </Option>
+    ))}
+  </>
+);

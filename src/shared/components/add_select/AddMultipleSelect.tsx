@@ -1,6 +1,6 @@
 import { Select } from "antd";
 import { AddSelectButton } from "./AddButton";
-import { DropdownColumn, DropdownHeader, renderDropdownBody } from "../core/CustomSelectLayout";
+import { buildDropdownOptions, DropdownColumn, DropdownHeader } from "../core/CustomSelectLayout";
 import { CLASSNAME } from "@/shared/constants/ui";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { SmartMultipleSelect } from "../core/SmartMultipleSelect";
@@ -55,13 +55,9 @@ const AddMultipleSelect = <T extends { id: string; name: string }>({
         )}
         disabled={disabled}
         filterOption={false}
+        options={buildDropdownOptions(finalDataSource || [], columns, keyField, labelField)}
         {...rest}
-      >
-        {renderDropdownBody({
-          dataSource: finalDataSource || [],
-          columns: columns,
-        })}
-      </Select>
+      />
 
       {showAddButton && (
         <>

@@ -1,5 +1,5 @@
 import React from "react";
-import { sideBarMenuItem } from "./sidebar/MenuItem";
+import { SideBarMenuItems } from "./sidebar/MenuItem";
 import Sidebar from "./sidebar/Sidebar";
 import DrawerMenu from "./drawer/drawer";
 import AppHeader from "./header";
@@ -14,8 +14,8 @@ type PrivateLayoutProps = {
 const PrivateLayout: React.FC<PrivateLayoutProps> = ({ children }) => {
   return (
     <Layout className={`h-screen w-screen flex overflow-hidden`}>
-      <Sidebar items={sideBarMenuItem()} />
-      <DrawerMenu items={sideBarMenuItem()} />
+      <Sidebar items={SideBarMenuItems()} />
+      <DrawerMenu items={SideBarMenuItems()} />
       <Layout className={`transition-all relative duration-200 h-full flex flex-col flex-grow`}>
         <AppHeader />
         <Content className="h-[calc(100%-56px)] w-full z-10 p-3 overflow-y-auto scrollbar-hide">

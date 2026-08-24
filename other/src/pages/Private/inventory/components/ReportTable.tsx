@@ -7,7 +7,7 @@ import { CSS } from "../../../../constants/UI";
 import { useClientData } from "../../../../hooks/core/useClientData";
 import { IAttribute } from "../../../../models/base/attribute";
 import { IInventoryReport } from "../../../../models/store/inventory";
-import { getProductCategoryContent, getVariantOptionContent } from "../../../../utils/common";
+import { getProductGroupContent, getVariantOptionContent } from "../../../../utils/common";
 import { getMainImage } from "../../../../utils/fileUtil";
 import { formatQuantity, formatMoney } from "../../../../utils/formatNumber";
 
@@ -120,7 +120,7 @@ const ReportTable: React.FC<ObjectTableProps> = ({
       width: 250,
       ...CSS.center_column,
       render: (category: IAttribute) => (
-        <ContentTooltip content={getProductCategoryContent(category)} width={250} />
+        <ContentTooltip content={getProductGroupContent(category)} width={250} />
       ),
     },
     {

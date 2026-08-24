@@ -8,6 +8,7 @@ import { useGlobalData } from "@/shared/hooks/useGlobalData";
 import { CustomTitle } from "@/shared";
 import UserBar from "./components/UserBar";
 import Notification from "./components/Notification";
+import { StoreSpace } from "./components/StoreSpace";
 
 const { Header } = Layout;
 
@@ -44,7 +45,10 @@ const AppHeader: React.FC = () => {
         </button>
         <CustomTitle />
       </div>
-      <div className="flex items-center h-full gap-4">
+      <div className="flex items-center h-full gap-4 flex-shrink-0">
+        <div className="w-56 hidden xl:flex">
+          <StoreSpace />
+        </div>
         <Notification />
         <UserBar />
       </div>

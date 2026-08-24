@@ -183,7 +183,7 @@ export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
     getInitialConfigColumns(mergedColumns, fullTableKey),
   );
   const [finalColumns, setFinalColumns] = useState<TableColumnsType>([]);
-  const { info, isMobile, showBranch } = useGlobalData();
+  const { info, isMobile } = useGlobalData();
   const length = dataSource?.length;
   const increasedLength = hasSummary ? 1 : 0;
   const hasRowExpandable = (record: any) =>
@@ -245,7 +245,7 @@ export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
       // ── Cột ghim phải ──
       ...rightFixedCols.map((col, i) => mapCol(col, leftFixedCols.length + normalCols.length + i)),
       // ── Chi nhánh (nếu có) ──
-      showBranch && hasBranchInfo
+      hasBranchInfo
         ? {
             title: "Chi nhánh",
             dataIndex: ["branch", "name"],

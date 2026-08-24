@@ -5,16 +5,12 @@ import { FundTransferPage } from "@/modules/fundTransfer";
 import { IncomeExpensePage } from "@/modules/incomeExpense";
 import { InventoryAdjustmentPage } from "@/modules/inventoryAdjustment";
 import { InventoryPage } from "@/modules/inventory";
-import {
-  PurchasePage,
-  PurchaseReturnPage,
-  SalePage,
-  SaleReturnPage,
-} from "@/modules/order";
+import { PurchasePage, PurchaseReturnPage, SalePage, SaleReturnPage } from "@/modules/order";
 import { CustomerPage, ShipperPage, SupplierPage } from "@/modules/partner";
 import { ProductPage, ProductPriceHistoryPage } from "@/modules/product";
 import { RolePage } from "@/modules/role";
 import { StorePage } from "@/modules/store";
+import { AttributePage } from "@/modules/attribute";
 import { UserPage } from "@/modules/user";
 import ComingSoonPage from "./ComingSoonPage";
 
@@ -36,6 +32,7 @@ export const desktopPage = {
   ShipperPage,
   ProductPriceHistoryPage,
   StorePage,
+  AttributePage,
   UserPage,
   RolePage,
   ComingSoonPage,

@@ -75,7 +75,7 @@ export function handlePasteCommon<T = any>(
  */
 export const setFormErrors = (
   form: FormInstance | undefined,
-  errors: BaseError[] | null,
+  errors: BaseError[] | null | undefined,
   options?: { scrollToFirst?: boolean },
 ) => {
   if (!errors || errors.length === 0) return;
@@ -234,7 +234,7 @@ export const setFormCode = async ({ form, type, field }: SetFormCodeParams) => {
         method: "GET",
         credentials: "include",
         headers: {
-          "x-company-id": storeId,
+          "x-store-id": storeId,
           "x-device-id": deviceId || "",
           "x-timezone": timeZone,
           "x-ip-address": ipAddress || "",

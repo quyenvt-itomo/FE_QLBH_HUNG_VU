@@ -1,5 +1,5 @@
 import { Select, Spin } from "antd";
-import { DropdownColumn, DropdownHeader, renderDropdownBody } from "./CustomSelectLayout";
+import { buildDropdownOptions, DropdownColumn, DropdownHeader } from "./CustomSelectLayout";
 import { SelectProps } from "@/shared/interfaces/common";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { CLASSNAME } from "@/shared/constants/ui";
@@ -42,10 +42,10 @@ export function SmartSelect<T extends Record<string, any>>({
     <Select
       loading={loading}
       value={value as any}
-      onChange={(data: any) => onChange?.(data?.value)}
+      options={buildDropdownOptions(finalDataSource, columns, keyField, labelField)}
+      onChange={(data: any) => onChange?.(data)}
       className={`w-full ${CLASSNAME.inputHeight}${className ? ` ${className}` : ""}`}
       showSearch
-      labelInValue
       allowClear
       onSearch={onSearch}
       suffixIcon={<ChevronDownIcon className="h-3.5" />}
@@ -67,11 +67,6 @@ export function SmartSelect<T extends Record<string, any>>({
         </>
       )}
       {...rest}
-    >
-      {renderDropdownBody({
-        dataSource: finalDataSource,
-        columns: columns,
-      })}
-    </Select>
+    />
   );
 }

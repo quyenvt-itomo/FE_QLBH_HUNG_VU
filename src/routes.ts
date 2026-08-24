@@ -7,7 +7,7 @@ export const publicRoutes = [
   { path: "/login", component: publicPage.LoginPage },
   { path: "/forgot-password", component: publicPage.ForgotPasswordPage },
 ];
-export const privateRoutes = [
+export const privateRoutes: { path: string; component: React.FC }[] = [
   { path: privateRoutesName.dashboard, component: desktopPage.DashboardPage },
   { path: privateRoutesName.sale, component: desktopPage.SalePage },
   { path: privateRoutesName.saleReturn, component: desktopPage.SaleReturnPage },
@@ -26,7 +26,7 @@ export const privateRoutes = [
   { path: privateRoutesName.debtAdjustment, component: desktopPage.ComingSoonPage },
   { path: privateRoutesName.vatAdjustment, component: desktopPage.ComingSoonPage },
   { path: privateRoutesName.setup.store, component: desktopPage.StorePage },
-  { path: privateRoutesName.setup.attribute, component: desktopPage.ComingSoonPage },
+  { path: privateRoutesName.setup.attribute, component: desktopPage.AttributePage },
   { path: privateRoutesName.setup.shipper, component: desktopPage.ShipperPage },
   { path: privateRoutesName.setup.user, component: desktopPage.UserPage },
   { path: privateRoutesName.setup.role, component: desktopPage.RolePage },

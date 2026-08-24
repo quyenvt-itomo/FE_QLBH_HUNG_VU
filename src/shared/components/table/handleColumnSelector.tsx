@@ -22,7 +22,7 @@ interface ColumnSelectorProps {
 
 type SortableItem = ColumnsConfigType[number] & { id: string };
 
-export const getTextFromReactNode = (node: React.ReactNode): string => {
+const getTextFromReactNode = (node: React.ReactNode): string => {
   if (!node) return "";
 
   if (typeof node === "string" || typeof node === "number") {

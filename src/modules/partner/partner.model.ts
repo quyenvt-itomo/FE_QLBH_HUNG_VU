@@ -9,7 +9,6 @@ export enum PartnerType {
   CUSTOMER = "customer",
   SUPPLIER = "supplier",
   SHIPPER = "shipper",
-  SHIPPING_PROVIDER = "shipper",
 }
 export const partnerTypeMap: Record<PartnerType, string> = {
   [PartnerType.CUSTOMER]: "Khách hàng",
@@ -36,7 +35,7 @@ export interface PartnerSnapshot {
   taxCode: string | null;
   addresses: Address[];
   address?: Address;
-  representative: Representative;
+  representative: Representative | null;
   banks: BankAccount[];
 }
 export interface Partner extends Entity {
@@ -52,7 +51,7 @@ export interface Partner extends Entity {
   addresses: Address[];
   /** Legacy single-address alias for retired public quotation screens. */
   address?: Address;
-  representative: Representative;
+  representative: Representative | null;
   banks: BankAccount[];
   maxDebtAmount: number | null;
   contacts?: PartnerContact[];

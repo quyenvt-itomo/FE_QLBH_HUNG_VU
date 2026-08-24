@@ -1,6 +1,6 @@
 import { Select } from "antd";
 import { AddSelectButton } from "./AddButton";
-import { DropdownColumn, DropdownHeader, renderDropdownBody } from "../core/CustomSelectLayout";
+import { buildDropdownOptions, DropdownColumn, DropdownHeader } from "../core/CustomSelectLayout";
 import { SelectProps } from "@/shared/interfaces/common";
 import { CLASSNAME } from "@/shared/constants/ui";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
@@ -47,13 +47,9 @@ const AddSelect = <T extends { id: string; name: string }>({
         )}
         disabled={disabled}
         filterOption={false}
+        options={buildDropdownOptions(finalDataSource || [], columns)}
         {...rest}
-      >
-        {renderDropdownBody({
-          dataSource: finalDataSource || [],
-          columns: columns,
-        })}
-      </Select>
+      />
 
       {showAddButton && (
         <>

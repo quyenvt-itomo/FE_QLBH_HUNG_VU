@@ -12,7 +12,14 @@ import { Module, PermissionStructure } from "@/shared/constants/permission";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { EntityWithStore } from "../organization";
 
-// import { EntityWithUser } from "./entityWithUser";
+export enum RoleType {
+  SYSTEM = "system",
+  STORE = "store",
+}
+export const roleTypeMap: Record<RoleType, string> = {
+  [RoleType.SYSTEM]: "Hệ thống",
+  [RoleType.STORE]: "Cửa hàng",
+};
 
 export interface RoleQuery extends ApiRequestQuery {}
 
@@ -22,4 +29,5 @@ export interface Role extends EntityWithStore {
   importExcel: Module[];
   exportExcel: Module[];
   userCount?: number;
+  type: RoleType;
 }

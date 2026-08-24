@@ -1,12 +1,12 @@
 import { App } from "antd";
-import { useRef } from "react";
+import { useCallback, useRef } from "react";
 import { normalizeNoticeKey } from "@/shared/utils/search.util";
 
 const useSmartNotification = () => {
   const { notification } = App.useApp();
   const cacheRef = useRef<Record<string, boolean>>({});
 
-  const notify = (
+  const notify = useCallback((
     type: "success" | "error" | "info" | "warning",
     message: string,
     key?: string,
@@ -36,7 +36,7 @@ const useSmartNotification = () => {
       duration: 3,
       type,
     });
-  };
+  }, [notification]);
 
   return { notify };
 };

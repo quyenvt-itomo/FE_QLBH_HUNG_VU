@@ -1,7 +1,8 @@
 import React from "react";
 import { PartnerType } from "./partner.model";
 import { useSupplierStore } from "./partner.store";
-import { PartnerBusinessPageView, usePartnerBusinessPage } from "./PartnerBusinessPage";
+import { PartnerBusinessPageView } from "./PartnerBusinessPage";
+import { usePartnerBusinessPage } from "./partnerBusinessPage.hook";
 
 const SupplierPage: React.FC = () => (
   <PartnerBusinessPageView

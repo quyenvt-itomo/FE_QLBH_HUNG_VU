@@ -13,15 +13,10 @@ import {
   SortItem,
   SortValue,
 } from "@/shared/interfaces/common";
+import type { StatusItem } from "./filter.types";
+import React from "react";
 
-export interface StatusItem {
-  label: string;
-  value: string;
-  total?: number;
-  icon?: React.ReactNode;
-}
-
-export interface CustomFilterProps {
+export interface PanelFilterProps {
   filterActive?: boolean;
   className?: string;
   style?: React.CSSProperties;
@@ -53,7 +48,7 @@ const DATE_PRESETS = [
   { label: "Năm nay", start: dayjs().startOf("year"), end: dayjs().endOf("year") },
 ];
 
-export const CustomFilter = ({
+export const PanelFilter: React.FC<PanelFilterProps> = ({
   filterActive,
   className = "",
   style,
@@ -75,14 +70,14 @@ export const CustomFilter = ({
   onSearchChange,
   filterContent,
   onClearFilter,
-}: CustomFilterProps) => {
+}) => {
   return (
     <aside
-      className={`fixed left-[220px] top-14 z-30 flex h-[calc(100vh-3.5rem)] w-60 shrink-0 flex-col border-r border-gray-200 bg-white ${className}`}
+      className={`flex h-full w-64 shrink-0 flex-col overflow-hidden rounded-lg border border-gray-200 bg-white ${className}`}
       style={style}
       aria-label="Bộ lọc"
     >
-      <div className="flex h-14 shrink-0 items-center justify-between border-b border-gray-200 px-4">
+      <div className="flex h-11 shrink-0 items-center justify-between border-b border-gray-200 px-4">
         <div className="flex items-center gap-2 font-semibold text-gray-800">
           <FunnelIcon className="h-4 w-4" />
           Bộ lọc
@@ -93,16 +88,24 @@ export const CustomFilter = ({
           </button>
         )}
       </div>
-      <div className="flex-1 space-y-4 overflow-y-auto px-3 py-3">
+      <div className="min-h-0 flex-1 space-y-4 overflow-y-auto">
         {searchItems.length > 0 && (
           <section>
-            <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Tìm kiếm</div>
-            <SearchItemPanel searchItems={searchItems} value={searchValue} onChange={onSearchChange} />
+            <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Tìm kiếm
+            </div>
+            <SearchItemPanel
+              searchItems={searchItems}
+              value={searchValue}
+              onChange={onSearchChange}
+            />
           </section>
         )}
         {statusItems.length > 0 && (
-          <section className="border-t border-gray-100 pt-3">
-            <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Trạng thái</div>
+          <section className="border-b border-gray-100 pt-3">
+            <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Trạng thái
+            </div>
             <div className="space-y-1">
               {statusItems.map((item) => (
                 <button
@@ -110,10 +113,15 @@ export const CustomFilter = ({
                   type="button"
                   onClick={() => onChangeStatus?.(item.value)}
                   className={`flex w-full items-center justify-between rounded px-2 py-1.5 text-left text-sm ${
-                    status === item.value ? "bg-green-50 font-medium text-green-700" : "text-gray-600 hover:bg-gray-50"
+                    status === item.value
+                      ? "bg-green-50 font-medium text-green-700"
+                      : "text-gray-600 hover:bg-gray-50"
                   }`}
                 >
-                  <span className="flex items-center gap-2">{item.icon}{item.label}</span>
+                  <span className="flex items-center gap-2">
+                    {item.icon}
+                    {item.label}
+                  </span>
                   {item.total !== undefined && <span>{item.total}</span>}
                 </button>
               ))}
@@ -121,11 +129,15 @@ export const CustomFilter = ({
           </section>
         )}
         {onChangeStartAt && onChangeEndAt && (
-          <section className="border-t border-gray-100 pt-3">
-            <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Thời gian</div>
+          <section className="border-b border-gray-100 pt-3">
+            <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Thời gian
+            </div>
             <div className="mb-2 flex flex-wrap gap-1">
               {DATE_PRESETS.map((preset) => {
-                const active = dayjs(startAt).isSame(preset.start, "day") && dayjs(endAt).isSame(preset.end, "day");
+                const active =
+                  dayjs(startAt).isSame(preset.start, "day") &&
+                  dayjs(endAt).isSame(preset.end, "day");
                 return (
                   <button
                     key={preset.label}
@@ -142,32 +154,55 @@ export const CustomFilter = ({
               })}
             </div>
             <div className="flex gap-1">
-              <DatePicker className="w-full" placeholder="Từ" format="DD/MM/YYYY" value={startAt ? dayjs(startAt) : null} onChange={(date) => onChangeStartAt(date?.format("YYYY-MM-DD") || "")} />
-              <DatePicker className="w-full" placeholder="Đến" format="DD/MM/YYYY" value={endAt ? dayjs(endAt) : null} onChange={(date) => onChangeEndAt(date?.format("YYYY-MM-DD") || "")} />
+              <DatePicker
+                className="w-full"
+                placeholder="Từ"
+                format="DD/MM/YYYY"
+                value={startAt ? dayjs(startAt) : null}
+                onChange={(date) => onChangeStartAt(date?.format("YYYY-MM-DD") || "")}
+              />
+              <DatePicker
+                className="w-full"
+                placeholder="Đến"
+                format="DD/MM/YYYY"
+                value={endAt ? dayjs(endAt) : null}
+                onChange={(date) => onChangeEndAt(date?.format("YYYY-MM-DD") || "")}
+              />
             </div>
           </section>
         )}
         {sortItems.length > 0 && (
-          <section className="border-t border-gray-100 pt-3">
-            <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Sắp xếp</div>
-            <SortSelect sortItems={sortItems} value={sortValue} onChange={onSortChange} />
-          </section>
+          <SortSelect
+            size="small"
+            sortItems={sortItems}
+            value={sortValue}
+            onChange={onSortChange}
+          />
         )}
         {rangerItems.length > 0 && (
-          <section className="border-t border-gray-100 pt-3">
-            <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Khoảng giá trị</div>
-            <RangerItemPanel rangerItems={rangerItems} value={rangerValue} onChange={onRangerChange} />
+          <section className="border-b border-gray-100 pt-3">
+            <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Khoảng giá trị
+            </div>
+            <RangerItemPanel
+              rangerItems={rangerItems}
+              value={rangerValue}
+              onChange={onRangerChange}
+            />
           </section>
         )}
-        {filterContent && <section className="border-t border-gray-100 pt-3">{filterContent}</section>}
+        {filterContent && (
+          <section className="border-b border-gray-100 pt-3">{filterContent}</section>
+        )}
       </div>
       {filterActive && onClearFilter && (
-        <div className="flex shrink-0 items-center justify-between border-t border-gray-200 px-3 py-2 text-xs text-gray-500">
+        <div className="flex shrink-0 items-center justify-between border-b border-gray-200 px-3 py-2 text-xs text-gray-500">
           <span>Đang áp dụng bộ lọc</span>
-          <button type="button" onClick={onClearFilter} className="text-red-600"><XMarkIcon className="h-4 w-4" /></button>
+          <button type="button" onClick={onClearFilter} className="text-red-600">
+            <XMarkIcon className="h-4 w-4" />
+          </button>
         </div>
       )}
     </aside>
   );
 };
-

@@ -1,5 +1,5 @@
 import { Select, Spin } from "antd";
-import { DropdownColumn, DropdownHeader, renderDropdownBody } from "./CustomSelectLayout";
+import { buildDropdownOptions, DropdownColumn, DropdownHeader } from "./CustomSelectLayout";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { MultipleSelectProps } from "@/shared/interfaces/common";
 import { CLASSNAME } from "@/shared/constants/ui";
@@ -22,26 +22,32 @@ export function SmartMultipleSelect<T extends Record<string, any>>({
   value,
   loading,
   className,
+  hideOptions,
   onChange,
   ...rest
 }: SmartMultipleSelect<T>) {
+  const hideOptionKeys = hideOptions?.map((item) => item[keyField]);
+
+  const finalDataSource =
+    hideOptionKeys && hideOptionKeys.length > 0
+      ? dataSource.filter(
+          (item) => hideOptionKeys.includes(item[keyField]) === false || item[keyField] === value,
+        )
+      : dataSource;
+
   return (
     <Select
       mode="multiple"
       maxTagCount="responsive"
       className={`w-full ${CLASSNAME.inputHeight}${className ? ` ${className}` : ""}`}
       showSearch
-      labelInValue
+      options={buildDropdownOptions(finalDataSource, columns, keyField, labelField)}
       allowClear
       suffixIcon={<ChevronDownIcon className="h-3.5" />}
       loading={loading}
       placeholder="Chọn mục"
       value={value as any}
-      onChange={(data: any) => {
-        if (!data || data.length === 0) onChange?.([]);
-        const ids = data.map((item: { value: number }) => item.value);
-        onChange?.(ids);
-      }}
+      onChange={(data: string[]) => onChange?.(data || [])}
       filterOption={false}
       {...(loading && {
         notFoundContent: (
@@ -57,11 +63,6 @@ export function SmartMultipleSelect<T extends Record<string, any>>({
         </>
       )}
       {...rest}
-    >
-      {renderDropdownBody({
-        dataSource: dataSource,
-        columns: columns,
-      })}
-    </Select>
+    />
   );
 }

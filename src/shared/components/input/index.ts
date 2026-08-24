@@ -10,4 +10,5 @@ export * from "./InputQuantityDebounce";
 export * from "./InputRangeField";
 export * from "./InputSettingPrice";
 export * from "./OrderDiscountInput";
+export * from "./PhoneInput";
 export * from "./SearchInput";

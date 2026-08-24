@@ -6,4 +6,4 @@ export const sortItems: SortItem[] = [
   { label: "Tổng tiền", value: "totalAmount", ascLabel: "Thấp nhất", descLabel: "Cao nhất" },
 ];
 export const rangerItems: RangerItem[] = [{ label: "Tổng tiền", key: "totalAmount" }];
-export const filterUses: FilterKey[] = ["employeeIds", "customerIds", "creatorIds"];
+export const filterUses: FilterKey[] = ["userIds", "customerIds", "creatorIds"];

@@ -2,9 +2,9 @@ import { GenericFilter } from "./GenericFilter";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { PartialFilterProps } from "../../../models/base/interface";
 import { IAttribute } from "../../../models/base/attribute";
-import { ProductCategorySelect } from "../../multiple_selects/ProductCategorySelect";
+import { ProductGroupSelect } from "../../multiple_selects/ProductGroupSelect";
 
-const ProductCategoryFilter: React.FC<PartialFilterProps<IAttribute>> = ({ data, setData }) => {
+const ProductGroupFilter: React.FC<PartialFilterProps<IAttribute>> = ({ data, setData }) => {
   const value = data.map((d) => d.id);
 
   const handleRemove = (id: string) => {
@@ -16,7 +16,7 @@ const ProductCategoryFilter: React.FC<PartialFilterProps<IAttribute>> = ({ data,
     <GenericFilter<IAttribute>
       data={data}
       selectComponent={
-        <ProductCategorySelect
+        <ProductGroupSelect
           value={value}
           placeholder=""
           prefix={<MagnifyingGlassIcon className="h-4" />}
@@ -37,4 +37,4 @@ const ProductCategoryFilter: React.FC<PartialFilterProps<IAttribute>> = ({ data,
   );
 };
 
-export default ProductCategoryFilter;
+export default ProductGroupFilter;

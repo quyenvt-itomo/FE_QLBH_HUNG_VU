@@ -24,13 +24,12 @@ const PermissionSelect: React.FC<PermissionSelectProps> = ({ module, form, disab
     [permissionOptions],
   );
 
-  const fieldPath = ["permissions", module];
-  const moduleValue: string[] = Form.useWatch(fieldPath, form) || [];
+  const fieldPath = useMemo(() => ["permissions", module], [module]);
+  const watchedModuleValue = Form.useWatch(fieldPath, form) as string[] | undefined;
+  const moduleValue = watchedModuleValue ?? [];
 
   const [checked, setChecked] = useState(false);
   const [indeterminate, setIndeterminate] = useState(false);
-
-  if (!permissionOptions) return null;
 
   useEffect(() => {
     if (!moduleValue || moduleValue.length === 0) {
@@ -52,7 +51,7 @@ const PermissionSelect: React.FC<PermissionSelectProps> = ({ module, form, disab
     if (moduleValue.length === 0 || moduleValue.includes("read")) return;
 
     form.setFieldValue(fieldPath, [...moduleValue, "read"]);
-  }, [moduleValue]);
+  }, [form, fieldPath, moduleValue]);
 
   const handleCheckboxChange = (checked: boolean) => {
     setChecked(checked);
@@ -74,10 +73,12 @@ const PermissionSelect: React.FC<PermissionSelectProps> = ({ module, form, disab
       .join(", ");
   };
 
+  if (!permissionOptions) return null;
+
   return (
     <div key={module} className="flex items-center gap-3 group">
       {/* LEFT */}
-      <div className="flex items-center gap-2 justify-between flex-1 min-w-0">
+      <div className="flex items-center gap-2 justify-between flex-1 min-w-40">
         <label
           className="min-w-[140px] max-w-[220px] truncate group-hover:text-blue-500"
           title={moduleMap[module]}

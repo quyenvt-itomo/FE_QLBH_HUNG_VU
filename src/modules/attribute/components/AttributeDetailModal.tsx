@@ -14,6 +14,7 @@ const InfoTab: React.FC<{ data: Attribute }> = ({ data }) => (
         <AttributeTypeTag value={data.type} />
       </div>
       <div className="grid grid-cols-2">
+        <InfoField label="Phạm vi">{data.store?.name || "Dùng chung"}</InfoField>
         <InfoField label="Loại">{attributeTypeMap[data.type]}</InfoField>
         <InfoField label="Ghi chú" fullWidth>
           {data.note}
@@ -28,10 +29,6 @@ export const AttributeDetailModal: React.FC<DetailModalProps<Attribute>> = ({
   data,
   onClose,
 }) => {
-  const [activeTab, setActiveTab] = useState("info");
-  useEffect(() => {
-    if (open) setActiveTab("info");
-  }, [open]);
   if (!data) return null;
   return (
     <Modal
@@ -43,11 +40,6 @@ export const AttributeDetailModal: React.FC<DetailModalProps<Attribute>> = ({
       destroyOnClose
       width={700}
     >
-      <Tabs
-        activeKey={activeTab}
-        onChange={setActiveTab}
-        items={[{ key: "info", label: "Thông tin" }]}
-      />
       <InfoTab data={data} />
     </Modal>
   );

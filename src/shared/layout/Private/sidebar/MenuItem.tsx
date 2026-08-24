@@ -37,7 +37,7 @@ const group = (key: string, label: string, children: MenuItem[]): MenuItem | nul
 
 const emptyItem = (key: string): MenuItem => ({ key, label: "Trống", disabled: true });
 
-export function extractPathsFromRouteObject(obj: any): string[] {
+function extractPathsFromRouteObject(obj: any): string[] {
   const paths: string[] = [];
   const visit = (value: any) => {
     if (typeof value === "string") paths.push(value);
@@ -47,7 +47,7 @@ export function extractPathsFromRouteObject(obj: any): string[] {
   return paths;
 }
 
-export const isActivePath = (paths: string | string[]): boolean => {
+const isActivePath = (paths: string | string[]): boolean => {
   const current = window.location.pathname;
   if (paths === privateRoutesName.dashboard) return current === privateRoutesName.dashboard;
   return Array.isArray(paths)
@@ -164,5 +164,3 @@ export const SideBarMenuItems = (): MenuItem[] => {
 
   return [overview, operations, analysisAndReports, extensions].filter(Boolean) as MenuItem[];
 };
-
-export const sideBarMenuItem = () => SideBarMenuItems();

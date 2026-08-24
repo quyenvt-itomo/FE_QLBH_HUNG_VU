@@ -42,13 +42,13 @@ export const useNotification = (params?: { page?: number; size?: number; keyword
   useEffect(() => {
     if (!query.error) return;
     onError(query.error);
-  }, [query.error]);
+  }, [onError, query.error]);
 
   useEffect(() => {
     if (query.data?.success) {
       handleSetTotalUnread(query.data?.summary?.totalUnread || 0);
     }
-  }, [query.data]);
+  }, [handleSetTotalUnread, query.data]);
 
   // ===== SEEN ONE =====
   const seenMutation = useMutation<ApiResponse, BaseFailurePayload, string>({

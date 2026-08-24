@@ -95,7 +95,7 @@ export const ContactList: React.FC<PartialProps> = ({ form }) => {
               </Row>
 
               {/* Nested banks - compact, 2 per row */}
-              <div className="mt-8 pt-3 border-t border-gray-200">
+              <div className="pt-3 border-t border-gray-200">
                 <Form.List name={[name, "banks"]}>
                   {(bankFields, { add: addBank, remove: removeBank }) => (
                     <div className="flex flex-col">

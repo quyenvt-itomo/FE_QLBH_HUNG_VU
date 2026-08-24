@@ -42,7 +42,7 @@ const SupplierQuotationDetailPage: React.FC = () => {
     (async () => {
       const org = await getOrgByCode(companyCode);
       setStore(org);
-      if (org) localStorage.setItem("x-company-id", org.id);
+      if (org) localStorage.setItem("x-store-id", org.id);
     })();
   }, [companyCode]);
 
@@ -62,11 +62,11 @@ const SupplierQuotationDetailPage: React.FC = () => {
     const expectedPhone = data?.quoterSnapshot?.phone;
 
     if (taxCode !== expectedTaxCode) {
-      setVerifyError("M? s? thu? không chính xác");
+      setVerifyError("M? s? thu? khï¿½ng chï¿½nh xï¿½c");
       return;
     }
     if (expectedPhone && phone !== expectedPhone) {
-      setVerifyError("S? ði?n tho?i ngý?i báo giá không chính xác");
+      setVerifyError("S? ï¿½i?n tho?i ngï¿½?i bï¿½o giï¿½ khï¿½ng chï¿½nh xï¿½c");
       return;
     }
     setVerifyError("");
@@ -89,22 +89,22 @@ const SupplierQuotationDetailPage: React.FC = () => {
   const isRejected = data?.approveStatus === ApproveStatus.REJECTED;
 
   const statusConfig = isApproved
-    ? { color: "green", icon: <CheckCircleOutlined />, label: "Ð? ti?p nh?n" }
+    ? { color: "green", icon: <CheckCircleOutlined />, label: "ï¿½? ti?p nh?n" }
     : isRejected
-      ? { color: "red", icon: <CloseCircleOutlined />, label: "Ð? t? ch?i" }
-      : { color: "orange", icon: <ClockCircleOutlined />, label: "Ðang ch? duy?t" };
+      ? { color: "red", icon: <CloseCircleOutlined />, label: "ï¿½? t? ch?i" }
+      : { color: "orange", icon: <ClockCircleOutlined />, label: "ï¿½ang ch? duy?t" };
 
   const total = calc.calculateTotalForArray(data?.lines || []);
 
   const lineCols = [
     {
-      title: "HÀNG HÓA",
+      title: "Hï¿½NG Hï¿½A",
       key: "product",
       width: 280,
       render: (_: any, r: PurchaseQuotationLine) => (
         <div className="flex flex-col">
           <span className="font-medium text-gray-800">
-            {r.productSnapshot?.name || r.product?.name || "—"}
+            {r.productSnapshot?.name || r.product?.name || "ï¿½"}
           </span>
           {r.productCode && <span className="text-xs text-gray-400">SKU: {r.productCode}</span>}
         </div>
@@ -119,7 +119,7 @@ const SupplierQuotationDetailPage: React.FC = () => {
       render: (v: number) => <span className="font-medium">{formatQuantity(v)}</span>,
     },
     {
-      title: "ÐÕN GIÁ",
+      title: "ï¿½ï¿½N GIï¿½",
       dataIndex: "unitPrice",
       key: "price",
       width: 140,
@@ -127,7 +127,7 @@ const SupplierQuotationDetailPage: React.FC = () => {
       render: (v: number) => <span>{formatMoney(v)}</span>,
     },
     {
-      title: "THÀNH TI?N",
+      title: "THï¿½NH TI?N",
       dataIndex: "subTotal",
       key: "sub",
       width: 150,
@@ -164,7 +164,7 @@ const SupplierQuotationDetailPage: React.FC = () => {
             </span>
           </div>
           <span className="text-gray-500 text-sm font-medium uppercase tracking-wider">
-            Chi ti?t báo giá
+            Chi ti?t bï¿½o giï¿½
           </span>
         </div>
       </div>
@@ -173,9 +173,9 @@ const SupplierQuotationDetailPage: React.FC = () => {
         {!data ? (
           <Card className="text-center py-16">
             <div className="text-gray-400 text-5xl mb-4">??</div>
-            <p className="text-gray-500 text-lg">Không t?m th?y báo giá</p>
+            <p className="text-gray-500 text-lg">Khï¿½ng t?m th?y bï¿½o giï¿½</p>
             <p className="text-gray-400 text-sm mt-1">
-              Liên h? v?i bên mua hàng ð? bi?t thêm chi ti?t
+              Liï¿½n h? v?i bï¿½n mua hï¿½ng ï¿½? bi?t thï¿½m chi ti?t
             </p>
           </Card>
         ) : !isVerified ? (
@@ -186,14 +186,14 @@ const SupplierQuotationDetailPage: React.FC = () => {
                   <SafetyCertificateOutlined className="text-3xl text-blue-600" />
                 </div>
               </div>
-              <h2 className="text-xl font-bold text-gray-800 mb-2">Xác th?c truy c?p báo giá</h2>
+              <h2 className="text-xl font-bold text-gray-800 mb-2">Xï¿½c th?c truy c?p bï¿½o giï¿½</h2>
               <p className="text-sm text-gray-500 mb-6">
-                Vui l?ng cung c?p thông tin ð? xác minh danh tính c?a b?n.
+                Vui l?ng cung c?p thï¿½ng tin ï¿½? xï¿½c minh danh tï¿½nh c?a b?n.
               </p>
 
               <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-6 text-left">
                 <p className="text-xs text-blue-600 font-semibold mb-3 uppercase tracking-wide">
-                  Thông tin g?i ?
+                  Thï¿½ng tin g?i ?
                 </p>
                 <div className="space-y-2">
                   {maskedTaxCode && (
@@ -206,7 +206,7 @@ const SupplierQuotationDetailPage: React.FC = () => {
                   )}
                   {maskedPhone && (
                     <div className="flex items-center gap-3">
-                      <span className="text-sm text-gray-500 w-8">SÐT:</span>
+                      <span className="text-sm text-gray-500 w-8">Sï¿½T:</span>
                       <span className="font-mono text-lg font-bold text-blue-700 tracking-[0.15em]">
                         {maskedPhone}
                       </span>
@@ -222,7 +222,7 @@ const SupplierQuotationDetailPage: React.FC = () => {
                   rules={getTaxCodeRules(true)}
                   extra={
                     maskedTaxCode
-                      ? 'G?i ?: k?t thúc b?ng "' + (supplierTaxCode?.slice(-3) || "") + '"'
+                      ? 'G?i ?: k?t thï¿½c b?ng "' + (supplierTaxCode?.slice(-3) || "") + '"'
                       : undefined
                   }
                 >
@@ -237,17 +237,17 @@ const SupplierQuotationDetailPage: React.FC = () => {
                   <Form.Item
                     name="phone"
                     label={
-                      <span className="text-gray-700 font-medium">S? ði?n tho?i ngý?i báo giá</span>
+                      <span className="text-gray-700 font-medium">S? ï¿½i?n tho?i ngï¿½?i bï¿½o giï¿½</span>
                     }
                     rules={getPhoneRules(true)}
                     extra={
                       maskedPhone
-                        ? 'G?i ?: k?t thúc b?ng "' + (quoterPhone?.slice(-3) || "") + '"'
+                        ? 'G?i ?: k?t thï¿½c b?ng "' + (quoterPhone?.slice(-3) || "") + '"'
                         : undefined
                     }
                   >
                     <Input
-                      placeholder="Nh?p s? ði?n tho?i"
+                      placeholder="Nh?p s? ï¿½i?n tho?i"
                       size="large"
                       className="text-center tracking-wider"
                     />
@@ -265,13 +265,13 @@ const SupplierQuotationDetailPage: React.FC = () => {
                   size="large"
                   className="h-11 font-semibold"
                 >
-                  Xác th?c
+                  Xï¿½c th?c
                 </Button>
               </Form>
 
               <div className="flex items-center justify-center gap-1 mt-6 text-xs text-gray-400">
                 <LockOutlined />
-                <span>K?t n?i ðý?c m? hóa b?o m?t an toàn</span>
+                <span>K?t n?i ï¿½ï¿½?c m? hï¿½a b?o m?t an toï¿½n</span>
               </div>
             </Card>
           </div>
@@ -290,11 +290,11 @@ const SupplierQuotationDetailPage: React.FC = () => {
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-sm text-gray-500">
-                  Ngày báo giá: {data.timeAt ? formatDate(data.timeAt) : "—"}
+                  Ngï¿½y bï¿½o giï¿½: {data.timeAt ? formatDate(data.timeAt) : "ï¿½"}
                 </span>
                 <Divider type="vertical" />
                 <Button icon={<PrinterOutlined />} size="middle">
-                  In báo giá
+                  In bï¿½o giï¿½
                 </Button>
                 <Button icon={<FileExcelOutlined />} size="middle">
                   Xu?t Excel
@@ -322,7 +322,7 @@ const SupplierQuotationDetailPage: React.FC = () => {
               <Card
                 title={
                   <span className="text-gray-700 font-semibold text-sm uppercase tracking-wide">
-                    Thông tin chung
+                    Thï¿½ng tin chung
                   </span>
                 }
                 size="small"
@@ -331,19 +331,19 @@ const SupplierQuotationDetailPage: React.FC = () => {
               >
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-gray-500 text-sm">M? báo giá</span>
+                    <span className="text-gray-500 text-sm">M? bï¿½o giï¿½</span>
                     <span className="text-gray-800 font-mono font-medium">{data.code}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-500 text-sm">Lo?i</span>
                     <span className="text-gray-800">
-                      {data.type === "quotation" ? "Báo giá" : "Chào giá"}
+                      {data.type === "quotation" ? "Bï¿½o giï¿½" : "Chï¿½o giï¿½"}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-500 text-sm">Ngý?i ph? trách</span>
+                    <span className="text-gray-500 text-sm">Ngï¿½?i ph? trï¿½ch</span>
                     <span className="text-gray-800">
-                      {resolveByPath(data, ["staff", "name"], "—")}
+                      {resolveByPath(data, ["staff", "name"], "ï¿½")}
                     </span>
                   </div>
                 </div>
@@ -352,7 +352,7 @@ const SupplierQuotationDetailPage: React.FC = () => {
               <Card
                 title={
                   <span className="text-gray-700 font-semibold text-sm uppercase tracking-wide">
-                    Thông tin nhà cung c?p
+                    Thï¿½ng tin nhï¿½ cung c?p
                   </span>
                 }
                 size="small"
@@ -361,21 +361,21 @@ const SupplierQuotationDetailPage: React.FC = () => {
               >
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-gray-500 text-sm">Nhà cung c?p</span>
+                    <span className="text-gray-500 text-sm">Nhï¿½ cung c?p</span>
                     <span className="text-gray-800 font-medium">
-                      {resolveByPath(data, ["supplier", "name"], "—")}
+                      {resolveByPath(data, ["supplier", "name"], "ï¿½")}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-500 text-sm">MST</span>
                     <span className="text-gray-800 font-mono">
-                      {resolveByPath(data, ["supplier", "taxCode"], "—")}
+                      {resolveByPath(data, ["supplier", "taxCode"], "ï¿½")}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-500 text-sm">Ngý?i liên h?</span>
+                    <span className="text-gray-500 text-sm">Ngï¿½?i liï¿½n h?</span>
                     <span className="text-gray-800">
-                      {resolveByPath(data, ["quoter", "name"], "—")}
+                      {resolveByPath(data, ["quoter", "name"], "ï¿½")}
                       {quoterPhone && <span className="text-gray-400 ml-1">- {quoterPhone}</span>}
                     </span>
                   </div>
@@ -386,7 +386,7 @@ const SupplierQuotationDetailPage: React.FC = () => {
             <Card
               title={
                 <span className="text-gray-700 font-semibold text-sm uppercase tracking-wide">
-                  Hàng hóa báo giá
+                  Hï¿½ng hï¿½a bï¿½o giï¿½
                 </span>
               }
               className="shadow-sm"
@@ -423,9 +423,9 @@ const SupplierQuotationDetailPage: React.FC = () => {
 
             <div className="flex justify-end mt-6">
               <div className="bg-blue-600 text-white rounded-xl px-8 py-4 shadow-lg">
-                <span className="text-sm opacity-90">T?ng giá tr? báo giá</span>
+                <span className="text-sm opacity-90">T?ng giï¿½ tr? bï¿½o giï¿½</span>
                 <div className="text-2xl font-bold mt-0.5">
-                  {formatMoney(total.grossAmount)} VNÐ
+                  {formatMoney(total.grossAmount)} VNï¿½
                 </div>
               </div>
             </div>

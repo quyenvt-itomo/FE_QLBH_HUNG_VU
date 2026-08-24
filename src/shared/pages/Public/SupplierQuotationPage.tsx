@@ -16,7 +16,7 @@ import { randomId } from "@/shared/utils/common.util";
 import { FormSection } from "@/shared";
 import { ProvinceSelect, WardSelect } from "@/shared";
 import { useAddressSelector } from "@/shared/hooks/useAddressSelector";
-import { FormListTable, FormColumn  } from "@/shared";
+import { FormListTable, FormColumn } from "@/shared";
 import { InputMoney, InputPercentage } from "@/shared";
 import { formatMoney, formatQuantity } from "@/shared/utils/number.util";
 import { CLASSNAME } from "@/shared/constants/ui";
@@ -68,10 +68,10 @@ const SupplierQuotationPage: React.FC = () => {
     setStore(companyData);
     setLoading(false);
     if (!companyData) {
-      localStorage.removeItem("x-company-id");
+      localStorage.removeItem("x-store-id");
       return;
     }
-    localStorage.setItem("x-company-id", companyData.id);
+    localStorage.setItem("x-store-id", companyData.id);
   };
 
   useEffect(() => {

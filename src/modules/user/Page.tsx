@@ -1,17 +1,20 @@
-import { AddButton } from "@/shared";
+import { AddButton, ButtonFilter } from "@/shared";
 import { Panel } from "@/shared";
 import { SearchInput } from "@/shared";
 import { useUserStore } from "./user.store";
 import { usePageState } from "@/shared/hooks/usePageState";
-import { User } from "./user.model";
+import { filterUses, sortItems, User } from "./user.model";
 import { AddUpdateModal, UserTable } from "./components";
 import { useUserHandlers } from "./user.handlers";
 
 export const UserPage: React.FC = () => {
   const {
+    isFilterActive,
     keyword,
     page,
     size,
+    sortBy,
+    sortOrder,
     filter,
     reload,
     setPage,
@@ -53,11 +56,14 @@ export const UserPage: React.FC = () => {
       <div className="flex items-center justify-between gap-3 flex-shrink-0">
         <SearchInput value={keyword} onSearch={pageAction.handleSearch} />
         <div className="flex items-center gap-3">
-          {/* <ExcelButton
-            entityType={ExcelEntityType.USER}
-            onSuccess={pageAction.handleReload}
-            exportOptions={{ filters: filter, filename: "Danh_sach_nguoi_dung_" }}
-          /> */}
+          <ButtonFilter
+            filterActive={isFilterActive}
+            sortItems={sortItems}
+            sortValue={{ sortBy, sortOrder }}
+            onSortChange={pageAction.handleSortChange}
+            filterUses={filterUses}
+            onClearFilter={pageAction.resetFilter}
+          />
           <AddButton onOpenAdd={handleOpenAdd} />
         </div>
       </div>

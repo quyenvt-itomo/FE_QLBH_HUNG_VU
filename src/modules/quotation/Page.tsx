@@ -6,7 +6,7 @@ import { Quotation } from "./quotation.model";
 import { ApproveStatus, approvedStatusOptions } from "../shared/business.model";
 import { AddButton } from "@/shared";
 import { Panel } from "@/shared";
-import { CustomFilter } from "@/shared";
+import { PanelFilter } from "@/shared";
 import { filterUses, rangerItems, sortItems } from "./filterItem";
 import { SortOrder } from "@/shared/constants/enum";
 import { DateRangeFilter } from "@/shared";
@@ -140,7 +140,7 @@ export const QuotationPage: React.FC = () => {
             endDate={endAt}
             onRangeChange={pageAction.handleDateRangerChange}
           />
-          <CustomFilter
+          <PanelFilter
             filterActive={isFilterActive}
             sortItems={sortItems}
             sortValue={{ sortBy, sortOrder }}

@@ -53,4 +53,5 @@ export {
   ClipboardDocumentCheckIcon,
   ArrowsPointingInIcon,
   TagIcon,
+  WalletIcon,
 } from "@heroicons/react/24/outline";

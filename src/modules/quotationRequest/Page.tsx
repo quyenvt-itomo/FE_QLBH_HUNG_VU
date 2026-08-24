@@ -7,7 +7,7 @@ import { useQuotationRequestHandlers } from "./quotationRequest.handlers";
 import { Panel } from "@/shared";
 import { SearchInput } from "@/shared";
 import { DateRangeFilter } from "@/shared";
-import { CustomFilter } from "@/shared";
+import { PanelFilter } from "@/shared";
 import { QuotationRequestTable } from "./components/QuotationRequestTable";
 import { QuotationRequestDetailModal } from "./components/QuotationRequestDetailModal";
 import { sortItems, filterUses, rangerItems } from "./filterItem";
@@ -86,7 +86,7 @@ const QuotationRequestPage: React.FC = () => {
             endDate={endAt}
             onRangeChange={pageAction.handleDateRangerChange}
           />
-          <CustomFilter
+          <PanelFilter
             filterActive={isFilterActive}
             sortItems={sortItems}
             sortValue={{ sortBy, sortOrder }}

@@ -10,7 +10,7 @@ import { PurchaseTable, AddUpdatePurchaseModal, PurchaseDetailModal } from "./co
 import { approvedStatusLiteItems } from "../shared/business.model";
 import { Tabs } from "antd";
 import { DateRangeFilter } from "@/shared";
-import { CustomFilter } from "@/shared";
+import { PanelFilter } from "@/shared";
 import { filterUses, rangerItems, sortItems } from "./filterItem";
 import { usePurchaseHandlers } from "./purchase.handlers";
 import { SortOrder } from "@/shared/constants/enum";
@@ -130,7 +130,7 @@ const PurchasePage: React.FC = () => {
             endDate={endAt}
             onRangeChange={pageAction.handleDateRangerChange}
           />
-          <CustomFilter
+          <PanelFilter
             filterActive={isFilterActive}
             sortItems={sortItems}
             sortValue={{ sortBy, sortOrder }}

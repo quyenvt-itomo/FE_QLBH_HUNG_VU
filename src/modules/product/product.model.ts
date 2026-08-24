@@ -1,9 +1,12 @@
 import { Entity } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { Attribute } from "../attribute/attribute.model";
+import { AttributeType } from "../attribute/attribute.enum";
+import { FilterKey, SortItem } from "@/shared";
 
 export interface ProductQuery extends ApiRequestQuery {
   groupId?: string;
+  productCategoryIds?: string[];
 }
 
 /** Legacy screen grouping; BE stores this as Attribute.groupId. */
@@ -23,9 +26,9 @@ export const productTypeOptions = Object.entries(productTypeMap).map(([value, la
   label,
 }));
 export const productGroupAttributeMap: Record<ProductType, any> = {
-  [ProductType.FINISHED]: "finished_group",
-  [ProductType.MAIN_MATERIAL]: "main_material_group",
-  [ProductType.SUB_MATERIAL]: "sub_material_group",
+  [ProductType.FINISHED]: AttributeType.PRODUCT_GROUP,
+  [ProductType.MAIN_MATERIAL]: AttributeType.PRODUCT_GROUP,
+  [ProductType.SUB_MATERIAL]: AttributeType.PRODUCT_GROUP,
 };
 export function productLabel(type: ProductType, base: string): string {
   return `${base} ${(productTypeMap[type] || type).toLowerCase()}`;
@@ -46,6 +49,8 @@ export interface ProductStockMetadata {
 export interface Product extends Entity {
   groupId: string | null;
   group?: Attribute | null;
+  brandId: string | null;
+  brand?: Attribute | null;
   code: string;
   name: string;
   baseUnitId: string | null;
@@ -85,3 +90,17 @@ export interface ProductPriceHistory extends Entity {
   unit?: Attribute | null;
   pricePerUnit?: number;
 }
+
+export const sortItems: SortItem[] = [
+  { label: "Ngày tạo", value: "createAt", ascLabel: "Cũ nhất", descLabel: "Mới nhất" },
+  { label: "Mã hàng", value: "code", ascLabel: "A → Z", descLabel: "Z → A" },
+  { label: "Tên hàng", value: "name", ascLabel: "A → Z", descLabel: "Z → A" },
+  {
+    label: "Tồn kho",
+    value: "stockQuantity",
+    ascLabel: "Tồn ít nhất",
+    descLabel: "Tồn nhiều nhất",
+  },
+];
+
+export const filterUses: FilterKey[] = ["productGroupIds", "brandIds", "locationIds"];

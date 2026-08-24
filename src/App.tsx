@@ -104,7 +104,7 @@ const App: React.FC = () => {
         algorithm: themeMode === "dark" ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
         token: {
           colorPrimary: "#16A34A",
-          borderRadius: 3,
+          // borderRadius: 8,
           controlHeight: 32,
           fontSize: 14,
         },
