@@ -43,7 +43,7 @@ export const AttributeFilter: React.FC<AttributeFilterProps> = ({
             {item.name}
           </span>
           {!currentStore && type === AttributeType.LOCATION && (
-            <span className="text-xs text-muted-foreground">{item.store?.name}</span>
+            <span className="text-2xs text-muted-foreground">CN: {item.store?.name}</span>
           )}
         </div>
       )}
