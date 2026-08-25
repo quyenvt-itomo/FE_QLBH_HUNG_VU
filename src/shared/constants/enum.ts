@@ -3,6 +3,16 @@ import { AdditionalInfo } from "../interfaces/common";
 export const APP_NAME = import.meta.env.VITE_APP_NAME || "iTomo Soft";
 export const DEFAULT_ERROR = "Đã xảy ra lỗi không xác định, vui lòng thử lại sau.";
 
+export enum WeightUnit {
+  g = "g",
+  kg = "kg",
+}
+export const weightUnitMap: Record<WeightUnit, string> = {
+  [WeightUnit.g]: "g",
+  [WeightUnit.kg]: "kg",
+};
+export const weightUnitOptions = getOptionsByMap(weightUnitMap);
+
 export enum TimeFormat {
   TwelveHour = "12",
   TwentyFourHour = "24",
@@ -34,10 +44,7 @@ export const genderMap: Record<Gender, string> = {
   [Gender.FEMALE]: "Nữ",
   [Gender.OTHER]: "Khác",
 };
-export const genderOptions = Object.values(Gender).map((gender) => ({
-  label: genderMap[gender],
-  value: gender,
-}));
+export const genderOptions = getOptionsByMap(genderMap);
 
 export enum CommissionMode {
   PRICE = "PRICE", // Tính hoa hồng dựa trên giá bán
@@ -167,6 +174,7 @@ export enum EntityType {
   EMPLOYEE_CONTRACT = "employeeContract",
   EXCEL_IMPORT = "excelImport",
   ORGANIZATION = "organization",
+  PRODUCT = "product",
 }
 
 export enum ApproveStatus {

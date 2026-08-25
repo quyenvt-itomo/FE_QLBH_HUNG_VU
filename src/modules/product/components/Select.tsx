@@ -1,22 +1,15 @@
 import { MultipleSelectProps, SelectProps } from "@/shared/interfaces/common";
-import { Product, ProductQuery, productTypeMap } from "../product.model";
+import { Product, ProductQuery } from "../product.model";
 import { useProductStore, usePublicProductStore } from "../product.store";
 import { DropdownColumn } from "@/shared/components";
 import { SmartSelect } from "@/shared/components";
 import { useRemoteSelect } from "@/shared/hooks/useRemoteSelect";
 import { SmartMultipleSelect } from "@/shared/components";
-import { ProductTypeTag } from "./Tag";
 
 const columns: DropdownColumn<Product>[] = [
   { label: "Tên hàng", dataIndex: "name", className: "w-64" },
   { label: "Mã hàng", dataIndex: "code", className: "w-24" },
   { label: "ĐVT", dataIndex: ["baseUnit", "name"], className: "w-24 text-center" },
-  {
-    label: "Loại",
-    dataIndex: "type",
-    className: "w-28 text-center",
-    render: (record) => <ProductTypeTag value={record.type} size="sm" />,
-  },
 ];
 
 export const ProductSelect: React.FC<SelectProps<Product, ProductQuery>> = ({

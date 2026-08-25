@@ -68,7 +68,7 @@ const emptyOrder = (type: PosOrderType): Partial<CachedOrder> => ({
   paidAmount: 0,
 });
 
-const getProductPrice = (product: Product) => Number(product.salePrice ?? product.price ?? 0);
+const getProductPrice = (product: Product) => Number(product.salePrice ?? 0);
 
 const calculateTotals = (lines: PosLine[], order: CachedOrder) => {
   const grossAmount = lines.reduce(

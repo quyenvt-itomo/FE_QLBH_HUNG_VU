@@ -56,8 +56,8 @@ export const ExtraUnitList: React.FC<PartialProps> = ({ form }) => {
               return (
                 <div key={key} className="flex gap-2 items-center group relative">
                   <div className="flex border rounded-md overflow-hidden ml-auto">
-                    <div className="w-36 bg-gray-100 px-3 flex items-center border-r text-sm truncate">
-                      1 {unitName} =
+                    <div className="w-36 bg-gray-100 px-3 flex items-center justify-between border-r text-sm truncate">
+                      1 {unitName} <span>=</span>
                     </div>
                     <Form.Item
                       {...restField}
@@ -72,14 +72,14 @@ export const ExtraUnitList: React.FC<PartialProps> = ({ form }) => {
                     </div>
                     <Form.Item
                       {...restField}
-                      name={[name, "pricePerUnit"]}
+                      name={[name, "salePrice"]}
                       noStyle
                       rules={[{ required: true, message: "SL" }]}
                     >
                       <InputMoney
                         className="flex items-center !w-52"
                         variant="borderless"
-                        placeholder="Đơn giá"
+                        placeholder="Đơn giá bán"
                         notRightAlign
                         suffix={
                           <span className="text-gray-400 italic text-xs">VNĐ/{unitName}</span>

@@ -1,94 +1,96 @@
-import { Entity } from "@/shared/base/entity";
+import { Entity, StoreEntity } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { Attribute } from "../attribute/attribute.model";
-import { AttributeType } from "../attribute/attribute.enum";
 import { FilterKey, SortItem } from "@/shared/interfaces";
-
+import { WeightUnit } from "@/shared/constants";
+import { File } from "@/shared/interfaces/file";
 export interface ProductQuery extends ApiRequestQuery {
   groupId?: string;
   productCategoryIds?: string[];
-}
-
-/** Legacy screen grouping; BE stores this as Attribute.groupId. */
-export enum ProductType {
-  FINISHED = "finished",
-  MAIN_MATERIAL = "main_material",
-  SUB_MATERIAL = "sub_material",
-}
-export const productTypeMap: Record<ProductType, string> = {
-  [ProductType.FINISHED]: "Thành phẩm",
-  [ProductType.MAIN_MATERIAL]: "Nguyên liệu chính",
-  [ProductType.SUB_MATERIAL]: "Nguyên liệu phụ",
-};
-export const productTypeOptions = Object.entries(productTypeMap).map(([value, label]) => ({
-  key: value,
-  value,
-  label,
-}));
-export const productGroupAttributeMap: Record<ProductType, any> = {
-  [ProductType.FINISHED]: AttributeType.PRODUCT_GROUP,
-  [ProductType.MAIN_MATERIAL]: AttributeType.PRODUCT_GROUP,
-  [ProductType.SUB_MATERIAL]: AttributeType.PRODUCT_GROUP,
-};
-export function productLabel(type: ProductType, base: string): string {
-  return `${base} ${(productTypeMap[type] || type).toLowerCase()}`;
 }
 
 export interface ProductSnapshot {
   id: string;
   code: string;
   name: string;
-  type?: ProductType;
 }
-
-export interface ProductStockMetadata {
+export interface StockMetadata {
   total: { quantity: number; value: number };
   byStore: Record<string, { quantity: number; value: number }>;
 }
 
 export interface Product extends Entity {
-  groupId: string | null;
-  group?: Attribute | null;
-  brandId: string | null;
-  brand?: Attribute | null;
   code: string;
+  barcode: string | null;
   name: string;
+  description: string | null;
+
+  image?: File[];
+
+  groupId: string | null;
+  group: Attribute | null;
+
+  brandId: string | null;
+  brand: Attribute | null;
+
   baseUnitId: string | null;
-  baseUnit?: Attribute | null;
-  salePrice: number;
-  /** @deprecated use salePrice */
-  price: number;
-  /** @deprecated pricing tax is no longer a Product field */
-  taxRate?: number;
-  /** @deprecated product grouping is represented by groupId */
-  type?: ProductType;
-  isPublic?: boolean;
-  stockMetadata?: ProductStockMetadata | null;
-  isSaling: boolean;
-  extraUnits?: ProductExtraUnit[];
-  priceHistories?: ProductPriceHistory[];
+  baseUnit: Attribute | null;
+
+  salePrice: number; // Giá bán/ĐVT cơ bản
+
+  weight: number | null; // Trọng lượng/ĐVT cơ bản
+  weightUnit: WeightUnit; // ĐVT trọng lượng/ĐVT cơ bản
+
+  stockMetadata: StockMetadata;
+
+  // * Đơn vị quy đổi
+  extraUnits: ProductExtraUnit[];
+
+  // * Lịch sử giá vốn
+  // Price history is accounting/reporting data. Never cascade-delete it with a product.
+  priceHistories: ProductPriceHistory[];
+
+  // * Thông tin tại các cửa hàng
+  storeProducts: StoreProduct[];
+
+  // TODO: More fields
+  stockQuantity?: number;
+  stockValue?: number;
 }
 
 export interface ProductExtraUnit extends Entity {
   productId: string;
+  product: Product;
+
   unitId: string;
-  unit?: Attribute | null;
+  unit: Attribute | null;
+
   conversionRate: number;
-  salePrice: number;
-  /** @deprecated use salePrice */
-  pricePerUnit?: number;
+
+  salePrice: number; // Giá bán/ĐVT quy đổi
 }
 
-export interface ProductPriceHistory extends Entity {
-  storeId: string;
-  productId: string | null;
-  productSnapshot?: ProductSnapshot | null;
-  code: string;
-  costPrice: number;
-  deltaCostPrice: number;
-  unitId?: string;
-  unit?: Attribute | null;
-  pricePerUnit?: number;
+export interface ProductPriceHistory extends StoreEntity {
+  code: string; // mã phiếu
+
+  productId: string;
+  product: Product;
+
+  costPrice: number; // Giá vốn/ĐVT cơ bản
+
+  deltaCostPrice: number; // = costPrice - costPriceBefore, có dấu: +tăng, -giảm
+}
+
+export interface StoreProduct extends StoreEntity {
+  productId: string;
+  product: Product;
+
+  costPrice: number; // Giá vốn tại cửa hàng
+
+  isSelling: boolean; // Đang bán tại cửa hàng
+
+  locationId: string | null; // Vị trí kho/kệ
+  location: Attribute | null;
 }
 
 export const sortItems: SortItem[] = [
@@ -102,5 +104,7 @@ export const sortItems: SortItem[] = [
     descLabel: "Tồn nhiều nhất",
   },
 ];
+
+export const rangerItems: SortItem[] = [];
 
 export const filterUses: FilterKey[] = ["productGroupIds", "brandIds", "locationIds"];

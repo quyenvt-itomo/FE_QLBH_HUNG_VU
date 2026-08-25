@@ -12,3 +12,4 @@ export * from "./InputSettingPrice";
 export * from "./OrderDiscountInput";
 export * from "./PhoneInput";
 export * from "./SearchInput";
+export * from "./TextEditor";

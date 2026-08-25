@@ -18,13 +18,11 @@ import { removeVietnameseTones } from "@/shared/utils/search.util";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { AttributeTreeManagerModal } from "./AttributeTreeManagerModal";
 
-interface AttributeManagerSelectProps extends SelectProps<Attribute, AttributeQuery> {
+interface AttributeSelectProps extends SelectProps<Attribute, AttributeQuery> {
   type: AttributeType;
-  noBorder?: boolean;
-  hideOptions?: Attribute[];
 }
 
-export const AttributeManagerSelect: React.FC<AttributeManagerSelectProps> = ({
+export const AttributeManagerSelect: React.FC<AttributeSelectProps> = ({
   value,
   type,
   defaultData,
@@ -32,7 +30,6 @@ export const AttributeManagerSelect: React.FC<AttributeManagerSelectProps> = ({
   ref,
   className,
   disabled,
-  noBorder,
   hideOptions,
   onChange,
   onChangeData,
@@ -117,7 +114,6 @@ export const AttributeManagerSelect: React.FC<AttributeManagerSelectProps> = ({
         ref={ref}
         type={type}
         disabled={disabled}
-        noBorder={noBorder}
         hideOptions={hideOptions}
         {...rest}
       />
@@ -186,14 +182,13 @@ export const AttributeMultipleSelect: React.FC<AttributeMultipleSelectProps> = (
   );
 };
 
-export const ProductGroupSelect: React.FC<Omit<AttributeManagerSelectProps, "type">> = ({
+export const ProductGroupSelect: React.FC<Omit<AttributeSelectProps, "type">> = ({
   value,
   defaultData,
   placeholder,
   ref,
   className,
   disabled,
-  noBorder,
   hideOptions,
   onChange,
   onChangeData,
@@ -278,9 +273,7 @@ export const ProductGroupSelect: React.FC<Omit<AttributeManagerSelectProps, "typ
         searchValue={searchValue}
         onSearch={setSearchValue}
         suffixIcon={<ChevronDownIcon className="h-3.5" />}
-        className={`z-10 h-8 ${isLockManager ? "" : "rounded-e-none"} ${
-          noBorder ? "border-none h-12" : ""
-        }`}
+        className={`z-10 h-8 ${isLockManager ? "" : "rounded-e-none"}`}
         style={{ width: isLockManager ? "100%" : "calc(100% - 36px)" }}
         filterTreeNode={(input, node) =>
           !!node?.title &&

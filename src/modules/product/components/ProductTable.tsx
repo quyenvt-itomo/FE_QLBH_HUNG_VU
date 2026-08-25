@@ -1,20 +1,17 @@
 import React, { useMemo } from "react";
 import { TableColumnConfig, ObjectTableProps } from "@/shared/components";
-import { Product, ProductType, productLabel, productTypeMap } from "../product.model";
-import { formatMoney, formatPercentage } from "@/shared/utils/number.util";
-import { ProductTypeTag } from "./Tag";
-import { TableBooleanCell } from "@/shared/components";
+import { Product } from "../product.model";
+import { formatMoney } from "@/shared/utils/number.util";
 
 interface Props extends ObjectTableProps {
-  type: ProductType;
   onViewDetail?: (r: Product) => void;
 }
 
-export const ProductTable: React.FC<Props> = ({ type, onViewDetail, ...rest }) => {
+export const ProductTable: React.FC<Props> = ({ onViewDetail, ...rest }) => {
   const columns: any = useMemo(
     () => [
       {
-        title: `Mã ${productTypeMap[type].toLowerCase()}`,
+        title: "Mã hàng",
         dataIndex: "code",
         key: "code",
         width: 130,
@@ -32,15 +29,8 @@ export const ProductTable: React.FC<Props> = ({ type, onViewDetail, ...rest }) =
           </span>
         ),
       },
-      { title: productLabel(type, "Tên"), dataIndex: "name", key: "name", width: 220 },
-      {
-        title: "Loại",
-        dataIndex: "type",
-        key: "type",
-        width: 80,
-        align: "center",
-        render: (val: any) => <ProductTypeTag value={val} />,
-      },
+      { title: "Tên hàng", dataIndex: "name", key: "name", width: 220 },
+
       {
         title: "ĐVT",
         dataIndex: ["baseUnit", "name"],
@@ -49,38 +39,22 @@ export const ProductTable: React.FC<Props> = ({ type, onViewDetail, ...rest }) =
         width: 80,
       },
       {
-        title: "Giá",
-        dataIndex: "price",
-        key: "price",
+        title: "Giá bán",
+        dataIndex: "salePrice",
+        key: "salePrice",
         width: 130,
         align: "right",
         render: (v: number) => (v != null ? formatMoney(v) : "--"),
       },
-      {
-        title: "%VAT",
-        dataIndex: "taxRate",
-        key: "taxRate",
-        width: 80,
-        align: "right",
-        render: (v: number) => formatPercentage(v),
-      },
-      {
-        title: "Công khai",
-        dataIndex: "isPublic",
-        key: "isPublic",
-        width: 90,
-        align: "center",
-        render: (v: boolean) => <TableBooleanCell value={v} />,
-      },
       { title: "Ghi chú", dataIndex: "note", key: "note", width: 200, ellipsis: true },
     ],
-    [type, onViewDetail],
+    [onViewDetail],
   );
 
   return (
     <TableColumnConfig
       columns={columns}
-      itemName={productTypeMap[type]}
+      itemName="hàng hóa"
       tableKey="product-table"
       onViewDetail={onViewDetail}
       {...rest}

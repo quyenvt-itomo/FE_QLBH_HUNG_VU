@@ -269,7 +269,6 @@ export type Filter = {
 export type RangeOperator = "Gte" | "Gt" | "Eq" | "Lte" | "Lt";
 
 export type RangerKey =
-  // TODO: PRODUCT
   | "taxRate"
   | "costPrice"
   | "price"
@@ -343,7 +342,10 @@ export type RangerKey =
   | "difference"
   | "netCashFlow"
   | "currentBalance"
-  | "remainingQuantity";
+  | "remainingQuantity"
+
+  // TODO: Common
+  | "createdAt";
 
 export type Ranger = {
   [key in `${RangerKey}${RangeOperator}`]?: number;

@@ -12,7 +12,6 @@ import { filterUses, rangerItems, sortItems } from "./filterItem";
 import { useState } from "react";
 import { SortOrder } from "@/shared/constants/enum";
 import { Tabs } from "antd";
-import { ProductType } from "../product";
 
 export const InventoryPage: React.FC = () => {
   const navigate = useNavigate();
@@ -74,10 +73,6 @@ export const InventoryPage: React.FC = () => {
     isLockedReport: !!rowData,
     isLockedTransaction: !rowData,
     productId: rowData?.id,
-    types:
-      type === "finished"
-        ? [ProductType.FINISHED]
-        : [ProductType.MAIN_MATERIAL, ProductType.SUB_MATERIAL],
     refType,
     ...filter,
     ...ranger,

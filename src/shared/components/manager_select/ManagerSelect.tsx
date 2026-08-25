@@ -16,7 +16,6 @@ interface ManagerSelectProps<T> extends Omit<SelectProps<string>, "options"> {
   validateFormat?: boolean;
   newItem?: T | null;
   type?: AttributeType;
-  noBorder?: boolean;
   hideOptions?: T[];
   onAdd?: (value: T) => void;
   onDelete?: (data: T) => void;
@@ -35,7 +34,6 @@ export const ManagerSelect = <T extends { id: string; name: string }>({
   type,
   newItem,
   disabled,
-  noBorder,
   hideOptions,
   onAdd,
   onEdit,
@@ -88,7 +86,7 @@ export const ManagerSelect = <T extends { id: string; name: string }>({
         onSearch={setSearchValue}
         value={value}
         loading={loading}
-        className={`${CLASSNAME.inputHeight} ${isLockManager ? "" : "rounded-e-none"} z-10 ${noBorder ? "border-none h-12" : ""}`}
+        className={`${CLASSNAME.inputHeight} ${isLockManager ? "" : "rounded-e-none"} z-10`}
         style={{ width: isLockManager ? "100%" : "calc(100% - 36px)" }}
         suffixIcon={<ChevronDownIcon className="h-3.5" />}
         filterOption={(input, option) => {

@@ -15,14 +15,9 @@ import { DropdownAction } from "@/shared/components";
 
 import "./index.css";
 import { useProductHandlers } from "./product.handlers";
-import { filterUses, Product, ProductType, productTypeOptions, sortItems } from "./product.model";
+import { filterUses, Product, sortItems } from "./product.model";
 import { useProductPriceHistoryStore, useProductStore } from "./product.store";
-import {
-  ProductTable,
-  ProductAddUpdateModal,
-  ProductDetailModal,
-  ProductTypeTag,
-} from "./components";
+import { ProductTable, ProductAddUpdateModal, ProductDetailModal } from "./components";
 
 export const ProductPage: React.FC = () => {
   const {
@@ -50,11 +45,9 @@ export const ProductPage: React.FC = () => {
     filterUses,
   });
 
-  // Type is always known for product - attribute group depends on it
-  const [type, setType] = useState<ProductType>(ProductType.FINISHED);
-
+  // Type is always known for product - attribute group depends on
   const { data, loading, creating, updating, errors, pagination, getById, create, update, remove } =
-    useProductStore({ page, size, keyword, sortBy, sortOrder, reload, type, ...filter }, () =>
+    useProductStore({ page, size, keyword, sortBy, sortOrder, reload, ...filter }, () =>
       pageAction.handleClose(),
     );
 
@@ -77,17 +70,18 @@ export const ProductPage: React.FC = () => {
           <AddButton onOpenAdd={handleOpenAdd} />
         </div>
         <Panel>
-          <ProductTable
-            dataSource={data}
-            loading={loading}
-            pagination={pagination}
-            setPage={setPage}
-            setSize={setSize}
-            type={type}
-            onEdit={handleOpenEdit}
-            onViewDetail={handleOpenDetail}
-            onDelete={handleDelete}
-          />
+          <div className="flex flex-col h-full p-1">
+            <ProductTable
+              dataSource={data}
+              loading={loading}
+              pagination={pagination}
+              setPage={setPage}
+              setSize={setSize}
+              onEdit={handleOpenEdit}
+              onViewDetail={handleOpenDetail}
+              onDelete={handleDelete}
+            />
+          </div>
         </Panel>
 
         <ProductAddUpdateModal
@@ -95,7 +89,6 @@ export const ProductPage: React.FC = () => {
           editData={rowData}
           loading={creating || updating}
           errors={errors}
-          type={type}
           onAdd={create}
           onEdit={update}
           onClose={() => pageAction.handleClose(false)}
@@ -143,7 +136,6 @@ export const ProductPriceHistoryPage: React.FC = () => {
     startAt,
     endAt,
     reload,
-    type: type === "all" ? undefined : (type as ProductType),
   });
 
   const { updating, errors, getById, update } = useProductStore({ isLocked: true }, () => {
@@ -183,11 +175,11 @@ export const ProductPriceHistoryPage: React.FC = () => {
       for (const ph of product.priceHistories || []) {
         if (!ph.createdAt) continue;
         const date = dayjs(ph.createdAt).format("YYYY-MM-DD");
-        const unitId = ph.unitId || product.baseUnitId || "base";
+        const unitId = product.baseUnitId || "base";
         if (!byUnit[unitId]) byUnit[unitId] = {};
         // Keep latest price for that unit on that date (last one wins since sorted DESC)
         if (!(date in byUnit[unitId])) {
-          byUnit[unitId][date] = ph.pricePerUnit ?? ph.costPrice;
+          byUnit[unitId][date] = ph.costPrice;
         }
       }
 
@@ -246,15 +238,6 @@ export const ProductPriceHistoryPage: React.FC = () => {
         align: "center",
         ellipsis: true,
       },
-      {
-        title: "Lo?i",
-        dataIndex: "type",
-        key: "type",
-        width: 80,
-        align: "center",
-        ellipsis: true,
-        render: (v: ProductType) => <ProductTypeTag value={v} />,
-      },
     ];
 
     const dateCols = dateColumns.map((date) => ({
@@ -305,12 +288,6 @@ export const ProductPriceHistoryPage: React.FC = () => {
   return (
     <div className="flex flex-col h-full w-full gap-1">
       <div className="flex justify-between items-start gap-3">
-        <Tabs
-          activeKey={type}
-          onChange={(key) => pageAction.handleTypeChange(key as ProductType)}
-          items={[{ label: "T?t c?", key: "all" }, ...productTypeOptions]}
-          className="custom-tabs"
-        />
         <div className="flex items-center gap-3">
           <DateRangeFilter
             startDate={startAt}

@@ -32,9 +32,6 @@ export function buildProductSnapshot(product: Product) {
     id: product.id,
     code: product.code,
     name: product.name,
-    type: product.type,
-    baseUnitId: product.baseUnitId,
-    price: product.price,
   };
 }
 
@@ -60,12 +57,12 @@ export function collectUnits(product: Product, defaultUnit?: Attribute | null): 
 
 export function getDefaultPricePerUnit(product: Product, unitId: string): number | undefined {
   if (product.baseUnitId === unitId) {
-    return product.price;
+    return product.salePrice;
   }
 
   const extraUnit = product.extraUnits?.find((eu) => eu.unitId === unitId);
   if (extraUnit) {
-    return extraUnit.pricePerUnit;
+    return extraUnit.salePrice;
   }
 
   return undefined;

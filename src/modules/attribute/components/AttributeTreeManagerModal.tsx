@@ -99,12 +99,14 @@ export const AttributeTreeManagerModal: React.FC<
   }, [open, addForm, editForm]);
 
   useEffect(() => {
-    if (!selectedValue) {
-      setSelectedRowIndex(undefined);
-      return;
-    }
+    const nextIndex = selectedValue
+      ? sortedData.findIndex((item) => item.id === selectedValue)
+      : -1;
+    const nextSelectedRowIndex = nextIndex >= 0 ? nextIndex : undefined;
 
-    setSelectedRowIndex(sortedData.findIndex((item) => item.id === selectedValue));
+    setSelectedRowIndex((current) =>
+      current === nextSelectedRowIndex ? current : nextSelectedRowIndex,
+    );
   }, [selectedValue, sortedData]);
 
   const resetAdd = () => {

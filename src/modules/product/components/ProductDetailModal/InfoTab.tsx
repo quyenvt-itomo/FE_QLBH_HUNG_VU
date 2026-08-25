@@ -3,7 +3,6 @@ import { Tag } from "antd";
 import { InfoField } from "@/shared/components";
 import { Product } from "../../product.model";
 import { formatMoney } from "@/shared/utils/number.util";
-import { ProductTypeTag } from "../Tag";
 import { CubeIcon } from "@heroicons/react/24/solid";
 
 const SummaryCard: React.FC<{
@@ -40,7 +39,6 @@ export const InfoTab: React.FC<{ data: Product }> = ({ data }) => (
               <Tag color="blue" className="font-mono text-xs">
                 {data.code}
               </Tag>
-              <ProductTypeTag value={data.type} />
             </div>
           </div>
         </div>
@@ -50,15 +48,6 @@ export const InfoTab: React.FC<{ data: Product }> = ({ data }) => (
             <span className="font-mono text-blue-600">{data.code}</span>
           </InfoField>
           <InfoField label="Đơn vị tính">{data.baseUnit?.name}</InfoField>
-          <InfoField label="Giá">{formatMoney(data.price)}</InfoField>
-          <InfoField label="%VAT">{data.taxRate != null ? `${data.taxRate}%` : null}</InfoField>
-          <InfoField label="Công khai">
-            <Tag color={data.isPublic ? "blue" : "default"}>{data.isPublic ? "Có" : "Không"}</Tag>
-          </InfoField>
-          <InfoField label="Nhóm hàng hóa">{data.group?.name}</InfoField>
-          <InfoField label="Ghi chú" fullWidth>
-            {data.note}
-          </InfoField>
         </div>
 
         {data.extraUnits && data.extraUnits.length > 0 && (
@@ -71,9 +60,9 @@ export const InfoTab: React.FC<{ data: Product }> = ({ data }) => (
                   <span className="text-gray-400">
                     1 {eu.unit?.name} = {eu.conversionRate} {data.baseUnit?.name}
                   </span>
-                  {eu.pricePerUnit != null && (
+                  {eu.salePrice != null && (
                     <span className="text-sm text-gray-600">
-                      Giá: {formatMoney(eu.pricePerUnit)}
+                      Giá bán: {formatMoney(eu.salePrice)}
                     </span>
                   )}
                 </div>
