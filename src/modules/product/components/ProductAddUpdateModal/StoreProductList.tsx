@@ -4,11 +4,13 @@ import { MagnifyingGlassIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 import { AppSwitch, FormSection, InputMoney, Label } from "@/shared/components";
 import { StoreMultipleSelect } from "@/modules/store/components/Select";
-import { AttributeManagerSelect } from "@/modules/attribute/components/Select";
+import { AttributeManagerMultipleSelect } from "@/modules/attribute/components/Select";
 import { AttributeType } from "@/modules/attribute/attribute.enum";
 import { Product } from "../../product.model";
 import { useAutoResetItem } from "@/shared/hooks/useAutoResetItem";
 import { Store } from "@/shared/base/entity";
+import { collectLocationsFromStoreProducts } from "../../product.util";
+import { useGlobalData } from "@/shared/hooks/useGlobalData";
 
 interface StoreProductListProps {
   form: FormInstance<Product>;
@@ -16,8 +18,12 @@ interface StoreProductListProps {
 
 export const StoreProductList: React.FC<StoreProductListProps> = ({ form }) => {
   const storeProducts = Form.useWatch("storeProducts", form) || [];
+  const { currentStore } = useGlobalData();
   const [selectedStore, setSelectedStore] = useAutoResetItem<Store>();
   const hideStores = storeProducts.map((item) => item?.store).filter(Boolean);
+  const currentStoreConfigured = Boolean(
+    currentStore && storeProducts.some((item) => item?.storeId === currentStore.id),
+  );
 
   return (
     <Form.List name="storeProducts">
@@ -26,6 +32,31 @@ export const StoreProductList: React.FC<StoreProductListProps> = ({ form }) => {
           title="Chi nhánh kinh doanh"
           subtitle={
             <div className="ml-auto flex w-96">
+              {currentStore ? (
+                <button
+                  type="button"
+                  disabled={currentStoreConfigured}
+                  className="h-8 rounded-md border border-primary px-3 text-sm text-primary disabled:cursor-not-allowed disabled:border-gray-300 disabled:text-gray-400"
+                  onClick={() => {
+                    if (currentStoreConfigured) return;
+                    // This branch is scoped to the active store, so it is safe
+                    // to add only the current store without exposing others.
+                    const fields = form.getFieldValue("storeProducts") || [];
+                    form.setFieldValue("storeProducts", [
+                      ...fields,
+                      {
+                        storeId: currentStore.id,
+                        store: currentStore,
+                        costPrice: 0,
+                        isSelling: true,
+                        locationIds: [],
+                      },
+                    ]);
+                  }}
+                >
+                  {currentStoreConfigured ? "Đã cấu hình cửa hàng" : "Thêm cửa hàng hiện tại"}
+                </button>
+              ) : (
               <StoreMultipleSelect
                 value={selectedStore ? [selectedStore.id] : []}
                 prefix={<MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />}
@@ -42,10 +73,11 @@ export const StoreProductList: React.FC<StoreProductListProps> = ({ form }) => {
                     store,
                     costPrice: 0,
                     isSelling: true,
-                    locationId: null,
+                    locationIds: [],
                   });
                 }}
               />
+              )}
             </div>
           }
         >
@@ -58,9 +90,15 @@ export const StoreProductList: React.FC<StoreProductListProps> = ({ form }) => {
 
             {fields.map(({ key, name, ...restField }) => {
               const item = storeProducts[name] || {};
+              const canEdit = !currentStore || item.storeId === currentStore.id;
               return (
-                <div key={key} className="flex items-center gap-3 rounded-md border px-3 pt-2">
-                  <div className="min-w-48 flex-1">
+                <div
+                  key={key}
+                  className={`flex items-center gap-3 rounded-md border px-4 pt-2 ${
+                    canEdit ? "" : "bg-gray-50 opacity-70"
+                  }`}
+                >
+                  <div className="w-48">
                     <div className="font-medium">{item.store?.name || item.storeId}</div>
                     {item.store?.code && (
                       <div className="text-xs text-gray-400">{item.store.code}</div>
@@ -74,21 +112,32 @@ export const StoreProductList: React.FC<StoreProductListProps> = ({ form }) => {
                     className="mb-0 w-44"
                     rules={[{ required: true, message: "Nhập giá vốn" }]}
                   >
-                    <InputMoney notRightAlign />
+                    <InputMoney notRightAlign disabled={!canEdit} />
                   </Form.Item>
 
                   <Form.Item
                     {...restField}
-                    name={[name, "locationId"]}
+                    name={[name, "locationIds"]}
                     label={<Label title="Vị trí" />}
-                    className="mb-0 w-56"
+                    className="w-96"
                   >
-                    <AttributeManagerSelect
+                    <AttributeManagerMultipleSelect
                       query={{ storeId: item.storeId }}
                       type={AttributeType.LOCATION}
-                      defaultData={item.location}
-                      onChangeData={(location) =>
-                        form.setFieldValue(["storeProducts", name, "location"], location)
+                      disabled={!canEdit}
+                      value={
+                        item.locationIds ||
+                        (item.locations || []).map((item: any) => item.locationId).filter(Boolean)
+                      }
+                      defaultData={collectLocationsFromStoreProducts(item)}
+                      onChangeData={(locations) =>
+                        form.setFieldValue(
+                          ["storeProducts", name, "locations"],
+                          locations.map((location) => ({
+                            locationId: location.id,
+                            location,
+                          })),
+                        )
                       }
                     />
                   </Form.Item>
@@ -98,15 +147,16 @@ export const StoreProductList: React.FC<StoreProductListProps> = ({ form }) => {
                     name={[name, "isSelling"]}
                     valuePropName="checked"
                     label={<Label title="Đang bán" />}
-                    className="mb-0"
+                    className="w-60"
                   >
-                    <AppSwitch label="Hiển thị khi bán hàng tại cửa hàng" />
+                    <AppSwitch disabled={!canEdit} label="Hiển thị khi bán hàng" />
                   </Form.Item>
 
                   <button
                     type="button"
-                    className="p-1 text-red-600 hover:text-red-800"
-                    onClick={() => remove(name)}
+                    disabled={!canEdit}
+                    className="p-1 text-red-600 hover:text-red-800 disabled:cursor-not-allowed disabled:text-gray-400"
+                    onClick={() => canEdit && remove(name)}
                     aria-label="Xóa chi nhánh"
                   >
                     <TrashIcon className="h-5 w-5" />

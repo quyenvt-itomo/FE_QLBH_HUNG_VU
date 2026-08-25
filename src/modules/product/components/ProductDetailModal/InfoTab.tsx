@@ -56,7 +56,12 @@ export const InfoTab: React.FC<{ data: Product }> = ({ data }) => (
             <div className="flex flex-col gap-2">
               {data.extraUnits.map((eu, idx) => (
                 <div key={idx} className="flex items-center gap-4 bg-gray-50 rounded-lg p-3">
-                  <span className="font-medium text-sm">{eu.unit?.name || eu.unitId}</span>
+                  <span className="font-medium text-sm">
+                    {eu.unit?.name || eu.unitId}
+                    {eu.isPurchaseUnit && (
+                      <span className="ml-2 text-xs text-primary">(ĐVT nhập)</span>
+                    )}
+                  </span>
                   <span className="text-gray-400">
                     1 {eu.unit?.name} = {eu.conversionRate} {data.baseUnit?.name}
                   </span>

@@ -1,7 +1,7 @@
 import React from "react";
 import { Form } from "antd";
 import { MagnifyingGlassIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { FormSection, Label } from "@/shared/components";
+import { AppSwitch, FormSection, Label } from "@/shared/components";
 import { Attribute } from "@/modules/attribute/attribute.model";
 import { AttributeManagerMultipleSelect } from "@/modules/attribute/components/Select";
 import { AttributeType } from "@/modules/attribute/attribute.enum";
@@ -38,7 +38,7 @@ export const ExtraUnitList: React.FC<PartialProps> = ({ form }) => {
                     const unit = values?.[0];
                     if (!unit) return;
                     setSelectedUnit(unit);
-                    add({ unitId: unit.id, unit, conversionRate: 1 });
+                    add({ unitId: unit.id, unit, conversionRate: 1, isPurchaseUnit: false });
                   }}
                 />
               </div>
@@ -54,7 +54,7 @@ export const ExtraUnitList: React.FC<PartialProps> = ({ form }) => {
                 const unitName = item.unit?.name || "—";
 
                 return (
-                  <div key={key} className="flex items-center gap-3 rounded-md border px-3 pt-2">
+                  <div key={key} className="flex items-center gap-3 rounded-lg border px-4 pt-2">
                     <div className="w-48">
                       <div className="font-medium">
                         {item.unit?.name || item.unitId || unitName}
@@ -87,6 +87,27 @@ export const ExtraUnitList: React.FC<PartialProps> = ({ form }) => {
                         suffix={
                           <span className="text-gray-400 italic text-xs">VNĐ/{unitName}</span>
                         }
+                      />
+                    </Form.Item>
+
+                    <Form.Item
+                      {...restField}
+                      name={[name, "isPurchaseUnit"]}
+                      valuePropName="checked"
+                      label={<Label title="ĐVT nhập hàng" />}
+                      className="w-72"
+                    >
+                      <AppSwitch
+                        label="Tự động chọn khi nhập hàng"
+                        onChange={(val) => {
+                          if (!val) return;
+                          form.setFieldsValue({
+                            extraUnits: extraUnits.map((extraUnit, index) => ({
+                              ...extraUnit,
+                              isPurchaseUnit: index === name,
+                            })),
+                          });
+                        }}
                       />
                     </Form.Item>
 

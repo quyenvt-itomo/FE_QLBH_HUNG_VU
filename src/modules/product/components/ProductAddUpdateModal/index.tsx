@@ -89,7 +89,17 @@ export const ProductAddUpdateModal: React.FC<AddUpdateModalProps<Product>> = ({
           return;
         }
 
-        if (editData) form.setFieldsValue(parseFormDataDates(editData));
+        if (editData) {
+          const storeProducts = editData.storeProducts?.map((sp) => ({
+            ...sp,
+            locationIds:
+              (sp.locations?.map((loc) => loc.locationId)?.filter(Boolean) as string[]) || [],
+          }));
+          form.setFieldsValue({
+            ...editData,
+            storeProducts,
+          });
+        }
       }}
     >
       <Form
@@ -106,7 +116,7 @@ export const ProductAddUpdateModal: React.FC<AddUpdateModalProps<Product>> = ({
           className="shrink-0 custom-tabs"
           tabBarStyle={{ marginBottom: 16 }}
         />
-        <div className="flex flex-col h-[calc(100%-72px)] py-3 overflow-y-auto scrollbar-hide">
+        <div className="flex flex-col h-[calc(100%-72px)] py-6 overflow-y-auto scrollbar-hide">
           {/* Các panel luôn được render; chỉ ẩn panel không active để Form.List/Form.Item giữ nguyên DOM. */}
           <div className={activeTab === "info" ? "" : "hidden"}>
             <div className="flex flex-col gap-2">
@@ -198,7 +208,7 @@ export const ProductAddUpdateModal: React.FC<AddUpdateModalProps<Product>> = ({
                     <div className="flex w-full items-end">
                       <Form.Item
                         name="weight"
-                        className="w-[calc(100%-80px)]"
+                        className="w-[calc(100%-64px)]"
                         label={<Label title="Trọng lượng" />}
                       >
                         <InputQuantity
@@ -207,10 +217,10 @@ export const ProductAddUpdateModal: React.FC<AddUpdateModalProps<Product>> = ({
                           placeholder="Trọng lượng theo ĐVT"
                         />
                       </Form.Item>
-                      <Form.Item name="weightUnit" className="w-20">
+                      <Form.Item name="weightUnit" className="w-16">
                         <AppSelect
                           options={weightUnitOptions}
-                          className="!w-20 [&_.ant-select-selector]:rounded-s-none"
+                          className="!w-full [&_.ant-select-selector]:rounded-s-none"
                           suffixIcon={null}
                           allowClear={false}
                         />

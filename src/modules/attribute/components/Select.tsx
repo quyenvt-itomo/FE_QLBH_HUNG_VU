@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { App, TreeSelect } from "antd";
 import { Attribute, AttributeQuery } from "../attribute.model";
-import {
-  AttributeType,
-  attributeTypeMap,
-  isStoreScopedAttributeType,
-} from "../attribute.enum";
+import { AttributeType, attributeTypeMap, isStoreScopedAttributeType } from "../attribute.enum";
 import { MultipleSelectProps, SelectProps } from "@/shared/interfaces/common";
 import { useAttributeStore } from "../attribute.store";
 import {
@@ -394,7 +390,10 @@ export const ProductGroupMultipleSelect: React.FC<
   );
 };
 
-interface AttributeManagerMultipleSelectProps extends MultipleSelectProps<Attribute> {
+interface AttributeManagerMultipleSelectProps extends MultipleSelectProps<
+  Attribute,
+  AttributeQuery
+> {
   type: AttributeType;
 }
 
@@ -405,20 +404,19 @@ export const AttributeManagerMultipleSelect: React.FC<AttributeManagerMultipleSe
   query,
   placeholder,
   ref,
-  disabled,
-  suffixIcon,
-  prefix,
-  hideOptions,
   onChange,
   onChangeData,
   onFocus,
-  onBlur,
+  ...rest
 }) => {
   const { message } = App.useApp();
   const { currentStore } = useGlobalData();
   const [isLocked, setIsLocked] = useState<boolean>(true);
   const [listAttribute, setListAttribute] = useState<Attribute[]>([]);
   const storeId = query?.storeId ?? currentStore?.id;
+
+  const canManage =
+    !query?.storeId || query?.storeId === currentStore?.id || !isStoreScopedAttributeType(type);
 
   const { data, loading, creating, updating, deleting, newItem, create, remove, update } =
     useAttributeStore({
@@ -449,37 +447,40 @@ export const AttributeManagerMultipleSelect: React.FC<AttributeManagerMultipleSe
     setListAttribute([...filtered, ...listAttribute]);
   }, [defaultData, listAttribute]);
 
-  const handleAdd = create
-    ? (data: Attribute) => {
-        if (isStoreScopedAttributeType(type) && !storeId) {
-          message.error("Vui lòng chọn cửa hàng trước khi thêm vị trí");
-          return;
+  const handleAdd =
+    create && canManage
+      ? (data: Attribute) => {
+          if (isStoreScopedAttributeType(type) && !storeId) {
+            message.error("Vui lòng chọn cửa hàng trước khi thêm vị trí");
+            return;
+          }
+
+          create({
+            ...data,
+            type: type,
+            ...(isStoreScopedAttributeType(type) ? { storeId } : {}),
+          });
         }
+      : undefined;
 
-        create({
-          ...data,
-          type: type,
-          ...(isStoreScopedAttributeType(type) ? { storeId } : {}),
-        });
-      }
-    : undefined;
+  const handleEdit =
+    update && canManage
+      ? (data: Attribute) => {
+          update({
+            ...data,
+            type: type,
+            ...(isStoreScopedAttributeType(type) && storeId ? { storeId } : {}),
+          });
+        }
+      : undefined;
 
-  const handleEdit = update
-    ? (data: Attribute) => {
-        update({
-          ...data,
-          type: type,
-          ...(isStoreScopedAttributeType(type) && storeId ? { storeId } : {}),
-        });
-      }
-    : undefined;
-
-  const handleDelete = remove
-    ? (data: Attribute) => {
-        if (!data.id) return;
-        remove(data.id);
-      }
-    : undefined;
+  const handleDelete =
+    remove && canManage
+      ? (data: Attribute) => {
+          if (!data.id) return;
+          remove(data.id);
+        }
+      : undefined;
 
   return (
     <div className="flex flex-row">
@@ -494,7 +495,6 @@ export const AttributeManagerMultipleSelect: React.FC<AttributeManagerMultipleSe
           setIsLocked(false);
           onFocus?.(e);
         }}
-        onBlur={onBlur}
         onDelete={handleDelete}
         onEdit={handleEdit}
         onChange={onChange}
@@ -507,10 +507,7 @@ export const AttributeManagerMultipleSelect: React.FC<AttributeManagerMultipleSe
         }
         ref={ref}
         type={type}
-        disabled={disabled}
-        suffixIcon={suffixIcon}
-        prefix={prefix}
-        hideOptions={hideOptions}
+        {...rest}
       />
     </div>
   );

@@ -61,9 +61,11 @@ export const ProductImageUploadBox: React.FC<ProductImageUploadBoxProps> = ({
     setFileList(defaultFiles.map(toUploadFile));
   }, [defaultFiles]);
 
-  useEffect(() => () => {
-    if (uploadTimeoutRef.current) clearTimeout(uploadTimeoutRef.current);
-  });
+  useEffect(() => {
+    return () => {
+      if (uploadTimeoutRef.current) clearTimeout(uploadTimeoutRef.current);
+    };
+  }, []);
 
   const updateFiles = (nextFiles: File[]) => {
     filesRef.current = nextFiles;
@@ -165,7 +167,6 @@ export const ProductImageUploadBox: React.FC<ProductImageUploadBoxProps> = ({
       setLoading(false);
     }
   };
-
   const mainFile = getMainFile(files);
   const sideFiles = files.filter((file) => file.id !== mainFile?.id).slice(0, 4);
   const sideSlots = Array.from({ length: 4 }, (_, index) => sideFiles[index] || null);

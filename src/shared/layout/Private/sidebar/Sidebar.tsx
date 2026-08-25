@@ -41,7 +41,7 @@ const Sidebar: React.FC<SideBarProps> = ({ items }) => {
     >
       <div className="sidebar-shell">
         <Logo />
-        <div className="sidebar-pos-wrap">
+        <div className="px-3.5 pt-3.5 pb-1.5">
           <Button
             type="primary"
             htmlType="button"

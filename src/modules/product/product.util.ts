@@ -1,5 +1,5 @@
 import { Attribute, DEFAULT_WEIGHT_UNIT } from "../attribute";
-import { Product, ProductSnapshot } from "./product.model";
+import { Product, ProductSnapshot, StoreProduct } from "./product.model";
 
 export function collectProductUnit(product: Product): { id: string; conversionRate: number }[] {
   const units: { id: string; conversionRate: number }[] = [];
@@ -53,6 +53,15 @@ export function collectUnits(product: Product, defaultUnit?: Attribute | null): 
   }
 
   return units;
+}
+
+export function getDefaultPurchaseUnit(product?: Product | null): Attribute | null {
+  if (!product) return null;
+  return (
+    product.extraUnits?.find((extraUnit) => extraUnit.isPurchaseUnit)?.unit ||
+    product.baseUnit ||
+    null
+  );
 }
 
 export function getDefaultPricePerUnit(product: Product, unitId: string): number | undefined {
@@ -132,4 +141,27 @@ export function getPriceInKg(product?: Product): number {
   if (!kgUnit) return 0;
 
   return getDefaultPricePerUnit(product, kgUnit.id) || 0;
+}
+
+export function collectLocations(product: Product): Attribute[] {
+  const result: Attribute[] = [];
+
+  for (const storeProduct of product.storeProducts || []) {
+    const locations = collectLocationsFromStoreProducts(storeProduct);
+    result.push(...locations);
+  }
+
+  return result;
+}
+
+export function collectLocationsFromStoreProducts(storeProducts: StoreProduct): Attribute[] {
+  const result: Attribute[] = [];
+
+  for (const location of storeProducts.locations || []) {
+    if (location.location && !result.find((l) => l.id === location.locationId)) {
+      result.push(location.location);
+    }
+  }
+
+  return result;
 }

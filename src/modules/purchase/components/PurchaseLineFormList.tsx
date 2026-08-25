@@ -2,7 +2,7 @@ import React from "react";
 import { App, Form, FormInstance, Input, Select } from "antd";
 import { FormListTable, FormColumn } from "@/shared/components";
 import { Purchase } from "../purchase.model";
-import { collectProduct, collectUnits } from "@/modules/product/product.util";
+import { collectProduct, collectUnits, getDefaultPurchaseUnit } from "@/modules/product/product.util";
 import { Product } from "@/modules/product/product.model";
 import { ProductMultipleSelect } from "@/modules/product/components/Select";
 import { InputMoney, InputPercentage, InputQuantity } from "@/shared/components";
@@ -182,8 +182,8 @@ export const PurchaseLineFormList: React.FC<Props> = ({ form, errorCells }) => {
                 tempId: randomId(),
                 productId: item.id,
                 product: item,
-                unitId: item.baseUnitId,
-                unit: item.baseUnit,
+                unitId: getDefaultPurchaseUnit(item)?.id || item.baseUnitId,
+                unit: getDefaultPurchaseUnit(item),
                 unitPrice: item.price,
                 taxRate: item.taxRate,
               });

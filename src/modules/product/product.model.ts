@@ -68,6 +68,8 @@ export interface ProductExtraUnit extends Entity {
   conversionRate: number;
 
   salePrice: number; // Giá bán/ĐVT quy đổi
+
+  isPurchaseUnit: boolean;
 }
 
 export interface ProductPriceHistory extends StoreEntity {
@@ -89,7 +91,13 @@ export interface StoreProduct extends StoreEntity {
 
   isSelling: boolean; // Đang bán tại cửa hàng
 
-  locationId: string | null; // Vị trí kho/kệ
+  locationIds: string[];
+  locations: StoreProductLocation[];
+}
+
+export interface StoreProductLocation extends Entity {
+  storeProductId: string;
+  locationId: string | null;
   location: Attribute | null;
 }
 
