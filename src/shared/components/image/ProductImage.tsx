@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Image } from "antd";
-import defaultProduct from "@/shared/assets/defaultProduct.jpg";
 import { EyeIcon } from "@heroicons/react/24/outline";
+
+import defaultProduct from "@/shared/assets/defaultProduct.jpg";
 import { File } from "@/shared/interfaces/file";
 import { buildFileUrl } from "@/shared/utils/url.util";
 
@@ -9,12 +10,17 @@ interface ProductImageProps {
   size?: number;
   image?: File | null;
   preview?: boolean;
+  shape?: "circle" | "square";
 }
 
-const ProductImage: React.FC<ProductImageProps> = ({ image, preview = true, size = 32 }) => {
+const ProductImage: React.FC<ProductImageProps> = ({
+  image,
+  preview = true,
+  size = 32,
+  shape = "circle",
+}) => {
   const [hasError, setHasError] = useState(false);
 
-  // Reset error state when image changes
   useEffect(() => {
     setHasError(false);
   }, [image]);
@@ -22,6 +28,9 @@ const ProductImage: React.FC<ProductImageProps> = ({ image, preview = true, size
   const handleError = () => {
     setHasError(true);
   };
+
+  const radius = size > 40 ? 8 : 4;
+  const borderRadius = shape === "circle" ? "50%" : `${radius}px`;
 
   const thumbnailSrc =
     !hasError && image?.thumbnailUrl
@@ -38,7 +47,7 @@ const ProductImage: React.FC<ProductImageProps> = ({ image, preview = true, size
       style={{
         width: size,
         height: size,
-        borderRadius: "50%",
+        borderRadius,
         overflow: "hidden",
         cursor: "pointer",
       }}
@@ -53,12 +62,21 @@ const ProductImage: React.FC<ProductImageProps> = ({ image, preview = true, size
             ? false
             : preview && {
                 src: fullImageSrc,
-                mask: <EyeIcon style={{ height: Math.max(20, size / 2) }} />,
+                mask: (
+                  <EyeIcon
+                    style={{
+                      height: Math.max(20, size / 2),
+                    }}
+                  />
+                ),
               }
         }
         width={size}
         height={size}
-        style={{ objectFit: "cover", borderRadius: "50%" }}
+        style={{
+          objectFit: "cover",
+          borderRadius,
+        }}
         crossOrigin="anonymous"
         onError={handleError}
       />

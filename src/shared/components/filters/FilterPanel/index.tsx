@@ -6,10 +6,13 @@ import { useGlobalData } from "@/shared/hooks";
 import { Filter, FilterKey } from "@/shared/interfaces";
 import { AllPartnerFilter, CustomerFilter, ShipperFilter, SupplierFilter } from "./PartnerFilter";
 import {
-  CategoryFilter,
+  ProductGroupFilter,
   CustomerGroupFilter,
   ShipperGroupFilter,
   SupplierGroupFilter,
+  UnitFilter,
+  BrandFilter,
+  LocationFilter,
 } from "./AttributeFilter";
 import { FundFilter } from "./FundFilter";
 import { OrderFilter } from "./OrderFilter";
@@ -17,11 +20,11 @@ import { ProductFilter } from "./ProductFilter";
 import { RoleFilter } from "./RoleFilter";
 import { StoreFilter } from "./StoreFilter";
 import { UserFilter } from "./UserFilter";
-import { UnitFilter } from "./UnitFilter";
 
 export interface FilterPanelProps {
   filterUses: FilterKey[];
   filterLabels?: { [key in FilterKey]?: string };
+  defaultOpenAll?: boolean;
 }
 
 type FilterDefinition = {
@@ -47,13 +50,19 @@ const filterMap: Partial<Record<FilterKey, FilterDefinition>> = {
   storeIds: { defaultLabel: "Cửa hàng", component: StoreFilter },
   roleIds: { defaultLabel: "Vai trò", component: RoleFilter },
   productIds: { defaultLabel: "Hàng hóa", component: ProductFilter },
-  productGroupIds: { defaultLabel: "Nhóm hàng hóa", component: CategoryFilter },
+  productGroupIds: { defaultLabel: "Nhóm hàng hóa", component: ProductGroupFilter },
+  brandIds: { defaultLabel: "Thương hiệu", component: BrandFilter },
+  locationIds: { defaultLabel: "Vị trí kho/kệ", component: LocationFilter },
 };
 
-export const FilterPanel: React.FC<FilterPanelProps> = ({ filterUses, filterLabels }) => {
+export const FilterPanel: React.FC<FilterPanelProps> = ({
+  filterUses,
+  filterLabels,
+  defaultOpenAll,
+}) => {
   const { currentStore, filter, handleSetFilter } = useGlobalData();
   const [activeKeys, setActiveKeys] = useState<FilterKey[]>(() =>
-    filterUses.filter((key) => (filter?.[key]?.length ?? 0) > 0),
+    defaultOpenAll ? filterUses : filterUses.filter((key) => (filter?.[key]?.length ?? 0) > 0),
   );
 
   const handleToggle = (keys: string[]) => {
@@ -119,7 +128,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({ filterUses, filterLabe
             }
             className="custom-filter-panel"
           >
-            <div className="pt-2">
+            <div className="pt-2 min-h-16">
               <Component
                 showStore={!currentStore}
                 data={filter?.[key] || []}

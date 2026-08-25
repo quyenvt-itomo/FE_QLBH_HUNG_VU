@@ -1,7 +1,8 @@
 import React, { useMemo } from "react";
-import { TableColumnConfig, ObjectTableProps } from "@/shared/components";
+import { TableColumnConfig, ObjectTableProps, ProductImage } from "@/shared/components";
 import { Product } from "../product.model";
 import { formatMoney } from "@/shared/utils/number.util";
+import { getMainFile } from "@/shared/utils";
 
 interface Props extends ObjectTableProps {
   onViewDetail?: (r: Product) => void;
@@ -29,7 +30,17 @@ export const ProductTable: React.FC<Props> = ({ onViewDetail, ...rest }) => {
           </span>
         ),
       },
-      { title: "Tên hàng", dataIndex: "name", key: "name", width: 220 },
+      {
+        title: "Tên hàng",
+        key: "name",
+        width: 220,
+        render: (r: Product) => (
+          <div className="flex items-center gap-2">
+            <ProductImage image={getMainFile(r.image)} size={28} shape="square" />
+            <span className="truncate">{r.name}</span>
+          </div>
+        ),
+      },
 
       {
         title: "ĐVT",

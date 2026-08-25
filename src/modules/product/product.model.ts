@@ -1,7 +1,7 @@
 import { Entity, StoreEntity } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { Attribute } from "../attribute/attribute.model";
-import { FilterKey, SortItem } from "@/shared/interfaces";
+import { FilterKey, RangerItem, SortItem } from "@/shared/interfaces";
 import { WeightUnit } from "@/shared/constants";
 import { File } from "@/shared/interfaces/file";
 export interface ProductQuery extends ApiRequestQuery {
@@ -113,6 +113,17 @@ export const sortItems: SortItem[] = [
   },
 ];
 
-export const rangerItems: SortItem[] = [];
+export const rangerItems: RangerItem[] = [
+  {
+    key: "createdAt",
+    label: "Ngày tạo",
+    type: "date",
+  },
+];
 
-export const filterUses: FilterKey[] = ["productGroupIds", "brandIds", "locationIds"];
+export const filterUses: FilterKey[] = [
+  "productGroupIds",
+  "brandIds",
+  "locationIds",
+  "supplierIds",
+];

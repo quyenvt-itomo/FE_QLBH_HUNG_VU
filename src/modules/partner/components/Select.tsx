@@ -1,6 +1,11 @@
 import { MultipleSelectProps, SelectProps } from "@/shared/interfaces/common";
 import { Partner, PartnerQuery, PartnerType } from "../partner.model";
-import { useCustomerStore, usePartnerStore } from "../partner.store";
+import {
+  useCustomerStore,
+  usePartnerStore,
+  useShipperStore,
+  useSupplierStore,
+} from "../partner.store";
 import { DropdownColumn } from "@/shared/components";
 import { SmartMultipleSelect, SmartSelect } from "@/shared/components";
 import { useRemoteSelect } from "@/shared/hooks/useRemoteSelect";
@@ -17,6 +22,29 @@ const columns: DropdownColumn<Partner>[] = [
   { label: "Mã số thuế", dataIndex: "taxCode", className: "w-32" },
 ];
 
+const resolvePartnerType = (query?: PartnerQuery, type?: PartnerType) =>
+  type ?? query?.type ?? query?.types?.[0];
+
+const normalizePartnerQuery = (query?: PartnerQuery, type?: PartnerType): PartnerQuery => {
+  const { types: _types, ...rest } = query || {};
+  const resolvedType = resolvePartnerType(query, type);
+
+  return resolvedType ? { ...rest, type: resolvedType } : rest;
+};
+
+const getPartnerQueryHook = (type?: PartnerType) => {
+  switch (type) {
+    case PartnerType.CUSTOMER:
+      return useCustomerStore;
+    case PartnerType.SUPPLIER:
+      return useSupplierStore;
+    case PartnerType.SHIPPER:
+      return useShipperStore;
+    default:
+      return usePartnerStore;
+  }
+};
+
 interface PartnerSelectProps extends SelectProps<Partner, PartnerQuery> {}
 
 export const PartnerSelect: React.FC<PartnerSelectProps> = ({
@@ -28,18 +56,21 @@ export const PartnerSelect: React.FC<PartnerSelectProps> = ({
   onFocus,
   ...rest
 }) => {
+  const partnerQuery = normalizePartnerQuery(query);
+  const queryHook = getPartnerQueryHook(partnerQuery.type);
+
   const { list, loading, setKeywordTemp, unlock, handlePopupScroll } = useRemoteSelect<
     Partner,
     PartnerQuery
   >({
     defaultData,
-    queryHook: usePartnerStore,
+    queryHook,
     buildParams: ({ keyword, page, isLocked }) => ({
       keyword,
       page,
       size: 10,
       isLocked,
-      ...query,
+      ...partnerQuery,
     }),
   });
 
@@ -70,33 +101,38 @@ export const PartnerSelect: React.FC<PartnerSelectProps> = ({
 };
 
 interface PartnerMultipleSelectProps extends MultipleSelectProps<Partner, PartnerQuery> {
+  type?: PartnerType;
   types?: PartnerType[];
 }
 
 export const PartnerMultipleSelect: React.FC<PartnerMultipleSelectProps> = ({
   defaultData,
   query,
+  type,
   types,
   onChange,
   onChangeData,
   onFocus,
   ...rest
 }) => {
+  const partnerType = resolvePartnerType(query, type ?? types?.[0]);
+  const partnerQuery = normalizePartnerQuery(query, partnerType);
+  const queryHook = getPartnerQueryHook(partnerType);
+
   const { list, loading, setKeywordTemp, unlock, handlePopupScroll } = useRemoteSelect<
     Partner,
     PartnerQuery
   >({
     defaultData,
-    queryHook: usePartnerStore,
+    queryHook,
     buildParams: ({ keyword, page, isLocked }) => ({
-      ...(query || {}),
-      ...(types?.length ? { types } : {}),
+      ...partnerQuery,
       keyword,
       page,
       size: 10,
       isLocked,
     }),
-    resetPageDeps: [query, types],
+    resetPageDeps: [partnerQuery, partnerType],
   });
 
   const handleChange = (ids: string[]) => {

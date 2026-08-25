@@ -8,50 +8,48 @@ interface RangerItemPanelProps {
   rangerItems: RangerItem[];
   value?: Ranger;
   onChange?: (value: Ranger) => void;
+  defaultOpenAll?: boolean;
 }
 
 export const RangerItemPanel: React.FC<RangerItemPanelProps> = ({
   rangerItems,
   value,
   onChange,
+  defaultOpenAll = false,
 }) => {
   const [activeKeys, setActiveKeys] = useState<string[]>(() =>
-    rangerItems
-      .filter((item) => {
-        const k = item.key;
-        return (
-          value?.[`${k}Gte`] != null ||
-          value?.[`${k}Gt`] != null ||
-          value?.[`${k}Eq`] != null ||
-          value?.[`${k}Lte`] != null ||
-          value?.[`${k}Lt`] != null
-        );
-      })
-      .map((item) => item.key),
+    defaultOpenAll
+      ? rangerItems.map((item) => item.key)
+      : rangerItems
+          .filter((item) => {
+            const k = item.key;
+            return (
+              value?.[`${k}Gte`] != null ||
+              value?.[`${k}Gt`] != null ||
+              value?.[`${k}Eq`] != null ||
+              value?.[`${k}Lte`] != null ||
+              value?.[`${k}Lt`] != null
+            );
+          })
+          .map((item) => item.key),
   );
 
   const handleToggle = (keys: string[]) => {
-    const allKeys = rangerItems.map((i) => i.key);
-    const closedKeys = allKeys.filter((k) => !keys.includes(k));
+    setActiveKeys(keys);
+  };
 
-    if (closedKeys.length === 0) {
-      setActiveKeys(keys);
-      return;
-    }
-
-    const newValue: Ranger = { ...value };
-
-    closedKeys.forEach((k) => {
-      delete newValue[`${k}Gte`];
-      delete newValue[`${k}Gt`];
-      delete newValue[`${k}Eq`];
-      delete newValue[`${k}Lte`];
-      delete newValue[`${k}Lt`];
+  const hasRangerValue = (key: string) =>
+    ["Gte", "Gt", "Eq", "Lte", "Lt"].some((operator) => {
+      const currentValue = value?.[`${key}${operator}` as keyof Ranger];
+      return currentValue !== undefined && currentValue !== null && currentValue !== "";
     });
 
-    setActiveKeys(keys);
+  const handleClearItem = (key: string) => {
+    const newValue: Ranger = { ...value };
 
-    if (JSON.stringify(value) === JSON.stringify(newValue)) return;
+    ["Gte", "Gt", "Eq", "Lte", "Lt"].forEach((operator) => {
+      delete newValue[`${key}${operator}` as keyof Ranger];
+    });
 
     onChange?.(newValue);
   };
@@ -62,21 +60,51 @@ export const RangerItemPanel: React.FC<RangerItemPanelProps> = ({
         key: item.key,
         label: (
           <div
+            className="flex items-center justify-between gap-2"
             onClick={(e) => {
               e.stopPropagation();
             }}
           >
-            {item.label}
+            <span
+              className="cursor-pointer"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (!activeKeys.includes(item.key)) {
+                  setActiveKeys([...activeKeys, item.key]);
+                } else {
+                  handleToggle(activeKeys.filter((key) => key !== item.key));
+                }
+              }}
+            >
+              {item.label}
+            </span>
+            {hasRangerValue(item.key) && (
+              <button
+                type="button"
+                className="shrink-0 font-light text-primary hover:underline"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleClearItem(item.key);
+                }}
+              >
+                Bỏ lọc
+              </button>
+            )}
           </div>
         ),
         className: "custom-filter-panel",
         children: (
           <div className="pt-2">
-            <InputRangeField fieldKey={item.key} value={value} onChange={onChange!} />
+            <InputRangeField
+              fieldKey={item.key}
+              type={item.type}
+              value={value}
+              onChange={onChange}
+            />
           </div>
         ),
       })),
-    [rangerItems, value, onChange],
+    [rangerItems, value, onChange, activeKeys],
   );
 
   return (

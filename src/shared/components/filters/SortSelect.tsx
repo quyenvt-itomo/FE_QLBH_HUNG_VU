@@ -1,6 +1,6 @@
 import { Select } from "antd";
 import { SortOrder } from "../../constants/enum";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { SortItem } from "@/shared/interfaces/common";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { CLASSNAME } from "@/shared/constants/ui";
@@ -23,7 +23,10 @@ export const SortSelect: React.FC<SortSelectProps> = ({
 }) => {
   const defaultItem = sortItems[0];
 
-  const selectedItem = sortItems.find((x) => x.value === value?.sortBy) ?? defaultItem;
+  const selectedItem = useMemo(
+    () => sortItems.find((item) => item.value === value?.sortBy) ?? defaultItem,
+    [sortItems, value?.sortBy, defaultItem],
+  );
 
   // ✅ AUTO SET DEFAULT KHI MỚI VÀO
   useEffect(() => {
@@ -47,7 +50,9 @@ export const SortSelect: React.FC<SortSelectProps> = ({
 
   return (
     <div className="flex flex-col w-full gap-2 p-4 pt-2">
-      <span className="font-semibold">Sắp xếp theo</span>
+      <span className="font-semibold text-xs uppercase tracking-wide text-gray-500">
+        Sắp xếp theo
+      </span>
 
       <div className="flex gap-2 w-full">
         {/* SORT BY */}

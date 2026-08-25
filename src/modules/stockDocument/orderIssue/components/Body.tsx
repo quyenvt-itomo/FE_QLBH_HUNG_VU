@@ -90,7 +90,7 @@ export const BodyOrderIssue: React.FC<Props> = ({ form, editData }) => {
           <Form.Item name="partnerId" label={<Label title="Khách hàng" />}>
             <PartnerSelect
               defaultData={partner}
-              query={{ types: [PartnerType.CUSTOMER] }}
+              query={{ type: PartnerType.CUSTOMER }}
               disabled={disabled}
               onChangeData={(value) =>
                 form.setFieldValue(

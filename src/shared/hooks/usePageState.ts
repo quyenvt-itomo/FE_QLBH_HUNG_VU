@@ -46,8 +46,8 @@ export function usePageState<T extends Entity = any>(params?: UsePageStateProps)
   const [status, setStatus] = useState<string>(params?.status ?? "all");
   const [type, setType] = useState<string>("all");
   const [dataSource, setDataSource] = useState<T[]>([]);
-  const [sortBy, setSortField] = useState<string | undefined>(params?.sortBy || undefined);
-  const [sortOrder, setsortOrder] = useState<SortOrder | undefined>(params?.sortOrder || undefined);
+  const [sortBy, setSortBy] = useState<string | undefined>(params?.sortBy || undefined);
+  const [sortOrder, setSortOrder] = useState<SortOrder | undefined>(params?.sortOrder || undefined);
   const [startAt, setStartAt] = useState<string | undefined>(
     params?.startAt || getSessionStartDate(),
   );
@@ -129,8 +129,8 @@ export function usePageState<T extends Entity = any>(params?: UsePageStateProps)
   function handleSortChange(value: SortValue) {
     const isSame = sortBy === value.sortBy && sortOrder === value.sortOrder;
     if (isSame) return;
-    setSortField(value.sortBy);
-    setsortOrder(value.sortOrder);
+    setSortBy(value.sortBy);
+    setSortOrder(value.sortOrder);
     setPage(1);
     setDataSource([]);
   }
@@ -199,8 +199,8 @@ export function usePageState<T extends Entity = any>(params?: UsePageStateProps)
     handleSetFilter({});
     setRanger({});
     setSearch({});
-    setSortField(params?.sortBy || undefined);
-    setsortOrder(params?.sortOrder || undefined);
+    setSortBy(params?.sortBy || undefined);
+    setSortOrder(params?.sortOrder || undefined);
     setPage(1);
   }
 
@@ -261,9 +261,9 @@ export function usePageState<T extends Entity = any>(params?: UsePageStateProps)
     dataSource,
     setDataSource,
     sortBy: debounceSortBy,
-    setSortField,
+    setSortBy,
     sortOrder: debounceSortOrder,
-    setsortOrder,
+    setSortOrder,
     handleSortChange,
     startAt,
     setStartAt,

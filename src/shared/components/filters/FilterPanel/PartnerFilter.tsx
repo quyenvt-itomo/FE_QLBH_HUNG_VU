@@ -6,10 +6,19 @@ import { PartialFilterProps } from "@/shared/interfaces/common";
 import { GenericFilter } from "./GenericFilter";
 
 export interface PartnerFilterProps extends PartialFilterProps<Partner> {
+  type?: PartnerType;
+  /** @deprecated Use type. Kept temporarily for older callers. */
   types?: PartnerType[];
+  placeholder?: string;
 }
 
-export const PartnerFilter: React.FC<PartnerFilterProps> = ({ data, setData, types }) => {
+export const PartnerFilter: React.FC<PartnerFilterProps> = ({
+  data,
+  setData,
+  type,
+  types,
+  placeholder,
+}) => {
   const value = data.map((item) => item.id);
 
   return (
@@ -17,12 +26,13 @@ export const PartnerFilter: React.FC<PartnerFilterProps> = ({ data, setData, typ
       data={data}
       selectComponent={
         <PartnerMultipleSelect
+          type={type ?? types?.[0]}
           types={types}
           value={value}
           defaultData={data}
           prefix={<MagnifyingGlassIcon className="h-4" />}
           suffixIcon={null}
-          placeholder=""
+          placeholder={placeholder}
           onChangeData={setData}
         />
       }
@@ -38,17 +48,17 @@ export const PartnerFilter: React.FC<PartnerFilterProps> = ({ data, setData, typ
 };
 
 export const CustomerFilter: React.FC<PartialFilterProps<Partner>> = (props) => (
-  <PartnerFilter {...props} types={[PartnerType.CUSTOMER]} />
+  <PartnerFilter {...props} type={PartnerType.CUSTOMER} placeholder="Tìm khách hàng..." />
 );
 
 export const SupplierFilter: React.FC<PartialFilterProps<Partner>> = (props) => (
-  <PartnerFilter {...props} types={[PartnerType.SUPPLIER]} />
+  <PartnerFilter {...props} type={PartnerType.SUPPLIER} placeholder="Tìm nhà cung cấp..." />
 );
 
 export const ShipperFilter: React.FC<PartialFilterProps<Partner>> = (props) => (
-  <PartnerFilter {...props} types={[PartnerType.SHIPPER]} />
+  <PartnerFilter {...props} type={PartnerType.SHIPPER} placeholder="Tìm đơn vị vận chuyển..." />
 );
 
 export const AllPartnerFilter: React.FC<PartialFilterProps<Partner>> = (props) => (
-  <PartnerFilter {...props} />
+  <PartnerFilter {...props} placeholder="Tìm đối tác..." />
 );

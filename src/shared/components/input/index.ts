@@ -8,6 +8,7 @@ export * from "./InputPercentage";
 export * from "./InputQuantity";
 export * from "./InputQuantityDebounce";
 export * from "./InputRangeField";
+export * from "./DateRangeField";
 export * from "./InputSettingPrice";
 export * from "./OrderDiscountInput";
 export * from "./PhoneInput";

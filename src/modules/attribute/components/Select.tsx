@@ -148,7 +148,7 @@ export const AttributeMultipleSelect: React.FC<AttributeMultipleSelectProps> = (
   ...rest
 }) => {
   const label = query?.type ? attributeTypeMap[query?.type]?.toLowerCase() : "thuộc tính";
-
+  const { currentStore } = useGlobalData();
   const { list, loading, setKeywordTemp, unlock, handlePopupScroll } = useRemoteSelect<
     Attribute,
     AttributeQuery
@@ -175,6 +175,9 @@ export const AttributeMultipleSelect: React.FC<AttributeMultipleSelectProps> = (
   const columns: DropdownColumn<Attribute>[] = [
     { label: `Tên ${label}`, dataIndex: "name", className: "w-64" },
   ];
+  if (isStoreScopedAttributeType(type) && !currentStore) {
+    columns.push({ label: "Cửa hàng", dataIndex: ["store", "name"], className: "w-32" });
+  }
 
   return (
     <SmartMultipleSelect<Attribute>
@@ -368,7 +371,6 @@ export const ProductGroupMultipleSelect: React.FC<
 
   return (
     <TreeSelect
-      {...(rest as any)}
       multiple
       allowClear
       showSearch
@@ -386,6 +388,7 @@ export const ProductGroupMultipleSelect: React.FC<
         !!node?.title &&
         removeVietnameseTones(String(node.title)).includes(removeVietnameseTones(input).trim())
       }
+      {...(rest as any)}
     />
   );
 };

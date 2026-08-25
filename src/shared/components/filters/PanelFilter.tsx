@@ -15,6 +15,7 @@ import {
 } from "@/shared/interfaces/common";
 import type { StatusItem } from "./filter.types";
 import React from "react";
+import { FilterPanel } from "./FilterPanel";
 
 export interface PanelFilterProps {
   filterActive?: boolean;
@@ -68,6 +69,10 @@ export const PanelFilter: React.FC<PanelFilterProps> = ({
   searchItems = [],
   searchValue,
   onSearchChange,
+
+  filterLabels,
+  filterUses = [],
+
   filterContent,
   onClearFilter,
 }) => {
@@ -88,7 +93,7 @@ export const PanelFilter: React.FC<PanelFilterProps> = ({
           </button>
         )}
       </div>
-      <div className="min-h-0 flex-1 space-y-4 overflow-y-auto">
+      <div className="min-h-0 flex-1 overflow-y-auto">
         {searchItems.length > 0 && (
           <section>
             <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -128,71 +133,48 @@ export const PanelFilter: React.FC<PanelFilterProps> = ({
             </div>
           </section>
         )}
-        {onChangeStartAt && onChangeEndAt && (
-          <section className="border-b border-gray-100 pt-3">
-            <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
-              Thời gian
-            </div>
-            <div className="mb-2 flex flex-wrap gap-1">
-              {DATE_PRESETS.map((preset) => {
-                const active =
-                  dayjs(startAt).isSame(preset.start, "day") &&
-                  dayjs(endAt).isSame(preset.end, "day");
-                return (
-                  <button
-                    key={preset.label}
-                    type="button"
-                    onClick={() => {
-                      onChangeStartAt(preset.start.format("YYYY-MM-DD"));
-                      onChangeEndAt(preset.end.format("YYYY-MM-DD"));
-                    }}
-                    className={`rounded-full border px-2 py-1 text-xs ${active ? "border-green-600 bg-green-600 text-white" : "border-gray-200 text-gray-600"}`}
-                  >
-                    {preset.label}
-                  </button>
-                );
-              })}
-            </div>
-            <div className="flex gap-1">
-              <DatePicker
-                className="w-full"
-                placeholder="Từ"
-                format="DD/MM/YYYY"
-                value={startAt ? dayjs(startAt) : null}
-                onChange={(date) => onChangeStartAt(date?.format("YYYY-MM-DD") || "")}
-              />
-              <DatePicker
-                className="w-full"
-                placeholder="Đến"
-                format="DD/MM/YYYY"
-                value={endAt ? dayjs(endAt) : null}
-                onChange={(date) => onChangeEndAt(date?.format("YYYY-MM-DD") || "")}
-              />
-            </div>
-          </section>
-        )}
+
         {sortItems.length > 0 && (
-          <SortSelect
-            size="small"
-            sortItems={sortItems}
-            value={sortValue}
-            onChange={onSortChange}
-          />
+          <div className="flex flex-col w-full h-fit gap-4 border-b border-gray-100">
+            <SortSelect
+              size="small"
+              sortItems={sortItems}
+              value={sortValue}
+              onChange={onSortChange}
+            />
+          </div>
         )}
         {rangerItems.length > 0 && (
-          <section className="border-b border-gray-100 pt-3">
-            <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
-              Khoảng giá trị
+          <div className="flex flex-col w-full h-fit gap-4 p-4 pt-2 border-b border-gray-100">
+            <div className="flex flex-col w-full !justify-between gap-2">
+              <span className="font-semibold text-xs uppercase tracking-wide text-gray-500">
+                Lọc trong khoảng
+              </span>
+
+              <RangerItemPanel
+                rangerItems={rangerItems}
+                value={rangerValue}
+                onChange={onRangerChange}
+                defaultOpenAll
+              />
             </div>
-            <RangerItemPanel
-              rangerItems={rangerItems}
-              value={rangerValue}
-              onChange={onRangerChange}
-            />
-          </section>
+          </div>
         )}
+
         {filterContent && (
           <section className="border-b border-gray-100 pt-3">{filterContent}</section>
+        )}
+
+        {filterUses.length > 0 && (
+          <div className="flex flex-col w-full h-fit gap-4 p-4 pt-2 border-b border-gray-100">
+            <div className="flex flex-col w-full !justify-between gap-2">
+              <span className="font-semibold text-xs uppercase tracking-wide text-gray-500">
+                Lọc theo
+              </span>
+
+              <FilterPanel filterUses={filterUses} filterLabels={filterLabels} defaultOpenAll />
+            </div>
+          </div>
         )}
       </div>
       {filterActive && onClearFilter && (

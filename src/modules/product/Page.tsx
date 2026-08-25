@@ -15,7 +15,7 @@ import { DropdownAction } from "@/shared/components";
 
 import "./index.css";
 import { useProductHandlers } from "./product.handlers";
-import { filterUses, Product, sortItems } from "./product.model";
+import { filterUses, Product, rangerItems, sortItems } from "./product.model";
 import { useProductPriceHistoryStore, useProductStore } from "./product.store";
 import { ProductTable, ProductAddUpdateModal, ProductDetailModal } from "./components";
 
@@ -28,6 +28,7 @@ export const ProductPage: React.FC = () => {
     sortBy,
     sortOrder,
     filter,
+    ranger,
     reload,
     setPage,
     setSize,
@@ -47,7 +48,7 @@ export const ProductPage: React.FC = () => {
 
   // Type is always known for product - attribute group depends on
   const { data, loading, creating, updating, errors, pagination, getById, create, update, remove } =
-    useProductStore({ page, size, keyword, sortBy, sortOrder, reload, ...filter }, () =>
+    useProductStore({ page, size, keyword, sortBy, sortOrder, reload, ...filter, ...ranger }, () =>
       pageAction.handleClose(),
     );
 
@@ -63,6 +64,9 @@ export const ProductPage: React.FC = () => {
         onSortChange={pageAction.handleSortChange}
         filterUses={filterUses}
         onClearFilter={pageAction.resetFilter}
+        rangerValue={ranger}
+        rangerItems={rangerItems}
+        onRangerChange={pageAction.handleRangerChange}
       />
       <div className="flex flex-col h-full w-[calc(100%-266px)] gap-3">
         <div className="flex justify-between items-start gap-3">

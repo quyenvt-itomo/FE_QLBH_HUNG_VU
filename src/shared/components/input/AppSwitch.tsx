@@ -21,7 +21,6 @@ export const AppSwitch: React.FC<AppSwitchProps> = ({
       }}
       className={`
         flex items-center gap-3 w-full px-3 transition-colors ease-in-out border
-        ${checked ? "bg-green-200 border-green-300" : "bg-gray-200 border-gray-300"}
       `}
     >
       <Switch checked={checked} onChange={onChange} disabled={disabled} {...props} />

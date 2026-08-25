@@ -1,7 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { App, Image, Spin, Upload, UploadFile } from "antd";
 import type { UploadProps } from "antd";
-import { CheckIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+  CheckIcon,
+  MapPinIcon,
+  PlusIcon,
+  TagIcon,
+  TrashIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 
 import { File } from "@/shared/interfaces/file";
 import { EntityType, FileCategory, FileStatus } from "@/shared/constants/enum";
@@ -180,32 +187,51 @@ export const ProductImageUploadBox: React.FC<ProductImageUploadBoxProps> = ({
         className="h-full w-full cursor-pointer object-cover"
         onClick={() => setPreviewUrl(buildFileUrl(file.url))}
       />
-      <div className="absolute right-1 top-1 flex gap-1 opacity-0 transition group-hover:opacity-100">
-        {!main && (
+
+      {main ? (
+        <div className="absolute right-1 top-1 flex gap-1 opacity-0 transition group-hover:opacity-100">
           <button
             type="button"
-            title="Đặt làm ảnh chính"
-            className="flex h-6 w-6 items-center justify-center rounded bg-white/90 text-green-600 shadow"
+            title="Xóa ảnh"
+            className="flex h-6 w-6 items-center justify-center rounded bg-white/90 text-red-600 shadow"
             onClick={(event) => {
               event.stopPropagation();
-              void handleSetMain(file);
+              void handleRemove(file);
             }}
           >
-            <CheckIcon className="h-4 w-4" />
+            <TrashIcon className="h-4 w-4" />
           </button>
-        )}
-        <button
-          type="button"
-          title="Xóa ảnh"
-          className="flex h-6 w-6 items-center justify-center rounded bg-white/90 text-red-600 shadow"
-          onClick={(event) => {
-            event.stopPropagation();
-            void handleRemove(file);
-          }}
-        >
-          <TrashIcon className="h-4 w-4" />
-        </button>
-      </div>
+        </div>
+      ) : (
+        <>
+          <div className="absolute left-0 bottom-0 flex gap-1 opacity-0 transition group-hover:opacity-100">
+            <button
+              type="button"
+              title="Đặt làm ảnh chính"
+              className="flex h-4 w-4 items-center justify-center rounded bg-white/90 shadow"
+              onClick={(event) => {
+                event.stopPropagation();
+                void handleSetMain(file);
+              }}
+            >
+              <TagIcon className="h-3 w-3" />
+            </button>
+          </div>
+          <div className="absolute right-0 top-0 flex gap-1 opacity-0 transition group-hover:opacity-100">
+            <button
+              type="button"
+              title="Xóa ảnh"
+              className="flex h-4 w-4 items-center justify-center rounded bg-white/90 text-red-600 shadow"
+              onClick={(event) => {
+                event.stopPropagation();
+                void handleRemove(file);
+              }}
+            >
+              <XMarkIcon className="h-3 w-3" />
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 

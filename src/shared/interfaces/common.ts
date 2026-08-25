@@ -345,15 +345,29 @@ export type RangerKey =
   | "remainingQuantity"
 
   // TODO: Common
-  | "createdAt";
+  | "createdAt"
+  | "updatedAt"
+  | "orderAt"
+  | "occurredAt"
+  | "canceledAt"
+  | "approvedAt"
+  | "completedAt"
+  | "orderedAt"
+  | "timeAt"
+  // Cho phép module khai báo thêm field date/number riêng mà không cần sửa base type.
+  | (string & {});
+
+export type RangerValue = number | string;
 
 export type Ranger = {
-  [key in `${RangerKey}${RangeOperator}`]?: number;
+  [key in `${RangerKey}${RangeOperator}`]?: RangerValue;
 };
 
 export type RangerItem = {
   key: RangerKey;
   label: string;
+  /** Mặc định là number; date chỉ hỗ trợ Gte/Lte. */
+  type?: "number" | "date";
 };
 
 export type SearchItem = {

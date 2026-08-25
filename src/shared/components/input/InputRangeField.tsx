@@ -2,12 +2,14 @@ import { Select } from "antd";
 import { InputQuantityDebounce } from "./InputQuantityDebounce";
 import { Ranger, RangerKey } from "@/shared/interfaces/common";
 import { CLASSNAME } from "@/shared/constants/ui";
+import { DateRangeField } from "./DateRangeField";
 
 interface InputRangeFieldProps {
   fieldKey: RangerKey;
   value?: Ranger;
-  onChange: (value: Ranger) => void;
+  onChange?: (value: Ranger) => void;
   disabled?: boolean;
+  type?: "number" | "date";
 }
 
 export function InputRangeField({
@@ -15,7 +17,16 @@ export function InputRangeField({
   value,
   onChange,
   disabled = false,
+  type = "number",
 }: InputRangeFieldProps) {
+  if (!onChange) return null;
+
+  if (type === "date") {
+    return (
+      <DateRangeField fieldKey={fieldKey} value={value} onChange={onChange} disabled={disabled} />
+    );
+  }
+
   const defaultFirstOp = "Gte";
   const defaultLastOp = "Lte";
 
@@ -35,8 +46,8 @@ export function InputRangeField({
         ? "Lt"
         : defaultLastOp;
 
-  const firstVal = value?.[`${fieldKey}${firstOp}`] ?? undefined;
-  const lastVal = value?.[`${fieldKey}${lastOp}`] ?? undefined;
+  const firstVal = (value?.[`${fieldKey}${firstOp}`] ?? undefined) as number | undefined;
+  const lastVal = (value?.[`${fieldKey}${lastOp}`] ?? undefined) as number | undefined;
 
   const disabledLast = firstOp === "Eq";
 

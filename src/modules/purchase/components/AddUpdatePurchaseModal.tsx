@@ -169,7 +169,7 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
                     form.setFieldValue("sellerId", null);
                     form.setFieldValue("seller", null);
                   }}
-                  query={{ types: [PartnerType.SUPPLIER] }}
+                  query={{ type: PartnerType.SUPPLIER }}
                 />
               </Form.Item>
               <Form.Item name="supplier" hidden />
