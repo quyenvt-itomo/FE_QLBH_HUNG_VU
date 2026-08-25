@@ -54,6 +54,7 @@ export const ProductAddUpdateModal: React.FC<AddUpdateModalProps<Product>> = ({
   const group = Form.useWatch("group", form);
   const brand = Form.useWatch("brand", form);
   const baseUnit = Form.useWatch("baseUnit", form);
+  const extraUnits = Form.useWatch("extraUnits", form) || [];
 
   useEffect(() => {
     if (errors) setFormErrors(form, errors);
@@ -88,11 +89,7 @@ export const ProductAddUpdateModal: React.FC<AddUpdateModalProps<Product>> = ({
           return;
         }
 
-        form.resetFields();
-        form.setFieldsValue({
-          weightUnit: WeightUnit.g,
-          ...(editData ? parseFormDataDates(editData) : {}),
-        });
+        if (editData) form.setFieldsValue(parseFormDataDates(editData));
       }}
     >
       <Form
@@ -124,7 +121,7 @@ export const ProductAddUpdateModal: React.FC<AddUpdateModalProps<Product>> = ({
                       </Col>
                       <Col xs={12}>
                         <Form.Item name="barcode" label={<Label title="Mã vạch" />}>
-                          <Input />
+                          <Input placeholder="Nhập mã vạch, tự động tạo nếu để trống" />
                         </Form.Item>
                       </Col>
                       <Col xs={24}>
@@ -133,15 +130,11 @@ export const ProductAddUpdateModal: React.FC<AddUpdateModalProps<Product>> = ({
                           label={<Label title="Tên hàng" required />}
                           rules={[{ required: true, message: "Vui lòng nhập tên hàng hóa" }]}
                         >
-                          <Input />
+                          <Input placeholder="Nhập tên hàng hóa" />
                         </Form.Item>
                       </Col>
                       <Col xs={12}>
-                        <Form.Item
-                          name="groupId"
-                          label={<Label title="Nhóm" required />}
-                          rules={[{ required: true, message: "Vui lòng chọn nhóm hàng hóa" }]}
-                        >
+                        <Form.Item name="groupId" label={<Label title="Nhóm" />}>
                           <ProductGroupSelect
                             defaultData={group}
                             onChangeData={(value) => form.setFieldValue("group", value)}
@@ -177,7 +170,13 @@ export const ProductAddUpdateModal: React.FC<AddUpdateModalProps<Product>> = ({
                       <AttributeManagerSelect
                         type={AttributeType.UNIT}
                         defaultData={baseUnit}
-                        onChangeData={(value) => form.setFieldValue("baseUnit", value)}
+                        onChangeData={(v) => {
+                          form.setFieldValue("baseUnit", v);
+                          const filteredExtraUnits = extraUnits.filter(
+                            (unit) => unit.unitId !== v?.id,
+                          );
+                          form.setFieldValue("extraUnits", filteredExtraUnits);
+                        }}
                       />
                     </Form.Item>
                     <Form.Item name="baseUnit" hidden />
@@ -202,7 +201,11 @@ export const ProductAddUpdateModal: React.FC<AddUpdateModalProps<Product>> = ({
                         className="w-[calc(100%-80px)]"
                         label={<Label title="Trọng lượng" />}
                       >
-                        <InputQuantity notRightAlign className="rounded-e-none" />
+                        <InputQuantity
+                          notRightAlign
+                          className="rounded-e-none"
+                          placeholder="Trọng lượng theo ĐVT"
+                        />
                       </Form.Item>
                       <Form.Item name="weightUnit" className="w-20">
                         <AppSelect

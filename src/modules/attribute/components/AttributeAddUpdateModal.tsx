@@ -44,8 +44,17 @@ export const AttributeAddUpdateModal: React.FC<Props> = ({
   }, [errors, form]);
 
   const onFinish: FormProps<Attribute>["onFinish"] = async (values) => {
-    const formattedValues = { ...values, type, id, tempId: id };
-    editData ? onEdit?.(formattedValues) : onAdd?.(formattedValues);
+    const formattedValues = {
+      ...values,
+      type,
+      id,
+      tempId: id,
+      ...(type === AttributeType.LOCATION && !values.storeId && currentStore
+        ? { storeId: currentStore.id }
+        : {}),
+    };
+    if (editData) onEdit?.(formattedValues);
+    else onAdd?.(formattedValues);
   };
   const handleCancel = () => {
     onClose?.();
@@ -68,7 +77,13 @@ export const AttributeAddUpdateModal: React.FC<Props> = ({
           return;
         }
         if (editData) form.setFieldsValue(parseFormDataDates(editData));
-        else if (type) form.setFieldValue("type", type);
+        else if (type) {
+          form.setFieldValue("type", type);
+          if (type === AttributeType.LOCATION && currentStore) {
+            form.setFieldValue("storeId", currentStore.id);
+            form.setFieldValue("store", currentStore);
+          }
+        }
       }}
     >
       <Form form={form} onFinish={onFinish} className="mt-8" onFinishFailed={showFormErrorMessages}>
@@ -96,20 +111,24 @@ export const AttributeAddUpdateModal: React.FC<Props> = ({
                 <Form.Item name="parent" hidden />
               </Col>
             )}
-            {type === AttributeType.LOCATION && !currentStore && (
-              <Col xs={24}>
-                <Form.Item
-                  name="storeId"
-                  label={<Label width={140} title="Cửa hàng" required />}
-                  rules={[{ required: true, message: "Vui lòng chọn cửa hàng" }]}
-                >
-                  <StoreSelect
-                    defaultData={store}
-                    onChangeData={(value) => form.setFieldValue("store", value || null)}
-                  />
-                </Form.Item>
-                <Form.Item name="store" hidden />
-              </Col>
+            {type === AttributeType.LOCATION && (
+              currentStore ? (
+                <Form.Item name="storeId" hidden />
+              ) : (
+                <Col xs={24}>
+                  <Form.Item
+                    name="storeId"
+                    label={<Label width={140} title="Cửa hàng" required />}
+                    rules={[{ required: true, message: "Vui lòng chọn cửa hàng" }]}
+                  >
+                    <StoreSelect
+                      defaultData={store}
+                      onChangeData={(value) => form.setFieldValue("store", value || null)}
+                    />
+                  </Form.Item>
+                  <Form.Item name="store" hidden />
+                </Col>
+              )
             )}
           </Row>
         </FormSection>

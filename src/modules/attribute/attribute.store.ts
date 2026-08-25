@@ -18,7 +18,7 @@ export const useAttributeStore = (
   return useAttributeBaseStore(
     {
       ...params,
-      storeId: currentStore?.id || params?.storeId,
+      storeId: params?.storeId ?? currentStore?.id,
     },
     onSuccess,
   );

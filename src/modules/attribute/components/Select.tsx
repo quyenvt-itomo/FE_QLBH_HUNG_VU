@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { TreeSelect } from "antd";
+import { App, TreeSelect } from "antd";
 import { Attribute, AttributeQuery } from "../attribute.model";
-import { AttributeType, attributeTypeMap } from "../attribute.enum";
+import {
+  AttributeType,
+  attributeTypeMap,
+  isStoreScopedAttributeType,
+} from "../attribute.enum";
 import { MultipleSelectProps, SelectProps } from "@/shared/interfaces/common";
 import { useAttributeStore } from "../attribute.store";
 import {
@@ -17,6 +21,7 @@ import { SortOrder } from "@/shared/constants/enum";
 import { removeVietnameseTones } from "@/shared/utils/search.util";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { AttributeTreeManagerModal } from "./AttributeTreeManagerModal";
+import { useGlobalData } from "@/shared/hooks";
 
 interface AttributeSelectProps extends SelectProps<Attribute, AttributeQuery> {
   type: AttributeType;
@@ -26,6 +31,7 @@ export const AttributeManagerSelect: React.FC<AttributeSelectProps> = ({
   value,
   type,
   defaultData,
+  query,
   placeholder,
   ref,
   className,
@@ -37,11 +43,15 @@ export const AttributeManagerSelect: React.FC<AttributeSelectProps> = ({
   onBlur,
   ...rest
 }) => {
+  const { message } = App.useApp();
+  const { currentStore } = useGlobalData();
   const [isLockHook, setIsLockHook] = useState<boolean>(true);
   const [listAttribute, setListAttribute] = useState<Attribute[]>([]);
+  const storeId = query?.storeId ?? currentStore?.id;
 
   const { data, loading, creating, updating, deleting, newItem, create, remove, update } =
     useAttributeStore({
+      ...query,
       isLocked: isLockHook,
       type,
       size: 10000,
@@ -64,9 +74,15 @@ export const AttributeManagerSelect: React.FC<AttributeSelectProps> = ({
 
   const handleAdd = create
     ? (data: Attribute) => {
+        if (isStoreScopedAttributeType(type) && !storeId) {
+          message.error("Vui lòng chọn cửa hàng trước khi thêm vị trí");
+          return;
+        }
+
         create({
           ...data,
           type: type,
+          ...(isStoreScopedAttributeType(type) ? { storeId } : {}),
         });
       }
     : undefined;
@@ -76,6 +92,7 @@ export const AttributeManagerSelect: React.FC<AttributeSelectProps> = ({
         update({
           ...data,
           type: type,
+          ...(isStoreScopedAttributeType(type) && storeId ? { storeId } : {}),
         });
       }
     : undefined;
@@ -209,16 +226,21 @@ export const ProductGroupSelect: React.FC<Omit<AttributeSelectProps, "type">> = 
     });
 
   useEffect(() => {
-    setListAttribute(data.filter((item) => item.type === type));
-  }, [data, type]);
+    const nextAttributes = data.filter((item) => item.type === type);
+    if (defaultData?.id && !nextAttributes.some((item) => item.id === defaultData.id)) {
+      nextAttributes.unshift(defaultData);
+    }
 
-  useEffect(() => {
-    if (!defaultData?.id) return;
-
-    setListAttribute((current) =>
-      current.some((item) => item.id === defaultData.id) ? current : [defaultData, ...current],
-    );
-  }, [defaultData]);
+    setListAttribute((current) => {
+      if (
+        current.length === nextAttributes.length &&
+        current.every((item, index) => item.id === nextAttributes[index]?.id)
+      ) {
+        return current;
+      }
+      return nextAttributes;
+    });
+  }, [data, defaultData, type]);
 
   const handleAdd = create
     ? (attribute: Partial<Attribute>) => create({ ...attribute, type })
@@ -326,17 +348,22 @@ export const ProductGroupMultipleSelect: React.FC<
   const { data, loading } = useAttributeStore({ isLocked, type, size: 10000 });
 
   useEffect(() => {
-    setOptions(data.filter((item) => item.type === type));
-  }, [data, type]);
-
-  useEffect(() => {
-    if (!defaultData?.length) return;
+    const nextOptions = data.filter((item) => item.type === type);
+    if (defaultData?.length) {
+      const optionIds = new Set(nextOptions.map((item) => item.id));
+      nextOptions.unshift(...defaultData.filter((item) => !optionIds.has(item.id)));
+    }
 
     setOptions((current) => {
-      const currentIds = new Set(current.map((item) => item.id));
-      return [...defaultData.filter((item) => !currentIds.has(item.id)), ...current];
+      if (
+        current.length === nextOptions.length &&
+        current.every((item, index) => item.id === nextOptions[index]?.id)
+      ) {
+        return current;
+      }
+      return nextOptions;
     });
-  }, [defaultData]);
+  }, [data, defaultData, type]);
 
   const handleChange = (ids: string[]) => {
     onChange?.(ids);
@@ -375,6 +402,7 @@ export const AttributeManagerMultipleSelect: React.FC<AttributeManagerMultipleSe
   value,
   type,
   defaultData,
+  query,
   placeholder,
   ref,
   disabled,
@@ -386,11 +414,15 @@ export const AttributeManagerMultipleSelect: React.FC<AttributeManagerMultipleSe
   onFocus,
   onBlur,
 }) => {
+  const { message } = App.useApp();
+  const { currentStore } = useGlobalData();
   const [isLocked, setIsLocked] = useState<boolean>(true);
   const [listAttribute, setListAttribute] = useState<Attribute[]>([]);
+  const storeId = query?.storeId ?? currentStore?.id;
 
   const { data, loading, creating, updating, deleting, newItem, create, remove, update } =
     useAttributeStore({
+      ...query,
       isLocked,
       type,
       size: 10000,
@@ -419,9 +451,15 @@ export const AttributeManagerMultipleSelect: React.FC<AttributeManagerMultipleSe
 
   const handleAdd = create
     ? (data: Attribute) => {
+        if (isStoreScopedAttributeType(type) && !storeId) {
+          message.error("Vui lòng chọn cửa hàng trước khi thêm vị trí");
+          return;
+        }
+
         create({
           ...data,
           type: type,
+          ...(isStoreScopedAttributeType(type) ? { storeId } : {}),
         });
       }
     : undefined;
@@ -431,6 +469,7 @@ export const AttributeManagerMultipleSelect: React.FC<AttributeManagerMultipleSe
         update({
           ...data,
           type: type,
+          ...(isStoreScopedAttributeType(type) && storeId ? { storeId } : {}),
         });
       }
     : undefined;

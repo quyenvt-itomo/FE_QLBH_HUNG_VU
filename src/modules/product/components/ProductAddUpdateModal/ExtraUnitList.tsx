@@ -1,7 +1,7 @@
 import React from "react";
-import { Form, InputNumber } from "antd";
+import { Form } from "antd";
 import { MagnifyingGlassIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { FormSection } from "@/shared/components";
+import { FormSection, Label } from "@/shared/components";
 import { Attribute } from "@/modules/attribute/attribute.model";
 import { AttributeManagerMultipleSelect } from "@/modules/attribute/components/Select";
 import { AttributeType } from "@/modules/attribute/attribute.enum";
@@ -16,15 +16,16 @@ export const ExtraUnitList: React.FC<PartialProps> = ({ form }) => {
   const baseUnit = Form.useWatch("baseUnit", form);
   const baseUnitName = baseUnit?.name || "ĐVCB";
   const [selectedUnit, setSelectedUnit] = useAutoResetItem<Attribute>();
+
   const hideUnits = collectUnits(formValues);
 
   return (
     <Form.List name="extraUnits">
       {(fields, { add, remove }) => (
-        <FormSection
-          title="Đơn vị quy đổi"
-          subtitle={
-            <div className="flex w-[514px]">
+        <div className="border rounded-xl p-6 pr-0 mt-4 flex-1">
+          <FormSection
+            title="Đơn vị quy đổi"
+            subtitle={
               <div className="w-96 ml-auto mr-0">
                 <AttributeManagerMultipleSelect
                   type={AttributeType.UNIT}
@@ -41,44 +42,46 @@ export const ExtraUnitList: React.FC<PartialProps> = ({ form }) => {
                   }}
                 />
               </div>
-            </div>
-          }
-        >
-          <div className="flex flex-col gap-1">
-            {fields.length === 0 && (
-              <p className="text-gray-400 text-sm italic py-2">Chưa có đơn vị quy đổi nào</p>
-            )}
+            }
+          >
+            <div className="flex flex-col gap-2">
+              {fields.length === 0 && (
+                <p className="text-gray-400 text-sm italic py-2">Chưa có đơn vị quy đổi nào</p>
+              )}
 
-            {fields.map(({ key, name, ...restField }) => {
-              const item = extraUnits[name] || {};
-              const unitName = item.unit?.name || "—";
+              {fields.map(({ key, name, ...restField }) => {
+                const item = extraUnits[name] || {};
+                const unitName = item.unit?.name || "—";
 
-              return (
-                <div key={key} className="flex gap-2 items-center group relative">
-                  <div className="flex border rounded-md overflow-hidden ml-auto">
-                    <div className="w-36 bg-gray-100 px-3 flex items-center justify-between border-r text-sm truncate">
-                      1 {unitName} <span>=</span>
+                return (
+                  <div key={key} className="flex items-center gap-3 rounded-md border px-3 pt-2">
+                    <div className="w-48">
+                      <div className="font-medium">
+                        {item.unit?.name || item.unitId || unitName}
+                      </div>
+                      <div className="text-xs text-gray-400">
+                        1 {unitName} = {item.conversionRate || 1} {baseUnitName}
+                      </div>
                     </div>
+
                     <Form.Item
                       {...restField}
                       name={[name, "conversionRate"]}
-                      noStyle
-                      rules={[{ required: true, message: "SL" }]}
+                      label={<Label title="Quy đổi" />}
+                      className="mb-0 w-36"
+                      rules={[{ required: true, message: "Nhập tỷ lệ quy đổi" }]}
                     >
-                      <InputQuantity className="flex items-center !w-20" variant="borderless" />
+                      <InputQuantity notRightAlign />
                     </Form.Item>
-                    <div className="bg-gray-100 px-3 flex items-center border-x text-sm text-gray-500 min-w-[80px]">
-                      {baseUnitName}
-                    </div>
+
                     <Form.Item
                       {...restField}
                       name={[name, "salePrice"]}
-                      noStyle
-                      rules={[{ required: true, message: "SL" }]}
+                      label={<Label title="Giá bán" />}
+                      className="mb-0 w-56"
+                      rules={[{ required: true, message: "Nhập giá bán" }]}
                     >
                       <InputMoney
-                        className="flex items-center !w-52"
-                        variant="borderless"
                         placeholder="Đơn giá bán"
                         notRightAlign
                         suffix={
@@ -86,19 +89,21 @@ export const ExtraUnitList: React.FC<PartialProps> = ({ form }) => {
                         }
                       />
                     </Form.Item>
+
+                    <button
+                      type="button"
+                      className="p-1 text-red-600 hover:text-red-800"
+                      onClick={() => remove(name)}
+                      aria-label="Xóa đơn vị quy đổi"
+                    >
+                      <TrashIcon className="w-5 h-5" />
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    className="p-1 text-red-600 hover:text-red-800"
-                    onClick={() => remove(name)}
-                  >
-                    <TrashIcon className="w-5 h-5" />
-                  </button>
-                </div>
-              );
-            })}
-          </div>
-        </FormSection>
+                );
+              })}
+            </div>
+          </FormSection>
+        </div>
       )}
     </Form.List>
   );

@@ -2,8 +2,8 @@ import React from "react";
 import { Form, FormInstance, InputNumber, Switch } from "antd";
 import { MagnifyingGlassIcon, TrashIcon } from "@heroicons/react/24/outline";
 
-import { FormSection, InputMoney, Label } from "@/shared/components";
-import { StoreSelect } from "@/modules/store/components/Select";
+import { AppSwitch, FormSection, InputMoney, Label } from "@/shared/components";
+import { StoreMultipleSelect } from "@/modules/store/components/Select";
 import { AttributeManagerSelect } from "@/modules/attribute/components/Select";
 import { AttributeType } from "@/modules/attribute/attribute.enum";
 import { Product } from "../../product.model";
@@ -17,6 +17,7 @@ interface StoreProductListProps {
 export const StoreProductList: React.FC<StoreProductListProps> = ({ form }) => {
   const storeProducts = Form.useWatch("storeProducts", form) || [];
   const [selectedStore, setSelectedStore] = useAutoResetItem<Store>();
+  const hideStores = storeProducts.map((item) => item?.store).filter(Boolean);
 
   return (
     <Form.List name="storeProducts">
@@ -25,12 +26,14 @@ export const StoreProductList: React.FC<StoreProductListProps> = ({ form }) => {
           title="Chi nhánh kinh doanh"
           subtitle={
             <div className="ml-auto flex w-96">
-              <StoreSelect
-                value={selectedStore?.id}
+              <StoreMultipleSelect
+                value={selectedStore ? [selectedStore.id] : []}
                 prefix={<MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />}
                 placeholder="Tìm chi nhánh để thêm"
-                onChangeData={(store) => {
-                  if (!store || storeProducts.some((item: any) => item?.storeId === store.id)) {
+                hideOptions={hideStores}
+                onChangeData={(values) => {
+                  const store = values?.[0];
+                  if (!store || storeProducts.some((item) => item?.storeId === store.id)) {
                     return;
                   }
                   setSelectedStore(store);
@@ -56,10 +59,12 @@ export const StoreProductList: React.FC<StoreProductListProps> = ({ form }) => {
             {fields.map(({ key, name, ...restField }) => {
               const item = storeProducts[name] || {};
               return (
-                <div key={key} className="flex items-center gap-3 rounded-md border p-3">
+                <div key={key} className="flex items-center gap-3 rounded-md border px-3 pt-2">
                   <div className="min-w-48 flex-1">
                     <div className="font-medium">{item.store?.name || item.storeId}</div>
-                    {item.store?.code && <div className="text-xs text-gray-400">{item.store.code}</div>}
+                    {item.store?.code && (
+                      <div className="text-xs text-gray-400">{item.store.code}</div>
+                    )}
                   </div>
 
                   <Form.Item
@@ -79,6 +84,7 @@ export const StoreProductList: React.FC<StoreProductListProps> = ({ form }) => {
                     className="mb-0 w-56"
                   >
                     <AttributeManagerSelect
+                      query={{ storeId: item.storeId }}
                       type={AttributeType.LOCATION}
                       defaultData={item.location}
                       onChangeData={(location) =>
@@ -94,12 +100,12 @@ export const StoreProductList: React.FC<StoreProductListProps> = ({ form }) => {
                     label={<Label title="Đang bán" />}
                     className="mb-0"
                   >
-                    <Switch />
+                    <AppSwitch label="Hiển thị khi bán hàng tại cửa hàng" />
                   </Form.Item>
 
                   <button
                     type="button"
-                    className="mt-5 p-1 text-red-600 hover:text-red-800"
+                    className="p-1 text-red-600 hover:text-red-800"
                     onClick={() => remove(name)}
                     aria-label="Xóa chi nhánh"
                   >
