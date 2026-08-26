@@ -365,6 +365,7 @@ export function DateRangeField({
             placeholder="Từ ngày"
             allowClear
             disabled={disabled}
+            suffixIcon={null}
             value={typeof startValue === "string" ? dayjs(startValue) : null}
             onChange={(date) => handleDateChange("start", date)}
           />
@@ -377,6 +378,7 @@ export function DateRangeField({
             format="DD/MM/YYYY"
             placeholder="Đến ngày"
             allowClear
+            suffixIcon={null}
             disabled={disabled}
             value={typeof endValue === "string" ? dayjs(endValue) : null}
             onChange={(date) => handleDateChange("end", date)}
