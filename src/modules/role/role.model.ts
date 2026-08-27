@@ -9,7 +9,8 @@
  * - Kiểu RoleResponse để định dạng phản hồi API
  */
 import { StoreEntity } from "@/shared/base/entity";
-import { Module, PermissionStructure } from "@/shared/constants/permission";
+import { PermissionStructure } from "@/shared/constants/permission";
+import { ExcelRolePermissions } from "@/modules/excel/excel.permission.model";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 
 export enum RoleType {
@@ -23,11 +24,9 @@ export const roleTypeMap: Record<RoleType, string> = {
 
 export interface RoleQuery extends ApiRequestQuery {}
 
-export interface Role extends StoreEntity {
+export interface Role extends StoreEntity, ExcelRolePermissions {
   name: string;
   permissions: PermissionStructure;
-  importExcel: Module[];
-  exportExcel: Module[];
   userCount?: number;
   type: RoleType;
 }

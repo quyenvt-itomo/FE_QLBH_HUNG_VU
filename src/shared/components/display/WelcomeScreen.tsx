@@ -130,19 +130,19 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
           <div className="relative w-96 h-86">
             <svg viewBox="0 0 500 400" className="w-full h-full">
               {/* Background circle */}
-              <circle cx="350" cy="200" r="150" fill="#006EC4" opacity="0.1" />
+              <circle cx="350" cy="200" r="150" fill="#16a34a" opacity="0.1" />
 
               {/* Decorative blocks - floating animation */}
               <g className="animate-float">
-                <rect x="300" y="120" width="20" height="20" fill="#006EC4" opacity="0.6" rx="3" />
-                <rect x="325" y="120" width="20" height="20" fill="#006EC4" opacity="0.6" rx="3" />
-                <rect x="350" y="120" width="20" height="20" fill="#006EC4" opacity="0.6" rx="3" />
+                <rect x="300" y="120" width="20" height="20" fill="#16a34a" opacity="0.6" rx="3" />
+                <rect x="325" y="120" width="20" height="20" fill="#16a34a" opacity="0.6" rx="3" />
+                <rect x="350" y="120" width="20" height="20" fill="#16a34a" opacity="0.6" rx="3" />
               </g>
 
               <g className="animate-float-delay">
-                <rect x="450" y="150" width="15" height="15" fill="#006EC4" opacity="0.6" rx="3" />
-                <rect x="470" y="150" width="15" height="15" fill="#006EC4" opacity="0.6" rx="3" />
-                <rect x="460" y="170" width="15" height="15" fill="#006EC4" opacity="0.6" rx="3" />
+                <rect x="450" y="150" width="15" height="15" fill="#16a34a" opacity="0.6" rx="3" />
+                <rect x="470" y="150" width="15" height="15" fill="#16a34a" opacity="0.6" rx="3" />
+                <rect x="460" y="170" width="15" height="15" fill="#16a34a" opacity="0.6" rx="3" />
               </g>
 
               {/* Car with subtle movement */}
@@ -152,7 +152,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
                   y="240"
                   width="140"
                   height="80"
-                  fill="#006EC4"
+                  fill="#16a34a"
                   opacity="0.7"
                   rx="10"
                 />
@@ -170,36 +170,36 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
               {/* Person 1 - floating */}
               <g className="animate-float-delay">
                 <circle cx="180" cy="200" r="25" fill="#FF5400" />
-                <rect x="165" y="225" width="30" height="50" fill="#006EC4" opacity="0.8" rx="15" />
+                <rect x="165" y="225" width="30" height="50" fill="#16a34a" opacity="0.8" rx="15" />
                 <rect x="155" y="240" width="15" height="35" fill="#1a5f01" rx="8" />
                 <rect x="190" y="240" width="15" height="35" fill="#1a5f01" rx="8" />
               </g>
 
               {/* Plants - gentle sway */}
               <g className="animate-float">
-                <ellipse cx="120" cy="310" r="30" ry="15" fill="#006EC4" opacity="0.3" />
+                <ellipse cx="120" cy="310" r="30" ry="15" fill="#16a34a" opacity="0.3" />
                 <path
                   d="M 120 280 Q 110 300 120 310 Q 130 300 120 280"
-                  fill="#006EC4"
+                  fill="#16a34a"
                   opacity="0.5"
                 />
                 <path d="M 125 285 Q 135 295 130 310" fill="#1a5f01" />
               </g>
 
               <g className="animate-float-delay">
-                <ellipse cx="240" cy="320" r="25" ry="12" fill="#006EC4" opacity="0.3" />
+                <ellipse cx="240" cy="320" r="25" ry="12" fill="#16a34a" opacity="0.3" />
                 <path
                   d="M 240 295 Q 235 310 240 320 Q 245 310 240 295"
-                  fill="#006EC4"
+                  fill="#16a34a"
                   opacity="0.5"
                 />
               </g>
 
               <g className="animate-float">
-                <ellipse cx="460" cy="310" r="28" ry="14" fill="#006EC4" opacity="0.3" />
+                <ellipse cx="460" cy="310" r="28" ry="14" fill="#16a34a" opacity="0.3" />
                 <path
                   d="M 460 285 Q 452 305 460 310 Q 468 305 460 285"
-                  fill="#006EC4"
+                  fill="#16a34a"
                   opacity="0.5"
                 />
                 <path d="M 465 288 Q 472 300 468 310" fill="#1a5f01" />

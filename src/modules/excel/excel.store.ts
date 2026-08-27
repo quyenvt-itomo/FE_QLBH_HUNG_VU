@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
-import { getData, postData, postBlob } from "@/shared/api/apiClient";
+import { getData, postData, postBlob } from "../../shared/api/apiClient";
 import { apiEndpoint, HOST_URL } from "@/shared/constants/apiEndpoint";
 import { useErrorState } from "@/shared/hooks/useErrorState";
 import dayjs from "dayjs";

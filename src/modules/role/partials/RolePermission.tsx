@@ -5,6 +5,7 @@ import { Role } from "../role.model";
 import { role } from "@/shared/constants/permission";
 import { SubmitButton } from "@/shared/components";
 import { PermissionSelect } from "@/shared/components";
+import { ExcelModuleSwitchGroup } from "./ExcelModuleSwitchGroup";
 
 const { Title } = Typography;
 
@@ -32,14 +33,23 @@ export const RolePermission: React.FC<RolePermissionProps> = ({
     if (!selectedRow) return;
     form.setFieldsValue({
       permissions: selectedRow.permissions || {},
+      importExcel: selectedRow.importExcel || [],
+      exportExcel: selectedRow.exportExcel || [],
     } as any);
   };
 
   const handleFinish = async (values: any) => {
     if (!selectedRow) return;
+    const {
+      permissions = {},
+      importExcel = [],
+      exportExcel = [],
+    } = values;
     onUpdateRolePermission?.({
       ...selectedRow,
-      ...values,
+      permissions,
+      importExcel,
+      exportExcel,
     });
   };
 
@@ -83,8 +93,18 @@ export const RolePermission: React.FC<RolePermissionProps> = ({
         style={{ height: "calc(100% - 44px)" }}
       >
         <div className="grid grid-cols-2 gap-4">
-          {/* Nhập Excel */}
-          {/* Xuất Excel */}
+          <Form.Item name="importExcel" noStyle>
+            <ExcelModuleSwitchGroup
+              mode="import"
+              disabled={!onUpdateRolePermission}
+            />
+          </Form.Item>
+          <Form.Item name="exportExcel" noStyle>
+            <ExcelModuleSwitchGroup
+              mode="export"
+              disabled={!onUpdateRolePermission}
+            />
+          </Form.Item>
           {role.map((group) => (
             <div
               key={group.title}

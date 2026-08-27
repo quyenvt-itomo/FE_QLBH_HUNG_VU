@@ -1,13 +1,11 @@
 import { Button, Modal, Checkbox, Typography } from "antd";
 import { useMemo, useState } from "react";
 import { ReactSortable } from "react-sortablejs";
-import { shallowEqual, useSelector } from "react-redux";
 import dayjs from "dayjs";
 import { allColumnsExportOption, ColumnOption, ExcelEntityType } from "../excel.enum";
 import { useExcelStore } from "../excel.store";
 import { ModalImportExcel } from "./ModalImportExcel";
 import { ExportColumnConfig, ExportOptions } from "../excel.model";
-import { RootState } from "@/shared/stores";
 import { mapEntityTypeToModule } from "../excel.util";
 import {
   ArrowRightEndOnRectangleIcon,
@@ -205,14 +203,17 @@ const ExportExcelModal: React.FC<{
 export const ExcelButton: React.FC<{
   entityType: ExcelEntityType;
   onSuccess?: () => void;
-  exportOptions?: Omit<ExportOptions, "entityType" | "columns" | "extraUnitColumns">;
+  exportOptions?: Omit<
+    ExportOptions,
+    "entityType" | "columns" | "extraUnitColumns" | "businessStoreColumns"
+  >;
 }> = ({ entityType, onSuccess, exportOptions }) => {
   const [openExport, setOpenExport] = useState(false);
   const [openImport, setOpenImport] = useState(false);
   const [columns, setColumns] = useState<SortableColumn[]>(
     (allColumnsExportOption[entityType] || []).map((col: ColumnOption) => ({
       ...col,
-      id: col.field,
+      id: (col.sheet || "main") + ":" + col.field,
       hidden: false,
     })),
   );
@@ -220,18 +221,16 @@ export const ExcelButton: React.FC<{
   const { exporting, exportExcel } = useExcelStore();
 
   // Kiểm tra quyền import/export Excel giống BE (excelPermissionMiddleware)
-  const info = useSelector((state: RootState) => state.Global.info, shallowEqual);
+  const { info } = useGlobalData();
   const moduleName = mapEntityTypeToModule(entityType);
-  const importExcelPerms: string[] = (info as any)?.importExcel || [];
-  const exportExcelPerms: string[] = (info as any)?.exportExcel || [];
-  const showImport = importExcelPerms.length > 0 && importExcelPerms.includes(moduleName);
-  const showExport = exportExcelPerms.length > 0 && exportExcelPerms.includes(moduleName);
+  const canImport = !!moduleName && info?.importExcel?.includes(moduleName);
+  const canExport = !!moduleName && info?.exportExcel?.includes(moduleName);
 
   const handleReloadColumns = () => {
     setColumns(
       (allColumnsExportOption[entityType] || []).map((col: ColumnOption) => ({
         ...col,
-        id: col.field,
+        id: (col.sheet || "main") + ":" + col.field,
         hidden: false,
       })),
     );
@@ -241,13 +240,16 @@ export const ExcelButton: React.FC<{
     const now = dayjs().format("YYYY-MM-DD_HH-mm");
     const visible = columns.filter((c) => !c.hidden);
 
-    // Tách main columns và extra unit columns (nếu có sheet phụ)
+    // Tách các cột theo sheet để BE tạo đúng từng sheet phụ.
     const mainColumns: ExportColumnConfig[] = [];
     const extraUnitColumns: ExportColumnConfig[] = [];
+    const businessStoreColumns: ExportColumnConfig[] = [];
 
     visible.forEach(({ hidden, id, sheet, ...rest }) => {
-      if (sheet) {
+      if (sheet === "Đơn vị tính phụ") {
         extraUnitColumns.push(rest);
+      } else if (sheet === "Cửa hàng kinh doanh") {
+        businessStoreColumns.push(rest);
       } else {
         mainColumns.push(rest);
       }
@@ -258,6 +260,8 @@ export const ExcelButton: React.FC<{
       ...exportOptions,
       columns: mainColumns,
       extraUnitColumns: extraUnitColumns.length > 0 ? extraUnitColumns : undefined,
+      businessStoreColumns:
+        businessStoreColumns.length > 0 ? businessStoreColumns : undefined,
       filename: (exportOptions?.filename || entityType + "_") + now + ".xlsx",
     });
     setOpenExport(false);
@@ -265,13 +269,13 @@ export const ExcelButton: React.FC<{
 
   return (
     <div className="flex gap-3">
-      {showExport && (
+      {canExport && (
         <Button htmlType="button" onClick={() => setOpenExport(true)}>
           <ArrowRightStartOnRectangleIcon className="w-4 h-4 mr-1" />
           Xuất Excel
         </Button>
       )}
-      {showImport && (
+      {canImport && (
         <Button htmlType="button" onClick={() => setOpenImport(true)}>
           <ArrowRightEndOnRectangleIcon className="w-4 h-4 mr-1" />
           Nhập Excel

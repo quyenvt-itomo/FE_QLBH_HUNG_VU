@@ -41,7 +41,6 @@
     "src/modules/commissionDebtReport/**",
     "src/modules/deviceWhitelist/**",
     "src/modules/employee/**",
-    "src/modules/excel/**",
     "src/modules/gateLog/**",
     "src/modules/inventoryConversion/**",
     "src/modules/invoice/**",

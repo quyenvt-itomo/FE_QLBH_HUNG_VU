@@ -5,7 +5,7 @@
 
 .role__row.role__selected-row {
   background-color: #e5edf5;
-  color: #006ec4;
+  color: #16a34a;
   position: relative;
 }
 
@@ -14,7 +14,7 @@
   content: "";
   width: 2px;
   height: 0;
-  background-color: #006ec4;
+  background-color: #16a34a;
   top: 50%;
   left: 0;
   transform: translateY(-50%);

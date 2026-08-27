@@ -171,9 +171,11 @@ export const ProductTable: React.FC<Props> = ({ onViewDetail, ...rest }) => {
             .filter(Boolean);
 
           return (
-            <span className="text-gray-400 text-center text-wrap">
-              {sellingStore.length > 0 ? sellingStore.join(", ") : "Không CH nào đang bán"}
-            </span>
+            <div className="flex flex-col">
+              <span className="text-gray-400 text-start text-wrap">
+                {sellingStore.length > 0 ? sellingStore.join(", ") : "Không CH nào đang bán"}
+              </span>
+            </div>
           );
         },
       },

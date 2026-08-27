@@ -28,7 +28,7 @@ const downloadErrorFile = async (url: string) => {
   }
 };
 
-export const showImportResultModal = (result: ImportExcelResult) => {
+export const openImportResultModal = (result: ImportExcelResult) => {
   const { totalRows, successRows, errorRows, skippedRows, errors, errorFileUrl } = result;
 
   Modal.info({

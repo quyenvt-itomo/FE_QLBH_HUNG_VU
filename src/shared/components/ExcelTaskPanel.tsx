@@ -13,7 +13,7 @@ import {
   removeImportTask,
   removeExportTask,
 } from "../stores/excel.slice";
-import { showImportResultModal } from "../../modules/excel/components/ImportResult";
+import { openImportResultModal } from "../../modules/excel/components/ImportResult";
 
 const MAX_VISIBLE_TASKS = 5;
 const POLLING_INTERVAL_MS = 3000;
@@ -180,7 +180,7 @@ const ExcelTaskPanel: React.FC = () => {
         !completedRef.current.has(task.jobId)
       ) {
         completedRef.current.add(task.jobId);
-        showImportResultModal(task.result);
+        openImportResultModal(task.result);
         // Auto-dismiss sau 6 giây
         setTimeout(() => dispatch(removeImportTask(task.jobId)), 6000);
       }

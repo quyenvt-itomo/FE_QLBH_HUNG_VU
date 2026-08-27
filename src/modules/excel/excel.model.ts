@@ -27,6 +27,7 @@ export interface ExportOptions {
   branchId?: string;
   columns?: ExportColumnConfig[];
   extraUnitColumns?: ExportColumnConfig[];
+  businessStoreColumns?: ExportColumnConfig[];
   filters?: Record<string, any>;
   filename?: string;
 }

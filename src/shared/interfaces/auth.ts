@@ -1,7 +1,8 @@
 import { Attribute as AttributeModel } from "@/modules/attribute/attribute.model";
 import { Role } from "@/modules/role/role.model";
 import { User, Store } from "@/shared/base/entity";
-import { Module, PermissionStructure } from "@/shared/constants/permission";
+import { PermissionStructure } from "@/shared/constants/permission";
+import { ExcelModule } from "@/modules/excel/excel.permission.model";
 import { FormatData } from "@/shared/interfaces/format";
 
 // TODO: Đăng nhập
@@ -77,6 +78,6 @@ export interface UserInfo extends User {
   defaultMeshUnit?: AttributeModel;
   defaultAreaUnit?: AttributeModel;
 
-  importExcel?: Module[];
-  exportExcel?: Module[];
+  importExcel?: ExcelModule[];
+  exportExcel?: ExcelModule[];
 }

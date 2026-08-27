@@ -18,6 +18,7 @@ import { useProductHandlers } from "./product.handlers";
 import { filterUses, Product, rangerItems, sortItems } from "./product.model";
 import { useProductPriceHistoryStore, useProductStore } from "./product.store";
 import { ProductTable, ProductAddUpdateModal, ProductDetailModal } from "./components";
+import { ExcelButton, ExcelEntityType } from "@/modules/excel";
 
 export const ProductPage: React.FC = () => {
   const {
@@ -74,7 +75,17 @@ export const ProductPage: React.FC = () => {
       <div className="flex flex-col h-full w-[calc(100%-266px)] gap-3">
         <div className="flex justify-between items-start gap-3">
           <SearchInput value={keyword} onSearch={pageAction.handleSearch} maxWidth={340} />
-          <AddButton onOpenAdd={handleOpenAdd} />
+          <div className="flex items-center gap-3">
+            <ExcelButton
+              entityType={ExcelEntityType.PRODUCT}
+              onSuccess={() => pageAction.handleReload()}
+              exportOptions={{
+                filters: { ...filter, ...ranger, keyword, sortBy, sortOrder },
+                filename: "Danh_sach_hang_hoa_",
+              }}
+            />
+            <AddButton onOpenAdd={handleOpenAdd} />
+          </div>
         </div>
         <Panel className="h-[calc(100%-44px)] !p-1">
           <ProductTable

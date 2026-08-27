@@ -140,7 +140,7 @@ export const ModalImportExcel: React.FC<ModalImportExcelProps> = ({
               <Spin size="small" />
             ) : (
               <a
-                className="text-blue-500 font-bold underline cursor-pointer"
+                className="text-primary font-bold underline cursor-pointer"
                 onClick={() => getTemplate(entityType)}
               >
                 Tải file mẫu
