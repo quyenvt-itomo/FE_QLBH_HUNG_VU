@@ -2,12 +2,18 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+
     <link rel="icon" type="image/svg+xml" href="/logo.png" />
+
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
     />
+
+    <meta name="theme-color" content="#16a34a" />
+
     <title>%VITE_APP_NAME%</title>
+
     <script>
       (function () {
         const theme = localStorage.getItem("themeMode") || "light";
@@ -15,240 +21,619 @@
 
         document.documentElement.setAttribute("data-theme", theme);
         document.documentElement.style.setProperty("--primary-color", primary);
+
+        // Giúp browser render đúng màu nền ngay từ frame đầu tiên
+        document.documentElement.style.colorScheme = theme === "dark" ? "dark" : "light";
       })();
     </script>
+
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100;200;300;400;500;600;700;800;900&display=swap");
-      @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap");
+
+      /* =========================================================
+         THEME
+         ========================================================= */
+
       :root {
-        --color-primary: #16a34a;
-        --text-primary: rgba(0, 0, 0, 0.88);
-        --text-secondary: rgba(0, 0, 0, 0.45);
-        --color-border: #e2e8f0;
+        --primary-color: #16a34a;
 
-        --color-scrollbar-bg: #f1f1f1;
-        --color-scrollbar-thumb: #c1c1c1;
-        --color-scrollbar-thumb-hover: #a8a8a8;
+        --splash-bg: #f8fafc;
+        --splash-bg-secondary: #f1f5f9;
 
-        --bg-panel: #fff;
-        --bg-summary-row: #f0f0f0;
+        --splash-text: #0f172a;
+        --splash-text-secondary: #64748b;
+
+        --splash-border: rgba(15, 23, 42, 0.08);
+
+        --splash-card-bg: rgba(255, 255, 255, 0.72);
+
+        --dot-bg: #cbd5e1;
+
+        --shadow: 0 20px 60px rgba(15, 23, 42, 0.08), 0 4px 16px rgba(15, 23, 42, 0.04);
       }
 
-      html.dark {
-        --color-primary: #3f70dc;
-        --text-primary: rgba(255, 255, 255, 0.88);
-        --text-secondary: rgba(255, 255, 255, 0.55);
-        --color-border: #334155;
+      html[data-theme="dark"] {
+        --splash-bg: #0b1120;
+        --splash-bg-secondary: #111827;
 
-        --color-scrollbar-bg: #2c2c2c;
-        --color-scrollbar-thumb: #555;
-        --color-scrollbar-thumb-hover: #777;
+        --splash-text: #f8fafc;
+        --splash-text-secondary: #94a3b8;
 
-        --bg-panel: #1f1f1f;
-        --bg-summary-row: #292929;
+        --splash-border: rgba(255, 255, 255, 0.08);
+
+        --splash-card-bg: rgba(15, 23, 42, 0.72);
+
+        --dot-bg: #475569;
+
+        --shadow: 0 24px 80px rgba(0, 0, 0, 0.35), 0 4px 20px rgba(0, 0, 0, 0.2);
       }
 
-      .full-screen {
+      /* =========================================================
+         BASE
+         ========================================================= */
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        min-height: 100%;
+      }
+
+      body {
+        font-family:
+          "Be Vietnam Pro",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+
+        background: var(--splash-bg);
+        color: var(--splash-text);
+      }
+
+      /* =========================================================
+         SPLASH SCREEN
+         ========================================================= */
+
+      #initial-loader {
         position: fixed;
-        top: 0;
-        left: 0;
+        inset: 0;
+
         width: 100%;
         height: 100vh;
+        height: 100dvh;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        overflow: hidden;
+
+        background:
+          radial-gradient(
+            circle at 50% 42%,
+            color-mix(in srgb, var(--primary-color) 9%, transparent),
+            transparent 32%
+          ),
+          linear-gradient(135deg, var(--splash-bg), var(--splash-bg-secondary));
+
+        z-index: 99999;
+
+        opacity: 1;
+        visibility: visible;
+
+        transition:
+          opacity 0.55s ease,
+          visibility 0.55s ease;
+      }
+
+      #initial-loader.hide {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition:
+          opacity 1.55s ease,
+          visibility 1.55s ease;
+      }
+
+      /* =========================================================
+         BACKGROUND DECORATION
+         ========================================================= */
+
+      .splash-grid {
+        position: absolute;
+        inset: 0;
+
+        background-image:
+          linear-gradient(var(--splash-border) 1px, transparent 1px),
+          linear-gradient(90deg, var(--splash-border) 1px, transparent 1px);
+
+        background-size: 48px 48px;
+
+        mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
+
+        opacity: 0.45;
+
+        pointer-events: none;
+      }
+
+      .splash-orb {
+        position: absolute;
+
+        width: 420px;
+        height: 420px;
+
+        border-radius: 50%;
+
+        background: var(--primary-color);
+
+        opacity: 0.035;
+
+        filter: blur(80px);
+
+        pointer-events: none;
+      }
+
+      .splash-orb--top {
+        top: -240px;
+        right: -120px;
+      }
+
+      .splash-orb--bottom {
+        bottom: -260px;
+        left: -140px;
+      }
+
+      /* =========================================================
+         CONTENT
+         ========================================================= */
+
+      .splash-content {
+        position: relative;
+
+        width: min(420px, calc(100% - 40px));
+
         display: flex;
         flex-direction: column;
-        z-index: 9999;
-        overflow: hidden;
-        transition: all 0.9s ease-in-out;
-      }
-
-      .top__full-screen,
-      .bot__full-screen {
-        flex: 1;
-        display: flex;
-        justify-content: center;
         align-items: center;
-        gap: 16px;
-        background-color: #f5f5f5;
-        transition: transform 0.9s ease-in-out;
+
+        padding: 42px 36px 34px;
+
+        border: 1px solid var(--splash-border);
+
+        border-radius: 24px;
+
+        background: var(--splash-card-bg);
+
+        box-shadow: var(--shadow);
+
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+
+        animation: splashContentIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
       }
 
-      .logo-text {
-        font-size: 64px;
-        font-weight: bold;
-        font-family: "JetBrains Mono", monospace !important;
-        color: var(--text-primary);
-      }
+      /* =========================================================
+         LOGO
+         ========================================================= */
 
-      html[data-theme="dark"] .top__full-screen,
-      html[data-theme="dark"] .bot__full-screen {
-        background-color: #141414;
-      }
+      .splash-logo-wrapper {
+        position: relative;
 
-      html[data-theme="dark"] .loading-container {
-        background-color: rgba(0, 0, 0, 0.4);
-      }
+        width: 112px;
+        height: 112px;
 
-      img.default-logo:not(.current-organization-logo) {
-        height: 80px;
-      }
-
-      .current-organization-logo {
-        height: 200px;
-        width: 200px;
-        object-fit: cover;
-        border-radius: 50%;
-        overflow: hidden;
-      }
-
-      /* Khi loading hoàn tất, top đi lên, bot đi xuống */
-      /* .full-screen.hide .top__full-screen {
-        transform: translateY(-100%);
-      }
-
-      .full-screen.hide .bot__full-screen {
-        transform: translateY(100%);
-      } */
-      .full-screen.hide {
-        opacity: 0;
-      }
-
-      .waiting__container {
-        min-height: 200px;
-      }
-
-      .waiting-wrapper {
         display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .waiting {
-        width: 25px;
-        height: 25px;
-        border-radius: 50%;
-        background-color: var(--primary-color);
-        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
-        animation: animationLoading 1s ease-in-out infinite;
-      }
-
-      .loading-container {
-        display: flex;
-        position: fixed;
         align-items: center;
         justify-content: center;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100vh;
-        background-color: rgba(0, 0, 0, 0.1);
-        z-index: 99999;
+
+        margin-bottom: 24px;
+
+        animation: logoIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
       }
 
-      .loading-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 20px;
+      .splash-logo-wrapper::before {
+        content: "";
+
         position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-      }
+        inset: 0;
 
-      .loading {
-        width: 30px;
-        height: 30px;
         border-radius: 50%;
-        background-color: var(--primary-color);
-        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.24);
-        animation: animationLoading 1s ease-in-out infinite;
+
+        background: var(--primary-color);
+
+        opacity: 0.08;
+
+        transform: scale(1.18);
+
+        animation: logoGlow 2.4s ease-in-out infinite;
       }
 
-      .set_1 {
+      .splash-logo-wrapper::after {
+        content: "";
+
+        position: absolute;
+        inset: 8px;
+
+        border-radius: 50%;
+
+        border: 1px solid color-mix(in srgb, var(--primary-color) 18%, transparent);
+      }
+
+      .splash-logo {
+        position: relative;
+        z-index: 1;
+
+        width: 88px;
+        height: 88px;
+
+        object-fit: contain;
+
+        border-radius: 20px;
+
+        filter: drop-shadow(0 10px 18px color-mix(in srgb, var(--primary-color) 20%, transparent));
+      }
+
+      /* =========================================================
+         APP NAME
+         ========================================================= */
+
+      .splash-title {
+        margin: 0;
+
+        color: var(--splash-text);
+
+        font-family:
+          "Be Vietnam Pro",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+
+        font-size: 27px;
+        line-height: 1.25;
+        font-weight: 700;
+
+        letter-spacing: -0.5px;
+
+        text-align: center;
+
+        animation: fadeUp 0.65s 0.12s ease both;
+      }
+
+      .splash-subtitle {
+        margin-top: 8px;
+
+        color: var(--splash-text-secondary);
+
+        font-size: 13px;
+        line-height: 1.5;
+        font-weight: 400;
+
+        text-align: center;
+
+        animation: fadeUp 0.65s 0.18s ease both;
+      }
+
+      /* =========================================================
+         LOADING
+         ========================================================= */
+
+      .splash-loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        width: 100%;
+
+        margin-top: 34px;
+
+        animation: fadeUp 0.65s 0.24s ease both;
+      }
+
+      .loading-dots {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 7px;
+
+        height: 20px;
+      }
+
+      .loading-dot {
+        width: 7px;
+        height: 7px;
+
+        border-radius: 50%;
+
+        background: var(--dot-bg);
+
+        animation: loadingDot 1.4s ease-in-out infinite;
+      }
+
+      .loading-dot:nth-child(1) {
         animation-delay: 0s;
       }
 
-      .set_2 {
-        animation-delay: 0.2s;
+      .loading-dot:nth-child(2) {
+        animation-delay: 0.12s;
       }
 
-      .set_3 {
-        animation-delay: 0.4s;
+      .loading-dot:nth-child(3) {
+        animation-delay: 0.24s;
       }
 
-      .set_4 {
-        animation-delay: 0.6s;
+      .loading-dot:nth-child(4) {
+        animation-delay: 0.36s;
       }
 
-      .set_5 {
-        animation-delay: 0.8s;
+      .loading-dot:nth-child(5) {
+        animation-delay: 0.48s;
       }
 
-      @keyframes animationLoading {
-        0% {
-          transform: scale(0.7);
+      .loading-status {
+        margin-top: 14px;
+
+        color: var(--splash-text-secondary);
+
+        font-size: 11px;
+        font-weight: 500;
+
+        letter-spacing: 0.4px;
+      }
+
+      /* =========================================================
+         PROGRESS BAR
+         ========================================================= */
+
+      .loading-progress {
+        position: relative;
+
+        width: 150px;
+        height: 3px;
+
+        margin-top: 16px;
+
+        overflow: hidden;
+
+        border-radius: 999px;
+
+        background: color-mix(in srgb, var(--primary-color) 10%, transparent);
+      }
+
+      .loading-progress::before {
+        content: "";
+
+        position: absolute;
+
+        top: 0;
+        left: -45%;
+
+        width: 45%;
+        height: 100%;
+
+        border-radius: inherit;
+
+        background: var(--primary-color);
+
+        box-shadow: 0 0 8px color-mix(in srgb, var(--primary-color) 45%, transparent);
+
+        animation: progress 1.4s ease-in-out infinite;
+      }
+
+      /* =========================================================
+         FOOTER
+         ========================================================= */
+
+      .splash-footer {
+        margin-top: 30px;
+
+        color: var(--splash-text-secondary);
+
+        font-size: 10px;
+
+        opacity: 0.7;
+
+        animation: fadeUp 0.65s 0.3s ease both;
+      }
+
+      /* =========================================================
+         ANIMATIONS
+         ========================================================= */
+
+      @keyframes splashContentIn {
+        from {
+          opacity: 0;
+          transform: translateY(16px) scale(0.98);
         }
-        50% {
+
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      @keyframes logoIn {
+        from {
+          opacity: 0;
+          transform: scale(0.75);
+        }
+
+        to {
+          opacity: 1;
           transform: scale(1);
         }
+      }
+
+      @keyframes logoGlow {
+        0%,
         100% {
-          transform: scale(0.7);
+          transform: scale(1.12);
+          opacity: 0.06;
+        }
+
+        50% {
+          transform: scale(1.2);
+          opacity: 0.11;
         }
       }
 
-      .slide-left {
-        -webkit-animation: slide-left 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-        animation: slide-left 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-        animation-delay: var(--delay, 0s); /* Độ trễ mặc định */
-      }
-
-      @-webkit-keyframes slide-left {
-        0% {
-          -webkit-transform: translateX(var(--slide-distance, 30px));
-          transform: translateX(var(--slide-distance, 30px));
+      @keyframes fadeUp {
+        from {
           opacity: 0;
+          transform: translateY(8px);
         }
-        100% {
-          -webkit-transform: translateX(0px);
-          transform: translateX(0px);
+
+        to {
           opacity: 1;
+          transform: translateY(0);
         }
       }
 
-      @keyframes slide-left {
-        0% {
-          -webkit-transform: translateX(var(--slide-distance, 30px));
-          transform: translateX(var(--slide-distance, 30px));
-          opacity: 0;
-        }
+      @keyframes loadingDot {
+        0%,
+        60%,
         100% {
-          -webkit-transform: translateX(0px);
-          transform: translateX(0px);
-          opacity: 1;
+          transform: scale(0.75);
+          background: var(--dot-bg);
+        }
+
+        30% {
+          transform: scale(1.25);
+          background: var(--primary-color);
+          box-shadow: 0 0 8px color-mix(in srgb, var(--primary-color) 35%, transparent);
+        }
+      }
+
+      @keyframes progress {
+        0% {
+          left: -45%;
+        }
+
+        70% {
+          left: 100%;
+        }
+
+        100% {
+          left: 100%;
+        }
+      }
+
+      /* =========================================================
+         MOBILE
+         ========================================================= */
+
+      @media (max-width: 480px) {
+        .splash-content {
+          width: calc(100% - 28px);
+
+          padding: 34px 24px 28px;
+
+          border-radius: 20px;
+        }
+
+        .splash-logo-wrapper {
+          width: 96px;
+          height: 96px;
+          margin-bottom: 20px;
+        }
+
+        .splash-logo {
+          width: 76px;
+          height: 76px;
+          border-radius: 17px;
+        }
+
+        .splash-title {
+          font-size: 23px;
+        }
+
+        .splash-subtitle {
+          font-size: 12px;
+        }
+
+        .splash-loading {
+          margin-top: 28px;
+        }
+      }
+
+      /* =========================================================
+         REDUCED MOTION
+         ========================================================= */
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
         }
       }
     </style>
   </head>
+
   <body>
-    <!-- Loading Screen -->
-    <div id="initial-loader" class="full-screen">
-      <div class="top__full-screen flex items-center">
-        <img src="/logo.png" class="default-logo" onerror="this.src = '/logo.png'" />
-        <span class="logo-text">%VITE_APP_NAME%</span>
-      </div>
-      <div class="bot__full-screen">
-        <div class="waiting__container full-width center" style="height: 100%">
-          <div class="waiting-wrapper">
-            <div class="waiting set_1"></div>
-            <div class="waiting set_2"></div>
-            <div class="waiting set_3"></div>
-            <div class="waiting set_4"></div>
-            <div class="waiting set_5"></div>
-          </div>
+    <!-- =========================================================
+         INITIAL SPLASH SCREEN
+         Không phụ thuộc React / Ant Design
+         ========================================================= -->
+
+    <div id="initial-loader">
+      <div class="splash-grid"></div>
+
+      <div class="splash-orb splash-orb--top"></div>
+      <div class="splash-orb splash-orb--bottom"></div>
+
+      <div class="splash-content">
+        <!-- Logo -->
+        <div class="splash-logo-wrapper">
+          <img
+            src="/logo.png"
+            alt="%VITE_APP_NAME%"
+            class="splash-logo"
+            onerror="this.style.display = 'none'"
+          />
         </div>
+
+        <!-- App name -->
+        <h1 class="splash-title">%VITE_APP_NAME%</h1>
+
+        <div class="splash-subtitle">Đang khởi tạo hệ thống</div>
+
+        <!-- Loading -->
+        <div class="splash-loading">
+          <div class="loading-dots">
+            <span class="loading-dot"></span>
+            <span class="loading-dot"></span>
+            <span class="loading-dot"></span>
+            <span class="loading-dot"></span>
+            <span class="loading-dot"></span>
+          </div>
+
+          <div class="loading-progress"></div>
+
+          <div class="loading-status">Please wait...</div>
+        </div>
+
+        <div class="splash-footer">Initializing application</div>
       </div>
     </div>
 
+    <!-- =========================================================
+         REACT APPLICATION
+         ========================================================= -->
+
     <div id="root"></div>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -14,7 +14,7 @@ if (loader) {
 
   setTimeout(() => {
     loader.remove();
-  }, 900);
+  }, 2000);
 }
 
 createRoot(document.getElementById("root")!).render(

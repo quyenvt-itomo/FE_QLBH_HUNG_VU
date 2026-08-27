@@ -76,6 +76,28 @@ export interface ObjectTableProps extends Omit<
 
 const projectName = "TOTO PAINT";
 
+// Keep configured data-column widths numeric and bounded. The trailing action
+// column is intentionally excluded from this rule so it can absorb spare
+// table width while still using a minimum width for its toolbar.
+const DEFAULT_COLUMN_WIDTH = 120;
+const MIN_COLUMN_WIDTH = 40;
+const MAX_COLUMN_WIDTH = 600;
+const INDEX_COLUMN_WIDTH = 50;
+const EXPAND_COLUMN_WIDTH = 32;
+const ACTION_COLUMN_MIN_WIDTH = 50;
+
+const getStableColumnWidth = (width: unknown, fallback: unknown = DEFAULT_COLUMN_WIDTH) => {
+  const parsedWidth = typeof width === "number" ? width : Number(width);
+  const parsedFallback = typeof fallback === "number" ? fallback : Number(fallback);
+  const safeWidth = Number.isFinite(parsedWidth) ? parsedWidth : parsedFallback;
+  const safeFallback = Number.isFinite(parsedFallback) ? parsedFallback : DEFAULT_COLUMN_WIDTH;
+
+  return Math.min(
+    MAX_COLUMN_WIDTH,
+    Math.max(MIN_COLUMN_WIDTH, Number.isFinite(safeWidth) ? safeWidth : safeFallback),
+  );
+};
+
 export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
   columns,
   tableKey,
@@ -184,8 +206,7 @@ export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
   const [configColumns, setConfigColumns] = useState<ColumnsConfigType>(() =>
     getInitialConfigColumns(mergedColumns, fullTableKey),
   );
-  const [finalColumns, setFinalColumns] = useState<TableColumnsType>([]);
-  const { info, isMobile } = useGlobalData();
+  const { isMobile } = useGlobalData();
   const length = dataSource?.length;
   const increasedLength = hasSummary ? 1 : 0;
   const hasRowExpandable = (record: any) =>
@@ -206,26 +227,47 @@ export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
             increasedLength || "";
   };
 
+  const handleResize =
+    (key: React.Key) =>
+    (e: React.SyntheticEvent<Element>, { size }: { size: { width: number } }) => {
+      setConfigColumns((prev) =>
+        prev.map((column) =>
+          column.key === key
+            ? { ...column, width: getStableColumnWidth(size.width, column.width) }
+            : column,
+        ),
+      );
+    };
+
   const getFinalColumns = (cols: ColumnsConfigType): TableColumnsType => {
     // Nhóm các cột config theo fixed: ghim trái → bình thường → ghim phải
     const visibleCols = cols.filter((col) => !col.hidden);
     const leftFixedCols = visibleCols.filter((c) => c.fixed === "left");
     const normalCols = visibleCols.filter((c) => !c.fixed);
     const rightFixedCols = visibleCols.filter((c) => c.fixed === "right");
+    const actionColumnMinWidth = Math.max(
+      ACTION_COLUMN_MIN_WIDTH,
+      getStableColumnWidth(actionWidth, 60),
+    );
 
-    const mapCol = (col: ColumnsConfigType[number], index: number) => ({
-      ...col,
-      fixed: isMobile ? undefined : col.fixed, // Disable fixed columns on mobile for better UX
-      ellipsis: true,
-      onHeaderCell: () => {
-        const headerProps: React.HTMLAttributes<any> = (col as any).onHeaderCell?.() || {};
-        return {
-          ...headerProps,
-          width: col.width,
-          onResize: handleResize(index),
-        } as unknown as React.HTMLAttributes<any>;
-      },
-    });
+    const mapCol = (col: ColumnsConfigType[number]) => {
+      const width = getStableColumnWidth(col.width);
+
+      return {
+        ...col,
+        fixed: isMobile ? undefined : col.fixed, // Disable fixed columns on mobile for better UX
+        width,
+        ellipsis: true,
+        onHeaderCell: () => {
+          const headerProps: React.HTMLAttributes<any> = (col as any).onHeaderCell?.() || {};
+          return {
+            ...headerProps,
+            width,
+            onResize: handleResize(col.key),
+          } as unknown as React.HTMLAttributes<any>;
+        },
+      };
+    };
 
     const baseColumns = [
       // ── STT: luôn ghim trái ──
@@ -235,17 +277,21 @@ export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
         key: "index",
         align: "center",
         fixed: isMobile ? undefined : "left",
-        width: 50,
+        width: INDEX_COLUMN_WIDTH,
         ellipsis: true,
         className: "index-column",
+        // Static/generated columns do not go through mapCol. Forward their
+        // width to the fixed header as well; otherwise rc-table can measure
+        // them as 0px while rendering an empty table.
+        onHeaderCell: () => ({ width: INDEX_COLUMN_WIDTH }),
         render: (value: any, record: any, index: number) => indexRen(value, record, index),
       },
       // ── Cột ghim trái ──
-      ...leftFixedCols.map((col, i) => mapCol(col, i)),
+      ...leftFixedCols.map((col) => mapCol(col)),
       // ── Cột bình thường ──
-      ...normalCols.map((col, i) => mapCol(col, leftFixedCols.length + i)),
+      ...normalCols.map((col) => mapCol(col)),
       // ── Cột ghim phải ──
-      ...rightFixedCols.map((col, i) => mapCol(col, leftFixedCols.length + normalCols.length + i)),
+      ...rightFixedCols.map((col) => mapCol(col)),
       // ── Chi nhánh (nếu có) ──
       hasBranchInfo
         ? {
@@ -255,6 +301,7 @@ export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
             width: 150,
             ellipsis: true,
             fixed: isMobile ? undefined : "right",
+            onHeaderCell: () => ({ width: 150 }),
           }
         : null,
       // ── _actions: luôn ghim phải ──
@@ -275,8 +322,17 @@ export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
         className: "action-column",
         fixed: "right",
         align: "right",
-        width: dataSource.length > 0 ? undefined : 50,
-        ellipsis: dataSource.length > 0 ? undefined : true,
+        // Deliberately leave this column flexible. It is the trailing column,
+        // so rc-table will give it the remaining table width when available.
+        // The minimum is applied to the cells below to protect the toolbar.
+        width: undefined,
+        ellipsis: true,
+        onHeaderCell: () => ({
+          style: {
+            minWidth: actionColumnMinWidth,
+          },
+        }),
+        onCell: () => ({ style: { minWidth: actionColumnMinWidth } }),
         render(record: any) {
           const canEdit = !!onEdit && !!checkCanPermission(record, "update");
           const canDelete = !!onDelete && !!checkCanPermission(record, "delete");
@@ -355,9 +411,10 @@ export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
           dataIndex: "expand",
           key: "expand",
           align: "right",
-          width: 32,
+          width: EXPAND_COLUMN_WIDTH,
           fixed: isMobile ? undefined : "left",
           className: "ant-table-cell-with-append",
+          onHeaderCell: () => ({ width: EXPAND_COLUMN_WIDTH }),
         },
         ...baseColumns,
       ];
@@ -365,18 +422,9 @@ export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
 
     return baseColumns;
   };
-  const handleResize =
-    (index: number) =>
-    (e: React.SyntheticEvent<Element>, { size }: { size: { width: number } }) => {
-      setConfigColumns((prev) => {
-        const next = [...prev];
-        next[index] = {
-          ...next[index],
-          width: size.width,
-        };
-        return next;
-      });
-    };
+  // Build columns during render so the table never mounts once with an empty
+  // column list and then reflows after an effect.
+  const finalColumns = getFinalColumns(configColumns);
 
   // Sync configColumns with columns prop changes while preserving user settings AND order
   useEffect(() => {
@@ -406,9 +454,6 @@ export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
   }, [mergedColumns]);
 
   useEffect(() => {
-    const cols = getFinalColumns(configColumns);
-    setFinalColumns(cols);
-
     const openColumnKeys = configColumns.map((col) => ({
       key: col.key,
       hidden: col.hidden,
@@ -417,7 +462,7 @@ export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
     }));
 
     localStorage.setItem(fullTableKey, JSON.stringify(openColumnKeys));
-  }, [configColumns, info, dataSource, fullTableKey, isMobile]);
+  }, [configColumns, fullTableKey]);
 
   const onChange: TableProps<any>["onChange"] = (pagination, filters, sorter, extra) => {
     const { field, order } = sorter as SorterResult;

@@ -90,83 +90,85 @@ export const InventoryPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full w-full gap-1">
-      <div className="flex justify-between items-start gap-3">
-        <Tabs
-          activeKey={type}
-          onChange={handleTabChange}
-          items={[
-            {
-              key: "finished",
-              label: "Th�nh ph?m",
-            },
-            {
-              key: "material",
-              label: "Nguy�n v?t li?u",
-            },
-          ]}
-          className="custom-tabs"
-        />
-        <div className="flex items-center gap-3 flex-shrink-0">
-          <SearchInput value={keyword} onSearch={pageAction.handleSearch} maxWidth={480} />
-          <DateRangeFilter
-            startDate={startAt}
-            endDate={endAt}
-            onRangeChange={pageAction.handleDateRangerChange}
-          />
-          <PanelFilter
-            filterActive={isFilterActive}
-            sortItems={sortItems}
-            sortValue={{ sortBy, sortOrder }}
-            onSortChange={pageAction.handleSortChange}
-            rangerItems={rangerItems}
-            rangerValue={ranger}
-            onRangerChange={pageAction.handleRangerChange}
-            filterUses={filterUses}
-            onClearFilter={pageAction.resetFilter}
-          />
-        </div>
-      </div>
-      <Panel>
-        <ReportTable
-          dataSource={reports}
-          loading={loading}
-          pagination={pagination}
-          summaryData={summary}
-          setPage={setPageReport}
-          setSize={setSizeReport}
-          onRow={(record: any) => {
-            return {
-              onClick: () => {
-                if (record.isSummary || checkSelection()) return;
-                handleOpenDetailModal(record);
+    <div className="flex gap-3 w-full h-full">
+      <PanelFilter
+        filterActive={isFilterActive}
+        sortItems={sortItems}
+        sortValue={{ sortBy, sortOrder }}
+        onSortChange={pageAction.handleSortChange}
+        rangerItems={rangerItems}
+        rangerValue={ranger}
+        onRangerChange={pageAction.handleRangerChange}
+        filterUses={filterUses}
+        onClearFilter={pageAction.resetFilter}
+      />
+      <div className="flex flex-col h-full w-full gap-1">
+        <div className="flex justify-between items-start gap-3">
+          <Tabs
+            activeKey={type}
+            onChange={handleTabChange}
+            items={[
+              {
+                key: "finished",
+                label: "Th�nh ph?m",
               },
-              className: rowData?.id === record.id ? "selected-row" : "",
-            };
+              {
+                key: "material",
+                label: "Nguy�n v?t li?u",
+              },
+            ]}
+            className="custom-tabs"
+          />
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <SearchInput value={keyword} onSearch={pageAction.handleSearch} maxWidth={480} />
+            <DateRangeFilter
+              startDate={startAt}
+              endDate={endAt}
+              onRangeChange={pageAction.handleDateRangerChange}
+            />
+          </div>
+        </div>
+        <Panel>
+          <ReportTable
+            dataSource={reports}
+            loading={loading}
+            pagination={pagination}
+            summaryData={summary}
+            setPage={setPageReport}
+            setSize={setSizeReport}
+            onRow={(record: any) => {
+              return {
+                onClick: () => {
+                  if (record.isSummary || checkSelection()) return;
+                  handleOpenDetailModal(record);
+                },
+                className: rowData?.id === record.id ? "selected-row" : "",
+              };
+            }}
+          />
+        </Panel>
+
+        <DetailInventoryReportModal
+          open={openDetail}
+          product={rowData}
+          summaryData={transactionSummary}
+          dataSource={transactions}
+          pagination={transactionPagination}
+          setPage={setPageDetail}
+          setSize={setSizeDetail}
+          startAt={startAt}
+          endAt={endAt}
+          refType={refType}
+          setRefType={setRefType}
+          onDateRangerChange={pageAction.handleDateRangerChange}
+          onClose={() => {
+            pageAction.handleClose();
+            setRefType(undefined);
+            setPageDetail(1);
+            setSizeDetail(50);
           }}
         />
-      </Panel>
-
-      <DetailInventoryReportModal
-        open={openDetail}
-        product={rowData}
-        summaryData={transactionSummary}
-        dataSource={transactions}
-        pagination={transactionPagination}
-        setPage={setPageDetail}
-        setSize={setSizeDetail}
-        startAt={startAt}
-        endAt={endAt}
-        refType={refType}
-        setRefType={setRefType}
-        onDateRangerChange={pageAction.handleDateRangerChange}
-        onClose={() => {
-          pageAction.handleClose();
-          setRefType(undefined);
-          setPageDetail(1);
-          setSizeDetail(50);
-        }}
-      />
+      </div>
     </div>
   );
 };

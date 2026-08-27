@@ -87,17 +87,6 @@ const App: React.FC = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const loader = document.getElementById("initial-loader");
-    if (loader) {
-      loader.classList.add("hide");
-
-      setTimeout(() => {
-        loader.remove();
-      }, 900);
-    }
-  }, []);
-
   return (
     <ConfigProvider
       locale={viVN}
