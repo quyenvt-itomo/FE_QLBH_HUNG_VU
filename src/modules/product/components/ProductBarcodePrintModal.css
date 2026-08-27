@@ -1,0 +1,80 @@
+.product-barcode-preview {
+  max-height: 70vh;
+  overflow: auto;
+  padding: 8px;
+  background: #f3f4f6;
+}
+
+.product-barcode-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2mm;
+  align-items: center;
+}
+
+.product-barcode-row {
+  display: flex;
+  gap: 0;
+}
+
+.product-barcode-label {
+  width: 37mm;
+  height: 22mm;
+  background: #fff;
+  border: 1px dashed #d1d5db;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1mm;
+  overflow: hidden;
+  text-align: center;
+}
+
+.product-label-name {
+  width: 100%;
+  font-size: 7pt;
+  font-weight: 600;
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-label-code,
+.product-label-barcode-value {
+  color: #4b5563;
+  font-size: 6pt;
+  line-height: 1.1;
+}
+
+.product-barcode-wrapper {
+  width: 35mm;
+  height: 10mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-barcode-svg {
+  width: 35mm;
+  height: 9mm;
+  display: block;
+  fill: #111827;
+}
+
+.product-label-price {
+  font-size: 6pt;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.product-barcode-print-source {
+  display: none;
+}
+
+@media screen {
+  .product-barcode-preview .product-barcode-label {
+    flex-shrink: 0;
+  }
+}

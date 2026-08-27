@@ -5,3 +5,5 @@ export * from "./ProductDetailModal";
 export * from "./ProductImageUploadBox";
 export * from "./Tag";
 export * from "./Card";
+export * from "./ProductChangeGroupModal";
+export * from "./ProductBarcodePrintModal";

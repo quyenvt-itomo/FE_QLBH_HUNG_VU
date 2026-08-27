@@ -64,6 +64,8 @@ export const apiEndpoint = {
   partnerContact: { base: "/partner-contact" },
   product: {
     base: "/product",
+    changeGroup: "/product/bulk/change-group",
+    stopSelling: "/product/bulk/stop-selling",
     settingPrice: "/product/:productId/setting-price",
     priceHistory: "/product/price-history",
     public: "/public/product",

@@ -5,7 +5,7 @@ import { PanelFilter } from "@/shared/components/filters";
 import { DateRangeFilter } from "@/shared/components";
 import { AddButton } from "@/shared/components";
 import { Panel } from "@/shared/components";
-import { Tabs, Table } from "antd";
+import { App, Dropdown, Tabs, Table, Button } from "antd";
 import { CustomPagination } from "@/shared/components";
 import { formatMoney, formatQuantity } from "@/shared/utils/number.util";
 import dayjs from "dayjs";
@@ -17,11 +17,27 @@ import "./index.css";
 import { useProductHandlers } from "./product.handlers";
 import { filterUses, Product, rangerItems, sortItems } from "./product.model";
 import { useProductPriceHistoryStore, useProductStore } from "./product.store";
-import { ProductTable, ProductAddUpdateModal, ProductDetailModal } from "./components";
+import {
+  ProductBarcodePrintModal,
+  ProductChangeGroupModal,
+  ProductTable,
+  ProductAddUpdateModal,
+  ProductDetailModal,
+} from "./components";
 import { ExcelButton, ExcelEntityType } from "@/modules/excel";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  EllipsisHorizontalIcon,
+  FolderOpenIcon,
+  NoSymbolIcon,
+  PrinterIcon,
+  TrashIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
+import { useGlobalData } from "@/shared/hooks";
 
 export const ProductPage: React.FC = () => {
+  const { modal } = App.useApp();
+  const { currentStore } = useGlobalData();
   const {
     isFilterActive,
     keyword,
@@ -49,17 +65,125 @@ export const ProductPage: React.FC = () => {
   });
 
   const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
+  const [openChangeGroup, setOpenChangeGroup] = useState(false);
+  const [openPrintLabels, setOpenPrintLabels] = useState(false);
   const hasSelectedProducts = selectedProducts.length > 0;
 
   // Type is always known for product - attribute group depends on
-  const { data, loading, creating, updating, errors, pagination, getById, create, update, remove } =
-    useProductStore(
-      { page, size, keyword, sortBy, sortOrder, reload, useFullDetail: true, ...filter, ...ranger },
-      () => pageAction.handleClose(),
-    );
+  const {
+    data,
+    loading,
+    creating,
+    updating,
+    errors,
+    pagination,
+    getById,
+    create,
+    update,
+    remove,
+    removeMany,
+    changeGroup,
+    stopSelling,
+  } = useProductStore(
+    { page, size, keyword, sortBy, sortOrder, reload, useFullDetail: true, ...filter, ...ranger },
+    () => pageAction.handleClose(),
+  );
 
   const { handleOpenAdd, handleOpenEdit, handleOpenDetail, handleDelete, handleEditFromDetail } =
     useProductHandlers({ getById, create, update, remove, setOpen, setOpenDetail, setRowData });
+
+  const selectedProductIds = selectedProducts.map((product) => product.id);
+  const clearSelectedProducts = () => setSelectedProducts([]);
+
+  const handleChangeGroup = () => {
+    if (changeGroup) setOpenChangeGroup(true);
+  };
+
+  const handleSubmitChangeGroup = (groupId: string | null) => {
+    changeGroup?.(selectedProductIds, groupId, {
+      onSuccess: () => {
+        setOpenChangeGroup(false);
+        clearSelectedProducts();
+      },
+    });
+  };
+
+  const handleStopSelling = () => {
+    if (!stopSelling) return;
+    const storeName = currentStore?.name;
+    modal.confirm({
+      centered: true,
+      title: "Ngừng kinh doanh",
+      content: storeName
+        ? `Bạn có chắc muốn ngừng kinh doanh ${selectedProducts.length} sản phẩm tại cửa hàng "${storeName}"?`
+        : `Bạn có chắc muốn ngừng kinh doanh ${selectedProducts.length} sản phẩm tại tất cả cửa hàng?`,
+      okText: "Ngừng kinh doanh",
+      okButtonProps: { danger: true },
+      cancelText: "Hủy",
+      onOk: () =>
+        stopSelling(selectedProductIds, currentStore?.id, {
+          onSuccess: clearSelectedProducts,
+        }),
+    });
+  };
+
+  const handleDeleteSelected = () => {
+    if (!removeMany) return;
+    modal.confirm({
+      centered: true,
+      title: "Xóa hàng hóa",
+      content: `Bạn có chắc muốn xóa ${selectedProducts.length} hàng hóa đã chọn?`,
+      okText: "Xóa",
+      okButtonProps: { danger: true },
+      cancelText: "Hủy",
+      onOk: () => removeMany(selectedProductIds, { onSuccess: clearSelectedProducts }),
+    });
+  };
+
+  const handlePrintSelected = () => {
+    if (!selectedProducts.some((product) => product.barcode?.trim())) {
+      modal.warning({
+        title: "Không thể in tem",
+        content: "Các sản phẩm đã chọn không có mã vạch.",
+      });
+      return;
+    }
+    setOpenPrintLabels(true);
+  };
+
+  const selectedDestructiveItems = [
+    stopSelling && {
+      key: "stop-selling",
+      label: "Ngừng kinh doanh",
+      danger: true,
+      icon: <NoSymbolIcon className="h-4 w-4" />,
+      onClick: handleStopSelling,
+    },
+    removeMany && {
+      key: "delete",
+      label: "Xóa",
+      danger: true,
+      icon: <TrashIcon className="h-4 w-4" />,
+      onClick: handleDeleteSelected,
+    },
+  ].filter(Boolean) as any[];
+
+  const selectedActionItems = [
+    changeGroup && {
+      key: "change-group",
+      label: "Đổi nhóm hàng",
+      icon: <FolderOpenIcon className="h-4 w-4" />,
+      onClick: handleChangeGroup,
+    },
+    {
+      key: "print-labels",
+      label: "In tem",
+      icon: <PrinterIcon className="h-4 w-4" />,
+      onClick: handlePrintSelected,
+    },
+    ...(selectedDestructiveItems.length ? [{ type: "divider" as const }] : []),
+    ...selectedDestructiveItems,
+  ].filter(Boolean) as any[];
 
   return (
     <div className="flex gap-3 w-full h-full">
@@ -108,6 +232,22 @@ export const ProductPage: React.FC = () => {
                 filename: "Danh_sach_hang_hoa_",
               }}
             />
+            {/* Thêm action bằng 1 cái dropdown có dấu 3 chấm */}
+            {hasSelectedProducts && selectedActionItems.length > 0 && (
+              <Dropdown
+                trigger={["click"]}
+                menu={{ items: selectedActionItems }}
+                placement="bottomRight"
+              >
+                <Button
+                  htmlType="button"
+                  className="p-0 px-2"
+                  aria-label="Thao tác hàng hóa đã chọn"
+                >
+                  <EllipsisHorizontalIcon className="h-5 w-5" />
+                </Button>
+              </Dropdown>
+            )}
             <AddButton onOpenAdd={handleOpenAdd} />
           </div>
         </div>
@@ -124,8 +264,8 @@ export const ProductPage: React.FC = () => {
             rowSelection={{
               type: "checkbox",
               selectedRowKeys: selectedProducts.map((p) => p.id),
-              onChange: (_: any, selectedRowKeys: any[]) => {
-                setSelectedProducts(selectedRowKeys as Product[]);
+              onChange: (_selectedRowKeys: React.Key[], selectedRows: any[]) => {
+                setSelectedProducts(selectedRows as Product[]);
               },
             }}
           />
@@ -146,6 +286,19 @@ export const ProductPage: React.FC = () => {
           data={rowData}
           onClose={pageAction.handleClose}
           onOpenUpdate={handleEditFromDetail}
+        />
+
+        <ProductChangeGroupModal
+          open={openChangeGroup}
+          productCount={selectedProducts.length}
+          onClose={() => setOpenChangeGroup(false)}
+          onSubmit={handleSubmitChangeGroup}
+        />
+
+        <ProductBarcodePrintModal
+          open={openPrintLabels}
+          products={selectedProducts}
+          onClose={() => setOpenPrintLabels(false)}
         />
       </div>
     </div>
