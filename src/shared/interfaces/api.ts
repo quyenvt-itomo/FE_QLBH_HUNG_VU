@@ -17,6 +17,7 @@ export interface ApiRequestQuery {
   isLocked?: boolean;
   isLockedReport?: boolean;
   isLockedTransaction?: boolean;
+  useFullDetail?: boolean;
 }
 
 export interface PayloadWithSubId {

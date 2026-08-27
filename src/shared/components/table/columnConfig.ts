@@ -2,7 +2,7 @@ import { ColumnsConfigType } from "./handleColumnSelector";
 
 interface SavedColumnConfig {
   key: string;
-  is_hide: boolean;
+  hidden: boolean;
   fixed?: "left" | "right";
   width?: number;
 }
@@ -19,7 +19,7 @@ export const getInitialConfigColumns = (
   const savedMap = new Map(
     savedColumns.map((col) => [
       col.key,
-      { is_hide: col.is_hide, fixed: col.fixed, width: col.width },
+      { hidden: col.hidden, fixed: col.fixed, width: col.width },
     ]),
   );
 
@@ -29,7 +29,7 @@ export const getInitialConfigColumns = (
       if (!originalCol) return null;
       return {
         ...originalCol,
-        is_hide: savedCol.is_hide ?? false,
+        hidden: savedCol.hidden ?? false,
         fixed: savedCol.fixed ?? originalCol.fixed,
         width: savedCol.width ?? originalCol.width,
       };
@@ -38,5 +38,5 @@ export const getInitialConfigColumns = (
 
   const newColumns = columns.filter((col) => !savedMap.has(col.key));
 
-  return [...sortedColumns, ...newColumns.map((col) => ({ ...col, is_hide: false }))];
+  return [...sortedColumns, ...newColumns.map((col) => ({ ...col, hidden: false }))];
 };

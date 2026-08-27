@@ -5,8 +5,8 @@ import type { ColumnsType } from "antd/es/table";
 
 export interface ColumnConfigItem {
   key: string; // Bắt buộc phải có key
-  is_hide?: boolean; // Trường ẩn/hiện (tùy chọn)
-  can_hide?: boolean;
+  hidden?: boolean; // Trường ẩn/hiện (tùy chọn)
+  canHide?: boolean;
   title: string;
   /** Người dùng có thể ghim trái/phải cột */
   fixed?: "left" | "right";
@@ -83,8 +83,8 @@ const ColumnItem: React.FC<{
   >
     <Checkbox
       onChange={(e) => onToggle(item.key, e.target.checked)}
-      checked={!item.is_hide}
-      disabled={item.can_hide === false}
+      checked={!item.hidden}
+      disabled={item.canHide === false}
       className="checkbox-large"
     />
     <span className="font-medium grow pl-2 truncate">{getTextFromReactNode(item.title)}</span>
@@ -132,7 +132,7 @@ const HandleColumnSelector: React.FC<ColumnSelectorProps> = ({
   const hasChanged = (a: ColumnsConfigType, b: ColumnsConfigType) => {
     if (a.length !== b.length) return true;
     for (let i = 0; i < a.length; i++) {
-      if (a[i].key !== b[i].key || a[i].is_hide !== b[i].is_hide || a[i].fixed !== b[i].fixed)
+      if (a[i].key !== b[i].key || a[i].hidden !== b[i].hidden || a[i].fixed !== b[i].fixed)
         return true;
     }
     return false;
@@ -141,7 +141,7 @@ const HandleColumnSelector: React.FC<ColumnSelectorProps> = ({
   // ── Toggle visibility ───────────────────────────────────────
   const handleCheckboxChange = (key: string, checked: boolean) => {
     setSortedColumns((prev) =>
-      prev.map((col) => (col.key === key ? { ...col, is_hide: !checked } : col)),
+      prev.map((col) => (col.key === key ? { ...col, hidden: !checked } : col)),
     );
   };
 
@@ -149,7 +149,7 @@ const HandleColumnSelector: React.FC<ColumnSelectorProps> = ({
     setSortedColumns((prev) =>
       prev.map((col) => ({
         ...col,
-        is_hide: col.can_hide !== false && !checked,
+        hidden: col.canHide !== false && !checked,
       })),
     );
   };
@@ -250,7 +250,7 @@ const HandleColumnSelector: React.FC<ColumnSelectorProps> = ({
       >
         <Checkbox
           onChange={(e) => handleSelectAllChange(e.target.checked)}
-          checked={!sortedColumns.some((col) => col.is_hide)}
+          checked={!sortedColumns.some((col) => col.hidden)}
           className="font-semibold checkbox-large"
         >
           Tất cả

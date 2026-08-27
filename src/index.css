@@ -208,17 +208,17 @@ td.code-column {
     .double-floor th
   )::before {
   background-color: transparent !important;
-  border-right: 0.5px solid var(--color-border) !important;
+  /* border-right: 0.5px solid var(--color-border) !important; */
 }
 .ant-table-thead > tr > th {
   border-radius: 0px !important;
   border-bottom: 0.5px solid var(--color-border);
-  padding: 2px 12px !important;
+  padding: 2px 6px !important;
   font-weight: 500 !important;
 }
 
 .sub-table .ant-table-thead > tr > th {
-  padding: 2px 12px !important;
+  padding: 2px 6px !important;
   font-size: 12px !important;
   line-height: 14px;
   color: #fff !important;
@@ -256,7 +256,7 @@ td.code-column {
   padding-bottom: 1px;
 }
 .ant-table-wrapper .ant-table-tbody > tr > td:not(.action-column) {
-  border-left: 0.5px solid var(--color-border);
+  /* border-left: 0.5px solid var(--color-border); */
   border-bottom: 0.5px solid var(--color-border);
 }
 .ant-table-wrapper.double-floor .ant-table-tbody > tr > td {
@@ -355,7 +355,7 @@ td.code-column {
 
 /* Table Custom Row */
 .table-custom-row:not(.dashboard-table) .ant-table-body tr td.ant-table-cell {
-  padding: 1px 12px !important;
+  padding: 1px 6px !important;
 }
 .table-custom-row:not(.dashboard-table) .ant-table-body tr td.ant-table-cell.action-column {
   padding: 1px 4px !important;
@@ -977,4 +977,11 @@ html.dark .error-cell {
   100% {
     background-color: #4a1f1f; /* đỏ nhạt */
   }
+}
+
+.table-h-full .ant-table-selection-column .ant-checkbox-wrapper .ant-checkbox-inner,
+.checkbox-large.ant-checkbox-wrapper .ant-checkbox-inner,
+.ant-checkbox-wrapper .ant-checkbox.ant-wave-target .ant-checkbox-inner {
+  width: 18px;
+  height: 18px;
 }

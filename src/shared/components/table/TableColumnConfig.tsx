@@ -93,7 +93,7 @@ export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
   dataLength,
   hasBranchInfo = false,
   showCreator = true,
-  showUpdater = true,
+  showUpdater = false,
   setPage,
   setSize,
   onEdit,
@@ -131,7 +131,8 @@ export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
         key: "creatorSnapshot",
         width: 150,
         ellipsis: true,
-        can_hide: true,
+        hidden: true,
+        canHide: true,
         render: (record?: Entity) => {
           const { creatorSnapshot, createdAt } = record || {};
           return (
@@ -154,7 +155,8 @@ export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
         key: "updaterSnapshot",
         width: 150,
         ellipsis: true,
-        can_hide: true,
+        hidden: true,
+        canHide: true,
         render: (record?: Entity) => {
           const { updaterSnapshot, updatedAt } = record || {};
           return (
@@ -206,7 +208,7 @@ export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
 
   const getFinalColumns = (cols: ColumnsConfigType): TableColumnsType => {
     // Nhóm các cột config theo fixed: ghim trái → bình thường → ghim phải
-    const visibleCols = cols.filter((col) => !col.is_hide);
+    const visibleCols = cols.filter((col) => !col.hidden);
     const leftFixedCols = visibleCols.filter((c) => c.fixed === "left");
     const normalCols = visibleCols.filter((c) => !c.fixed);
     const rightFixedCols = visibleCols.filter((c) => c.fixed === "right");
@@ -384,10 +386,10 @@ export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
         .map((oldCol) => {
           const newCol = mergedColumns.find((c) => c.key === oldCol.key);
           if (newCol) {
-            // Preserve user settings (is_hide, fixed, width, order) but update dynamic properties (render, title)
+            // Preserve user settings (hidden, fixed, width, order) but update dynamic properties (render, title)
             return {
               ...newCol,
-              is_hide: oldCol.is_hide,
+              hidden: oldCol.hidden,
               fixed: oldCol.fixed,
               width: oldCol.width,
             };
@@ -409,7 +411,7 @@ export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
 
     const openColumnKeys = configColumns.map((col) => ({
       key: col.key,
-      is_hide: col.is_hide,
+      hidden: col.hidden,
       fixed: col.fixed,
       width: col.width,
     }));

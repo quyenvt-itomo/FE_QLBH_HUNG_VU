@@ -46,10 +46,13 @@ export const ProductPage: React.FC = () => {
     filterUses,
   });
 
+  const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
+
   // Type is always known for product - attribute group depends on
   const { data, loading, creating, updating, errors, pagination, getById, create, update, remove } =
-    useProductStore({ page, size, keyword, sortBy, sortOrder, reload, ...filter, ...ranger }, () =>
-      pageAction.handleClose(),
+    useProductStore(
+      { page, size, keyword, sortBy, sortOrder, reload, useFullDetail: true, ...filter, ...ranger },
+      () => pageAction.handleClose(),
     );
 
   const { handleOpenAdd, handleOpenEdit, handleOpenDetail, handleDelete, handleEditFromDetail } =
@@ -73,19 +76,24 @@ export const ProductPage: React.FC = () => {
           <SearchInput value={keyword} onSearch={pageAction.handleSearch} maxWidth={340} />
           <AddButton onOpenAdd={handleOpenAdd} />
         </div>
-        <Panel>
-          <div className="flex flex-col h-full p-1">
-            <ProductTable
-              dataSource={data}
-              loading={loading}
-              pagination={pagination}
-              setPage={setPage}
-              setSize={setSize}
-              onEdit={handleOpenEdit}
-              onViewDetail={handleOpenDetail}
-              onDelete={handleDelete}
-            />
-          </div>
+        <Panel className="h-[calc(100%-44px)] !p-1">
+          <ProductTable
+            dataSource={data}
+            loading={loading}
+            pagination={pagination}
+            setPage={setPage}
+            setSize={setSize}
+            onEdit={handleOpenEdit}
+            onViewDetail={handleOpenDetail}
+            onDelete={handleDelete}
+            rowSelection={{
+              type: "checkbox",
+              selectedRowKeys: selectedProducts.map((p) => p.id),
+              onChange: (_: any, selectedRowKeys: any[]) => {
+                setSelectedProducts(selectedRowKeys as Product[]);
+              },
+            }}
+          />
         </Panel>
 
         <ProductAddUpdateModal

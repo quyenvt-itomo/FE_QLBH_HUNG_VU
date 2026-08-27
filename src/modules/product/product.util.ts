@@ -1,3 +1,4 @@
+import { formatMoney } from "@/shared/utils";
 import { Attribute, DEFAULT_WEIGHT_UNIT } from "../attribute";
 import { Product, ProductSnapshot, StoreProduct } from "./product.model";
 
@@ -164,4 +165,20 @@ export function collectLocationsFromStoreProducts(storeProducts: StoreProduct): 
   }
 
   return result;
+}
+
+// danh sách các cửa hàng chung giá vốn của sản phẩm
+export function getCostPriceMap(product: Product): Record<string, string[]> {
+  const costPriceMap: Record<string, string[]> = {};
+
+  for (const storeProduct of product.storeProducts || []) {
+    const costPrice = formatMoney(storeProduct.costPrice);
+    if (!costPrice || !storeProduct.store?.name) continue;
+    if (!costPriceMap[costPrice]) {
+      costPriceMap[costPrice] = [];
+    }
+    costPriceMap[costPrice].push(storeProduct.store.name);
+  }
+
+  return costPriceMap;
 }
