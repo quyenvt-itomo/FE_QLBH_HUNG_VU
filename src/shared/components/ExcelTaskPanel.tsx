@@ -5,18 +5,16 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { BASE_URL, apiEndpoint } from "../constants/apiEndpoint";
 import { RootState } from "../stores";
 import { ImportJobStatus, ExportJobStatus } from "../../modules/excel/excel.enum";
-import type { ExportProgressData, ImportProgressData } from "../../modules/excel/excel.model";
+import type { ImportProgressData } from "../../modules/excel/excel.model";
 import { downloadFile } from "../utils/file.util";
 import {
   importExcelProgress,
-  exportExcelProgress,
   removeImportTask,
   removeExportTask,
 } from "../stores/excel.slice";
 import { openImportResultModal } from "../../modules/excel/components/ImportResult";
 
 const MAX_VISIBLE_TASKS = 5;
-const POLLING_INTERVAL_MS = 3000;
 
 // ============================================================
 // Helpers
@@ -25,11 +23,6 @@ const POLLING_INTERVAL_MS = 3000;
 const getImportPayload = (payload: any): ImportProgressData => {
   if (payload?.data?.jobId) return payload.data as ImportProgressData;
   return payload as ImportProgressData;
-};
-
-const getExportPayload = (payload: any): ExportProgressData => {
-  if (payload?.data?.jobId) return payload.data as ExportProgressData;
-  return payload as ExportProgressData;
 };
 
 const ENTITY_LABELS: Record<string, string> = {
@@ -51,71 +44,52 @@ const ExcelTaskPanel: React.FC = () => {
   const dispatch = useDispatch();
   const { importTasks, exportTasks } = useSelector((state: RootState) => state.Excel, shallowEqual);
 
-  const importPollingRef = useRef<Record<string, number>>({});
-  const exportPollingRef = useRef<Record<string, number>>({});
+  const importStreamRef = useRef<Record<string, EventSource>>({});
   const completedRef = useRef<Set<string>>(new Set());
   const failedNotifiedRef = useRef<Set<string>>(new Set());
 
-  // ===== Polling helpers =====
+  // ===== SSE helpers =====
 
-  const cleanupImportPolling = (jobId: string) => {
-    const timer = importPollingRef.current[jobId];
-    if (timer) {
-      window.clearInterval(timer);
-      delete importPollingRef.current[jobId];
-    }
+  const cleanupImportStream = (jobId: string) => {
+    const source = importStreamRef.current[jobId];
+    if (!source) return;
+    source.close();
+    delete importStreamRef.current[jobId];
   };
 
-  const cleanupExportPolling = (jobId: string) => {
-    const timer = exportPollingRef.current[jobId];
-    if (timer) {
-      window.clearInterval(timer);
-      delete exportPollingRef.current[jobId];
-    }
-  };
+  // ===== Import SSE =====
 
-  // ===== Import polling =====
+  const startImportStream = (jobId: string) => {
+    if (importStreamRef.current[jobId]) return;
 
-  const startImportPolling = (jobId: string) => {
-    if (importPollingRef.current[jobId]) return;
+    const source = new EventSource(
+      `${BASE_URL}${apiEndpoint.excel.stream.replace(":jobId", jobId)}`,
+      { withCredentials: true },
+    );
+    importStreamRef.current[jobId] = source;
 
-    const poll = async () => {
+    source.onmessage = (event) => {
       try {
-        const res = await fetch(
-          `${BASE_URL}${apiEndpoint.excel.importProgress.replace(":jobId", jobId)}`,
-          { credentials: "include" },
-        );
-        const data = await res.json();
-        dispatch(importExcelProgress(getImportPayload(data)));
-      } catch {
-        // keep polling
+        const progress = getImportPayload(JSON.parse(event.data));
+        dispatch(importExcelProgress(progress));
+        if (
+          progress.status === ImportJobStatus.COMPLETED ||
+          progress.status === ImportJobStatus.FAILED
+        ) {
+          cleanupImportStream(jobId);
+        }
+      } catch (error) {
+        console.error("Không thể đọc dữ liệu SSE Excel:", error);
       }
     };
 
-    poll();
-    importPollingRef.current[jobId] = window.setInterval(poll, POLLING_INTERVAL_MS);
-  };
-
-  // ===== Export polling =====
-
-  const startExportPolling = (jobId: string) => {
-    if (exportPollingRef.current[jobId]) return;
-
-    const poll = async () => {
-      try {
-        const res = await fetch(
-          `${BASE_URL}${apiEndpoint.excel.exportProgress.replace(":jobId", jobId)}`,
-          { credentials: "include" },
-        );
-        const data = await res.json();
-        dispatch(exportExcelProgress(getExportPayload(data)));
-      } catch {
-        // keep polling
+    source.onerror = () => {
+      // EventSource tự reconnect khi mạng chập chờn. Nếu server đã đóng hẳn
+      // stream thì dọn reference để không giữ connection cũ.
+      if (source.readyState === EventSource.CLOSED) {
+        cleanupImportStream(jobId);
       }
     };
-
-    poll();
-    exportPollingRef.current[jobId] = window.setInterval(poll, POLLING_INTERVAL_MS);
   };
 
   // ===== Effects =====
@@ -123,25 +97,16 @@ const ExcelTaskPanel: React.FC = () => {
   useEffect(() => {
     importTasks.forEach((task) => {
       if (task.status === ImportJobStatus.PENDING || task.status === ImportJobStatus.PROCESSING) {
-        startImportPolling(task.jobId);
-      }
-    });
-    exportTasks.forEach((task) => {
-      if (task.status === ExportJobStatus.PENDING || task.status === ExportJobStatus.PROCESSING) {
-        startExportPolling(task.jobId);
+        startImportStream(task.jobId);
       }
     });
 
-    // Cleanup stale polling
+    // Cleanup stale SSE connections
     const importIds = new Set(importTasks.map((t) => t.jobId));
-    const exportIds = new Set(exportTasks.map((t) => t.jobId));
-    Object.keys(importPollingRef.current).forEach((id) => {
-      if (!importIds.has(id)) cleanupImportPolling(id);
+    Object.keys(importStreamRef.current).forEach((id) => {
+      if (!importIds.has(id)) cleanupImportStream(id);
     });
-    Object.keys(exportPollingRef.current).forEach((id) => {
-      if (!exportIds.has(id)) cleanupExportPolling(id);
-    });
-  }, [importTasks, exportTasks]);
+  }, [importTasks]);
 
   // Auto-download completed exports & notify failures
   useEffect(() => {
@@ -175,7 +140,8 @@ const ExcelTaskPanel: React.FC = () => {
       }
 
       if (
-        task.status === ImportJobStatus.COMPLETED &&
+        (task.status === ImportJobStatus.COMPLETED ||
+          task.status === ImportJobStatus.FAILED) &&
         task.result &&
         !completedRef.current.has(task.jobId)
       ) {
@@ -201,8 +167,7 @@ const ExcelTaskPanel: React.FC = () => {
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      Object.keys(importPollingRef.current).forEach(cleanupImportPolling);
-      Object.keys(exportPollingRef.current).forEach(cleanupExportPolling);
+      Object.keys(importStreamRef.current).forEach(cleanupImportStream);
     };
   }, []);
 

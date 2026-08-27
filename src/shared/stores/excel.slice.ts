@@ -92,7 +92,7 @@ const excelSlice = createSlice({
           errorRows: action.payload.errorRows ?? 0,
           skippedRows: action.payload.skippedRows ?? 0,
           errors: action.payload.errors ?? [],
-          data: [],
+          data: action.payload.data ?? [],
           errorFileUrl: action.payload.errorFileUrl,
         };
 

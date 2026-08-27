@@ -5,12 +5,13 @@ import {
   ProductImage,
   ColumnsConfigType,
   TableBooleanCell,
+  ContentTooltip,
 } from "@/shared/components";
 import { Product } from "../product.model";
 import { formatMoney } from "@/shared/utils/number.util";
 import { getMainFile } from "@/shared/utils";
 import { useGlobalData } from "@/shared/hooks";
-import { getCostPriceMap } from "../product.util";
+import { getCostPriceMap, getProductGroupContent } from "../product.util";
 
 interface Props extends ObjectTableProps {
   onViewDetail?: (r: Product) => void;
@@ -57,7 +58,7 @@ export const ProductTable: React.FC<Props> = ({ onViewDetail, ...rest }) => {
       {
         title: "Tên hàng",
         key: "name",
-        width: 220,
+        width: 230,
         render: (r: Product) => <div className="flex w-52 text-wrap">{r.name}</div>,
       },
       {
@@ -70,7 +71,7 @@ export const ProductTable: React.FC<Props> = ({ onViewDetail, ...rest }) => {
       {
         title: "Nhóm hàng",
         dataIndex: ["group", "name"],
-        key: "groupName",
+        key: "group",
         width: 120,
       },
       {

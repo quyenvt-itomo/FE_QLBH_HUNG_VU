@@ -182,3 +182,19 @@ export function getCostPriceMap(product: Product): Record<string, string[]> {
 
   return costPriceMap;
 }
+
+export const getProductGroupContent = (attribute?: Attribute | null): string => {
+  if (!attribute) return "";
+
+  const names: string[] = [];
+  let current: Attribute | null | undefined = attribute;
+
+  while (current) {
+    if (current.name) {
+      names.push(current.name);
+    }
+    current = current.parent;
+  }
+
+  return names.reverse().join(" >> ");
+};

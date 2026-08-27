@@ -7,7 +7,7 @@ import { AddButton } from "@/shared/components";
 import { Panel } from "@/shared/components";
 import { Tabs, Table } from "antd";
 import { CustomPagination } from "@/shared/components";
-import { formatMoney } from "@/shared/utils/number.util";
+import { formatMoney, formatQuantity } from "@/shared/utils/number.util";
 import dayjs from "dayjs";
 import { CLASSNAME } from "@/shared/constants/ui";
 import { SortOrder } from "@/shared/constants/enum";
@@ -19,6 +19,7 @@ import { filterUses, Product, rangerItems, sortItems } from "./product.model";
 import { useProductPriceHistoryStore, useProductStore } from "./product.store";
 import { ProductTable, ProductAddUpdateModal, ProductDetailModal } from "./components";
 import { ExcelButton, ExcelEntityType } from "@/modules/excel";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 
 export const ProductPage: React.FC = () => {
   const {
@@ -48,6 +49,7 @@ export const ProductPage: React.FC = () => {
   });
 
   const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
+  const hasSelectedProducts = selectedProducts.length > 0;
 
   // Type is always known for product - attribute group depends on
   const { data, loading, creating, updating, errors, pagination, getById, create, update, remove } =
@@ -74,13 +76,35 @@ export const ProductPage: React.FC = () => {
       />
       <div className="flex flex-col h-full w-[calc(100%-266px)] gap-3">
         <div className="flex justify-between items-start gap-3">
-          <SearchInput value={keyword} onSearch={pageAction.handleSearch} maxWidth={340} />
+          <div className="flex items-center gap-3">
+            <SearchInput value={keyword} onSearch={pageAction.handleSearch} maxWidth={440} />
+            {hasSelectedProducts && (
+              <div className="flex items-center flex-shrink-0 gap-1">
+                <span className="text-sm text-gray-500">
+                  {formatQuantity(selectedProducts.length)} đã chọn
+                </span>
+                <button>
+                  <XMarkIcon
+                    className="w-4 h-4 font-bold text-gray-400 hover:text-red-500 transition-colors ease-out"
+                    onClick={() => setSelectedProducts([])}
+                  />
+                </button>
+              </div>
+            )}
+          </div>
           <div className="flex items-center gap-3">
             <ExcelButton
               entityType={ExcelEntityType.PRODUCT}
               onSuccess={() => pageAction.handleReload()}
               exportOptions={{
-                filters: { ...filter, ...ranger, keyword, sortBy, sortOrder },
+                filters: {
+                  ...filter,
+                  ...ranger,
+                  ids: selectedProducts.map((p) => p.id),
+                  keyword,
+                  sortBy,
+                  sortOrder,
+                },
                 filename: "Danh_sach_hang_hoa_",
               }}
             />

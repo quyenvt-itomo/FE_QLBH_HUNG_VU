@@ -90,6 +90,7 @@ export interface ImportProgressData {
   errorRows?: number;
   skippedRows?: number;
   errors?: ImportError[];
+  data?: any[];
   errorFileUrl?: string;
 }
 

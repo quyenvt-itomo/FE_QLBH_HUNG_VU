@@ -4,6 +4,7 @@ import Sidebar from "./sidebar/Sidebar";
 import DrawerMenu from "./drawer/drawer";
 import AppHeader from "./header";
 import { Layout } from "antd";
+import { ExcelTaskPanel } from "@/shared/components/ExcelTaskPanel";
 
 const { Content } = Layout;
 
@@ -22,6 +23,7 @@ const PrivateLayout: React.FC<PrivateLayoutProps> = ({ children }) => {
           {children}
         </Content>
       </Layout>
+      <ExcelTaskPanel />
     </Layout>
   );
 };

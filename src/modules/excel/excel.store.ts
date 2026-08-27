@@ -8,13 +8,10 @@ import dayjs from "dayjs";
 import type {
   ImportOptions,
   ImportJobResponse,
-  ImportProgressData,
-  ImportExcelResult,
   ExportOptions,
   TemplateResult,
 } from "./excel.model";
 import type { ApiResponse, BaseFailurePayload } from "@/shared/interfaces/api";
-import { ImportJobStatus } from "./excel.enum";
 import { importExcelJobStarted } from "@/shared/stores/excel.slice";
 
 export const downloadFileWithFetch = async (url: string, filename: string) => {
@@ -52,15 +49,9 @@ export const useExcelStore = () => {
   const dispatch = useDispatch();
   const [currentJobId, setCurrentJobId] = useState<string | null>(null);
   const [template, setTemplate] = useState<TemplateResult | null>(null);
-  const [jobProgress, setJobProgress] = useState<ImportProgressData | null>(null);
-  const [jobResult, setJobResult] = useState<ImportExcelResult | null>(null);
   const [exporting, setExporting] = useState(false);
 
-  const { notify, errors, onError } = useErrorState();
-
-  const importProgress: ImportProgressData | null = jobProgress;
-  const isCheckAdd = jobProgress?.status === ImportJobStatus.COMPLETED;
-  const importResult: ImportExcelResult | null = isCheckAdd ? jobResult : null;
+  const { notify, onError } = useErrorState();
 
   // ===== GET TEMPLATE =====
   const getTemplateMutation = useMutation<
@@ -119,12 +110,9 @@ export const useExcelStore = () => {
           return;
         }
         setCurrentJobId(jobId);
-        setJobProgress({ jobId, status: ImportJobStatus.PROCESSING, progress: 10 });
 
-        // Dispatch to Redux → ExcelTaskPanel picks up polling
+        // ExcelTaskPanel sẽ mở SSE và nhận toàn bộ tiến trình của job.
         dispatch(importExcelJobStarted({ response: res.data!, entityType: data.entityType }));
-        // Also keep local polling for backward compat (importResult modal)
-        pollJobProgress(jobId);
 
         onSuccess?.();
       },
@@ -133,53 +121,6 @@ export const useExcelStore = () => {
         onError(error);
       },
     });
-  };
-
-  const pollJobProgress = async (jobId: string) => {
-    const maxAttempts = 120; // 2 minutes max
-    let attempts = 0;
-
-    const poll = async () => {
-      try {
-        const res = await getData<any>(apiEndpoint.excel.importProgress.replace(":jobId", jobId));
-        const data = res.data;
-        if (!data) return;
-
-        setJobProgress({
-          jobId,
-          status: data.status,
-          progress: data.progress,
-          totalRows: data.totalRows,
-          successRows: data.successRows,
-          errorRows: data.errorRows,
-          skippedRows: data.skippedRows,
-          errors: data.errors,
-        });
-
-        if (data.status === ImportJobStatus.COMPLETED || data.status === ImportJobStatus.FAILED) {
-          setJobResult({
-            totalRows: data.totalRows || 0,
-            successRows: data.successRows || 0,
-            errorRows: data.errorRows || 0,
-            skippedRows: data.skippedRows || 0,
-            errors: data.errors || [],
-            data: data.data || [],
-          });
-          return;
-        }
-
-        attempts++;
-        if (attempts < maxAttempts) {
-          setTimeout(poll, 1500);
-        }
-      } catch {
-        // Retry
-        attempts++;
-        if (attempts < maxAttempts) setTimeout(poll, 2000);
-      }
-    };
-
-    poll();
   };
 
   // ===== EXPORT EXCEL =====
@@ -211,8 +152,6 @@ export const useExcelStore = () => {
   // ===== RESET =====
   const reset = () => {
     setCurrentJobId(null);
-    setJobProgress(null);
-    setJobResult(null);
     setTemplate(null);
   };
 
@@ -222,9 +161,6 @@ export const useExcelStore = () => {
     exporting,
     importing: importExcelMutation.isPending,
     currentJobId,
-    importProgress,
-    importResult,
-    isCheckAdd,
     getTemplate,
     importExcel,
     exportExcel,
