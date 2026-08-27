@@ -355,7 +355,7 @@ td.code-column {
 
 /* Table Custom Row */
 .table-custom-row:not(.dashboard-table) .ant-table-body tr td.ant-table-cell {
-  padding: 1px 6px !important;
+  padding: 6px !important;
 }
 .table-custom-row:not(.dashboard-table) .ant-table-body tr td.ant-table-cell.action-column {
   padding: 1px 4px !important;
