@@ -28,6 +28,7 @@ export interface ExportOptions {
   columns?: ExportColumnConfig[];
   extraUnitColumns?: ExportColumnConfig[];
   businessStoreColumns?: ExportColumnConfig[];
+  sheetColumns?: Record<string, ExportColumnConfig[]>;
   filters?: Record<string, any>;
   filename?: string;
 }

@@ -2,11 +2,7 @@ import { EnvelopeIcon, PhoneIcon, UserIcon } from "@heroicons/react/24/outline";
 import { Card } from "antd";
 import { ActionButtons } from "@/shared/components";
 import { Store } from "@/shared/base/entity";
-import {
-  DropdownAction,
-  EmailButton,
-  StoreImage,
-} from "@/shared/components";
+import { DropdownAction, EmailButton, StoreImage } from "@/shared/components";
 import { checkSelection, getFullAddress, getMainImage } from "@/shared/utils";
 import { PhoneButton } from "@/shared/components";
 
@@ -180,7 +176,7 @@ export const StoreCardLite: React.FC<StoreCardProps> = ({
           </span>
 
           <span
-            className="font-medium text-gray-900 dark:text-gray-100 group-hover:text-blue-600 line-clamp-1"
+            className="font-medium text-gray-900 dark:text-gray-100 group-hover:text-primary line-clamp-2 transition-all duration-300 ease-in-out"
             title={item.name}
           >
             {item.name}
@@ -191,7 +187,7 @@ export const StoreCardLite: React.FC<StoreCardProps> = ({
       </div>
 
       {/* RIGHT */}
-      <div className="flex flex-col items-end justify-between absolute top-2 right-2">
+      <div className="flex flex-col items-end justify-between absolute top-2 right-3">
         <div className={`text-xs font-medium ${item.isActive ? "text-green-500" : "text-red-500"}`}>
           {item.isActive ? "Đang hoạt động" : "Ngừng hoạt động"}
         </div>

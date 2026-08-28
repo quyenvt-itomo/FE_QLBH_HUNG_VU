@@ -6,6 +6,7 @@ export function mapEntityTypeToModule(
 ): ExcelModule | undefined {
   const map: Partial<Record<ExcelEntityType, ExcelModule>> = {
     [ExcelEntityType.PRODUCT]: "product",
+    [ExcelEntityType.PARTNER]: "partner",
   };
   return map[entityType];
 }

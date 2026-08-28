@@ -299,8 +299,8 @@ const PosPage = () => {
 
   if (!currentStore) {
     return (
-      <div className="flex h-full flex-col items-center overflow-auto p-3">
-        <img src={icons.error400} alt="Chưa chọn cửa hàng" className="w-40" />
+      <div className="flex h-screen w-screen flex-col items-center overflow-auto p-3 pt-[10vh]">
+        <img src={icons.pos} alt="Chưa chọn cửa hàng" className="w-60" />
         <div className="max-w-md text-center">
           <h3 className="text-lg font-semibold">Chưa chọn cửa hàng</h3>
           <p className="mt-2 text-sm text-gray-400">
@@ -314,11 +314,19 @@ const PosPage = () => {
               <StoreCardLite
                 key={store.id}
                 item={store}
-                onClick={() => handleSetCurrentStore(store, location.pathname + location.search)}
+                onClick={() => handleSetCurrentStore(store, false)}
               />
             ))}
           </div>
         )}
+
+        <Button
+          type="primary"
+          className="mt-6"
+          onClick={() => navigate(-1)} // Quay lại trang trước
+        >
+          Quay lại
+        </Button>
       </div>
     );
   }

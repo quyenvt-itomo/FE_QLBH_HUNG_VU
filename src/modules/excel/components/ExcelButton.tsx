@@ -205,7 +205,11 @@ export const ExcelButton: React.FC<{
   onSuccess?: () => void;
   exportOptions?: Omit<
     ExportOptions,
-    "entityType" | "columns" | "extraUnitColumns" | "businessStoreColumns"
+    | "entityType"
+    | "columns"
+    | "extraUnitColumns"
+    | "businessStoreColumns"
+    | "sheetColumns"
   >;
 }> = ({ entityType, onSuccess, exportOptions }) => {
   const [openExport, setOpenExport] = useState(false);
@@ -244,12 +248,15 @@ export const ExcelButton: React.FC<{
     const mainColumns: ExportColumnConfig[] = [];
     const extraUnitColumns: ExportColumnConfig[] = [];
     const businessStoreColumns: ExportColumnConfig[] = [];
+    const sheetColumns: Record<string, ExportColumnConfig[]> = {};
 
     visible.forEach(({ hidden, id, sheet, ...rest }) => {
       if (sheet === "Đơn vị tính phụ") {
         extraUnitColumns.push(rest);
       } else if (sheet === "Cửa hàng kinh doanh") {
         businessStoreColumns.push(rest);
+      } else if (sheet) {
+        (sheetColumns[sheet] ||= []).push(rest);
       } else {
         mainColumns.push(rest);
       }
@@ -262,6 +269,7 @@ export const ExcelButton: React.FC<{
       extraUnitColumns: extraUnitColumns.length > 0 ? extraUnitColumns : undefined,
       businessStoreColumns:
         businessStoreColumns.length > 0 ? businessStoreColumns : undefined,
+      sheetColumns: Object.keys(sheetColumns).length ? sheetColumns : undefined,
       filename: (exportOptions?.filename || entityType + "_") + now + ".xlsx",
     });
     setOpenExport(false);

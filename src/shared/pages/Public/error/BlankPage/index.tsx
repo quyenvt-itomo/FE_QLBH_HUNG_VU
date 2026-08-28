@@ -40,7 +40,7 @@ export const BlankPage: React.FC = () => {
         Vui lòng liên hệ quản trị viên để biết thêm chi tiết.
       </p>
       <Button
-        icon={<i className="pi pi-arrow-left" />}
+        // icon={<i className="pi pi-arrow-left" />}
         type="primary"
         onClick={() => navigate(-1)} // Quay lại trang trước
       >

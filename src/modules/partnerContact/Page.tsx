@@ -11,7 +11,6 @@ import {
   // PartnerContactDetailModal,
   PartnerContactTable,
 } from "./components";
-import { ExcelButton, ExcelEntityType } from "@/modules/excel";
 import { partnerTypeOptions } from "../partner/partner.model";
 import { PartnerContact } from "./partnerContact.model";
 
@@ -81,14 +80,6 @@ export const PartnerContactPage: React.FC = () => {
         />
         <div className="flex items-center gap-3">
           <SearchInput value={keyword} onSearch={pageAction.handleSearch} maxWidth={340} />
-          <ExcelButton
-            entityType={ExcelEntityType.PARTNER}
-            onSuccess={() => pageAction.handleReload()}
-            exportOptions={{
-              filters: { type: type === "all" ? undefined : type },
-              filename: "Danh_sach_doi_tac_",
-            }}
-          />
           <AddButton onOpenAdd={handleOpenAdd} />
         </div>
       </div>

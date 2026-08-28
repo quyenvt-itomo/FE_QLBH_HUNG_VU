@@ -15,6 +15,10 @@ interface ExcelPermissionSectionProps {
 export const ExcelPermissionSection: React.FC<
   ExcelPermissionSectionProps
 > = ({ selectedRow, onUpdateRolePermission, disabled }) => {
+  const excelModuleMap: Record<ExcelModule, string> = {
+    product: moduleMap.product,
+    partner: "Khách hàng / Nhà cung cấp",
+  };
   const toggle = (
     field: "importExcel" | "exportExcel",
     module: ExcelModule,
@@ -35,7 +39,7 @@ export const ExcelPermissionSection: React.FC<
           key={module}
           className="flex items-center justify-between p-3 border rounded-lg"
         >
-          <span className="text-sm">{moduleMap[module]}</span>
+          <span className="text-sm">{excelModuleMap[module]}</span>
           <Switch
             size="small"
             checked={(selectedRow[field] || []).includes(module)}

@@ -1,4 +1,4 @@
-export const EXCEL_PERMISSION_MODULES = ["product"] as const;
+export const EXCEL_PERMISSION_MODULES = ["product", "partner"] as const;
 
 export type ExcelModule = (typeof EXCEL_PERMISSION_MODULES)[number];
 

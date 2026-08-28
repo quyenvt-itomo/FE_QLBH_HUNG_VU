@@ -36,52 +36,85 @@ export const useGlobalData = () => {
     currentStore,
   } = useSelector((state: RootState) => state.Global, shallowEqual);
 
-  const handleSetIsMobile = useCallback((isMobile: boolean) => {
-    dispatch(setIsMobile(isMobile));
-  }, [dispatch]);
+  const handleSetIsMobile = useCallback(
+    (isMobile: boolean) => {
+      dispatch(setIsMobile(isMobile));
+    },
+    [dispatch],
+  );
 
-  const handleSetTotalUnread = useCallback((count: number) => {
-    dispatch(setTotalUnread(count));
-  }, [dispatch]);
+  const handleSetTotalUnread = useCallback(
+    (count: number) => {
+      dispatch(setTotalUnread(count));
+    },
+    [dispatch],
+  );
 
-  const handleSetCustomTitle = useCallback((title: string | null) => {
-    dispatch(setCustomTitle(title));
-  }, [dispatch]);
+  const handleSetCustomTitle = useCallback(
+    (title: string | null) => {
+      dispatch(setCustomTitle(title));
+    },
+    [dispatch],
+  );
 
-  const handleSetFilter = useCallback((filterData: typeof filter) => {
-    dispatch(setFilter(filterData));
-  }, [dispatch]);
+  const handleSetFilter = useCallback(
+    (filterData: typeof filter) => {
+      dispatch(setFilter(filterData));
+    },
+    [dispatch],
+  );
 
   const handleClearFilter = useCallback(() => {
     dispatch(setFilter({}));
   }, [dispatch]);
 
-  const handleSetInfo = useCallback((data?: UserInfo | null) => {
-    dispatch(setInfo(data));
-  }, [dispatch]);
-  const handleSetHorizontal = useCallback((isHorizontal: boolean) => {
-    dispatch(setHorizontal(isHorizontal));
-  }, [dispatch]);
-  const handleSetCollapsed = useCallback((isCollapsed: boolean) => {
-    dispatch(setCollapsed(isCollapsed));
-  }, [dispatch]);
-  const handleSetDrawerOpen = useCallback((isOpen: boolean) => {
-    dispatch(setDrawerOpen(isOpen));
-  }, [dispatch]);
-  const handleSetThemeMode = useCallback((mode: ThemeMode) => {
-    dispatch(setThemeMode(mode));
-  }, [dispatch]);
-  const handleSetCurrentStore = useCallback((company?: Store | null, redirectPath = privateRoutesName.dashboard) => {
-    if (company) {
-      sessionStorage.setItem("currentStore", JSON.stringify(company));
-    } else {
-      sessionStorage.removeItem("currentStore");
-    }
-    dispatch(setCurrentStore(company));
-    setTimeout(() => {
-      window.location.href = redirectPath;
-    }, 500);
-  }, [dispatch]);
+  const handleSetInfo = useCallback(
+    (data?: UserInfo | null) => {
+      dispatch(setInfo(data));
+    },
+    [dispatch],
+  );
+  const handleSetHorizontal = useCallback(
+    (isHorizontal: boolean) => {
+      dispatch(setHorizontal(isHorizontal));
+    },
+    [dispatch],
+  );
+  const handleSetCollapsed = useCallback(
+    (isCollapsed: boolean) => {
+      dispatch(setCollapsed(isCollapsed));
+    },
+    [dispatch],
+  );
+  const handleSetDrawerOpen = useCallback(
+    (isOpen: boolean) => {
+      dispatch(setDrawerOpen(isOpen));
+    },
+    [dispatch],
+  );
+  const handleSetThemeMode = useCallback(
+    (mode: ThemeMode) => {
+      dispatch(setThemeMode(mode));
+    },
+    [dispatch],
+  );
+  const handleSetCurrentStore = useCallback(
+    (company?: Store | null, reload: boolean = true) => {
+      if (company) {
+        sessionStorage.setItem("currentStore", JSON.stringify(company));
+      } else {
+        sessionStorage.removeItem("currentStore");
+      }
+      dispatch(setCurrentStore(company));
+
+      if (reload) {
+        setTimeout(() => {
+          window.location.href = privateRoutesName.dashboard; // Chuyển hướng đến trang dashboard sau khi thay đổi cửa hàng
+        }, 500);
+      }
+    },
+    [dispatch],
+  );
 
   const handleClearState = useCallback(() => {
     dispatch(clearState());

@@ -5,6 +5,7 @@ import { getFilterUses, getSortItems, PartnerType } from "./partner.model";
 import { PartnerBusinessPageModel } from "./partnerBusinessPage.hook";
 import { PartnerAddUpdateModal, PartnerDetailModal, PartnerList, PartnerTable } from "./components";
 import { ButtonFilter } from "@/shared/components/filters";
+import { ExcelButton, ExcelEntityType } from "@/modules/excel";
 
 interface PartnerBusinessPageViewProps extends PartnerBusinessPageModel {
   type: PartnerType;
@@ -66,6 +67,14 @@ export const PartnerBusinessPageView: React.FC<PartnerBusinessPageViewProps> = (
                 onChange: (value?: string) => pageAction.handleStatusChange(value || "all"),
               },
             ]}
+          />
+          <ExcelButton
+            entityType={ExcelEntityType.PARTNER}
+            onSuccess={() => pageAction.handleReload()}
+            exportOptions={{
+              filters: { type },
+              filename: type === "customer" ? "Danh_sach_khach_hang_" : type === "supplier" ? "Danh_sach_nha_cung_cap_" : "Danh_sach_doi_tac_",
+            }}
           />
           <AddButton onOpenAdd={handlers.handleOpenAdd} />
         </div>
