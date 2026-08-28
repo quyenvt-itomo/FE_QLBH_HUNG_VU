@@ -1,8 +1,8 @@
 import { Switch, Tabs } from "antd";
 import { moduleMap } from "@/shared/constants/permission";
+import type { Module } from "@/shared/constants/permission";
 import {
-  EXCEL_PERMISSION_MODULES,
-  ExcelModule,
+  EXCEL_MODULES,
 } from "@/modules/excel/excel.permission.model";
 import { Role } from "../role.model";
 
@@ -15,13 +15,14 @@ interface ExcelPermissionSectionProps {
 export const ExcelPermissionSection: React.FC<
   ExcelPermissionSectionProps
 > = ({ selectedRow, onUpdateRolePermission, disabled }) => {
-  const excelModuleMap: Record<ExcelModule, string> = {
+  const excelModuleMap: Record<(typeof EXCEL_MODULES)[number], string> = {
     product: moduleMap.product,
-    partner: "Khách hàng / Nhà cung cấp",
+    customer: moduleMap.customer,
+    supplier: moduleMap.supplier,
   };
   const toggle = (
     field: "importExcel" | "exportExcel",
-    module: ExcelModule,
+    module: Module,
   ) => {
     const list = selectedRow[field] || [];
     onUpdateRolePermission?.({
@@ -34,7 +35,7 @@ export const ExcelPermissionSection: React.FC<
 
   const render = (field: "importExcel" | "exportExcel") => (
     <div className="grid grid-cols-2 gap-3">
-      {EXCEL_PERMISSION_MODULES.map((module) => (
+      {EXCEL_MODULES.map((module) => (
         <div
           key={module}
           className="flex items-center justify-between p-3 border rounded-lg"

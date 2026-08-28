@@ -1,18 +1,20 @@
 import { ExcelEntityType } from "./excel.enum";
-import { ExcelModule } from "./excel.permission.model";
+import { Module } from "@/shared/constants/permission";
 
 export function mapEntityTypeToModule(
   entityType: ExcelEntityType,
-): ExcelModule | undefined {
-  const map: Partial<Record<ExcelEntityType, ExcelModule>> = {
+): Module | undefined {
+  const map: Partial<Record<ExcelEntityType, Module>> = {
     [ExcelEntityType.PRODUCT]: "product",
-    [ExcelEntityType.PARTNER]: "partner",
+    [ExcelEntityType.CUSTOMER]: "customer",
+    [ExcelEntityType.SUPPLIER]: "supplier",
   };
   return map[entityType];
 }
 
 export const entityTypeLabel: Record<ExcelEntityType, string> = {
-  [ExcelEntityType.PARTNER]: "Đối tác",
+  [ExcelEntityType.CUSTOMER]: "Khách hàng",
+  [ExcelEntityType.SUPPLIER]: "Nhà cung cấp",
   [ExcelEntityType.EMPLOYEE]: "Nhân viên",
   [ExcelEntityType.USER]: "Người dùng",
   [ExcelEntityType.PRODUCT]: "Hàng hóa",

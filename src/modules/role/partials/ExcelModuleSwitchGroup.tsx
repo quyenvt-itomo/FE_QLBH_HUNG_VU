@@ -1,13 +1,14 @@
 import { Switch } from "antd";
 import { FileSpreadsheet } from "lucide-react";
 import {
-  EXCEL_PERMISSION_MODULES,
-  ExcelModule,
+  EXCEL_MODULES,
 } from "@/modules/excel/excel.permission.model";
+import { moduleMap } from "@/shared/constants/permission";
+import type { Module } from "@/shared/constants/permission";
 
 interface ExcelModuleSwitchGroupProps {
-  value?: ExcelModule[];
-  onChange?: (value: ExcelModule[]) => void;
+  value?: Module[];
+  onChange?: (value: Module[]) => void;
   disabled?: boolean;
   mode?: "import" | "export";
 }
@@ -22,7 +23,7 @@ export const ExcelModuleSwitchGroup: React.FC<
     ? "Quyền nhập dữ liệu theo từng module"
     : "Quyền xuất dữ liệu theo từng module";
 
-  const handleToggle = (module: ExcelModule, checked: boolean) => {
+  const handleToggle = (module: Module, checked: boolean) => {
     const next = checked
       ? Array.from(new Set([...value, module]))
       : value.filter((item) => item !== module);
@@ -68,7 +69,7 @@ export const ExcelModuleSwitchGroup: React.FC<
         </div>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 px-1">
-        {EXCEL_PERMISSION_MODULES.map((module) => (
+        {EXCEL_MODULES.map((module) => (
           <div
             key={module}
             className="flex items-center justify-between min-h-11 px-3 rounded-md border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900/50"
@@ -85,7 +86,7 @@ export const ExcelModuleSwitchGroup: React.FC<
                 }
               />
               <span className="text-sm text-slate-700 dark:text-slate-200 truncate">
-                Hàng hóa
+                {moduleMap[module]}
               </span>
             </div>
             <Switch

@@ -1,8 +1,9 @@
-export const EXCEL_PERMISSION_MODULES = ["product", "partner"] as const;
+import type { Module } from "@/shared/constants/permission";
 
-export type ExcelModule = (typeof EXCEL_PERMISSION_MODULES)[number];
+/** Excel chỉ dùng một tập con của các module phân quyền chung. */
+export const EXCEL_MODULES = ["product", "customer", "supplier"] as const satisfies readonly Module[];
 
 export interface ExcelRolePermissions {
-  importExcel: ExcelModule[];
-  exportExcel: ExcelModule[];
+  importExcel: Module[];
+  exportExcel: Module[];
 }

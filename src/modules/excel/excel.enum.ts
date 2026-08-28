@@ -16,7 +16,8 @@ export enum ImportErrorHandling {
 }
 
 export enum ExcelEntityType {
-  PARTNER = "partner",
+  CUSTOMER = "customer",
+  SUPPLIER = "supplier",
   EMPLOYEE = "employee",
   USER = "user",
   PRODUCT = "product",
@@ -44,7 +45,8 @@ export enum ExportJobStatus {
  * Entity hỗ trợ import - đồng bộ BE
  */
 export const ENTITY_SUPPORTS_IMPORT: Record<ExcelEntityType, boolean> = {
-  [ExcelEntityType.PARTNER]: true,
+  [ExcelEntityType.CUSTOMER]: true,
+  [ExcelEntityType.SUPPLIER]: true,
   [ExcelEntityType.EMPLOYEE]: false,
   [ExcelEntityType.USER]: false,
   [ExcelEntityType.PRODUCT]: true,
@@ -69,16 +71,15 @@ export interface ColumnOption {
   sheet?: string;
 }
 
-export const allColumnsExportOption: Record<ExcelEntityType, ColumnOption[]> = {
-  [ExcelEntityType.PARTNER]: [
-    { field: "type", header: "Loại đối tác (*)", width: 22, required: true, options: ["Khách hàng", "Nhà cung cấp", "Đơn vị vận chuyển"] },
+const customerColumns: ColumnOption[] = [
     { field: "code", header: "Mã đối tác", width: 20 },
-    { field: "name", header: "Tên đối tác (*)", width: 32, required: true },
+    { field: "name", header: "Tên khách hàng (*)", width: 32, required: true },
     { field: "isOrganization", header: "Loại hình", width: 18, options: ["Cá nhân", "Tổ chức"] },
-    { field: "groupName", header: "Nhóm đối tác", width: 24 },
+    { field: "groupName", header: "Nhóm khách hàng", width: 24 },
     { field: "taxCode", header: "Mã số thuế", width: 20 },
     { field: "phone", header: "Số điện thoại", width: 20 },
     { field: "email", header: "Email", width: 30 },
+    { field: "address", header: "Địa chỉ", width: 45 },
     { field: "maxDebtAmount", header: "Hạn mức công nợ", width: 20, type: "number", numberFormat: "#,##0.00" },
     { field: "receivableDebtAmount", header: "Công nợ phải thu", width: 20, type: "number", numberFormat: "#,##0.00" },
     { field: "payableDebtAmount", header: "Công nợ phải trả", width: 20, type: "number", numberFormat: "#,##0.00" },
@@ -88,11 +89,6 @@ export const allColumnsExportOption: Record<ExcelEntityType, ColumnOption[]> = {
     { field: "representativeEmail", header: "Email người đại diện", width: 28 },
     { field: "representativeIdentityCode", header: "CCCD người đại diện", width: 22 },
     { field: "note", header: "Ghi chú", width: 35 },
-    { field: "partnerCode", header: "Mã đối tác (*)", width: 20, required: true, sheet: "Địa chỉ" },
-    { field: "state", header: "Tỉnh/Thành phố", width: 24, sheet: "Địa chỉ" },
-    { field: "ward", header: "Phường/Xã", width: 24, sheet: "Địa chỉ" },
-    { field: "detail", header: "Địa chỉ chi tiết", width: 42, sheet: "Địa chỉ" },
-    { field: "isPermanent", header: "Địa chỉ chính", width: 18, options: ["Có", "Không"], sheet: "Địa chỉ" },
     { field: "partnerCode", header: "Mã đối tác (*)", width: 20, required: true, sheet: "Người liên hệ" },
     { field: "name", header: "Tên người liên hệ (*)", width: 28, required: true, sheet: "Người liên hệ" },
     { field: "phone", header: "Số điện thoại", width: 20, sheet: "Người liên hệ" },
@@ -106,7 +102,14 @@ export const allColumnsExportOption: Record<ExcelEntityType, ColumnOption[]> = {
     { field: "accountNumber", header: "Số tài khoản", width: 24, sheet: "Ngân hàng" },
     { field: "accountHolder", header: "Chủ tài khoản", width: 28, sheet: "Ngân hàng" },
     { field: "branch", header: "Chi nhánh", width: 24, sheet: "Ngân hàng" },
-  ],
+];
+
+export const allColumnsExportOption: Record<ExcelEntityType, ColumnOption[]> = {
+  [ExcelEntityType.CUSTOMER]: customerColumns,
+  [ExcelEntityType.SUPPLIER]: customerColumns.map((column) => ({
+    ...column,
+    header: column.header.replace(/khách hàng/gi, "nhà cung cấp"),
+  })),
   [ExcelEntityType.EMPLOYEE]: [
     // THÔNG TIN CÁ NHÂN
     {

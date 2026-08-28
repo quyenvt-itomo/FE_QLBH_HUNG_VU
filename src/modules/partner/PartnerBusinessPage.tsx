@@ -68,14 +68,23 @@ export const PartnerBusinessPageView: React.FC<PartnerBusinessPageViewProps> = (
               },
             ]}
           />
-          <ExcelButton
-            entityType={ExcelEntityType.PARTNER}
-            onSuccess={() => pageAction.handleReload()}
-            exportOptions={{
-              filters: { type },
-              filename: type === "customer" ? "Danh_sach_khach_hang_" : type === "supplier" ? "Danh_sach_nha_cung_cap_" : "Danh_sach_doi_tac_",
-            }}
-          />
+          {type !== PartnerType.SHIPPER && (
+            <ExcelButton
+              entityType={
+                type === PartnerType.CUSTOMER
+                  ? ExcelEntityType.CUSTOMER
+                  : ExcelEntityType.SUPPLIER
+              }
+              onSuccess={() => pageAction.handleReload()}
+              exportOptions={{
+                filters: { type },
+                filename:
+                  type === PartnerType.CUSTOMER
+                    ? "Danh_sach_khach_hang_"
+                    : "Danh_sach_nha_cung_cap_",
+              }}
+            />
+          )}
           <AddButton onOpenAdd={handlers.handleOpenAdd} />
         </div>
       </div>
