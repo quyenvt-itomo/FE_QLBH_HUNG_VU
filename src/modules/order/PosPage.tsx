@@ -1,4 +1,4 @@
-import { App, Button, Empty, Input, InputNumber, Layout, Select, Spin } from "antd";
+import { App, Button, Empty, Input, InputNumber, Layout, Select, Spin, Switch } from "antd";
 import {
   ArrowLeftOutlined,
   DeleteOutlined,
@@ -10,8 +10,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
-import { CustomerAddSelect } from "@/modules/partner/components/Select";
+import { CustomerAddSelect, PartnerSelect } from "@/modules/partner/components/Select";
 import { Partner } from "@/modules/partner/partner.model";
+import { PartnerType } from "@/modules/partner/partner.model";
 import { Product } from "@/modules/product/product.model";
 import { useProductStore } from "@/modules/product/product.store";
 import { Order, OrderType } from "./order.model";
@@ -84,13 +85,15 @@ const calculateTotals = (lines: PosLine[], order: CachedOrder) => {
   const taxValue = Math.max(0, Number(order.taxValue || 0));
   const taxAmount =
     order.taxType === DiscountTypeEnum.PERCENT ? (netAmount * taxValue) / 100 : taxValue;
+  const shippingFee = Math.max(0, Number(order.shippingFee || 0));
+  const shippingAmount = order.isFreeShipping === false ? shippingFee : 0;
 
   return {
     grossAmount,
     discountAmount,
     netAmount,
     taxAmount,
-    totalAmount: netAmount + taxAmount,
+    totalAmount: netAmount + taxAmount + shippingAmount,
   };
 };
 
@@ -451,6 +454,45 @@ const PosPage = () => {
                     />
                   </div>
                 )}
+              </section>
+
+              <section className="border-b border-gray-200 p-4">
+                <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                  Vận chuyển
+                </h3>
+                <div className="flex items-center justify-between gap-3 py-2 text-sm">
+                  <span>Miễn phí vận chuyển</span>
+                  <Switch
+                    checked={activeOrder.isFreeShipping !== false}
+                    onChange={(isFreeShipping) => updateActive({ isFreeShipping })}
+                  />
+                </div>
+                <div className="flex items-center justify-between gap-3 py-2 text-sm">
+                  <span>Phí vận chuyển</span>
+                  <InputNumber
+                    min={0}
+                    value={Number(activeOrder.shippingFee || 0)}
+                    onChange={(shippingFee) =>
+                      updateActive({ shippingFee: Number(shippingFee || 0) })
+                    }
+                    className="w-48"
+                  />
+                </div>
+                <PartnerSelect
+                  value={activeOrder.shipperId || undefined}
+                  defaultData={activeOrder.shipper as Partner | undefined}
+                  query={{ type: PartnerType.SHIPPER }}
+                  onChangeData={(shipper) =>
+                    updateActive({ shipperId: shipper?.id || null, shipper })
+                  }
+                  placeholder="Chọn đơn vị vận chuyển"
+                />
+                <div className="mt-2 text-xs text-gray-500">
+                  {activeOrder.isFreeShipping !== false
+                    ? "Không cộng phí vào số tiền khách thanh toán."
+                    : "Cộng phí vận chuyển vào số tiền khách thanh toán."}
+                  {activeOrder.shipperId && " Phí sẽ ghi nhận là nợ phải trả ĐVVC."}
+                </div>
               </section>
 
               <section className="border-b border-gray-200 p-4">

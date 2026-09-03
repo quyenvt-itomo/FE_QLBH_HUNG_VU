@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { notification } from "antd";
+import { App } from "antd";
 import { TOOL_URL } from "../constants/apiEndpoint";
 
 interface GeneratePdfOptions {
@@ -7,6 +7,7 @@ interface GeneratePdfOptions {
 }
 
 export const useGeneratePdf = (options?: GeneratePdfOptions) => {
+  const { notification } = App.useApp();
   const [loading, setLoading] = useState(false);
 
   const generatePdf = useCallback(
@@ -47,7 +48,7 @@ export const useGeneratePdf = (options?: GeneratePdfOptions) => {
         setLoading(false);
       }
     },
-    [options?.autoPrint],
+    [notification, options?.autoPrint],
   );
 
   return {

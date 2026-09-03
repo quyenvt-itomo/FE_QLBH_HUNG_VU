@@ -1,16 +1,13 @@
 import React from "react";
 import { Button, Col, Form, Input, Row } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
-import { CSS } from "@/shared/constants/ui";
 import { CreditCardIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { FormSection } from "@/shared/components";
 import { Label } from "@/shared/components";
-import { PartialProps } from ".";
+import { PartnerFormPartialProps } from "./form.types";
 import { BankSelect } from "@/shared/components";
 
-export const BankList: React.FC<PartialProps> = ({ form }) => {
-  const banks = Form.useWatch("banks", form) || [];
-
+export const BankList: React.FC<PartnerFormPartialProps> = ({ form }) => {
   return (
     <Form.List name="banks">
       {(fields, { add, remove }) => (

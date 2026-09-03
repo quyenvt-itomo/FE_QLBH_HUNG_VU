@@ -7,7 +7,7 @@ import {
   Representative,
   SortItem,
 } from "@/shared/interfaces/common";
-import { getOptionsByMap } from "@/shared/constants/enum";
+import { Gender, getOptionsByMap } from "@/shared/constants/enum";
 import type { Attribute } from "../attribute/attribute.model";
 import type { PartnerContact } from "../partnerContact/partnerContact.model";
 
@@ -40,6 +40,9 @@ export interface PartnerSnapshot {
   email: string | null;
   phone: string | null;
   taxCode: string | null;
+  identityCode: string | null;
+  gender: Gender | null;
+  dob: any;
   addresses: Address[];
   address?: Address;
   representative: Representative | null;
@@ -55,19 +58,29 @@ export interface Partner extends Entity {
   email: string | null;
   phone: string | null;
   taxCode: string | null;
+  identityCode: string | null;
+  gender: Gender | null;
+  dob: any;
   addresses: Address[];
   /** Legacy single-address alias for retired public quotation screens. */
   address?: Address;
   representative: Representative | null;
   banks: BankAccount[];
   maxDebtAmount: number | null;
+  paymentTerm?: {
+    maxDebtAmount?: number | null;
+    maxDebtDays?: number | null;
+    depositRate?: number | null;
+  } | null;
   contacts?: PartnerContact[];
   /** Legacy read-only aliases while old report components are retired. */
   types?: PartnerType[];
   staffId?: string | null;
   staff?: { code?: string; name?: string } | null;
   zaloLink?: string | null;
-  paymentTerm?: { maxDebtAmount?: number; maxDebtDays?: number; depositRate?: number } | null;
+
+  payableDebtAmount?: number;
+  receivableDebtAmount?: number;
 }
 
 export const getSortItems = (type: PartnerType): SortItem[] => {

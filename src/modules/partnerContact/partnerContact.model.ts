@@ -13,6 +13,7 @@ export interface PartnerContactSnapshot {
   name: string;
   phone: string | null;
   email: string | null;
+  identityCode: string | null;
 }
 
 export interface PartnerContact extends Entity {
@@ -22,6 +23,6 @@ export interface PartnerContact extends Entity {
   name: string;
   phone: string | null;
   email: string | null;
-  position: string | null;
+  identityCode: string | null;
   banks: BankAccount[];
 }

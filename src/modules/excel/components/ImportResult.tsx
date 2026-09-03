@@ -1,7 +1,10 @@
-import { Button, Modal, message } from "antd";
+import { App, Button } from "antd";
 import { ImportExcelResult } from "../excel.model";
 
-const downloadErrorFile = async (url: string) => {
+type ModalApi = ReturnType<typeof App.useApp>["modal"];
+type MessageApi = ReturnType<typeof App.useApp>["message"];
+
+const downloadErrorFile = async (url: string, messageApi: MessageApi) => {
   try {
     const deviceId = localStorage.getItem("deviceId") || "1";
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -16,22 +19,26 @@ const downloadErrorFile = async (url: string) => {
     const blobUrl = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = blobUrl;
-    link.download = "error_report.xlsx";
+    link.download = "bao_cao_loi_nhap_excel.xlsx";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     window.URL.revokeObjectURL(blobUrl);
-    message.success("Tải file lỗi thành công");
+    messageApi.success("Tải file lỗi thành công");
   } catch (error) {
     console.error("Error downloading error file:", error);
-    message.error("Không thể tải file lỗi");
+    messageApi.error("Không thể tải file lỗi");
   }
 };
 
-export const openImportResultModal = (result: ImportExcelResult) => {
+export const openImportResultModal = (
+  result: ImportExcelResult,
+  modal: ModalApi,
+  messageApi: MessageApi,
+) => {
   const { totalRows, successRows, errorRows, skippedRows, errors, errorFileUrl } = result;
 
-  Modal.info({
+  modal.info({
     title: "Kết quả nhập Excel",
     content: (
       <div>
@@ -67,7 +74,7 @@ export const openImportResultModal = (result: ImportExcelResult) => {
         {errorFileUrl && (
           <Button
             type="link"
-            onClick={() => downloadErrorFile(errorFileUrl)}
+            onClick={() => downloadErrorFile(errorFileUrl, messageApi)}
             style={{ padding: 0 }}
           >
             Tải file lỗi

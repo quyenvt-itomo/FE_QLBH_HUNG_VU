@@ -1,4 +1,5 @@
 import React from "react";
+import dayjs from "dayjs";
 import {
   PhoneOutlined,
   MailOutlined,
@@ -16,11 +17,12 @@ import {
   ClockCircleOutlined,
   DollarOutlined,
 } from "@ant-design/icons";
-import { Partner, partnerTypeMap } from "../../partner.model";
+import { Partner, PartnerType } from "../../partner.model";
 import { PartnerTypeTag } from "../../components/Tag";
 import { getFullAddress } from "@/shared/utils/common.util";
 import { formatMoney } from "@/shared/utils/number.util";
 import { InfoField } from "@/shared/components";
+import { genderMap } from "@/shared/constants/enum";
 
 // ──── Helpers ────
 
@@ -76,6 +78,9 @@ export const InfoTab: React.FC<{ data: Partner }> = ({ data }) => (
           <InfoField icon={<BankOutlined />} label="Mã số thuế">
             {data.taxCode}
           </InfoField>
+          <InfoField icon={<IdcardOutlined />} label="CMND/CCCD">
+            {data.identityCode}
+          </InfoField>
           <InfoField icon={<PhoneOutlined />} label="Số điện thoại">
             {data.phone ? (
               <a href={`tel:${data.phone}`} className="text-blue-600 hover:underline">
@@ -90,6 +95,16 @@ export const InfoTab: React.FC<{ data: Partner }> = ({ data }) => (
               </a>
             ) : null}
           </InfoField>
+          {data.type === PartnerType.CUSTOMER && (
+            <>
+              <InfoField icon={<UserOutlined />} label="Giới tính">
+                {data.gender ? genderMap[String(data.gender).toUpperCase() as keyof typeof genderMap] : null}
+              </InfoField>
+              <InfoField icon={<ClockCircleOutlined />} label="Ngày sinh">
+                {data.dob ? dayjs(data.dob).format("DD/MM/YYYY") : null}
+              </InfoField>
+            </>
+          )}
           <InfoField icon={<LinkOutlined />} label="Zalo">
             {data.zaloLink ? (
               <a
@@ -128,9 +143,9 @@ export const InfoTab: React.FC<{ data: Partner }> = ({ data }) => (
               <div className="flex items-center gap-2 mb-1">
                 <UserOutlined className="text-gray-400" />
                 <span className="font-medium text-sm">{data.representative.name}</span>
-                {data.representative.position && (
+                {data.representative.identityCode && (
                   <span className="inline-block text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
-                    {data.representative.position}
+                    CCCD/CMND: {data.representative.identityCode}
                   </span>
                 )}
               </div>

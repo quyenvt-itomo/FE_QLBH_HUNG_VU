@@ -33,7 +33,7 @@ export const usePartnerBusinessPage = (
       sortOrder,
       reload,
       type,
-      isOrganization: status === "organizatil" ? true : status === "individual" ? false : undefined,
+      isOrganization: status === "organization" ? true : status === "individual" ? false : undefined,
       ...filter,
     },
     pageAction.handleClose,

@@ -52,6 +52,9 @@ export interface Order extends Entity {
   partnerSnapshot: PartnerSnapshot | null;
   shipperId: string | null;
   shipperSnapshot: PartnerSnapshot | null;
+  shippingFee: number | null;
+  /** Purchase: doanh nghiệp tự thanh toán; sale: miễn phí cho khách. */
+  isFreeShipping: boolean;
   discountType: DiscountTypeEnum;
   discountValue: number | null;
   grossAmount: number;

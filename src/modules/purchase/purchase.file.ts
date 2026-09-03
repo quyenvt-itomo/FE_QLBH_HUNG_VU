@@ -82,7 +82,7 @@ export class PurchaseFile {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `Don-dat-hang-${purchase.code}.xlsx`;
+    a.download = `don_dat_hang_${purchase.code}.xlsx`;
     a.click();
     URL.revokeObjectURL(url);
   }

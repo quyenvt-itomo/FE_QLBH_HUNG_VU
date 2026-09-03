@@ -25,9 +25,9 @@ export const ContactTab: React.FC<{ data: Partner }> = ({ data }) => (
               <div>
                 <div className="flex items-center gap-2">
                   <span className="font-semibold text-base">{contact.name}</span>
-                  {contact.position && (
+                  {contact.identityCode && (
                     <span className="inline-block text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
-                      {contact.position}
+                      CCCD/CMND: {contact.identityCode}
                     </span>
                   )}
                 </div>

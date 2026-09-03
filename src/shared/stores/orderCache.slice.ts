@@ -14,6 +14,10 @@ export interface CachedOrder {
   code?: string;
   partnerId?: string | null;
   partner?: unknown;
+  shipperId?: string | null;
+  shipper?: unknown;
+  shippingFee?: number | null;
+  isFreeShipping?: boolean;
   refOrderId?: string | null;
   lines?: Record<string, unknown>[];
   returnLines?: Record<string, unknown>[];

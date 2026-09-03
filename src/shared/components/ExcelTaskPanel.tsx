@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef } from "react";
-import { Button, Progress, Typography, notification } from "antd";
+import { App, Button, Progress, Typography } from "antd";
 import { CloseOutlined, ImportOutlined, ExportOutlined } from "@ant-design/icons";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { BASE_URL, apiEndpoint } from "../constants/apiEndpoint";
@@ -42,6 +42,7 @@ const ENTITY_LABELS: Record<string, string> = {
 
 const ExcelTaskPanel: React.FC = () => {
   const dispatch = useDispatch();
+  const { modal, message, notification } = App.useApp();
   const { importTasks, exportTasks } = useSelector((state: RootState) => state.Excel, shallowEqual);
 
   const importStreamRef = useRef<Record<string, EventSource>>({});
@@ -146,7 +147,7 @@ const ExcelTaskPanel: React.FC = () => {
         !completedRef.current.has(task.jobId)
       ) {
         completedRef.current.add(task.jobId);
-        openImportResultModal(task.result);
+        openImportResultModal(task.result, modal, message);
         // Auto-dismiss sau 6 giây
         setTimeout(() => dispatch(removeImportTask(task.jobId)), 6000);
       }
@@ -162,7 +163,7 @@ const ExcelTaskPanel: React.FC = () => {
         setTimeout(() => dispatch(removeExportTask(task.jobId)), 6000);
       }
     });
-  }, [dispatch, exportTasks, importTasks]);
+  }, [dispatch, exportTasks, importTasks, message, modal, notification]);
 
   // Cleanup on unmount
   useEffect(() => {

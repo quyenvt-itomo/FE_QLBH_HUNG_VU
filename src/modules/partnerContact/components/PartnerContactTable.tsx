@@ -28,9 +28,9 @@ export const PartnerContactTable: React.FC<ObjectTableProps> = ({ onViewDetail, 
         width: 220,
       },
       {
-        title: "Chức danh",
-        dataIndex: "position",
-        key: "position",
+        title: "CCCD/CMND",
+        dataIndex: "identityCode",
+        key: "identityCode",
         width: 130,
       },
       {

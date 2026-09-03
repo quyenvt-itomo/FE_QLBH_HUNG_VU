@@ -6,7 +6,7 @@ import { allColumnsExportOption, ColumnOption, ExcelEntityType } from "../excel.
 import { useExcelStore } from "../excel.store";
 import { ModalImportExcel } from "./ModalImportExcel";
 import { ExportColumnConfig, ExportOptions } from "../excel.model";
-import { mapEntityTypeToModule } from "../excel.util";
+import { getExcelFileNamePrefix, mapEntityTypeToModule } from "../excel.util";
 import {
   ArrowRightEndOnRectangleIcon,
   ArrowRightStartOnRectangleIcon,
@@ -270,7 +270,10 @@ export const ExcelButton: React.FC<{
       businessStoreColumns:
         businessStoreColumns.length > 0 ? businessStoreColumns : undefined,
       sheetColumns: Object.keys(sheetColumns).length ? sheetColumns : undefined,
-      filename: (exportOptions?.filename || entityType + "_") + now + ".xlsx",
+      filename:
+        (exportOptions?.filename || `${getExcelFileNamePrefix(entityType, "export")}_`) +
+        now +
+        ".xlsx",
     });
     setOpenExport(false);
   };

@@ -6,7 +6,7 @@ import {
   Upload,
   UploadProps,
   Spin,
-  notification,
+  App,
   UploadFile,
   Radio,
 } from "antd";
@@ -39,6 +39,7 @@ export const ModalImportExcel: React.FC<ModalImportExcelProps> = ({
   setClose,
   onSuccess,
 }) => {
+  const { notification } = App.useApp();
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);

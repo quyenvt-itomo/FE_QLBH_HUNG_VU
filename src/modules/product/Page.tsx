@@ -229,7 +229,7 @@ export const ProductPage: React.FC = () => {
                   sortBy,
                   sortOrder,
                 },
-                filename: "Danh_sach_hang_hoa_",
+                filename: "danh_sach_hang_hoa_",
               }}
             />
             {/* Thêm action bằng 1 cái dropdown có dấu 3 chấm */}

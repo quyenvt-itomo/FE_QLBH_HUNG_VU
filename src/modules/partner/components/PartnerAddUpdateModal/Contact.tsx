@@ -4,11 +4,11 @@ import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { CreditCardIcon, PhoneIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { FormSection } from "@/shared/components";
 import { Label } from "@/shared/components";
-import { PartialProps } from ".";
+import { PartnerFormPartialProps } from "./form.types";
 import { BankSelect } from "@/shared/components";
 import { getPhoneRules } from "@/shared/constants/formItemRule";
 
-export const ContactList: React.FC<PartialProps> = ({ form }) => {
+export const ContactList: React.FC<PartnerFormPartialProps> = ({ form }) => {
   return (
     <Form.List name="contacts">
       {(fields, { add, remove }) => (
@@ -75,10 +75,10 @@ export const ContactList: React.FC<PartialProps> = ({ form }) => {
                   <Form.Item
                     {...restField}
                     layout="vertical"
-                    name={[name, "position"]}
-                    label={<Label width={120} title="Chức danh" />}
+                    name={[name, "identityCode"]}
+                    label={<Label width={120} title="CCCD/CMND" />}
                   >
-                    <Input placeholder="VD: Giám đốc kinh doanh" />
+                    <Input placeholder="Số CCCD/CMND" maxLength={20} />
                   </Form.Item>
                 </Col>
                 <Col xs={24} md={12} lg={6}>

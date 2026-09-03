@@ -13,6 +13,7 @@ import type {
 } from "./excel.model";
 import type { ApiResponse, BaseFailurePayload } from "@/shared/interfaces/api";
 import { importExcelJobStarted } from "@/shared/stores/excel.slice";
+import { getExcelFileNamePrefix } from "./excel.util";
 
 export const downloadFileWithFetch = async (url: string, filename: string) => {
   try {
@@ -76,7 +77,10 @@ export const useExcelStore = () => {
           setTemplate(data);
           if (data?.url) {
             try {
-              await downloadFileWithFetch(data.url, data.filename || "template.xlsx");
+              await downloadFileWithFetch(
+                data.url,
+                data.filename || `${getExcelFileNamePrefix(entityType, "template")}.xlsx`,
+              );
               notify("success", "Tải file mẫu thành công");
             } catch {
               notify("error", "Không thể tải file mẫu");
@@ -128,7 +132,10 @@ export const useExcelStore = () => {
     setExporting(true);
     try {
       const filename =
-        options.filename || `${options.entityType}_${dayjs().format("YYYY-MM-DD_HH-mm")}.xlsx`;
+        options.filename ||
+        `${getExcelFileNamePrefix(options.entityType, "export")}_${dayjs().format(
+          "YYYY-MM-DD_HH-mm",
+        )}.xlsx`;
 
       const blob = await postBlob(apiEndpoint.excel.download, options);
 

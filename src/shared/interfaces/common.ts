@@ -127,7 +127,6 @@ export interface Representative {
   name: string; // Tên người đại diện
   phone: string; // Số điện thoại người đại diện
   email?: string; // Email người đại diện (tùy chọn)
-  position?: string; // Chức vụ người đại diện (tùy chọn)
   relationship?: string; // Mối quan hệ với nhân viên (tùy chọn)
   identityCode?: string; // Số giấy tờ tùy thân của người đại diện (tùy chọn)
 }

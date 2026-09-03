@@ -5,7 +5,7 @@ import localConfig from "../localeConfig";
 import dayjs from "dayjs";
 import "dayjs/locale/vi";
 import "dayjs/locale/zh-cn";
-import { App as AntdApp, ConfigProvider, notification, theme as antdTheme } from "antd";
+import { App as AntdApp, ConfigProvider, theme as antdTheme } from "antd";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 import { useGlobalData } from "./shared/hooks/useGlobalData";
 import { useAuth } from "./shared/hooks/useAuth";
@@ -67,26 +67,6 @@ const App: React.FC = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  useEffect(() => {
-    const handleOnline = () => {
-      notification.success({
-        message: "Kết nối mạng đã được khôi phục",
-        description: "Bạn đã kết nối lại thành công.",
-        placement: "topRight",
-        duration: 3,
-        showProgress: true,
-        closable: true,
-        pauseOnHover: false,
-      });
-    };
-
-    window.addEventListener("online", handleOnline);
-
-    return () => {
-      window.removeEventListener("online", handleOnline);
-    };
-  }, []);
-
   return (
     <ConfigProvider
       locale={viVN}
@@ -128,6 +108,7 @@ const App: React.FC = () => {
         }}
       >
         <AntdApp>
+          <OnlineStatusNotifier />
           <Routes>
             {publicRoutes.map((route, index) => {
               const Page = route.component;
@@ -184,6 +165,29 @@ const App: React.FC = () => {
       </BrowserRouter>
     </ConfigProvider>
   );
+};
+
+const OnlineStatusNotifier: React.FC = () => {
+  const { notification } = AntdApp.useApp();
+
+  useEffect(() => {
+    const handleOnline = () => {
+      notification.success({
+        message: "Kết nối mạng đã được khôi phục",
+        description: "Bạn đã kết nối lại thành công.",
+        placement: "topRight",
+        duration: 3,
+        showProgress: true,
+        closable: true,
+        pauseOnHover: false,
+      });
+    };
+
+    window.addEventListener("online", handleOnline);
+    return () => window.removeEventListener("online", handleOnline);
+  }, [notification]);
+
+  return null;
 };
 
 export default App;
