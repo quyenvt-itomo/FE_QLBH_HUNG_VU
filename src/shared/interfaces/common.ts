@@ -85,6 +85,8 @@ export interface Address {
   state?: string; // Tỉnh/Thành phố
   ward?: string; // Phường/Xã
   detail?: string; // Địa chỉ chi tiết
+  lng?: number;
+  lat?: number;
   isPermanent?: boolean; // Địa chỉ thường trú hay hiện tại
 }
 

@@ -10,26 +10,26 @@ import { groupTypeMap } from "./form.constants";
 export const AddressFields: React.FC<{
   form: FormInstance<Partner>;
 }> = ({ form }) => {
-  const addressState = Form.useWatch(["addresses", 0, "state"], form);
+  const addressState = Form.useWatch(["address", "state"], form);
   const { provinceOptions, wardOptions } = useAddressSelector(addressState);
 
   return (
     <Row gutter={[64, 0]}>
       <Col xs={24} md={12}>
-        <Form.Item name={["addresses", 0, "state"]} label="Tỉnh/thành phố">
+        <Form.Item name={["address", "state"]} label="Tỉnh/thành phố">
           <ProvinceSelect
             options={provinceOptions}
-            onChange={() => form.setFieldValue(["addresses", 0, "ward"], undefined)}
+            onChange={() => form.setFieldValue(["address", "ward"], undefined)}
           />
         </Form.Item>
       </Col>
       <Col xs={24} md={12}>
-        <Form.Item name={["addresses", 0, "ward"]} label="Phường/xã">
+        <Form.Item name={["address", "ward"]} label="Phường/xã">
           <WardSelect options={wardOptions} />
         </Form.Item>
       </Col>
       <Col xs={24}>
-        <Form.Item name={["addresses", 0, "detail"]} label="Địa chỉ chi tiết">
+        <Form.Item name={["address", "detail"]} label="Địa chỉ chi tiết">
           <Input placeholder="Số nhà, đường..." />
         </Form.Item>
       </Col>

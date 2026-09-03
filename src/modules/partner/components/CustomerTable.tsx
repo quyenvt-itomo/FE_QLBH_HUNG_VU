@@ -3,6 +3,7 @@ import { ColumnsConfigType, ObjectTableProps, TableColumnConfig } from "@/shared
 import { getFullAddress } from "@/shared/utils/common.util";
 import { Partner } from "../partner.model";
 import { formatMoney } from "@/shared/utils";
+import { formatDateDDMMYYYY } from "@/shared/utils/date.util";
 
 export const CustomerTable: React.FC<ObjectTableProps> = ({ onViewDetail, ...rest }) => {
   const columns = useMemo(
@@ -48,6 +49,13 @@ export const CustomerTable: React.FC<ObjectTableProps> = ({ onViewDetail, ...res
         render: (value: number) => formatMoney(value),
       },
       {
+        title: "Ngày giao dịch cuối",
+        dataIndex: "lastTransactionAt",
+        key: "lastTransactionAt",
+        width: 150,
+        render: (value: string | null) => (value ? formatDateDDMMYYYY(value) : "--"),
+      },
+      {
         title: "Người đại diện",
         dataIndex: ["representative", "name"],
         key: "representativeName",
@@ -56,11 +64,11 @@ export const CustomerTable: React.FC<ObjectTableProps> = ({ onViewDetail, ...res
       },
       {
         title: "Địa chỉ",
-        dataIndex: "addresses",
-        key: "addresses",
+        dataIndex: "address",
+        key: "address",
         width: 280,
         hidden: true,
-        render: (addresses: Partner["addresses"]) => getFullAddress(addresses?.[0]),
+        render: (address: Partner["address"]) => getFullAddress(address),
       },
       { title: "Ghi chú", dataIndex: "note", key: "note", width: 220, hidden: true },
     ],

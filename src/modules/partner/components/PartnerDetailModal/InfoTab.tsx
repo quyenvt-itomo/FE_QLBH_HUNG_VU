@@ -126,7 +126,7 @@ export const InfoTab: React.FC<{ data: Partner }> = ({ data }) => (
             ) : null}
           </InfoField>
           <InfoField icon={<HomeOutlined />} label="Địa chỉ" fullWidth>
-            {getFullAddress(data.addresses?.[0] || data.address) || null}
+            {getFullAddress(data.address) || null}
           </InfoField>
           <InfoField icon={<FileTextOutlined />} label="Ghi chú" fullWidth>
             {data.note}

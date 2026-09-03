@@ -5,9 +5,10 @@ import {
   BankAccount,
   FilterKey,
   Representative,
+  RangerItem,
   SortItem,
 } from "@/shared/interfaces/common";
-import { Gender, getOptionsByMap } from "@/shared/constants/enum";
+import { Gender, genderOptions, getOptionsByMap } from "@/shared/constants/enum";
 import type { Attribute } from "../attribute/attribute.model";
 import type { PartnerContact } from "../partnerContact/partnerContact.model";
 
@@ -29,6 +30,17 @@ export interface PartnerQuery extends ApiRequestQuery {
   types?: PartnerType[];
   groupId?: string;
   isOrganization?: boolean;
+  gender?: Gender[];
+  states?: string[];
+  wards?: string[];
+  createdAtGte?: string;
+  createdAtLte?: string;
+  dobGte?: string;
+  dobLte?: string;
+  lastTransactionAtGte?: string;
+  lastTransactionAtLte?: string;
+  currentDebtAmountGte?: number;
+  currentDebtAmountLte?: number;
 }
 export interface PartnerSnapshot {
   id: string;
@@ -43,8 +55,7 @@ export interface PartnerSnapshot {
   identityCode: string | null;
   gender: Gender | null;
   dob: any;
-  addresses: Address[];
-  address?: Address;
+  address: Address | null;
   representative: Representative | null;
   banks: BankAccount[];
 }
@@ -61,9 +72,7 @@ export interface Partner extends Entity {
   identityCode: string | null;
   gender: Gender | null;
   dob: any;
-  addresses: Address[];
-  /** Legacy single-address alias for retired public quotation screens. */
-  address?: Address;
+  address: Address | null;
   representative: Representative | null;
   banks: BankAccount[];
   maxDebtAmount: number | null;
@@ -81,17 +90,59 @@ export interface Partner extends Entity {
 
   payableDebtAmount?: number;
   receivableDebtAmount?: number;
+  currentDebtAmount?: number;
+  lastTransactionAt?: string | null;
 }
 
 export const getSortItems = (type: PartnerType): SortItem[] => {
   const text = partnerTypeMap[type]?.toLowerCase() || "đối tác";
 
-  return [
+  const items: SortItem[] = [
     { label: "Ngày tạo", value: "createdAt", ascLabel: "Mới nhất", descLabel: "Cũ nhất" },
     { label: `Mã ${text}`, value: "code", ascLabel: "A → Z", descLabel: "Z → A" },
     { label: `Tên ${text}`, value: "name", ascLabel: "A → Z", descLabel: "Z → A" },
+    { label: "Ngày giao dịch cuối", value: "lastTransactionAt", ascLabel: "Cũ nhất", descLabel: "Mới nhất" },
+    { label: "Nợ hiện tại", value: "currentDebtAmount", ascLabel: "Thấp nhất", descLabel: "Cao nhất" },
   ];
+
+  if (type === PartnerType.SHIPPER) {
+    return items.slice(0, 3);
+  }
+
+  if (type === PartnerType.SUPPLIER) {
+    return [...items.slice(0, 3), items[4]];
+  }
+
+  return items;
 };
+
+export const getRangerItems = (type: PartnerType): RangerItem[] => {
+  const items: RangerItem[] = [
+    { key: "createdAt", label: "Ngày tạo", type: "date" },
+    { key: "currentDebtAmount", label: "Nợ hiện tại", type: "number" },
+  ];
+
+  if (type === PartnerType.CUSTOMER) {
+    items.splice(1, 0, { key: "dob", label: "Ngày sinh", type: "date" });
+    items.splice(2, 0, {
+      key: "lastTransactionAt",
+      label: "Ngày giao dịch lần cuối",
+      type: "date",
+    });
+  }
+
+  return items;
+};
+
+export const partnerClassificationOptions = [
+  { label: "Cá nhân", key: "individual" },
+  { label: "Tổ chức", key: "organization" },
+];
+
+export const partnerGenderOptions = genderOptions.map((item) => ({
+  label: item.label,
+  key: item.value,
+}));
 
 export const getFilterUses = (type: PartnerType): FilterKey[] => {
   const result: FilterKey[] = ["creatorIds"];

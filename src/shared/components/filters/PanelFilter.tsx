@@ -16,6 +16,64 @@ import {
 import type { StatusItem } from "./filter.types";
 import React from "react";
 import { FilterPanel } from "./FilterPanel";
+import { ProvinceSelect, WardSelect } from "../select/AddressSelect";
+import { useAddressSelector } from "@/shared/hooks/useAddressSelector";
+
+export interface EnumFilterItem {
+  key: string;
+  label: string;
+  count?: number;
+}
+
+export interface EnumFilterConfig {
+  label: string;
+  items: EnumFilterItem[];
+  value: string[];
+  onChange: (values: string[]) => void;
+  multiple?: boolean;
+}
+
+export interface AddressFilterConfig {
+  states: string[];
+  wards: string[];
+  onStatesChange: (values: string[]) => void;
+  onWardsChange: (values: string[]) => void;
+}
+
+const AddressFilter: React.FC<AddressFilterConfig> = ({
+  states,
+  wards,
+  onStatesChange,
+  onWardsChange,
+}) => {
+  const selectedState = states[0];
+  const { provinceOptions, wardOptions } = useAddressSelector(selectedState);
+
+  return (
+    <div className="grid grid-cols-1 gap-3">
+      <div className="flex flex-col gap-1">
+        <span className="text-xs text-gray-500">Tỉnh/TP</span>
+        <ProvinceSelect
+          value={selectedState}
+          options={provinceOptions}
+          onChange={(value) => {
+            onStatesChange(value ? [value] : []);
+            onWardsChange([]);
+          }}
+        />
+      </div>
+      <div className="flex flex-col gap-1">
+        <span className="text-xs text-gray-500">Phường/Xã</span>
+        <WardSelect
+          value={wards[0]}
+          options={wardOptions}
+          disabled={!selectedState}
+          onChange={(value) => onWardsChange(value ? [value] : [])}
+        />
+      </div>
+    </div>
+  );
+};
 
 export interface PanelFilterProps {
   filterActive?: boolean;
@@ -40,6 +98,8 @@ export interface PanelFilterProps {
   searchValue?: Search;
   onSearchChange?: (value: Search) => void;
   filterContent?: React.ReactNode;
+  enumFilters?: EnumFilterConfig[];
+  addressFilter?: AddressFilterConfig;
   onClearFilter?: () => void;
 }
 
@@ -74,6 +134,8 @@ export const PanelFilter: React.FC<PanelFilterProps> = ({
   filterUses = [],
 
   filterContent,
+  enumFilters = [],
+  addressFilter,
   onClearFilter,
 }) => {
   return (
@@ -161,18 +223,75 @@ export const PanelFilter: React.FC<PanelFilterProps> = ({
           </div>
         )}
 
+        {enumFilters.map((config) => {
+          const hasSelection = config.value.length > 0;
+          return (
+            <section key={config.label} className="border-b border-gray-100 p-4">
+              <div className="mb-3 flex items-center justify-between">
+                <span className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                  {config.label}
+                </span>
+                {hasSelection && (
+                  <button
+                    type="button"
+                    className="text-xs text-blue-600 hover:text-blue-800"
+                    onClick={() => config.onChange([])}
+                  >
+                    Bỏ lọc
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {config.items.map((item) => {
+                  const isSelected = config.value.includes(item.key);
+                  return (
+                    <button
+                      key={item.key}
+                      type="button"
+                      onClick={() => {
+                        if (config.multiple === false) {
+                          config.onChange(isSelected ? [] : [item.key]);
+                          return;
+                        }
+
+                        config.onChange(
+                          isSelected
+                            ? config.value.filter((key) => key !== item.key)
+                            : [...config.value, item.key],
+                        );
+                      }}
+                      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                        isSelected
+                          ? "border-blue-600 bg-blue-600 text-white"
+                          : "border-gray-300 text-gray-600 hover:border-blue-400 hover:text-blue-600"
+                      }`}
+                    >
+                      {item.label}
+                      {item.count !== undefined && ` (${item.count})`}
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+          );
+        })}
+
         {filterContent && (
           <section className="border-b border-gray-100 pt-3">{filterContent}</section>
         )}
 
-        {filterUses.length > 0 && (
+        {(filterUses.length > 0 || addressFilter) && (
           <div className="flex flex-col w-full h-fit gap-4 p-4 pt-2 border-b border-gray-100">
             <div className="flex flex-col w-full !justify-between gap-2">
               <span className="font-semibold text-xs uppercase tracking-wide text-gray-500">
                 Lọc theo
               </span>
 
-              <FilterPanel filterUses={filterUses} filterLabels={filterLabels} defaultOpenAll />
+              {addressFilter && <AddressFilter {...addressFilter} />}
+
+              {filterUses.length > 0 && (
+                <FilterPanel filterUses={filterUses} filterLabels={filterLabels} defaultOpenAll />
+              )}
             </div>
           </div>
         )}

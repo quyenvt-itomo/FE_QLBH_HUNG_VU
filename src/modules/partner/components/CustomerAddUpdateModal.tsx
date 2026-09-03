@@ -42,7 +42,7 @@ const CustomerAddUpdateModal: React.FC<PartnerFormModalProps> = ({
 
   const setValues = () => {
     if (!editData) {
-      form.setFieldsValue({ isOrganization: false, addresses: [{}], banks: [], contacts: [] });
+      form.setFieldsValue({ isOrganization: false, address: {}, banks: [], contacts: [] });
       return;
     }
     form.setFieldsValue({
