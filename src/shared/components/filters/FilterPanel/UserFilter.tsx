@@ -19,7 +19,7 @@ export const UserFilter: React.FC<PartialFilterProps<User>> = ({ data, setData }
           defaultData={data}
           prefix={<MagnifyingGlassIcon className="h-4" />}
           suffixIcon={null}
-          placeholder=""
+          placeholder="Chọn người dùng..."
           onChangeData={setData}
         />
       }
@@ -28,7 +28,9 @@ export const UserFilter: React.FC<PartialFilterProps<User>> = ({ data, setData }
           <UserImage image={getMainFile(item.avatar)} size={28} />
           <div className="flex min-w-0 flex-col w-[calc(100%-76px)]">
             <span className="truncate">{item.name}</span>
-            <span className="truncate text-xs text-[#909090]">{item.phone || item.code || "--"}</span>
+            <span className="truncate text-xs text-[#909090]">
+              {item.phone || item.code || "--"}
+            </span>
           </div>
         </>
       )}

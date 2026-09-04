@@ -178,7 +178,7 @@ export const ModalImportExcel: React.FC<ModalImportExcelProps> = ({
             </div>
           )}
 
-          <div className="flex gap-4 mb-4">
+          <div className="flex flex-col gap-4 mb-4">
             <Form.Item name="errorHandling" label="Xử lý lỗi" className="flex-1">
               <Radio.Group>
                 <Radio value={ImportErrorHandling.SKIP_ERROR}>Bỏ qua dòng lỗi</Radio>

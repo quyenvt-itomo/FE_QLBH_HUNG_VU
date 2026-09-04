@@ -200,8 +200,8 @@ export const routeTitleMap: RouteTitleMap = {
   },
   fund: {
     path: privateRoutesName.fund,
-    title: "Sổ quỹ",
-    subtitle: "Theo dõi số dư và giao dịch quỹ",
+    title: "Quỹ thanh toán",
+    subtitle: "Quản lý các quỹ thanh toán và số dư",
   },
   fundAdjustment: {
     path: privateRoutesName.fundAdjustment,

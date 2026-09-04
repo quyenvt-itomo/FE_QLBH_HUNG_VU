@@ -59,8 +59,8 @@ export interface PaymentRequestLine extends Entity {
 }
 
 export enum IncomeExpenseTypeEnum {
-  INCOME = "income",
-  EXPENSE = "expense",
+  INCOME = "INCOME",
+  EXPENSE = "EXPENSE",
 }
 
 export const incomeExpenseTypeMap: Record<IncomeExpenseTypeEnum, string> = {
@@ -114,7 +114,7 @@ export interface CommissionAllocation extends Entity {
 }
 
 export interface IncomeExpense extends StoreEntity {
-  occurredAt: Date;
+  occurredAt: Date | string;
 
   //? số phiếu
   code: string;
@@ -134,7 +134,7 @@ export interface IncomeExpense extends StoreEntity {
   //? số tiền thu/chi
   amount: number;
 
-  categoryId: string;
+  categoryId: string | null;
   categorySnapshot: AttributeSnapshot | null;
   category: Attribute | null;
 

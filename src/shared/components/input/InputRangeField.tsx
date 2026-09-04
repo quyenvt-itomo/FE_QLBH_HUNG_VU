@@ -121,7 +121,7 @@ export function InputRangeField({
   };
 
   return (
-    <div className="flex w-full items-center gap-2">
+    <div className="flex w-full flex-col gap-2">
       <div className="flex w-full items-center overflow-hidden rounded-lg border border-gray-300 hover:border-primary transition">
         <Select
           tabIndex={-1}
@@ -149,8 +149,6 @@ export function InputRangeField({
           notRightAlign
         />
       </div>
-
-      <span>-</span>
 
       <div
         className={`

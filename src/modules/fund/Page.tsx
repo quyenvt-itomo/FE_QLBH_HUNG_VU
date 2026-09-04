@@ -1,39 +1,185 @@
-import React from "react";
+import React, { useState } from "react";
+import { App } from "antd";
+import { BanknotesIcon, BuildingOffice2Icon, CreditCardIcon } from "@heroicons/react/24/outline";
+import { AddButton, Panel, SearchInput } from "@/shared/components";
+import { useGlobalData } from "@/shared/hooks/useGlobalData";
 import { usePageState } from "@/shared/hooks/usePageState";
-import { SearchInput } from "@/shared/components";
+import { SortOrder } from "@/shared/constants/enum";
+import { Fund, FundTypeEnum } from "./fund.model";
 import { useFundStore } from "./fund.store";
-import { Fund } from "./fund.model";
-import { AddButton } from "@/shared/components";
-import { Panel } from "@/shared/components";
-import { TableColumnConfig } from "@/shared/components";
-import { formatDate } from "@/shared/utils/date.util";
+import { FundAddUpdateModal, FundDetailModal, FundList, FundScopeModal } from "./components";
 
 const FundPage: React.FC = () => {
-  const { keyword, page, size, setPage, setSize, pageAction } = usePageState<Fund>();
-  const { data, loading, pagination } = useFundStore({ keyword, page, size });
+  const { modal } = App.useApp();
+  const { currentStore, info } = useGlobalData();
+  const {
+    keyword,
+    filter,
+    reload,
+    open,
+    setOpen,
+    openDetail,
+    setOpenDetail,
+    rowData,
+    setRowData,
+    pageAction,
+  } = usePageState<Fund>();
+  const [formType, setFormType] = useState<FundTypeEnum>(FundTypeEnum.BANK);
+  const [scopeData, setScopeData] = useState<Fund | undefined>();
+  const [scopeOpen, setScopeOpen] = useState(false);
 
-  const columns: any = [
-    { title: "Mã", dataIndex: "code", key: "code", width: 120, className: "code-column font-mono", fixed: "left",
-      render: (v: string) => <span className="cursor-pointer text-blue-600 hover:text-blue-800 hover:underline">{v}</span> },
-    { title: "Tên", dataIndex: "name", key: "name", width: 200 },
-    { title: "Ghi chú", dataIndex: "note", key: "note", width: 200, render: (v: string) => v || "--" },
-  ];
+  const store = useFundStore(
+    {
+      page: 1,
+      size: 999,
+      reload,
+      sortBy: "createdAt",
+      sortOrder: SortOrder.ASC,
+      ...filter,
+    },
+    pageAction.handleClose,
+  );
+
+  const allStores = info?.allStores || [];
+
+  const handleOpenAdd = (type: FundTypeEnum) => {
+    setFormType(type);
+    setRowData(undefined);
+    setOpen(true);
+  };
+
+  const handleEdit = store.update
+    ? (record: Fund) => {
+        if (record.isDefault) return;
+        setOpenDetail(false);
+        setFormType(record.type);
+        setRowData(record);
+        setOpen(true);
+      }
+    : undefined;
+
+  const handleDetail = (record: Fund) => {
+    setRowData(record);
+    setOpenDetail(true);
+  };
+
+  const handleDelete = store.remove
+    ? (record: Fund) => {
+        if (record.isDefault) return;
+        modal.confirm({
+          title: "Xóa quỹ",
+          content: `Bạn có chắc chắn muốn xóa quỹ “${record.name}” không?`,
+          okText: "Xóa",
+          okButtonProps: { danger: true },
+          cancelText: "Hủy",
+          onOk: () => store.remove?.(record.id),
+        });
+      }
+    : undefined;
+
+  const handleSetActive = store.update
+    ? (record: Fund, isActive: boolean) => {
+        if (record.isDefault) return;
+        store.update?.({ id: record.id, isActive });
+      }
+    : undefined;
+
+  const handleChangeScope = (record: Fund) => {
+    if (record.isDefault || record.type !== FundTypeEnum.BANK) return;
+    setScopeData(record);
+    setScopeOpen(true);
+  };
+
+  const handleSubmitScope = (storeId: string | null) => {
+    if (!scopeData || !store.update) return;
+    store.update(
+      { id: scopeData.id, storeId },
+      {
+        onSuccess: () => {
+          setScopeOpen(false);
+          setScopeData(undefined);
+        },
+      },
+    );
+  };
+
+  const closeForm = () => {
+    pageAction.handleClose(false);
+    setRowData(undefined);
+  };
 
   return (
-    <div className="flex flex-col h-full w-full gap-3">
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-        <div className="flex flex-col">
-          <h2 className="text-xl font-bold text-blue-800 dark:text-blue-200">Danh sách quỹ</h2>
-          <p className="text-xs text-secondary">Quản lý quỹ</p>
+    <div className="flex h-full w-full flex-col gap-3">
+      <div className="flex flex-col justify-between gap-3 lg:flex-row lg:items-center">
+        <div>
+          <h2 className="flex items-center gap-2 text-xl font-bold text-blue-800 dark:text-blue-200">
+            <BanknotesIcon className="h-5 w-5" />
+            Danh sách quỹ
+          </h2>
+          <p className="text-xs text-secondary">
+            {currentStore
+              ? `Quản lý quỹ của ${currentStore.name} và các quỹ toàn hệ thống`
+              : "Quản lý các quỹ dùng chung cho toàn bộ cửa hàng"}
+          </p>
         </div>
-        <div className="flex items-center gap-3">
-          <SearchInput value={keyword} onSearch={pageAction.handleSearch} maxWidth={340} />
-          <AddButton title="Thêm mới" />
+
+        <div className="flex items-center justify-end gap-2">
+          <SearchInput value={keyword} onSearch={pageAction.handleSearch} maxWidth={300} />
+          {currentStore && (
+            <AddButton
+              title="Thêm quỹ tiền mặt"
+              icon={<BanknotesIcon className="h-4 w-4" />}
+              onOpenAdd={store.create ? () => handleOpenAdd(FundTypeEnum.CASH) : undefined}
+            />
+          )}
+          <AddButton
+            title="Thêm tài khoản ngân hàng"
+            icon={<CreditCardIcon className="h-4 w-4" />}
+            onOpenAdd={store.create ? () => handleOpenAdd(FundTypeEnum.BANK) : undefined}
+          />
         </div>
       </div>
-      <Panel>
-        <TableColumnConfig columns={columns} dataSource={data} loading={loading} pagination={pagination} setPage={setPage} setSize={setSize} itemName="Danh sách quỹ" tableKey="fund-table" />
-      </Panel>
+
+      <FundList
+        dataSource={store.data}
+        loading={store.loading}
+        onClick={handleDetail}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        onChangeScope={store.update ? handleChangeScope : undefined}
+        onSetActive={handleSetActive}
+      />
+
+      <FundAddUpdateModal
+        open={open}
+        type={formType}
+        defaultStoreId={currentStore?.id ?? null}
+        editData={rowData}
+        errors={store.errors}
+        loading={store.creating || store.updating}
+        onAdd={store.create}
+        onEdit={store.update}
+        onClose={closeForm}
+      />
+
+      <FundDetailModal
+        open={openDetail}
+        data={rowData}
+        onClose={() => pageAction.handleClose()}
+        onOpenUpdate={rowData?.isDefault ? undefined : handleEdit}
+      />
+
+      <FundScopeModal
+        open={scopeOpen}
+        data={scopeData}
+        stores={allStores}
+        loading={store.updating}
+        onClose={() => {
+          setScopeOpen(false);
+          setScopeData(undefined);
+        }}
+        onSubmit={handleSubmitScope}
+      />
     </div>
   );
 };

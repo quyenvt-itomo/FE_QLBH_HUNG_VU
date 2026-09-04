@@ -2,6 +2,7 @@ export * from "./add_select";
 export * from "./button";
 export * from "./core";
 export * from "./display";
+export * from "./filters";
 export * from "./dropdown";
 export * from "./form";
 export * from "./image";
