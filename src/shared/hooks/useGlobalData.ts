@@ -109,7 +109,7 @@ export const useGlobalData = () => {
 
       if (reload) {
         setTimeout(() => {
-          window.location.href = privateRoutesName.dashboard; // Chuyển hướng đến trang dashboard sau khi thay đổi cửa hàng
+          window.location.reload();
         }, 500);
       }
     },

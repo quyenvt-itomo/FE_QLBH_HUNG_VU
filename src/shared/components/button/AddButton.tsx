@@ -1,5 +1,5 @@
 import { PlusIcon } from "@heroicons/react/24/outline";
-import { Button } from "antd";
+import { Button, Tooltip } from "antd";
 import { useEffect, useRef } from "react";
 import { CLASSNAME } from "@/shared/constants/ui";
 
@@ -11,6 +11,8 @@ interface AddButtonProps {
   icon?: React.ReactNode;
   type?: "primary" | "default" | "dashed" | "text" | "link";
   onOpenAdd?: () => void;
+  disabled?: boolean;
+  tooltip?: React.ReactNode;
 }
 
 const AddButton: React.FC<AddButtonProps> = ({
@@ -21,6 +23,8 @@ const AddButton: React.FC<AddButtonProps> = ({
   icon,
   type = "primary",
   onOpenAdd,
+  disabled = false,
+  tooltip,
 }) => {
   const btnRef = useRef<HTMLButtonElement>(null);
 
@@ -36,22 +40,31 @@ const AddButton: React.FC<AddButtonProps> = ({
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  if (!onOpenAdd) return null;
+  if (!onOpenAdd && !disabled) return null;
 
-  return (
+  const button = (
     <Button
       ref={btnRef}
+      disabled={disabled}
       type={type}
       className={`flex items-center gap-2 ${CLASSNAME.inputHeight} px-4 font-medium ${className}`}
       style={{
         ...style,
         height,
       }}
-      onClick={() => onOpenAdd()}
+      onClick={() => onOpenAdd?.()}
     >
       {icon || <PlusIcon className="h-4 w-4" />}
       {title || "Thêm mới"}
     </Button>
+  );
+
+  return tooltip ? (
+    <Tooltip title={tooltip}>
+      <span className="inline-flex">{button}</span>
+    </Tooltip>
+  ) : (
+    button
   );
 };
 

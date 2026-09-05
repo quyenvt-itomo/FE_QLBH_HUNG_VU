@@ -985,3 +985,7 @@ html.dark .error-cell {
   width: 18px;
   height: 18px;
 }
+
+.rc-virtual-list-scrollbar {
+  width: 5px !important;
+}

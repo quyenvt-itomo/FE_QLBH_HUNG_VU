@@ -5,11 +5,7 @@ import { PanelFilter } from "@/shared/components/filters";
 import { ExcelButton, ExcelEntityType } from "@/modules/excel";
 import { Gender } from "@/shared/constants/enum";
 import { formatQuantity } from "@/shared/utils/number.util";
-import {
-  EllipsisHorizontalIcon,
-  TrashIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
+import { EllipsisHorizontalIcon, TrashIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import {
   getFilterUses,
   getRangerItems,
@@ -45,17 +41,8 @@ const CustomerPage: React.FC = () => {
     rowData,
     pageAction,
   } = pageState;
-  const {
-    data,
-    loading,
-    creating,
-    updating,
-    pagination,
-    getById,
-    create,
-    update,
-    removeMany,
-  } = store;
+  const { data, loading, creating, updating, pagination, getById, create, update, removeMany } =
+    store;
   const [selectedCustomers, setSelectedCustomers] = useState<Partner[]>([]);
   const rangerItems = getRangerItems(PartnerType.CUSTOMER);
   const filterActive = isFilterActive || partnerFilter.isActive;
@@ -130,7 +117,7 @@ const CustomerPage: React.FC = () => {
           <div className="flex items-center gap-3">
             <SearchInput value={keyword} onSearch={pageAction.handleSearch} />
             {hasSelectedCustomers && (
-              <div className="flex shrink-0 items-center gap-1">
+              <div className="flex shrink-0 items-center gap-1 font-semibold">
                 <span className="text-sm text-gray-500">
                   {formatQuantity(selectedCustomers.length)} đã chọn
                 </span>

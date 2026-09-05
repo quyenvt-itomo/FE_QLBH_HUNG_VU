@@ -5,20 +5,13 @@ import { App, Button, Col, Divider, Form, Input, Modal, Row, Space } from "antd"
 import { LeftOutlined, RightOutlined, UploadOutlined } from "@ant-design/icons";
 import { AddUpdateModalProps } from "@/shared/interfaces/common";
 import { AppDatePicker, InputMoney, Label, OrderDiscountInput } from "@/shared/components";
-import { PartnerSelect, SupplierAddSelect } from "@/modules/partner/components/Select";
+import { SupplierAddSelect } from "@/modules/partner/components/Select";
 import { FundListSelect } from "@/modules/fund/components/FundListSelect";
 import { getProductsByCodes } from "@/modules/product/product.store";
 import { collectUnits, getDefaultPurchaseUnit } from "@/modules/product/product.util";
 import { Product } from "@/modules/product";
 import { DiscountTypeEnum } from "@/shared/constants/enum";
-import { IncomeExpenseTypeEnum } from "@/modules/incomeExpense/incomeExpense.model";
-import {
-  OrderType,
-  Purchase,
-  PurchaseLine,
-  purchaseStatusMap,
-  OrderStatus,
-} from "../purchase.model";
+import { OrderType, Purchase, PurchaseLine } from "../purchase.model";
 import { PurchaseFile, purchaseExcelColumns } from "../purchase.file";
 import { PurchaseLineFormList } from "./PurchaseLineFormList";
 import { ProductDetailDrawer } from "./ProductDetailDrawer";
@@ -27,6 +20,7 @@ import { randomId } from "@/shared/utils/common.util";
 import { formatFormData, parseFormDataDates } from "@/shared/utils/date.util";
 import { setFormErrors } from "@/shared/utils/form.util";
 import { useAppMessage } from "@/shared/hooks/useAppMessage";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 
 const cellText = (value: unknown): string => {
   if (value == null) return "";
@@ -57,60 +51,60 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
   const [showInfo, setShowInfo] = useState(true);
   const [unmatchedRows, setUnmatchedRows] = useState<unknown[][]>([]);
   const [detailProduct, setDetailProduct] = useState<Product>();
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const partner = Form.useWatch("partner", form);
+  const createIdRef = useRef(randomId());
   const discountValue = Form.useWatch("discountValue", form) || 0;
   const discountType = Form.useWatch("discountType", form);
   const taxValue = Form.useWatch("taxValue", form) || 0;
   const taxType = Form.useWatch("taxType", form);
   const shippingFee = Form.useWatch("shippingFee", form) || 0;
   const isFreeShipping = Form.useWatch("isFreeShipping", form);
-  const paymentAmount = Form.useWatch("paymentAmount", form) || 0;
-  const paymentFund = Form.useWatch("paymentFund", form);
+  const payment = Form.useWatch(["incomeExpenses", 0], form) || {};
+  const paymentAmount = Number(payment.amount || 0);
+  const paymentFund = payment.fund;
   const lines: PurchaseLine[] = Form.useWatch("lines", form) || [];
-  const createIdRef = useRef(randomId());
   const id = editData?.id || createIdRef.current;
 
   useEffect(() => {
     if (errors) setFormErrors(form, errors, { scrollToFirst: true });
   }, [errors, form]);
 
-  useEffect(() => {
-    if (!open) return;
+  const handleAfterOpenChange = (isOpen: boolean) => {
+    if (!isOpen) {
+      form.resetFields();
+      setUnmatchedRows([]);
+      setDetailProduct(undefined);
+      return;
+    }
+
     setUnmatchedRows([]);
     setDetailProduct(undefined);
     setShowInfo(true);
+
     if (editData) {
-      const parsed = parseFormDataDates(editData as any) as any;
-      const payment = editData.incomeExpenses?.[0];
-      form.setFieldsValue({
-        ...parsed,
-        paymentAmount: Number(payment?.amount || 0),
-        paymentFundId: payment?.fundId || undefined,
-        paymentFund: payment?.fund || undefined,
-      });
-    } else {
-      const createId = randomId();
-      createIdRef.current = createId;
-      form.resetFields();
-      form.setFieldsValue({
-        id: createId,
-        tempId: createId,
-        type: OrderType.PURCHASE,
-        orderAt: dayjs(),
-        lines: [],
-        discountValue: 0,
-        discountType: DiscountTypeEnum.AMOUNT,
-        taxValue: 0,
-        taxType: DiscountTypeEnum.PERCENT,
-        shippingFee: 0,
-        isFreeShipping: false,
-        paymentAmount: 0,
-        completeImmediately: false,
-      });
-      if (defaultData) form.setFieldsValue(parseFormDataDates(defaultData as any) as any);
+      form.setFieldsValue(parseFormDataDates(editData as any) as any);
+      return;
     }
-  }, [open, editData, defaultData, form]);
+
+    const createId = randomId();
+    createIdRef.current = createId;
+    form.resetFields();
+    form.setFieldsValue({
+      id: createId,
+      tempId: createId,
+      type: OrderType.PURCHASE,
+      orderAt: dayjs(),
+      lines: [],
+      discountValue: 0,
+      discountType: DiscountTypeEnum.AMOUNT,
+      taxValue: 0,
+      taxType: DiscountTypeEnum.PERCENT,
+      shippingFee: 0,
+      isFreeShipping: false,
+      incomeExpenses: [{ amount: 0 }],
+      completeImmediately: false,
+      ...(defaultData ? parseFormDataDates(defaultData) : {}),
+    });
+  };
 
   const importExcel = async (file: File) => {
     try {
@@ -191,41 +185,14 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
     }
   };
 
-  const onFinish = (values: any) => {
-    const formattedValues = formatFormData(values);
-    const payload = {
-      ...formattedValues,
-      id: editData?.id,
+  const onFinish = (values: Purchase) => {
+    const payload = formatFormData({
+      ...values,
+      id,
       tempId: id,
-      type: OrderType.PURCHASE,
-      partnerId: values.partnerId || null,
-      shippingFee: Number(values.shippingFee || 0),
-      isFreeShipping: values.isFreeShipping === true,
-      lines: (values.lines || []).map((line: any) => ({
-        productId: line.productId,
-        unitId: line.unitId || null,
-        quantity: Number(line.quantity || 0),
-        unitPrice: Number(line.unitPrice || 0),
-        note: line.note || null,
-      })),
-      incomeExpenses: [
-        {
-          type: IncomeExpenseTypeEnum.EXPENSE,
-          fundId: values.paymentFundId || null,
-          amount: Math.max(0, Number(values.paymentAmount || 0)),
-          partnerId: values.partnerId || null,
-          occurredAt: formattedValues.occurredAt || formattedValues.orderAt,
-          description: values.code
-            ? `Thanh toán phiếu nhập ${values.code}`
-            : "Thanh toán phiếu nhập hàng",
-        },
-      ],
-    };
-    delete (payload as any).partner;
-    delete (payload as any).paymentAmount;
-    delete (payload as any).paymentFundId;
-    delete (payload as any).paymentFund;
-    editData ? onEdit?.(payload as any) : onAdd?.(payload as any);
+    });
+    if (editData) onEdit?.(payload);
+    else onAdd?.(payload);
   };
 
   const totalAmount = lines.reduce(
@@ -259,6 +226,7 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
         width="100vw"
         className="fullscreen-modal"
         centered
+        afterOpenChange={handleAfterOpenChange}
         destroyOnClose
         maskClosable={false}
       >
@@ -268,22 +236,10 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
           onFinishFailed={showFormErrorMessages}
           className="flex h-full min-h-0 flex-col"
         >
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".xlsx,.xls"
-            hidden
-            onChange={(event) => {
-              const file = event.target.files?.[0];
-              if (file) void importExcel(file);
-              event.target.value = "";
-            }}
-          />
           <div className="flex min-h-0 flex-1 gap-3">
             <div className="flex min-w-0 flex-1 flex-col h-full">
               <PurchaseLineFormList
                 form={form}
-                onImportExcel={() => fileInputRef.current?.click()}
                 onImportFile={importExcel}
                 onProductInfo={setDetailProduct}
               />
@@ -293,15 +249,16 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
               <Button
                 shape="circle"
                 size="small"
-                icon={showInfo ? <RightOutlined /> : <LeftOutlined />}
-                className="absolute -left-3 top-1/2 z-10"
+                className={`absolute -left-3 top-1/2 z-10 transition-all ease-in-out ${showInfo ? "" : "rotate-180"}`}
                 onClick={() => setShowInfo((value) => !value)}
-              />
+              >
+                <ChevronRightIcon className="w-4 h-4" />
+              </Button>
               <div
                 className={`${showInfo ? "w-[480px]" : "w-0"} relative  h-full shrink-0 overflow-hidden rounded-md border border-gray-200 bg-white transition-all`}
               >
                 {showInfo && (
-                  <div className="h-full overflow-y-auto">
+                  <div className="h-full overflow-y-auto overflow-x-hidden">
                     <div className="p-4 flex flex-col">
                       <Row gutter={24}>
                         <Col span={12}>
@@ -317,11 +274,9 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
                       </Row>
                       <Form.Item name="partnerId">
                         <SupplierAddSelect
-                          defaultData={partner}
-                          onChangeData={(value) => form.setFieldValue("partner", value)}
+                          defaultData={editData?.partner || defaultData?.partner}
                         />
                       </Form.Item>
-                      <Form.Item name="partner" hidden />
 
                       <Form.Item name="invoiceNumber" label={<Label title="Số hóa đơn" />}>
                         <Input placeholder="Số hóa đơn đầu vào" />
@@ -373,28 +328,30 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
 
                       <Divider className="my-2" />
                       <div className="mb-2 font-semibold text-gray-800">Thanh toán</div>
-                      <Form.Item name="paymentAmount" label={<Label title="Số tiền thanh toán" />}>
+
+                      <Form.Item
+                        name={["incomeExpenses", 0, "amount"]}
+                        label={<Label title="Số tiền thanh toán" />}
+                      >
                         <InputMoney notRightAlign placeholder="Nhập số tiền thanh toán" />
                       </Form.Item>
                       <Form.Item
-                        name="paymentFundId"
+                        name={["incomeExpenses", 0, "fundId"]}
                         rules={[
                           ({ getFieldValue }) => ({
                             validator: async (_rule, value) => {
-                              if (Number(getFieldValue("paymentAmount") || 0) > 0 && !value) {
+                              if (
+                                Number(getFieldValue(["incomeExpenses", 0, "amount"]) || 0) > 0 &&
+                                !value
+                              ) {
                                 throw new Error("Vui lòng chọn quỹ thanh toán");
                               }
                             },
                           }),
                         ]}
                       >
-                        <FundListSelect
-                          defaultData={paymentFund}
-                          showBalance
-                          onChangeData={(value) => form.setFieldValue("paymentFund", value || null)}
-                        />
+                        <FundListSelect defaultData={paymentFund} showBalance />
                       </Form.Item>
-                      <Form.Item name="paymentFund" hidden />
                       <div className="flex justify-between pb-3 text-sm">
                         <span>Còn nợ nhà cung cấp</span>
                         <span className="font-medium text-orange-600">
@@ -416,10 +373,13 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
             </div>
           </div>
           <div className="mt-3 flex shrink-0 justify-between border-t pt-3">
-            <Button onClick={onClose}>Hủy</Button>
+            <Button onClick={onClose} htmlType="button" danger>
+              Hủy
+            </Button>
             <Space>
               {!editData && (
                 <Button
+                  htmlType="button"
                   loading={loading}
                   onClick={() => {
                     form.setFieldValue("completeImmediately", false);

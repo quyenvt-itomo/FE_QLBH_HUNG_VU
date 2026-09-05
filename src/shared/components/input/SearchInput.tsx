@@ -49,10 +49,9 @@ export const SearchInput: React.FC<SearchInputProps> = ({
 
   return (
     <div
-      className={`relative w-full min-w-48 flex items-center ${CLASSNAME.inputHeight} ${className}`}
+      className={`relative w-full min-w-72 flex items-center ${CLASSNAME.inputHeight} ${className}`}
       style={{
         ...style,
-        minWidth: 220,
         maxWidth,
         height,
       }}

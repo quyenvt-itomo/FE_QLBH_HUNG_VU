@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Empty, Spin } from "antd";
 import { SelectProps } from "@/shared/interfaces/common";
 import { SortOrder } from "@/shared/constants/enum";
@@ -18,7 +18,6 @@ export const FundListSelect: React.FC<Props> = ({
   onChangeData,
   hideOptions,
 }) => {
-  const scrollRef = useRef<HTMLDivElement>(null);
   const { data, loading } = useFundStore({
     ...(query || {}),
     page: 1,
@@ -69,24 +68,9 @@ export const FundListSelect: React.FC<Props> = ({
   }
 
   return (
-    <div
-      ref={scrollRef}
-      className="flex max-w-full gap-2 overflow-x-auto pb-1 [scrollbar-width:thin]"
-      onWheel={(event) => {
-        const element = scrollRef.current;
-        if (!element || Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
-        if (element.scrollWidth <= element.clientWidth) return;
-        event.preventDefault();
-        element.scrollLeft += event.deltaY;
-      }}
-    >
+    <div className="flex max-w-full gap-2 overflow-x-auto pb-1">
       {funds.map((fund) => (
-        <FundCardLite
-          key={fund.id}
-          item={fund}
-          selected={value === fund.id}
-          onClick={selectFund}
-        />
+        <FundCardLite key={fund.id} item={fund} selected={value === fund.id} onClick={selectFund} />
       ))}
     </div>
   );

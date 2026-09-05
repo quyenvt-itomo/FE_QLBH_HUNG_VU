@@ -138,7 +138,7 @@ export const FundCardLite: React.FC<Pick<FundCardProps, "item" | "selected" | "o
     <Card
       size="small"
       onClick={() => onClick?.(item)}
-      className={`min-w-[230px] cursor-pointer rounded-lg border transition-all hover:border-primary hover:shadow-sm ${
+      className={`min-w-[230px] shrink-0 snap-start cursor-pointer rounded-lg border transition-all hover:border-primary hover:shadow-sm ${
         selected ? "border-primary bg-primary/5" : "bg-white dark:bg-neutral-900"
       }`}
       styles={{ body: { padding: 9 } }}

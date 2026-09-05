@@ -1,7 +1,14 @@
-import React, { useState } from "react";
-import { DeleteOutlined, InfoCircleOutlined, InboxOutlined, UploadOutlined } from "@ant-design/icons";
-import { Button, Form, FormInstance, Input, Select } from "antd";
-import { InputMoney, InputQuantity } from "@/shared/components";
+import React from "react";
+import {
+  DeleteOutlined,
+  HolderOutlined,
+  InfoCircleOutlined,
+  InboxOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
+import { Button, Form, FormInstance, Input, Select, Upload, UploadProps } from "antd";
+import { ReactSortable } from "react-sortablejs";
+import { AppSelect, InputMoney, InputQuantity } from "@/shared/components";
 import { ProductAddSelect } from "@/modules/product/components/Select";
 import {
   Product,
@@ -13,23 +20,32 @@ import { Purchase, PurchaseLine } from "../purchase.model";
 import { formatVnd, getLineProduct } from "../purchase.util";
 import { randomId } from "@/shared/utils/common.util";
 import { useAutoResetItem } from "@/shared/hooks";
+import { PurchaseFile } from "../purchase.file";
+import { formatMoney } from "@/shared/utils";
 
 interface Props {
   form: FormInstance<Purchase>;
-  onImportExcel?: () => void;
-  onImportFile?: (file: File) => void;
+  onImportFile: (file: File) => void;
   onProductInfo?: (product: Product) => void;
 }
 
-export const PurchaseLineFormList: React.FC<Props> = ({
-  form,
-  onImportExcel,
-  onImportFile,
-  onProductInfo,
-}) => {
+const { Dragger } = Upload;
+
+export const PurchaseLineFormList: React.FC<Props> = ({ form, onImportFile, onProductInfo }) => {
   const [defaultProduct, setDefaultProduct] = useAutoResetItem<Product>();
-  const [dragging, setDragging] = useState(false);
   const lines = Form.useWatch("lines", form) || [];
+
+  const uploadProps: UploadProps = {
+    name: "file",
+    accept: ".xlsx,.xls",
+    multiple: false,
+    maxCount: 1,
+    showUploadList: false,
+    beforeUpload: (file) => {
+      onImportFile(file as unknown as File);
+      return false;
+    },
+  };
 
   const addProduct = (product?: Product | null) => {
     if (!product || lines.some((line: PurchaseLine) => line.productId === product.id)) return;
@@ -37,7 +53,6 @@ export const PurchaseLineFormList: React.FC<Props> = ({
     setDefaultProduct(product);
     const unit = getDefaultPurchaseUnit(product);
     form.setFieldValue("lines", [
-      ...lines,
       {
         tempId: randomId(),
         productId: product.id,
@@ -47,57 +62,69 @@ export const PurchaseLineFormList: React.FC<Props> = ({
         quantity: 1,
         unitPrice: getDefaultPricePerUnit(product, unit?.id || product.baseUnitId || "") || 0,
       },
+      ...lines,
     ]);
   };
 
-  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    setDragging(false);
-    const file = event.dataTransfer.files?.[0];
-    if (file) onImportFile?.(file);
-  };
-
   return (
-    <div className="flex h-full min-h-0 flex-1 flex-col px-4 pb-4">
-      <div className="mb-2 flex items-center justify-between gap-2">
-        <ProductAddSelect
-          value={defaultProduct?.id}
-          className="w-[650px]"
-          placeholder="Tìm mã hoặc tên hàng để thêm"
-          onChangeData={addProduct}
-        />
-        <Button icon={<UploadOutlined />} onClick={onImportExcel}>
-          Thêm từ Excel
-        </Button>
+    <div className="flex h-full min-h-0 flex-1 flex-col">
+      <div className="mb-2 flex items-center justify-between gap-3">
+        <div className="w-[650px]">
+          <ProductAddSelect
+            value={defaultProduct?.id}
+            className="w-[650px]"
+            placeholder="Tìm mã hoặc tên hàng để thêm"
+            onChangeData={addProduct}
+          />
+        </div>
+        <Upload {...uploadProps}>
+          <Button icon={<UploadOutlined />}>Thêm từ Excel</Button>
+        </Upload>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-x-auto overflow-y-auto rounded-md">
+      <div className="min-h-0 flex-1 overflow-x-auto overflow-y-auto rounded-md border">
         <table className="w-full min-w-[1090px] table-auto border-collapse text-sm">
           <colgroup>
+            <col style={{ width: 48 }} />
             <col style={{ width: 55 }} />
             <col style={{ width: 140 }} />
             <col style={{ width: 280 }} />
-            <col style={{ width: 140 }} />
+            <col style={{ width: 120 }} />
             <col style={{ width: 120 }} />
             <col style={{ width: 150 }} />
             <col style={{ width: 140 }} />
-            <col style={{ width: 48 }} />
           </colgroup>
           <thead className="bg-primary/20 text-gray-900">
             <tr>
-              <th className="px-2 py-2 text-center font-semibold">STT</th>
-              <th className="px-2 py-2 text-left font-semibold">Mã hàng</th>
-              <th className="px-2 py-2 text-left font-semibold">Tên hàng</th>
-              <th className="px-2 py-2 text-left font-semibold">ĐVT</th>
-              <th className="px-2 py-2 text-right font-semibold">Số lượng</th>
-              <th className="px-2 py-2 text-right font-semibold">Đơn giá</th>
-              <th className="px-2 py-2 text-right font-semibold">Thành tiền</th>
-              <th className="px-2 py-2" />
+              <th className="px-3 py-2" />
+              <th className="px-3 py-2 text-center font-semibold">STT</th>
+              <th className="px-3 py-2 text-left font-semibold">Mã hàng</th>
+              <th className="px-3 py-2 text-left font-semibold">Tên hàng</th>
+              <th className="px-3 py-2 text-left font-semibold">ĐVT</th>
+              <th className="px-3 py-2 text-right font-semibold">Số lượng</th>
+              <th className="px-3 py-2 text-right font-semibold">Đơn giá</th>
+              <th className="px-3 py-2 text-right font-semibold">Thành tiền</th>
             </tr>
           </thead>
           <Form.List name="lines">
             {(fields, { remove }) => (
-              <tbody>
+              <ReactSortable
+                tag="tbody"
+                list={fields.map((field, index) => ({
+                  ...(lines[index] || {}),
+                  __sortableId: String(
+                    lines[index]?.tempId || lines[index]?.id || field.key || index,
+                  ),
+                }))}
+                setList={(newList) => {
+                  form.setFieldValue(
+                    "lines",
+                    newList.map(({ __sortableId, ...line }) => line),
+                  );
+                }}
+                animation={180}
+                handle=".purchase-line-drag-handle"
+              >
                 {fields.map((field, index) => {
                   const line = lines[field.name] as PurchaseLine | undefined;
                   const product = getLineProduct(line);
@@ -105,12 +132,32 @@ export const PurchaseLineFormList: React.FC<Props> = ({
                   const total = Number(line?.quantity || 0) * Number(line?.unitPrice || 0);
 
                   return (
-                    <tr key={field.key} className="border-b border-slate-200 dark:border-slate-700">
-                      <td className="px-2 py-2 align-top text-center text-gray-500">{index + 1}</td>
-                      <td className="px-2 py-2 align-top font-mono text-blue-600">
+                    <tr
+                      key={field.key}
+                      className="border-b border-slate-200 dark:border-slate-700 group hover:bg-primary/5 transition-colors ease-in-out"
+                    >
+                      <td className="px-0.5 py-2">
+                        <div className="flex flex-col">
+                          <Button
+                            type="text"
+                            danger
+                            title="Xóa hàng hóa"
+                            icon={<DeleteOutlined />}
+                            onClick={() => remove(field.name)}
+                          />
+                          <span
+                            className="purchase-line-drag-handle flex h-8 w-8 cursor-grab items-center justify-center text-slate-400 hover:text-primary active:cursor-grabbing"
+                            title="Kéo để sắp xếp"
+                          >
+                            <HolderOutlined />
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-3 py-2 align-top text-center text-gray-500">{index + 1}</td>
+                      <td className="px-3 py-2 align-top font-mono text-blue-600">
                         {product.code || "—"}
                       </td>
-                      <td className="min-w-0 px-2 py-2 align-top">
+                      <td className="min-w-0 px-3 py-2 align-top">
                         <div className="flex items-center gap-1">
                           <span className="truncate" title={product.name}>
                             {product.name || "—"}
@@ -137,10 +184,10 @@ export const PurchaseLineFormList: React.FC<Props> = ({
                           />
                         </Form.Item>
                       </td>
-                      <td className="px-2 py-2 align-top">
+                      <td className="px-0.5 py-2 align-top">
                         <Form.Item name={[field.name, "unitId"]} noStyle>
-                          <Select
-                            className="w-full"
+                          <AppSelect
+                            allowClear={false}
                             options={units.map((unit) => ({ value: unit.id, label: unit.name }))}
                             onChange={(unitId) => {
                               const unit = units.find((item) => item.id === unitId);
@@ -149,31 +196,24 @@ export const PurchaseLineFormList: React.FC<Props> = ({
                           />
                         </Form.Item>
                       </td>
-                      <td className="px-2 py-2 align-top">
+                      <td className="px-0.5 py-2 align-top">
                         <Form.Item
                           name={[field.name, "quantity"]}
                           noStyle
                           rules={[{ required: true, type: "number", min: 0.0001 }]}
                         >
-                          <InputQuantity />
+                          <InputQuantity placeholder="Nhập số lượng" />
                         </Form.Item>
                       </td>
-                      <td className="px-2 py-2 align-top">
+                      <td className="px-0.5 py-2 align-top">
                         <Form.Item name={[field.name, "unitPrice"]} noStyle>
-                          <InputMoney />
+                          <InputMoney placeholder="Nhập đơn giá" />
                         </Form.Item>
                       </td>
-                      <td className="px-2 py-2 align-top text-right font-medium">
-                        {formatVnd(total)}
-                      </td>
-                      <td className="px-2 py-2 align-top text-right">
-                        <Button
-                          type="text"
-                          danger
-                          title="Xóa hàng hóa"
-                          icon={<DeleteOutlined />}
-                          onClick={() => remove(field.name)}
-                        />
+                      <td className="px-3 py-2 align-top">
+                        <div className="h-8 flex items-center justify-end font-medium">
+                          {formatMoney(total)}
+                        </div>
                       </td>
                     </tr>
                   );
@@ -181,34 +221,34 @@ export const PurchaseLineFormList: React.FC<Props> = ({
 
                 {fields.length === 0 && (
                   <tr>
-                    <td colSpan={8} className="h-[280px] border-b border-slate-200 p-0 dark:border-slate-700">
-                      <div
-                        className={`flex h-full min-h-[280px] items-center justify-center transition-colors ${dragging ? "bg-primary/10" : "bg-white"}`}
-                        onDragEnter={(event) => {
-                          event.preventDefault();
-                          setDragging(true);
-                        }}
-                        onDragOver={(event) => event.preventDefault()}
-                        onDragLeave={(event) => {
-                          if (event.currentTarget === event.target) setDragging(false);
-                        }}
-                        onDrop={handleDrop}
-                      >
-                        <div className="flex flex-col items-center gap-3 text-center">
+                    <td
+                      colSpan={8}
+                      className="h-[280px] border-b border-slate-200 p-0 dark:border-slate-700"
+                    >
+                      <Dragger {...uploadProps} className="!border-0 !bg-transparent">
+                        <p className="ant-upload-drag-icon">
                           <InboxOutlined className="text-4xl text-primary" />
-                          <div className="font-semibold text-gray-800">Thêm sản phẩm từ file Excel</div>
-                          <div className="text-sm text-slate-500">
-                            Kéo thả file Excel vào đây hoặc chọn file dữ liệu
-                          </div>
-                          <Button type="primary" icon={<UploadOutlined />} onClick={onImportExcel}>
-                            Chọn file dữ liệu
-                          </Button>
-                        </div>
-                      </div>
+                        </p>
+                        <p className="font-semibold text-gray-800">Thêm sản phẩm từ file Excel</p>
+                        <p className="text-sm text-slate-500">
+                          Kéo thả file Excel vào đây hoặc chọn file dữ liệu
+                        </p>
+                        <button
+                          type="button"
+                          className="text-blue-500 hover:text-blue-700"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            void PurchaseFile.downloadTemplate();
+                          }}
+                        >
+                          Tải biểu mẫu
+                        </button>
+                        <p className="mt-3 text-primary">Chọn file dữ liệu</p>
+                      </Dragger>
                     </td>
                   </tr>
                 )}
-              </tbody>
+              </ReactSortable>
             )}
           </Form.List>
         </table>

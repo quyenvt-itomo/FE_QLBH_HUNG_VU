@@ -16,12 +16,7 @@ import { useExcelStore } from "../excel.store";
 import { FileCategory, EntityType } from "@/shared/constants/enum";
 import { uploads } from "@/shared/utils/file.util";
 import { File } from "@/shared/interfaces/file";
-import {
-  ExcelEntityType,
-  ImportDuplicateHandling,
-  ImportErrorHandling,
-  ENTITY_SUPPORTS_IMPORT,
-} from "../excel.enum";
+import { ExcelEntityType, ImportDuplicateHandling, ImportErrorHandling } from "../excel.enum";
 import { entityTypeLabel } from "../excel.util";
 
 const { Dragger } = Upload;

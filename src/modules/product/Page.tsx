@@ -203,7 +203,7 @@ export const ProductPage: React.FC = () => {
           <div className="flex items-center gap-3">
             <SearchInput value={keyword} onSearch={pageAction.handleSearch} maxWidth={440} />
             {hasSelectedProducts && (
-              <div className="flex items-center flex-shrink-0 gap-1">
+              <div className="flex items-center flex-shrink-0 gap-1 font-semibold font-semibold">
                 <span className="text-sm text-gray-500">
                   {formatQuantity(selectedProducts.length)} đã chọn
                 </span>

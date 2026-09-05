@@ -32,7 +32,7 @@ export interface TableColumnConfigProps extends Omit<TableProps, "pagination"> {
   summaryData?: SummaryData | null;
   hasSummary?: boolean;
   dataLength?: number;
-  hasBranchInfo?: boolean;
+  hasStoreInfo?: boolean;
   /** Hiển thị cột TK tạo (mặc định: true). Có thể tùy chỉnh ghim trong bộ chọn cột */
   showCreator?: boolean;
   /** Hiển thị cột TK sửa (mặc định: true). Có thể tùy chỉnh ghim trong bộ chọn cột */
@@ -115,7 +115,7 @@ export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
   className,
   hasSummary = false,
   dataLength,
-  hasBranchInfo = false,
+  hasStoreInfo = false,
   showCreator = true,
   showUpdater = false,
   setPage,
@@ -210,7 +210,7 @@ export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
   const [configColumns, setConfigColumns] = useState<ColumnsConfigType>(() =>
     getInitialConfigColumns(mergedColumns, fullTableKey),
   );
-  const { isMobile } = useGlobalData();
+  const { isMobile, currentStore } = useGlobalData();
   const length = dataSource?.length;
   const increasedLength = hasSummary ? 1 : 0;
   const hasRowExpandable = (record: any) =>
@@ -297,11 +297,11 @@ export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
       // ── Cột ghim phải ──
       ...rightFixedCols.map((col) => mapCol(col)),
       // ── Chi nhánh (nếu có) ──
-      hasBranchInfo
+      hasStoreInfo && !currentStore
         ? {
-            title: "Chi nhánh",
-            dataIndex: ["branch", "name"],
-            key: "branchName",
+            title: "Cửa hàng",
+            dataIndex: ["store", "name"],
+            key: "storeName",
             width: 150,
             ellipsis: true,
             fixed: isMobile ? undefined : "right",
