@@ -67,6 +67,8 @@ export const formatMoney = (value?: number | null, format?: FormatData | null) =
   );
 };
 
+export const formatVnd = (value: unknown) => `${formatMoney(Number(value || 0)) || "0"} đ`;
+
 export const formatQuantity = (value?: number | null, format?: FormatData | null) => {
   if (!value) return "";
   const { currency, numberFormat } = format || {};

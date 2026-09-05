@@ -18,7 +18,7 @@ export const RoleFilter: React.FC<PartialFilterProps<Role>> = ({ data, setData }
       selectComponent={
         <RoleMultipleSelect
           value={value}
-          placeholder=""
+          placeholder="Tìm kiếm vai trò..."
           prefix={<MagnifyingGlassIcon className="h-4" />}
           defaultData={data}
           onChangeData={setData}

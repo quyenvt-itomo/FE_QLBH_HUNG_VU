@@ -2,10 +2,6 @@ import { Entity, Store } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { AttributeType } from "./attribute.enum";
 
-export const DEFAULT_WEIGHT_UNIT = "Kg";
-export const DEFAULT_MESH_UNIT = "Tấm";
-export const DEFAULT_AREA_UNIT = "m²";
-
 export const INCOME_CUSTOMER = "Thu công nợ khách hàng";
 export const INCOME_DEPOSIT = "Thu lãi khoản gửi";
 export const INCOME_WITHDRAW = "Rút tiền khoản gửi";

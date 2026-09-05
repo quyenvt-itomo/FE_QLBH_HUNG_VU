@@ -1,5 +1,5 @@
 import { CaretRightOutlined } from "@ant-design/icons";
-import { Collapse } from "antd";
+import { Collapse, CollapseProps } from "antd";
 import { useState } from "react";
 
 import { useGlobalData } from "@/shared/hooks";
@@ -79,9 +79,59 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
     setActiveKeys(nextActiveKeys);
   };
 
+  const items: CollapseProps["items"] = filterUses.flatMap((key) => {
+    const filterInfo = filterMap[key];
+    const Component = filterInfo?.component;
+    if (!filterInfo || !Component) return [];
+
+    return [
+      {
+        key,
+        label: (
+          <div
+            className="flex justify-between items-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <span
+              onClick={() => {
+                if (!activeKeys.includes(key)) {
+                  setActiveKeys([...activeKeys, key]);
+                } else {
+                  handleToggle(activeKeys.filter((k) => k !== key));
+                }
+              }}
+            >
+              {filterLabels?.[key] || filterInfo.defaultLabel}
+            </span>
+
+            {!!filter?.[key]?.length && (
+              <button
+                className="font-light"
+                onClick={() => handleSetFilter({ ...filter, [key]: [] })}
+              >
+                Bỏ lọc
+              </button>
+            )}
+          </div>
+        ),
+        className: "custom-filter-panel",
+        children: (
+          <div className="pt-2 min-h-16">
+            <Component
+              showStore={!currentStore}
+              data={filter?.[key] || []}
+              setData={(data: any) => handleSetFilter({ ...filter, [key]: data })}
+            />
+          </div>
+        ),
+      },
+    ];
+  });
+
   return (
     <Collapse
       bordered={false}
+      items={items}
       expandIcon={({ isActive }) => (
         <CaretRightOutlined
           rotate={isActive ? 90 : 0}
@@ -91,54 +141,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
       className="!bg-transparent custom-filter-collapse"
       activeKey={activeKeys}
       onChange={(keys) => handleToggle(keys as string[])}
-    >
-      {filterUses.map((key) => {
-        const filterInfo = filterMap[key];
-        const Component = filterInfo?.component;
-        if (!filterInfo || !Component) return null;
-
-        return (
-          <Collapse.Panel
-            key={key}
-            header={
-              <div
-                className="flex justify-between items-center"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <span
-                  onClick={() => {
-                    if (!activeKeys.includes(key)) {
-                      setActiveKeys([...activeKeys, key]);
-                    } else {
-                      handleToggle(activeKeys.filter((k) => k !== key));
-                    }
-                  }}
-                >
-                  {filterLabels?.[key] || filterInfo.defaultLabel}
-                </span>
-
-                {!!filter?.[key]?.length && (
-                  <button
-                    className="font-light"
-                    onClick={() => handleSetFilter({ ...filter, [key]: [] })}
-                  >
-                    Bỏ lọc
-                  </button>
-                )}
-              </div>
-            }
-            className="custom-filter-panel"
-          >
-            <div className="pt-2 min-h-16">
-              <Component
-                showStore={!currentStore}
-                data={filter?.[key] || []}
-                setData={(data: any) => handleSetFilter({ ...filter, [key]: data })}
-              />
-            </div>
-          </Collapse.Panel>
-        );
-      })}
-    </Collapse>
+    />
   );
 };

@@ -1,23 +1,18 @@
-import { App, Button, Empty, Input, InputNumber, Layout, Select, Spin, Switch } from "antd";
-import {
-  ArrowLeftOutlined,
-  DeleteOutlined,
-  PlusOutlined,
-  PrinterOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { App, Button, Empty, Input, Layout, Spin } from "antd";
+import { ArrowLeftOutlined, PlusOutlined } from "@ant-design/icons";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
-import { CustomerAddSelect, PartnerSelect } from "@/modules/partner/components/Select";
-import { Partner } from "@/modules/partner/partner.model";
-import { PartnerType } from "@/modules/partner/partner.model";
 import { Product } from "@/modules/product/product.model";
 import { useProductStore } from "@/modules/product/product.store";
+import { collectUnits, getDefaultPricePerUnit } from "@/modules/product/product.util";
+import { useSaleStore } from "@/modules/sale/store";
+import { useSaleReturnStore } from "@/modules/saleReturn/store";
 import { Order, OrderType } from "./order.model";
-import { useSaleReturnStore, useSaleStore } from "./order.store";
-import { OrderSelect } from "./components/Select";
+import { OrderProductSelect } from "./components/OrderProductSelect";
+import { OrderLineTable, PosLine } from "./components/OrderLineTable";
+import { PosInvoiceInfo, PosPayment } from "./components/PosInvoiceInfo";
 import {
   addNewCache,
   CachedOrder,
@@ -33,17 +28,10 @@ import { useGlobalData } from "@/shared/hooks/useGlobalData";
 import { DiscountTypeEnum } from "@/shared/constants/enum";
 import { formatMoney } from "@/shared/utils/number.util";
 import { randomId } from "@/shared/utils/common.util";
-
-type PosLine = Record<string, any> & {
-  id: string;
-  productId: string;
-  productSnapshot: { id: string; code: string; name: string };
-  unitId?: string | null;
-  unitSnapshot?: { id: string; name: string } | null;
-  quantity: number;
-  unitPrice: number;
-  subTotal: number;
-};
+import { XMarkIcon } from "@heroicons/react/24/outline";
+import { FundTypeEnum } from "@/modules/fund/fund.model";
+import { ProductImage } from "@/shared/components";
+import { getMainFile } from "@/shared/utils";
 
 type PosLocationState = { order?: Order };
 
@@ -65,9 +53,26 @@ const emptyOrder = (type: PosOrderType): Partial<CachedOrder> => ({
   returnTaxValue: 0,
   shippingFee: 0,
   isFreeShipping: true,
-  paymentMethod: "cash",
-  paidAmount: 0,
+  paymentMode: FundTypeEnum.CASH,
+  incomeExpenses: [{ amount: 0, fundId: null, fund: null }],
 });
+
+const CACHE_META_FIELDS = new Set(["id", "tempId", "label", "mode", "sourceId", "initialOrder"]);
+
+const comparableCacheData = (cache: Partial<CachedOrder>) =>
+  Object.fromEntries(Object.entries(cache).filter(([key]) => !CACHE_META_FIELDS.has(key)));
+
+const hasCacheChanges = (cache: CachedOrder): boolean => {
+  const lines = cache.type === OrderType.SALE_RETURN ? cache.returnLines : cache.lines;
+
+  if (cache.mode === "create") return Boolean(lines?.length);
+  if (!cache.initialOrder) return Boolean(lines?.length || cache.returnLines?.length);
+
+  return (
+    JSON.stringify(comparableCacheData(cache)) !==
+    JSON.stringify(comparableCacheData(cache.initialOrder))
+  );
+};
 
 const getProductPrice = (product: Product) => Number(product.salePrice ?? 0);
 
@@ -97,15 +102,15 @@ const calculateTotals = (lines: PosLine[], order: CachedOrder) => {
   };
 };
 
-const PosPage = () => {
+export const PosPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const { message } = App.useApp();
+  const { message, modal } = App.useApp();
   const { currentStore, info, handleSetCurrentStore } = useGlobalData();
-  const [keyword, setKeyword] = useState("");
   const initializedEdit = useRef<string | null>(null);
+  const customerSelectRef = useRef<HTMLDivElement>(null);
 
   const type: PosOrderType =
     searchParams.get(POS_TYPE_PARAM) === OrderType.SALE_RETURN
@@ -117,7 +122,7 @@ const PosPage = () => {
   const saleStore = useSaleStore({ page: 1, size: 100, isLocked: !currentStore });
   const saleReturnStore = useSaleReturnStore({ page: 1, size: 100, isLocked: !currentStore });
   const orderStore = type === OrderType.SALE ? saleStore : saleReturnStore;
-  const productStore = useProductStore({ page: 1, size: 100, isLocked: !currentStore });
+  const productStore = useProductStore({ page: 1, size: 16, isLocked: !currentStore });
 
   const { cachedOrders, currentCacheId } = useSelector((state: RootState) => state.OrderCache);
   const caches = useMemo(() => Object.values(cachedOrders), [cachedOrders]);
@@ -182,6 +187,17 @@ const PosPage = () => {
     orderStore,
     type,
   ]);
+
+  useEffect(() => {
+    const handleShortcut = (event: KeyboardEvent) => {
+      if (event.key !== "F4") return;
+      event.preventDefault();
+      customerSelectRef.current?.querySelector<HTMLInputElement>("input")?.focus();
+    };
+
+    window.addEventListener("keydown", handleShortcut);
+    return () => window.removeEventListener("keydown", handleShortcut);
+  }, []);
 
   const lines = useMemo<PosLine[]>(() => {
     if (!activeOrder) return [];
@@ -263,9 +279,93 @@ const PosPage = () => {
     );
   };
 
+  const updateUnitPrice = (lineId: string, unitPrice: number | null) => {
+    const nextUnitPrice = Math.max(0, Number(unitPrice || 0));
+    updateLines(
+      lines.map((line) =>
+        line.id === lineId
+          ? {
+              ...line,
+              unitPrice: nextUnitPrice,
+              subTotal: Number(line.quantity || 0) * nextUnitPrice,
+            }
+          : line,
+      ),
+    );
+  };
+
+  const updateUnit = (lineId: string, unitId: string) => {
+    const line = lines.find((item) => item.id === lineId);
+    const product = line?.product as Product | undefined;
+    if (!line || !product || !unitId) return;
+
+    const units = collectUnits(product, line.unit || line.unitSnapshot);
+    const unit = units.find((item) => item.id === unitId);
+    if (!unit) return;
+
+    const extraUnit = product.extraUnits?.find((item) => item.unitId === unitId);
+    const conversionRateAtTime =
+      unitId === product.baseUnitId ? 1 : Number(extraUnit?.conversionRate || 1);
+    const unitPrice = Number(getDefaultPricePerUnit(product, unitId) ?? line.unitPrice ?? 0);
+
+    updateLines(
+      lines.map((item) =>
+        item.id === lineId
+          ? {
+              ...item,
+              unitId,
+              unit,
+              unitSnapshot: { id: unit.id, name: unit.name },
+              conversionRateAtTime,
+              unitPrice,
+              subTotal: Number(item.quantity || 0) * unitPrice,
+            }
+          : item,
+      ),
+    );
+  };
+
+  const payment = activeOrder?.incomeExpenses?.[0] as PosPayment | undefined;
+
+  const updatePayment = (values: Record<string, unknown>) => {
+    updateActive({
+      incomeExpenses: [
+        {
+          ...(payment || {}),
+          ...values,
+        },
+      ],
+    });
+  };
+
+  const changePaymentMode = (mode: FundTypeEnum) => {
+    updateActive({
+      paymentMode: mode,
+      incomeExpenses: [
+        {
+          ...(payment || {}),
+          fundId: null,
+          fund: null,
+        },
+      ],
+    });
+  };
+
   const submit = () => {
     if (!activeOrder || !currentStore || !lines.length) return;
-    const { id: cacheId, tempId: _tempId, label: _label, mode, sourceId, ...data } = activeOrder;
+    const {
+      id: cacheId,
+      tempId: _tempId,
+      label: _label,
+      mode,
+      sourceId,
+      initialOrder: _initialOrder,
+      paymentMethod: _paymentMethod,
+      paidAmount: _paidAmount,
+      paymentMode: _paymentMode,
+      ...data
+    } = activeOrder;
+    const paymentAmount = Math.max(0, Number(payment?.amount ?? activeOrder.paidAmount ?? 0));
     const payload: Partial<Order> = {
       ...(data as Partial<Order>),
       ...(mode === "edit" && sourceId ? { id: sourceId } : { tempId: cacheId }),
@@ -286,6 +386,18 @@ const PosPage = () => {
       taxAmount: totals.taxAmount,
       totalAmount: totals.totalAmount,
       settlementAmount: totals.totalAmount,
+      incomeExpenses: [
+        {
+          ...(payment || {}),
+          amount: paymentAmount,
+          fundId: payment?.fundId || null,
+          partnerId: activeOrder.partnerId || null,
+          occurredAt: activeOrder.orderAt,
+          description: activeOrder.code
+            ? `Thanh toán hóa đơn ${activeOrder.code}`
+            : "Thanh toán hóa đơn",
+        },
+      ] as any,
       lines: (type === OrderType.SALE ? lines : []) as any,
       returnLines: (type === OrderType.SALE_RETURN ? lines : []) as any,
     };
@@ -298,6 +410,40 @@ const PosPage = () => {
 
     if (mode === "edit" && sourceId) orderStore.update?.(payload, { onSuccess });
     else orderStore.create?.(payload, { onSuccess });
+  };
+
+  const handleRemoveCache = (cache: CachedOrder) => {
+    const remove = () => {
+      const wasActive = cache.id === currentCacheId;
+      const remainingCaches = caches.filter((item) => item.id !== cache.id);
+      const nextCache = remainingCaches[remainingCaches.length - 1];
+
+      dispatch(removeOrderCache(cache.id));
+
+      if (wasActive && nextCache && nextCache.type !== type) {
+        navigate(`/pos?${POS_TYPE_PARAM}=${nextCache.type}`);
+      }
+    };
+
+    if (!hasCacheChanges(cache)) {
+      remove();
+      return;
+    }
+
+    modal.confirm({
+      centered: true,
+      title: <span className="text-red-500">Đóng {cache.label}</span>,
+      content: (
+        <span>
+          Thông tin của <strong>{cache.label}</strong> sẽ không được lưu lại. Bạn có chắc chắn muốn
+          đóng không?
+        </span>
+      ),
+      okText: "Đồng ý",
+      okButtonProps: { danger: true },
+      cancelText: "Bỏ qua",
+      onOk: remove,
+    });
   };
 
   if (!currentStore) {
@@ -334,9 +480,7 @@ const PosPage = () => {
     );
   }
 
-  const filteredProducts = (productStore.data || []).filter((product) =>
-    `${product.code} ${product.name}`.toLocaleLowerCase().includes(keyword.toLocaleLowerCase()),
-  );
+  const filteredProducts = productStore.data || [];
 
   return (
     <Layout className={`h-screen w-screen flex overflow-hidden`}>
@@ -345,43 +489,62 @@ const PosPage = () => {
           <Button
             type="text"
             icon={<ArrowLeftOutlined />}
-            className="!text-white"
+            className="!text-white p-0"
             onClick={() => navigate(type === OrderType.SALE ? "/sales" : "/sales-returns")}
           >
             Quản lý
           </Button>
-          <Input
-            allowClear
-            prefix={<SearchOutlined />}
-            placeholder="Tìm hàng hóa theo tên hoặc mã (F3)"
-            value={keyword}
-            onChange={(event) => setKeyword(event.target.value)}
+          <OrderProductSelect
+            type={type as OrderType}
+            onSelect={addProduct}
             className="w-[360px]"
           />
-          <div className="flex min-w-0 items-center gap-2 overflow-x-auto">
-            {caches.map((cache) => (
-              <Button
-                key={cache.id}
-                type={cache.id === activeOrder?.id ? "default" : "text"}
-                className={cache.id === activeOrder?.id ? "!font-semibold" : "!text-white"}
-                onClick={() => {
-                  dispatch(setCurrentOrderCache(cache.id));
-                  if (cache.type !== type) {
-                    navigate(`/pos?${POS_TYPE_PARAM}=${cache.type}`);
-                  }
-                }}
-              >
-                {cache.label}
-              </Button>
-            ))}
+          <div className="overflow-x-scroll overflow-y-hidden pb-1.5 -mb-1.5 scrollbar-dark [scrollbar-gutter:stable]">
+            <div className="flex min-w-0 w-fit items-center gap-2 pr-2">
+              {caches.map((cache) => {
+                const isActive = cache.id === activeOrder?.id;
+
+                return (
+                  <div key={cache.id} className="flex shrink-0 items-center">
+                    <Button
+                      type={isActive ? "default" : "text"}
+                      className={`${isActive ? "!font-semibold" : "!text-white hover:!bg-white/10"} pr-2`}
+                      onClick={() => {
+                        dispatch(setCurrentOrderCache(cache.id));
+                        if (cache.type !== type) {
+                          navigate(`/pos?${POS_TYPE_PARAM}=${cache.type}`);
+                        }
+                      }}
+                    >
+                      {cache.label}
+                      <Button
+                        type="text"
+                        size="small"
+                        danger
+                        title={`Đóng ${cache.label}`}
+                        aria-label={`Đóng ${cache.label}`}
+                        className={`${isActive ? "!text-red-500" : "!text-white/70 hover:!text-red-400 hover:!bg-transparent"} p-0`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRemoveCache(cache);
+                        }}
+                      >
+                        <XMarkIcon className="h-4" />
+                      </Button>
+                    </Button>
+                  </div>
+                );
+              })}
+            </div>
           </div>
           <Button
             type="text"
-            icon={<PlusOutlined />}
-            className="!text-white"
+            className="!text-white hover:!bg-white/10 p-0 h-8 w-8 ml-0 mr-auto"
             onClick={() => dispatch(addNewCache({ type, order: emptyOrder(type) }))}
-          />
-          <span className="ml-auto text-xs text-white/70">
+          >
+            <PlusOutlined />
+          </Button>
+          <span className="text-xs text-white/70 w-60 text-right">
             {currentStore.name} · {info?.name}
           </span>
         </header>
@@ -392,7 +555,7 @@ const PosPage = () => {
           </div>
         ) : (
           <div className="flex min-h-0 flex-1">
-            <main className="flex min-w-0 flex-1 flex-col overflow-hidden">
+            <main className="flex min-w-0 flex-1 flex-col overflow-hidden bg-[#f5f5f5]">
               {lines.length === 0 ? (
                 <div className="flex min-h-0 flex-1 flex-col overflow-auto p-5">
                   <div className="mb-4 text-center">
@@ -414,189 +577,40 @@ const PosPage = () => {
                 <OrderLineTable
                   lines={lines}
                   onQuantityChange={updateQuantity}
+                  onUnitChange={updateUnit}
+                  onUnitPriceChange={updateUnitPrice}
+                  onNoteChange={(id, note) =>
+                    updateLines(lines.map((line) => (line.id === id ? { ...line, note } : line)))
+                  }
                   onRemove={(id) => updateQuantity(id, 0)}
                 />
               )}
               <div className="flex shrink-0 items-center gap-2 border-t border-dashed border-gray-300 bg-[#f3f7f4] p-2 text-xs text-gray-500">
                 <span>✎</span>
                 <Input.TextArea
-                  autoSize={{ minRows: 1, maxRows: 2 }}
+                  autoSize={{ minRows: 2, maxRows: 3 }}
                   value={String(activeOrder.note || "")}
                   onChange={(event) => updateActive({ note: event.target.value })}
                   placeholder="Ghi chú đơn hàng..."
                 />
-                <span className="whitespace-nowrap">
+                <span className="whitespace-nowrap w-20 h-full py-2 font-semibold uppercase">
                   Tổng SL: {lines.reduce((sum, line) => sum + Number(line.quantity || 0), 0)}
                 </span>
               </div>
             </main>
 
-            <aside className="flex w-[520px] shrink-0 flex-col overflow-y-auto border-l border-gray-200 bg-white">
-              <section className="border-b border-gray-200 p-4">
-                <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                  Khách hàng
-                </div>
-                <CustomerAddSelect
-                  value={activeOrder.partnerId || undefined}
-                  defaultData={activeOrder.partner as Partner | undefined}
-                  onChangeData={(partner) =>
-                    updateActive({ partnerId: partner?.id || null, partner })
-                  }
-                  placeholder="Tìm khách hàng (F4) — bỏ trống là Khách lẻ"
-                />
-                {type === OrderType.SALE_RETURN && (
-                  <div className="mt-3">
-                    <OrderSelect
-                      value={activeOrder.refOrderId || undefined}
-                      query={{ type: OrderType.SALE }}
-                      onChange={(refOrderId) => updateActive({ refOrderId })}
-                      placeholder="Chọn hóa đơn gốc"
-                    />
-                  </div>
-                )}
-              </section>
-
-              <section className="border-b border-gray-200 p-4">
-                <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                  Vận chuyển
-                </h3>
-                <div className="flex items-center justify-between gap-3 py-2 text-sm">
-                  <span>Miễn phí vận chuyển</span>
-                  <Switch
-                    checked={activeOrder.isFreeShipping !== false}
-                    onChange={(isFreeShipping) => updateActive({ isFreeShipping })}
-                  />
-                </div>
-                <div className="flex items-center justify-between gap-3 py-2 text-sm">
-                  <span>Phí vận chuyển</span>
-                  <InputNumber
-                    min={0}
-                    value={Number(activeOrder.shippingFee || 0)}
-                    onChange={(shippingFee) =>
-                      updateActive({ shippingFee: Number(shippingFee || 0) })
-                    }
-                    className="w-48"
-                  />
-                </div>
-                <PartnerSelect
-                  value={activeOrder.shipperId || undefined}
-                  defaultData={activeOrder.shipper as Partner | undefined}
-                  query={{ type: PartnerType.SHIPPER }}
-                  onChangeData={(shipper) =>
-                    updateActive({ shipperId: shipper?.id || null, shipper })
-                  }
-                  placeholder="Chọn đơn vị vận chuyển"
-                />
-                <div className="mt-2 text-xs text-gray-500">
-                  {activeOrder.isFreeShipping !== false
-                    ? "Không cộng phí vào số tiền khách thanh toán."
-                    : "Cộng phí vận chuyển vào số tiền khách thanh toán."}
-                  {activeOrder.shipperId && " Phí sẽ ghi nhận là nợ phải trả ĐVVC."}
-                </div>
-              </section>
-
-              <section className="border-b border-gray-200 p-4">
-                <h3 className="mb-4 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                  Tổng kết đơn
-                </h3>
-                <SummaryRow label="Tổng tiền hàng" value={totals.grossAmount} />
-                <div className="flex items-center justify-between gap-3 py-2 text-sm">
-                  <span>Giảm giá</span>
-                  <div className="flex w-48 gap-2">
-                    <Select
-                      value={activeOrder.discountType || DiscountTypeEnum.AMOUNT}
-                      onChange={(discountType) => updateActive({ discountType })}
-                      options={[
-                        { value: DiscountTypeEnum.AMOUNT, label: "Số tiền" },
-                        { value: DiscountTypeEnum.PERCENT, label: "%" },
-                      ]}
-                      className="w-24"
-                    />
-                    <InputNumber
-                      min={0}
-                      value={activeOrder.discountValue || 0}
-                      onChange={(discountValue) =>
-                        updateActive({ discountValue: Number(discountValue || 0) })
-                      }
-                      className="w-full"
-                    />
-                  </div>
-                </div>
-                <div className="flex items-center justify-between gap-3 py-2 text-sm">
-                  <span>VAT</span>
-                  <div className="flex w-48 gap-2">
-                    <Select
-                      value={activeOrder.taxType || DiscountTypeEnum.PERCENT}
-                      onChange={(taxType) => updateActive({ taxType })}
-                      options={[
-                        { value: DiscountTypeEnum.AMOUNT, label: "Số tiền" },
-                        { value: DiscountTypeEnum.PERCENT, label: "%" },
-                      ]}
-                      className="w-24"
-                    />
-                    <InputNumber
-                      min={0}
-                      value={activeOrder.taxValue || 0}
-                      onChange={(taxValue) => updateActive({ taxValue: Number(taxValue || 0) })}
-                      className="w-full"
-                    />
-                  </div>
-                </div>
-                <SummaryRow label="Tiền VAT" value={totals.taxAmount} />
-                <div className="mt-3 flex items-center justify-between border-t border-dashed border-gray-200 pt-4 font-semibold">
-                  <span>
-                    {type === OrderType.SALE_RETURN ? "Khách cần trả" : "Khách cần thanh toán"}
-                  </span>
-                  <span className="text-xl text-green-700">{formatMoney(totals.totalAmount)}</span>
-                </div>
-              </section>
-
-              <section className="border-b border-gray-200 p-4">
-                <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                  Thanh toán
-                </h3>
-                <Select
-                  value={String(activeOrder.paymentMethod || "cash")}
-                  onChange={(paymentMethod) => updateActive({ paymentMethod })}
-                  className="w-full"
-                  options={[
-                    { value: "cash", label: "Tiền mặt" },
-                    { value: "bank_transfer", label: "Chuyển khoản" },
-                    { value: "card", label: "Thẻ" },
-                  ]}
-                />
-                <div className="mt-3 flex items-center justify-between gap-3 text-sm">
-                  <span>Khách thanh toán</span>
-                  <InputNumber
-                    min={0}
-                    value={Number(activeOrder.paidAmount || 0)}
-                    onChange={(paidAmount) => updateActive({ paidAmount: Number(paidAmount || 0) })}
-                    className="w-48"
-                  />
-                </div>
-                <SummaryRow
-                  label="Tiền thừa trả khách"
-                  value={Math.max(0, Number(activeOrder.paidAmount || 0) - totals.totalAmount)}
-                />
-              </section>
-
-              <div className="mt-auto flex gap-2 p-4">
-                <Button icon={<PrinterOutlined />} className="h-12 w-14" />
-                <Button
-                  type="primary"
-                  block
-                  className="h-12 !bg-green-600"
-                  disabled={!lines.length}
-                  loading={orderStore.creating || orderStore.updating}
-                  onClick={submit}
-                >
-                  <span className="flex items-center justify-between">
-                    <span>{activeOrder.mode === "edit" ? "CẬP NHẬT" : "THANH TOÁN"}</span>
-                    <span>{formatMoney(totals.totalAmount)}</span>
-                  </span>
-                </Button>
-              </div>
-            </aside>
+            <PosInvoiceInfo
+              type={type}
+              activeOrder={activeOrder}
+              totals={totals}
+              payment={payment}
+              customerSelectRef={customerSelectRef}
+              updateActive={updateActive}
+              updatePayment={updatePayment}
+              changePaymentMode={changePaymentMode}
+              onSubmit={submit}
+              loading={orderStore.creating || orderStore.updating}
+            />
           </div>
         )}
       </div>
@@ -611,7 +625,7 @@ const ProductGrid = ({
   products: Product[];
   onSelect: (product: Product) => void;
 }) => (
-  <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
+  <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
     {products.map((product) => (
       <button
         key={product.id}
@@ -619,7 +633,10 @@ const ProductGrid = ({
         onClick={() => onSelect(product)}
         className="min-h-24 rounded-lg border border-gray-200 bg-white p-3 text-left transition hover:border-green-500 hover:shadow"
       >
-        <div className="line-clamp-2 min-h-10 text-sm font-medium">{product.name}</div>
+        <div className="flex gap-2">
+          <ProductImage shape="square" size={40} image={getMainFile(product.image)} />
+          <div className="line-clamp-2 min-h-10 text-sm font-medium">{product.name}</div>
+        </div>
         <div className="mt-2 font-semibold text-green-700">
           {formatMoney(getProductPrice(product))}
         </div>
@@ -631,58 +648,3 @@ const ProductGrid = ({
     {!products.length && <Empty className="col-span-full" description="Không tìm thấy hàng hóa" />}
   </div>
 );
-
-const OrderLineTable = ({
-  lines,
-  onQuantityChange,
-  onRemove,
-}: {
-  lines: PosLine[];
-  onQuantityChange: (id: string, quantity: number | null) => void;
-  onRemove: (id: string) => void;
-}) => (
-  <div className="min-h-0 flex-1 overflow-auto bg-white">
-    <div className="grid grid-cols-[42px_90px_minmax(220px,1fr)_120px_92px_120px_38px] border-b border-gray-200 px-2 py-3 text-xs font-semibold uppercase text-gray-500">
-      <span>#</span>
-      <span>Mã hàng</span>
-      <span>Tên hàng</span>
-      <span className="text-right">Đơn giá</span>
-      <span className="text-center">SL</span>
-      <span className="text-right">Thành tiền</span>
-      <span />
-    </div>
-    {lines.map((line, index) => (
-      <div
-        key={line.id}
-        className="grid grid-cols-[42px_90px_minmax(220px,1fr)_120px_92px_120px_38px] items-center border-b border-gray-200 px-2 py-3 text-sm"
-      >
-        <span>{index + 1}</span>
-        <span className="text-gray-500">{line.productSnapshot.code}</span>
-        <span>
-          <b>{line.productSnapshot.name}</b>
-          <small className="block text-gray-500">Đơn vị: {line.unitSnapshot?.name || "-"}</small>
-        </span>
-        <span className="text-right">{formatMoney(line.unitPrice)}</span>
-        <InputNumber
-          min={1}
-          value={line.quantity}
-          onChange={(value) => onQuantityChange(line.id, value)}
-          className="mx-auto w-20"
-        />
-        <span className="text-right font-semibold">
-          {formatMoney(Number(line.quantity || 0) * Number(line.unitPrice || 0))}
-        </span>
-        <Button type="text" danger icon={<DeleteOutlined />} onClick={() => onRemove(line.id)} />
-      </div>
-    ))}
-  </div>
-);
-
-const SummaryRow = ({ label, value }: { label: string; value: number }) => (
-  <div className="flex items-center justify-between py-2 text-sm">
-    <span>{label}</span>
-    <b>{formatMoney(value)}</b>
-  </div>
-);
-
-export { PosPage };

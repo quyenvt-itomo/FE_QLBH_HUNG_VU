@@ -1,0 +1,353 @@
+import { ExportOutlined, PrinterOutlined } from "@ant-design/icons";
+import { Button, Checkbox, Modal, Segmented } from "antd";
+import React, { useEffect, useMemo, useState } from "react";
+
+import { FundListSelect } from "@/modules/fund/components";
+import { FundSelect } from "@/modules/fund/components/Select";
+import { Fund, FundTypeEnum } from "@/modules/fund/fund.model";
+import { Partner, PartnerType } from "@/modules/partner/partner.model";
+import { CustomerAddSelect, ShipperAddSelect } from "@/modules/partner/components/Select";
+import { OrderSelect } from "@/modules/order/components/Select";
+import { OrderType } from "@/modules/order/order.model";
+import { bank_bin_map } from "@/shared/constants/option/bank";
+import { DiscountTypeEnum } from "@/shared/constants/enum";
+import { InputMoney, Label, OrderValueInput } from "@/shared/components";
+import { CachedOrder, PosOrderType } from "@/shared/stores/orderCache.slice";
+import { formatMoney } from "@/shared/utils/number.util";
+import { QrPay } from "@/shared/utils/qrcode";
+import QRCode from "qrcode";
+
+export interface PosTotals {
+  grossAmount: number;
+  discountAmount: number;
+  netAmount: number;
+  taxAmount: number;
+  totalAmount: number;
+}
+
+export type PosPayment = Record<string, any> & {
+  amount?: number;
+  fundId?: string | null;
+  fund?: Fund;
+};
+
+interface Props {
+  type: PosOrderType;
+  activeOrder: CachedOrder;
+  totals: PosTotals;
+  payment?: PosPayment;
+  customerSelectRef: React.RefObject<HTMLDivElement>;
+  updateActive: (values: Partial<CachedOrder>) => void;
+  updatePayment: (values: Record<string, unknown>) => void;
+  changePaymentMode: (mode: FundTypeEnum) => void;
+  onSubmit: () => void;
+  loading?: boolean;
+}
+
+export const PosInvoiceInfo: React.FC<Props> = ({
+  type,
+  activeOrder,
+  totals,
+  payment,
+  customerSelectRef,
+  updateActive,
+  updatePayment,
+  changePaymentMode,
+  onSubmit,
+  loading,
+}) => {
+  const [qrImage, setQrImage] = useState<string>();
+  const [qrModalOpen, setQrModalOpen] = useState(false);
+  const paymentMode = (activeOrder.paymentMode ||
+    (payment?.fund?.type === FundTypeEnum.BANK
+      ? FundTypeEnum.BANK
+      : FundTypeEnum.CASH)) as FundTypeEnum;
+  const bankFund = paymentMode === FundTypeEnum.BANK ? payment?.fund : undefined;
+  const paymentDue = Math.max(0, totals.totalAmount);
+  const paidAmount = Number(payment?.amount ?? activeOrder.paidAmount ?? 0);
+  const cashAmountOptions = useMemo(() => {
+    if (!paymentDue || paymentDue <= 0) return [];
+
+    const rounded = Math.ceil(paymentDue / 10_000) * 10_000;
+    const nextStep = rounded < 100_000 ? 10_000 : rounded < 500_000 ? 50_000 : 100_000;
+    const nextHundred = Math.ceil((rounded + nextStep) / 100_000) * 100_000;
+
+    return [...new Set([paymentDue, rounded, rounded + nextStep, nextHundred, 500_000])].filter(
+      (amount) => amount >= paymentDue,
+    );
+  }, [paymentDue]);
+
+  useEffect(() => {
+    const bin = bank_bin_map[bankFund?.bank || ""];
+    if (
+      type !== OrderType.SALE ||
+      paymentMode !== FundTypeEnum.BANK ||
+      !bankFund?.accountNumber ||
+      !paymentDue ||
+      !bin
+    ) {
+      setQrImage(undefined);
+      return;
+    }
+
+    const qrPayData = QrPay.vietQR({
+      bin,
+      bankNumber: bankFund.accountNumber,
+      amount: String(paymentDue),
+      purpose: activeOrder.code ? `Thanh toan don hang ${activeOrder.code}` : "Thanh toan don hang",
+    }).build();
+
+    let disposed = false;
+    QRCode.toDataURL(qrPayData, { width: 260, margin: 1 })
+      .then((image) => {
+        if (!disposed) setQrImage(image);
+      })
+      .catch(() => {
+        if (!disposed) setQrImage(undefined);
+      });
+
+    return () => {
+      disposed = true;
+    };
+  }, [activeOrder.code, bankFund, paymentDue, paymentMode, type]);
+
+  const paymentDifference = paidAmount - paymentDue;
+
+  return (
+    <aside className="flex w-[520px] shrink-0 flex-col overflow-y-auto border-l border-gray-200 bg-white">
+      <section className="border-b border-gray-200 p-4">
+        <div className="mb-2 text-xs font-bold uppercase tracking-wide text-gray-500">
+          Khách hàng
+        </div>
+        <div ref={customerSelectRef}>
+          <CustomerAddSelect
+            value={activeOrder.partnerId || undefined}
+            defaultData={activeOrder.partner as Partner | undefined}
+            onChangeData={(partner) => updateActive({ partnerId: partner?.id || null, partner })}
+            placeholder="Tìm khách hàng (F4) — bỏ trống là Khách lẻ"
+          />
+        </div>
+        {type === OrderType.SALE_RETURN && (
+          <div className="mt-3">
+            <OrderSelect
+              value={activeOrder.refOrderId || undefined}
+              query={{ type: OrderType.SALE }}
+              onChange={(refOrderId) => updateActive({ refOrderId })}
+              placeholder="Chọn hóa đơn gốc"
+            />
+          </div>
+        )}
+      </section>
+
+      <section className="border-b border-gray-200 p-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+            Vận chuyển
+          </h3>
+          <Checkbox
+            checked={activeOrder.isFreeShipping !== false}
+            onChange={(event) => updateActive({ isFreeShipping: event.target.checked })}
+          >
+            Miễn phí vận chuyển
+          </Checkbox>
+        </div>
+
+        <div className="flex items-center justify-between gap-3 py-2 text-sm">
+          <Label title="Phí vận chuyển" />
+          <div className="w-56">
+            <InputMoney
+              min={0}
+              value={Number(activeOrder.shippingFee || 0)}
+              onChange={(shippingFee) => updateActive({ shippingFee: Number(shippingFee || 0) })}
+            />
+          </div>
+        </div>
+        <ShipperAddSelect
+          value={activeOrder.shipperId || undefined}
+          defaultData={activeOrder.shipper as Partner | undefined}
+          query={{ type: PartnerType.SHIPPER }}
+          onChangeData={(shipper) => updateActive({ shipperId: shipper?.id || null, shipper })}
+        />
+        <div className="mt-2 text-xs text-gray-500">
+          {activeOrder.isFreeShipping !== false
+            ? "Không cộng phí vào số tiền khách thanh toán."
+            : "Cộng phí vận chuyển vào số tiền khách thanh toán."}
+          {activeOrder.shipperId && " Phí sẽ ghi nhận là nợ phải trả ĐVVC."}
+        </div>
+      </section>
+
+      <section className="border-b border-gray-200 p-4">
+        <h3 className="mb-4 text-xs font-semibold uppercase tracking-wide text-gray-500">
+          Tổng kết đơn
+        </h3>
+        <SummaryRow label="Tổng tiền hàng" value={totals.grossAmount} />
+        <div className="flex items-center justify-between gap-3 py-2 text-sm">
+          <span>Giảm giá</span>
+          <div className="w-56">
+            <OrderValueInput
+              type="discount"
+              discountValue={Number(activeOrder.discountValue || 0)}
+              discountType={activeOrder.discountType as DiscountTypeEnum}
+              onChange={(discountValue, discountType) =>
+                updateActive({ discountValue, discountType })
+              }
+            />
+          </div>
+        </div>
+        <div className="flex items-center justify-between gap-3 py-2 text-sm">
+          <span>VAT</span>
+          <div className="w-56">
+            <OrderValueInput
+              type="tax"
+              discountValue={Number(activeOrder.taxValue || 0)}
+              discountType={activeOrder.taxType as DiscountTypeEnum}
+              onChange={(taxValue, taxType) => updateActive({ taxValue, taxType })}
+            />
+          </div>
+        </div>
+        <div className="mt-3 flex items-center justify-between border-t border-dashed border-gray-200 pt-4 font-semibold">
+          <span>{type === OrderType.SALE_RETURN ? "Khách cần trả" : "Khách cần thanh toán"}</span>
+          <span className="text-xl text-green-700">{formatMoney(totals.totalAmount)}</span>
+        </div>
+      </section>
+
+      <section className={`p-4 ${paymentDue <= 0 ? "hidden" : ""}`}>
+        <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">Thanh toán</h3>
+        <div className="flex items-center justify-between gap-3 py-2 text-sm">
+          <span>{type === OrderType.SALE_RETURN ? "Tiền hoàn khách" : "Khách thanh toán"}</span>
+          <div className="w-56">
+            <InputMoney
+              min={0}
+              max={paymentMode === FundTypeEnum.BANK ? paymentDue : undefined}
+              value={paidAmount}
+              onChange={(amount) => updatePayment({ amount: Number(amount || 0) })}
+            />
+          </div>
+        </div>
+        <Segmented
+          block
+          className="mb-3"
+          value={paymentMode}
+          options={[
+            { label: "Tiền mặt", value: FundTypeEnum.CASH },
+            { label: "Chuyển khoản", value: FundTypeEnum.BANK },
+          ]}
+          onChange={(value) => changePaymentMode(value as FundTypeEnum)}
+        />
+
+        <div className="hidden">
+          <FundListSelect
+            query={{ type: paymentMode }}
+            value={payment?.fundId || undefined}
+            defaultData={payment?.fund}
+            onChangeData={(fund) => updatePayment({ fundId: fund?.id || null, fund })}
+          />
+        </div>
+
+        {paymentMode === FundTypeEnum.CASH ? (
+          <div className="min-h-[120px] rounded-md bg-[#f5f5f5] px-3 py-2">
+            <div className="flex flex-wrap gap-1.5">
+              {cashAmountOptions.map((amount) => (
+                <Button
+                  key={amount}
+                  className="rounded-full"
+                  type={paidAmount === amount ? "primary" : "default"}
+                  onClick={() => updatePayment({ amount })}
+                >
+                  {formatMoney(amount)}
+                </Button>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="mt-2 flex min-h-[120px] gap-3 rounded-md bg-[#f5f5f5] p-2">
+            {qrImage && (
+              <img
+                src={qrImage}
+                alt="VietQR thanh toán"
+                className="h-28 w-28 rounded bg-white object-contain"
+              />
+            )}
+            <div className="flex flex-1 flex-col gap-3">
+              <FundSelect
+                query={{ type: FundTypeEnum.BANK }}
+                value={payment?.fundId || undefined}
+                defaultData={payment?.fund}
+                onChangeData={(fund) => updatePayment({ fundId: fund?.id || null, fund })}
+              />
+              <Button
+                size="small"
+                className="w-fit"
+                icon={<ExportOutlined />}
+                disabled={!qrImage}
+                onClick={() => setQrModalOpen(true)}
+              >
+                Hiện mã QR
+              </Button>
+              <button
+                type="button"
+                className="w-fit font-semibold text-slate-500 transition-all ease-in-out hover:text-primary"
+                onClick={() => updatePayment({ amount: paymentDue })}
+              >
+                Thanh toán toàn bộ
+              </button>
+            </div>
+          </div>
+        )}
+
+        {type === OrderType.SALE && paymentDifference > 0 && (
+          <SummaryRow label="Tiền thừa trả khách" value={paymentDifference} />
+        )}
+        {type === OrderType.SALE && paymentDifference < 0 && (
+          <SummaryRow label="Khách còn nợ" value={Math.abs(paymentDifference)} />
+        )}
+
+        <Modal
+          open={qrModalOpen}
+          centered
+          title="Mã QR thanh toán"
+          footer={null}
+          onCancel={() => setQrModalOpen(false)}
+        >
+          {qrImage && (
+            <div className="flex justify-center py-2">
+              <img
+                src={qrImage}
+                alt="VietQR thanh toán"
+                className="h-[196px] w-[196px] object-contain"
+              />
+            </div>
+          )}
+        </Modal>
+      </section>
+
+      <div className="sticky bottom-0 mt-auto flex gap-2 border-t border-gray-200 bg-white p-4 pt-1.5">
+        <Button
+          className="flex h-12 w-14 items-center justify-center p-0 text-lg"
+          disabled={!activeOrder.lines?.length && !activeOrder.returnLines?.length}
+        >
+          <PrinterOutlined />
+        </Button>
+        <Button
+          type="primary"
+          block
+          className="h-12"
+          disabled={!activeOrder.lines?.length && !activeOrder.returnLines?.length}
+          loading={loading}
+          onClick={onSubmit}
+        >
+          <span className="text-lg font-semibold">
+            {activeOrder.mode === "edit" ? "CẬP NHẬT" : "THANH TOÁN"}
+          </span>
+        </Button>
+      </div>
+    </aside>
+  );
+};
+
+const SummaryRow = ({ label, value }: { label: string; value: number }) => (
+  <div className="flex items-center justify-between py-2 text-sm">
+    <span>{label}</span>
+    <b>{formatMoney(value)}</b>
+  </div>
+);

@@ -1,5 +1,5 @@
 import { formatMoney } from "@/shared/utils";
-import { Attribute, DEFAULT_WEIGHT_UNIT } from "../attribute";
+import { Attribute } from "../attribute";
 import { Product, ProductSnapshot, StoreProduct } from "./product.model";
 
 export function collectProductUnit(product: Product): { id: string; conversionRate: number }[] {
@@ -78,72 +78,6 @@ export function getDefaultPricePerUnit(product: Product, unitId: string): number
   return undefined;
 }
 
-interface ConversionParams {
-  product?: Product | null;
-  unitId?: string | null;
-  quantity?: number;
-}
-// Tính kệ số quy đổi ra kg
-export function getConversionRateToKg(data: ConversionParams): number {
-  const { product, unitId } = data;
-  if (!product || !unitId) return 1;
-
-  const units = collectUnits(product);
-  const kgUnit = units.find((u) => u.name === DEFAULT_WEIGHT_UNIT);
-
-  if (!kgUnit || unitId === kgUnit.id) return 1;
-
-  // Đơn vị gốc của sản phẩm
-  if (unitId === product.baseUnitId) {
-    const kgExtraUnit = product.extraUnits?.find((u) => u.unitId === kgUnit.id);
-
-    if (!kgExtraUnit || !kgExtraUnit.conversionRate) {
-      return 1;
-    }
-
-    // 1 KG = conversionRate BaseUnit
-    // => 1 BaseUnit = 1 / conversionRate KG
-    return 1 / kgExtraUnit.conversionRate;
-  }
-
-  // Đơn vị phụ cần quy đổi về BaseUnit trước
-  const extraUnit = product.extraUnits?.find((u) => u.unitId === unitId);
-
-  if (!extraUnit) return 1;
-
-  // Nếu BaseUnit chính là KG
-  if (product.baseUnitId === kgUnit.id) {
-    return extraUnit.conversionRate;
-  }
-
-  // BaseUnit -> KG
-  const kgExtraUnit = product.extraUnits?.find((u) => u.unitId === kgUnit.id);
-
-  if (!kgExtraUnit || !kgExtraUnit.conversionRate) {
-    return 1;
-  }
-
-  // unit -> BaseUnit -> KG
-  return extraUnit.conversionRate / kgExtraUnit.conversionRate;
-}
-
-// Tính số lượng khi quy đổi sang Kg
-export function getQuantityInKg(data: ConversionParams): number {
-  const { product, unitId, quantity = 0 } = data;
-  const conversionRate = getConversionRateToKg({ product, unitId });
-  return quantity * conversionRate;
-}
-
-export function getPriceInKg(product?: Product): number {
-  if (!product) return 0;
-
-  const kgUnit = collectUnits(product).find((u) => u.name === DEFAULT_WEIGHT_UNIT);
-
-  if (!kgUnit) return 0;
-
-  return getDefaultPricePerUnit(product, kgUnit.id) || 0;
-}
-
 export function collectLocations(product: Product): Attribute[] {
   const result: Attribute[] = [];
 
@@ -181,6 +115,26 @@ export function getCostPriceMap(product: Product): Record<string, string[]> {
   }
 
   return costPriceMap;
+}
+
+// Giá vốn theo cửa hàng
+export function getCostPriceByStore(data: {
+  product: Product;
+  storeId?: string;
+  unitId?: string | null;
+}): number | undefined {
+  const { product, storeId, unitId } = data;
+  const storeProduct = storeId
+    ? product.storeProducts?.find((sp) => sp.storeId === storeId)
+    : product.storeProducts?.[0];
+
+  if (!storeProduct) return undefined;
+
+  const conversionRate = unitId
+    ? product.extraUnits?.find((eu) => eu.unitId === unitId)?.conversionRate || 1
+    : 1;
+
+  return (storeProduct.costPrice || 0) * conversionRate;
 }
 
 export const getProductGroupContent = (attribute?: Attribute | null): string => {

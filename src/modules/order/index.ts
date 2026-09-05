@@ -3,8 +3,5 @@ export * from "./order.store";
 export * from "./order.util";
 export * from "./filterItem";
 export * from "./components";
-export { default as PurchasePage } from "./PurchasePage";
-export { default as SalePage } from "./SalePage";
-export { default as SaleReturnPage } from "./SaleReturnPage";
 export { default as PurchaseReturnPage } from "./PurchaseReturnPage";
 export * from "./PosPage";

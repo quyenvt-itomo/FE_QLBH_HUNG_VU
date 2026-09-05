@@ -19,7 +19,7 @@ export const StoreFilter: React.FC<PartialFilterProps<Store>> = ({ data, setData
           defaultData={data}
           prefix={<MagnifyingGlassIcon className="h-4" />}
           suffixIcon={null}
-          placeholder=""
+          placeholder="Tìm kiếm cửa hàng..."
           onChangeData={setData}
         />
       }

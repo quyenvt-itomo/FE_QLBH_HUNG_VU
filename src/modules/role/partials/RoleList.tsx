@@ -189,6 +189,21 @@ export const RoleList: React.FC<RoleListProps> = ({
     );
   };
 
+  const collapseItems = groupedRoles.map(({ type, roles }) => ({
+    key: type,
+    label: (
+      <span className="text-[11px] font-bold text-gray-400 dark:text-gray-500 tracking-widest">
+        {roleTypeMap[type]}
+      </span>
+    ),
+    children: (
+      <>
+        {roles.map((role, idx) => renderRoleCard(role, idx))}
+        {renderAddSection(type)}
+      </>
+    ),
+  }));
+
   return (
     <div className="flex flex-col w-full h-full rounded-lg overflow-hidden">
       <Title level={5} className="!mb-4 !font-bold text-slate-800 dark:!text-gray-100">
@@ -204,27 +219,14 @@ export const RoleList: React.FC<RoleListProps> = ({
           <Collapse
             ghost
             defaultActiveKey={groupedRoles.map(({ type }) => type)}
+            items={collapseItems}
             className="role-collapse"
             expandIcon={({ isActive }) => (
               <ChevronDownIcon
                 className={`h-4 w-4 text-gray-400 transition-transform duration-300 ${isActive ? "rotate-180" : ""}`}
               />
             )}
-          >
-            {groupedRoles.map(({ type, roles }) => (
-              <Collapse.Panel
-                key={type}
-                header={
-                  <span className="text-[11px] font-bold text-gray-400 dark:text-gray-500 tracking-widest">
-                    {roleTypeMap[type]}
-                  </span>
-                }
-              >
-                {roles.map((role, idx) => renderRoleCard(role, idx))}
-                {renderAddSection(type)}
-              </Collapse.Panel>
-            ))}
-          </Collapse>
+          />
         )}
       </div>
     </div>

@@ -2,7 +2,7 @@ import { forwardRef } from "react";
 import { InputNumber, InputNumberProps } from "antd";
 import { formatQuantity } from "@/shared/utils/number.util";
 
-interface InputQuantityProps extends Omit<
+export interface InputQuantityProps extends Omit<
   InputNumberProps<number>,
   "value" | "onChange" | "formatter" | "parser"
 > {

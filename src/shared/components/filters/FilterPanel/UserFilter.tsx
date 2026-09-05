@@ -19,7 +19,7 @@ export const UserFilter: React.FC<PartialFilterProps<User>> = ({ data, setData }
           defaultData={data}
           prefix={<MagnifyingGlassIcon className="h-4" />}
           suffixIcon={null}
-          placeholder="Chọn người dùng..."
+          placeholder="Tìm kiếm người dùng..."
           onChangeData={setData}
         />
       }

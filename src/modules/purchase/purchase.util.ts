@@ -19,6 +19,3 @@ export function calculatePurchase(data?: Partial<Purchase>) {
     totalAmount: Math.max(0, grossAmount - discountAmount) + taxAmount,
   };
 }
-
-export const formatVnd = (value: unknown) =>
-  `${new Intl.NumberFormat("vi-VN").format(Number(value || 0))} đ`;

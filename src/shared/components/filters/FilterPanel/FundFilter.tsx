@@ -16,7 +16,7 @@ export const FundFilter: React.FC<PartialFilterProps<Fund>> = ({ data, setData }
           defaultData={data}
           prefix={<MagnifyingGlassIcon className="h-4" />}
           suffixIcon={null}
-          placeholder=""
+          placeholder="Tìm kiếm quỹ..."
           onChangeData={setData}
         />
       }

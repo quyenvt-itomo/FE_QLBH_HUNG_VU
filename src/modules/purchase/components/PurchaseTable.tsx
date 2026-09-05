@@ -76,6 +76,22 @@ export const PurchaseTable: React.FC<Props> = ({ onViewDetail, ...rest }) => {
         render: (value) => formatMoney(value),
       },
       {
+        title: "VAT",
+        dataIndex: "taxAmount",
+        key: "taxAmount",
+        width: 120,
+        align: "right",
+        render: (value) => formatMoney(value),
+      },
+      {
+        title: "Phí vận chuyển",
+        dataIndex: "shippingAmount",
+        key: "shippingAmount",
+        width: 120,
+        align: "right",
+        render: (value) => formatMoney(value),
+      },
+      {
         title: "Tổng đơn",
         dataIndex: "totalAmount",
         key: "totalAmount",
@@ -94,7 +110,7 @@ export const PurchaseTable: React.FC<Props> = ({ onViewDetail, ...rest }) => {
         title: "Trạng thái",
         dataIndex: "status",
         key: "status",
-        width: 120,
+        width: 100,
         align: "center",
         fixed: "right",
         render: (value: OrderStatus) => (

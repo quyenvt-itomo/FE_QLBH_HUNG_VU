@@ -15,6 +15,7 @@ export const fundTypeMap: Record<FundTypeEnum, string> = {
 export const fundTypeOptions = getOptionsByMap(fundTypeMap);
 
 export interface fundQuery extends ApiRequestQuery {
+  type?: FundTypeEnum;
   moreQuery?: any;
 }
 

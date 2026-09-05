@@ -1,4 +1,6 @@
 import { DashboardPage } from "@/modules/dashboard";
+import { SalePage } from "@/modules/sale";
+import { SaleReturnPage } from "@/modules/saleReturn";
 import { FundAdjustmentPage } from "@/modules/fundAdjustment";
 import { FundPage } from "@/modules/fund";
 import { FundTransferPage } from "@/modules/fundTransfer";
@@ -7,8 +9,6 @@ import { InventoryAdjustmentPage } from "@/modules/inventoryAdjustment";
 import { InventoryPage } from "@/modules/inventory";
 import {
   PurchaseReturnPage,
-  SalePage,
-  SaleReturnPage,
   PosPage,
 } from "@/modules/order";
 import { PurchasePage } from "@/modules/purchase";

@@ -1,36 +1,42 @@
 import { Select } from "antd";
 import { useEffect, useState } from "react";
-import { InputMoney, InputPercentage } from ".";
+import { InputMoney } from "./InputMoney";
+import { InputPercentage } from "./InputPercentage";
 import { DiscountTypeEnum } from "@/shared/constants/enum";
 import { CLASSNAME } from "@/shared/constants/ui";
+
+export type OrderValueInputType = "discount" | "tax";
 
 interface Props {
   discountValue?: number | null;
   discountType?: DiscountTypeEnum;
+  type?: OrderValueInputType;
   notRightAlign?: boolean;
   borderNone?: boolean;
   onChange?: (discountValue: number, discountType: DiscountTypeEnum) => void;
 }
 
-export const OrderDiscountInput: React.FC<Props> = ({
+export const OrderValueInput: React.FC<Props> = ({
   discountValue = 0,
   discountType = DiscountTypeEnum.AMOUNT,
+  type = "discount",
   notRightAlign,
   borderNone,
   onChange,
 }) => {
   const [tempValue, setTempValue] = useState(discountValue);
   const [tempType, setTempType] = useState<DiscountTypeEnum>(discountType);
+  const isTax = type === "tax";
 
   useEffect(() => {
     setTempValue(discountValue);
     setTempType(discountType);
   }, [discountValue, discountType]);
 
-  const triggerChange = (value: number, type: DiscountTypeEnum) => {
+  const triggerChange = (value: number, valueType: DiscountTypeEnum) => {
     setTempValue(value);
-    setTempType(type);
-    onChange?.(value, type);
+    setTempType(valueType);
+    onChange?.(value, valueType);
   };
 
   return (
@@ -44,9 +50,10 @@ export const OrderDiscountInput: React.FC<Props> = ({
           value={tempValue || undefined}
           max={100}
           min={0}
-          onChange={(val) => triggerChange(val || 0, DiscountTypeEnum.PERCENT)}
-          className="!border-none !shadow-none !ring-0 rounded-none"
-          placeholder="% giảm"
+          suggestions={isTax ? [5, 8, 10] : undefined}
+          onChange={(value) => triggerChange(value || 0, DiscountTypeEnum.PERCENT)}
+          className="!rounded-none !border-none !shadow-none !ring-0"
+          placeholder={isTax ? "% VAT" : "% giảm"}
           variant="borderless"
           notRightAlign={notRightAlign}
         />
@@ -54,29 +61,23 @@ export const OrderDiscountInput: React.FC<Props> = ({
         <InputMoney
           value={tempValue || undefined}
           min={0}
-          onChange={(val) => triggerChange(val || 0, DiscountTypeEnum.AMOUNT)}
+          onChange={(value) => triggerChange(value || 0, DiscountTypeEnum.AMOUNT)}
           variant="borderless"
-          placeholder="Số tiền giảm"
+          placeholder={isTax ? "Số tiền VAT" : "Số tiền giảm"}
           notRightAlign={notRightAlign}
         />
       )}
 
-      <div className="w-px h-6 bg-gray-300" />
+      <div className="h-6 w-px bg-gray-300" />
 
       <Select
         value={
           tempType === DiscountTypeEnum.PERCENT ? DiscountTypeEnum.PERCENT : DiscountTypeEnum.AMOUNT
         }
-        onChange={(val) => triggerChange(tempValue || 0, val)}
+        onChange={(value) => triggerChange(tempValue || 0, value)}
         options={[
-          {
-            value: DiscountTypeEnum.PERCENT,
-            label: "%",
-          },
-          {
-            value: DiscountTypeEnum.AMOUNT,
-            label: "đ",
-          },
+          { value: DiscountTypeEnum.PERCENT, label: "%" },
+          { value: DiscountTypeEnum.AMOUNT, label: "đ" },
         ]}
         variant="borderless"
         suffixIcon={null}

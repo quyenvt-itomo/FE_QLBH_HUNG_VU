@@ -1,0 +1,44 @@
+import { ApiRequestQuery } from "@/shared/interfaces/api";
+import { Order, OrderStatus, OrderType } from "@/modules/order/order.model";
+import { Partner } from "@/modules/partner/partner.model";
+
+export { OrderStatus, OrderType };
+
+export interface Sale extends Order {
+  partner: Partner | null;
+  creatorSnapshot?: any;
+  completer?: any;
+  completerSnapshot?: any;
+}
+
+export interface SaleQuery extends ApiRequestQuery {
+  type?: OrderType;
+  statuses?: OrderStatus[];
+  customerIds?: string[];
+  creatorIds?: string[];
+  completerIds?: string[];
+  shipperIds?: string[];
+  productIds?: string[];
+  fundIds?: string[];
+  orderAtGte?: string;
+  orderAtLte?: string;
+  occurredAtGte?: string;
+  occurredAtLte?: string;
+  grossAmountGte?: number;
+  grossAmountLte?: number;
+  discountAmountGte?: number;
+  discountAmountLte?: number;
+  totalAmountGte?: number;
+  totalAmountLte?: number;
+}
+
+export const saleStatusMap: Record<OrderStatus, string> = {
+  [OrderStatus.DRAFT]: "Đơn tạm",
+  [OrderStatus.COMPLETED]: "Đã hoàn thành",
+  [OrderStatus.CANCELED]: "Đã hủy",
+};
+
+export const saleStatusItems = Object.values(OrderStatus).map((value) => ({
+  key: value,
+  label: saleStatusMap[value],
+}));

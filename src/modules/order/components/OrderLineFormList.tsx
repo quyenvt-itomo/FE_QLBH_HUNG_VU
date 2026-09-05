@@ -11,7 +11,7 @@ export const OrderLineFormList: React.FC<Props> = ({ form, products }) => {
   const lines = Form.useWatch("lines", form) || [];
   const columns: FormColumn[] = [
     {
-      title: "Hàng hóa",
+      title: "HÃ ng hÃ³a",
       dataIndex: "productId",
       width: 200,
       editable: true,
@@ -19,13 +19,13 @@ export const OrderLineFormList: React.FC<Props> = ({ form, products }) => {
         <Select
           showSearch
           options={products.map((p: any) => ({ value: p.id, label: p.code + " - " + p.name }))}
-          placeholder="Ch?n hàng hóa"
+          placeholder="Chá»n hÃ ng hÃ³a"
           style={{ width: "100%" }}
         />
       ),
     },
     {
-      title: "ĞVT",
+      title: "ÄVT",
       dataIndex: "unitId",
       width: 100,
       editable: true,
@@ -40,7 +40,7 @@ export const OrderLineFormList: React.FC<Props> = ({ form, products }) => {
       render: () => <InputNumber min={1} style={{ width: "100%" }} />,
     },
     {
-      title: "Ğõn giá",
+      title: "ï¿½ï¿½n giï¿½",
       dataIndex: "unitPrice",
       width: 130,
       align: "right",
@@ -48,23 +48,23 @@ export const OrderLineFormList: React.FC<Props> = ({ form, products }) => {
       render: () => <InputNumber min={0} style={{ width: "100%" }} />,
     },
     {
-      title: "Thành ti?n",
+      title: "Thï¿½nh ti?n",
       dataIndex: "subTotal",
       width: 130,
       align: "right",
       render: ({ record }) => ((record.quantity || 0) * (record.unitPrice || 0)).toLocaleString(),
     },
     {
-      title: "Ghi chú",
+      title: "Ghi chï¿½",
       dataIndex: "note",
       width: 150,
       editable: true,
-      render: () => <Input placeholder="Ghi chú" />,
+      render: () => <Input placeholder="Ghi chï¿½" />,
     },
   ];
   return (
     <div className="mt-4">
-      <h3 className="text-lg font-semibold mb-2">Danh sách hàng hóa</h3>
+      <h3 className="text-lg font-semibold mb-2">Danh sï¿½ch hï¿½ng hï¿½a</h3>
       <FormListTable form={form} fieldName="lines" columns={columns} records={lines} showDelete />
     </div>
   );

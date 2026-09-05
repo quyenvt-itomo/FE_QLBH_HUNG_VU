@@ -17,7 +17,7 @@ const ProductImage: React.FC<ProductImageProps> = ({
   image,
   preview = true,
   size = 32,
-  shape = "circle",
+  shape = "square",
 }) => {
   const [hasError, setHasError] = useState(false);
 

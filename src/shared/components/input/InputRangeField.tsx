@@ -133,7 +133,7 @@ export function InputRangeField({
             { value: "Gt", label: ">" },
             { value: "Eq", label: "=" },
           ]}
-          bordered={false}
+          variant="borderless"
           suffixIcon={null}
           className={`!${CLASSNAME.inputHeight} !w-8 shrink-0 !border-none !shadow-none`}
         />
@@ -166,7 +166,7 @@ export function InputRangeField({
             { value: "Lte", label: "≤" },
             { value: "Lt", label: "<" },
           ]}
-          bordered={false}
+          variant="borderless"
           suffixIcon={null}
           className={`!${CLASSNAME.inputHeight} !w-8 shrink-0 !border-none !shadow-none`}
         />

@@ -60,7 +60,6 @@ export const SortSelect: React.FC<SortSelectProps> = ({
           size={size === "small" ? "small" : "middle"}
           className={`${CLASSNAME.inputHeight} w-1/2`}
           value={value?.sortBy}
-          labelInValue
           onChange={handleSortByChange}
           options={sortItems.map((item) => ({
             label: item.label,

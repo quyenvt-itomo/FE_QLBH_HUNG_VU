@@ -158,6 +158,16 @@ export const DropdownAction: React.FC<DropdownActionProps> = ({
       color: "bg-green-500",
       textColor: "text-green-500",
     },
+    print: {
+      icon: "mdi:printer-outline",
+      color: "bg-blue-500",
+      textColor: "text-blue-500",
+    },
+    printBarcode: {
+      icon: "mdi:barcode",
+      color: "bg-purple-500",
+      textColor: "text-purple-500",
+    },
     setDefault: {
       icon: "mdi:star-outline",
       color: "bg-yellow-500",
@@ -374,7 +384,8 @@ export const DropdownAction: React.FC<DropdownActionProps> = ({
 
   if (items.length === 1) {
     const item = items[0];
-    const iconConfigItem = iconConfig[item.key as keyof typeof iconConfig];
+    const iconConfigItem =
+      iconConfig[item.key as keyof typeof iconConfig] || iconConfig.viewDetails;
     return (
       <div className="flex justify-center items-center w-[46px]">
         <Button htmlType="button" onClick={item.onClick} className="!p-0 border-0 mx-auto">
@@ -393,7 +404,8 @@ export const DropdownAction: React.FC<DropdownActionProps> = ({
     <Dropdown
       menu={{
         items: items.map((item) => {
-          const iconConfigItem = iconConfig[item.key as keyof typeof iconConfig];
+          const iconConfigItem =
+            iconConfig[item.key as keyof typeof iconConfig] || iconConfig.viewDetails;
           return {
             ...item,
             icon: (

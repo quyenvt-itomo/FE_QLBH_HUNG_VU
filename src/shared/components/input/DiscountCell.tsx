@@ -86,7 +86,7 @@ export const DiscountCell: React.FC<DiscountCellProps> = ({
             { value: "%", label: "%" },
             { value: "đ", label: "đ" },
           ]}
-          bordered={false}
+          variant="borderless"
           suffixIcon={null}
           className={`
         ${CLASSNAME.inputHeight} !w-10 shrink-0

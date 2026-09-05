@@ -11,6 +11,7 @@ import { formatMoney } from "@/shared/utils/number.util";
 import { Fund, FundTypeEnum } from "../fund.model";
 
 interface FundCardProps {
+  showBalance?: boolean;
   item: Fund;
   selected?: boolean;
   onClick?: (item: Fund) => void;
@@ -127,18 +128,20 @@ export const FundCard: React.FC<FundCardProps> = ({
   );
 };
 
-export const FundCardLite: React.FC<Pick<FundCardProps, "item" | "selected" | "onClick">> = ({
-  item,
-  selected,
-  onClick,
-}) => {
+export const FundCardLite: React.FC<FundCardProps> = ({ showBalance, item, selected, onClick }) => {
   const isBank = item.type === FundTypeEnum.BANK;
+
+  const bankInfo = isBank
+    ? [item.accountNumber, item.bank, item.accountHolderName, item.branch]
+        .filter(Boolean)
+        .join(" · ")
+    : item.code;
 
   return (
     <Card
       size="small"
       onClick={() => onClick?.(item)}
-      className={`min-w-[230px] shrink-0 snap-start cursor-pointer rounded-lg border transition-all hover:border-primary hover:shadow-sm ${
+      className={`min-w-[120px] shrink-0 snap-start cursor-pointer rounded-lg border transition-all hover:border-primary hover:shadow-sm ${
         selected ? "border-primary bg-primary/5" : "bg-white dark:bg-neutral-900"
       }`}
       styles={{ body: { padding: 9 } }}
@@ -146,25 +149,21 @@ export const FundCardLite: React.FC<Pick<FundCardProps, "item" | "selected" | "o
       <div className="flex min-w-0 items-center justify-between gap-3">
         <div className="min-w-0">
           <div className="flex min-w-0 items-center gap-2 text-sm font-medium">
-            <span className="shrink-0 font-mono text-primary">{item.code}</span>
-            <span className="truncate border-l border-slate-300 pl-2 dark:border-slate-600">
-              {item.name}
-            </span>
+            {/* <span className="shrink-0 font-mono text-primary">{item.code}</span> */}
+            <span>{item.name}</span>
           </div>
-          <div className="mt-1 truncate text-xs text-slate-500">
-            {isBank
-              ? [item.accountHolderName, item.accountNumber, item.bank, item.branch]
-                  .filter(Boolean)
-                  .join(" · ") || "Chưa cập nhật thông tin ngân hàng"
-              : "Tiền mặt"}
+          <div className="mt-1 truncate text-xs text-slate-500 max-w-40" title={bankInfo}>
+            {bankInfo}
           </div>
         </div>
-        <div className="shrink-0 text-right text-xs">
-          <div className="text-slate-500">Số dư</div>
-          <div className="font-semibold text-gray-900 dark:text-gray-100">
-            {formatMoney(item.currentBalance) || "0"}
+        {!!showBalance && (
+          <div className="shrink-0 text-right text-xs">
+            <div className="text-slate-500">Số dư</div>
+            <div className="font-semibold text-gray-900 dark:text-gray-100">
+              {formatMoney(item.currentBalance) || "0"}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </Card>
   );

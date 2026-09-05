@@ -11,6 +11,8 @@ export interface CachedOrder {
   label: string;
   mode: PosCacheMode;
   sourceId?: string;
+  /** Snapshot used to detect unsaved changes while editing an existing order. */
+  initialOrder?: Partial<CachedOrder>;
   code?: string;
   partnerId?: string | null;
   partner?: unknown;
@@ -21,6 +23,14 @@ export interface CachedOrder {
   refOrderId?: string | null;
   lines?: Record<string, unknown>[];
   returnLines?: Record<string, unknown>[];
+  incomeExpenses?: Array<{
+    amount?: number;
+    fundId?: string | null;
+    fund?: unknown;
+    [key: string]: unknown;
+  }>;
+  /** UI-only payment mode used before a bank fund is selected. */
+  paymentMode?: "cash" | "bank";
   discountType?: "amount" | "percent";
   discountValue?: number;
   taxType?: "amount" | "percent";
@@ -71,14 +81,16 @@ const createNewCache = (
   const id = randomId();
   const mode = payload.mode || "create";
   const order = payload.order || {};
+  const { initialOrder: _initialOrder, ...orderData } = order;
 
-  return {
-    ...order,
+  const cache: CachedOrder = {
+    ...orderData,
     id,
     tempId: id,
     type: payload.type,
     mode,
     sourceId: payload.sourceId || order.id,
+    initialOrder: undefined,
     label: makeLabel(state, payload.type, mode, order.code),
     lines: order.lines || [],
     returnLines: order.returnLines || [],
@@ -87,7 +99,16 @@ const createNewCache = (
     taxType: order.taxType || "percent",
     taxValue: order.taxValue ?? 0,
   };
+
+  if (mode === "edit") {
+    cache.initialOrder = cloneValue(_initialOrder || cache);
+  }
+
+  return cache;
 };
+
+const cloneValue = <T,>(value: T): T =>
+  JSON.parse(JSON.stringify(value)) as T;
 
 const orderCacheSlice = createSlice({
   name: "orderCache",

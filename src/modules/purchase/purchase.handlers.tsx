@@ -1,6 +1,6 @@
 import React from "react";
 import { App, Checkbox } from "antd";
-import { Purchase } from "./purchase.model";
+import { OrderStatus, Purchase } from "./purchase.model";
 import { HandlersInput } from "@/shared/interfaces/common";
 import { PurchaseFile } from "./purchase.file";
 import { randomId } from "@/shared/utils/common.util";
@@ -35,6 +35,7 @@ export function usePurchaseHandlers({
   const handleOpenAdd = create ? () => { setRowData(undefined); setDefaultData?.(undefined); setOpen?.(true); } : undefined;
 
   const handleOpenEdit = update ? (record: Purchase) => {
+    if (record.status === OrderStatus.CANCELED) return;
     withDetails(record, (data) => { setRowData(data); setOpen?.(true); });
   } : undefined;
 
@@ -43,6 +44,7 @@ export function usePurchaseHandlers({
   };
 
   const handleDelete = remove ? (record: Purchase) => {
+    if (record.status !== OrderStatus.DRAFT) return;
     withDetails(record, (data) => modal.confirm({
       centered: true,
       title: "Xóa phiếu nhập hàng",
@@ -55,6 +57,7 @@ export function usePurchaseHandlers({
   } : undefined;
 
   const handleCancel = cancel ? (record: Purchase) => {
+    if (record.status === OrderStatus.CANCELED) return;
     withDetails(record, (data) => modal.confirm({
       centered: true,
       title: "Hủy phiếu nhập hàng",
@@ -67,6 +70,7 @@ export function usePurchaseHandlers({
   } : undefined;
 
   const handleComplete = complete ? (record: Purchase) => {
+    if (record.status !== OrderStatus.DRAFT) return;
     withDetails(record, (data) => modal.confirm({
       centered: true,
       title: "Nhập kho ngay",
@@ -118,6 +122,7 @@ export function usePurchaseHandlers({
   });
 
   const handleEditFromDetail = update ? (record: Purchase) => {
+    if (record.status === OrderStatus.CANCELED) return;
     withDetails(record, (data) => {
       setOpenDetail?.(false);
       setRowData(data);
