@@ -46,6 +46,8 @@ export interface TableColumnConfigProps extends Omit<TableProps, "pagination"> {
   onViewDetail?: (record: any) => void;
   onExportPdf?: (record: any) => void;
   onExportExcel?: (record: any) => void;
+  onPrint?: (record: any) => void;
+  onPrintBarcode?: (record: any) => void;
 
   onExport?: (record: any) => void;
   onImport?: (record: any) => void;
@@ -130,6 +132,8 @@ export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
   onViewDetail,
   onExportPdf,
   onExportExcel,
+  onPrint,
+  onPrintBarcode,
   onExport,
   onImport,
   onResetPassword,
@@ -394,6 +398,8 @@ export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
                     onViewDetail={onViewDetail ? () => onViewDetail(record) : undefined}
                     onExportPdf={onExportPdf ? () => onExportPdf(record) : undefined}
                     onExportExcel={onExportExcel ? () => onExportExcel(record) : undefined}
+                    onPrint={onPrint ? () => onPrint(record) : undefined}
+                    onPrintBarcode={onPrintBarcode ? () => onPrintBarcode(record) : undefined}
                   />
                 )}
               </div>

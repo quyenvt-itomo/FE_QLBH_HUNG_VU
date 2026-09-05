@@ -7,6 +7,11 @@ import { ApiResponse } from "@/shared/interfaces/api";
 import { formatPayload } from "@/shared/utils/common.util";
 import { postData } from "@/shared/api/apiClient";
 
+export async function getProductsByCodes(codes: string[]) {
+  const response = await postData<Product[]>(apiEndpoint.product.byCodes, { codes });
+  return response.data || [];
+}
+
 interface ProductStoreExtra {
   changeGroup?: (
     ids: string[],

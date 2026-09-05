@@ -4,6 +4,7 @@ import { PartnerSnapshot } from "../partner/partner.model";
 import { ProductSnapshot } from "../product/product.model";
 import { AttributeSnapshot } from "../attribute/attribute.model";
 import { DiscountTypeEnum } from "@/shared/constants/enum";
+import type { IncomeExpense } from "@/modules/incomeExpense/incomeExpense.model";
 
 export enum OrderType { PURCHASE = "purchase", SALE = "sale", PURCHASE_RETURN = "purchase_return", SALE_RETURN = "sale_return" }
 export enum OrderStatus { DRAFT = "draft", COMPLETED = "completed", CANCELED = "canceled" }
@@ -79,6 +80,7 @@ export interface Order extends Entity {
   settlementAmount: number;
   lines: OrderLine[];
   returnLines: OrderLine[];
+  incomeExpenses?: IncomeExpense[];
   /** Deprecated aliases used by old print views. */
   timeAt?: string;
   customerId?: string | null;

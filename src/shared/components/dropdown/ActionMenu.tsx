@@ -13,6 +13,8 @@ interface DropdownActionProps {
   onRestore?: () => void;
   onExportPdf?: () => void;
   onExportExcel?: () => void;
+  onPrint?: () => void;
+  onPrintBarcode?: () => void;
 
   onExport?: () => void;
   onImport?: () => void;
@@ -50,6 +52,8 @@ export const DropdownAction: React.FC<DropdownActionProps> = ({
   onRestore,
   onExportPdf,
   onExportExcel,
+  onPrint,
+  onPrintBarcode,
 
   onExport,
   onImport,
@@ -321,6 +325,18 @@ export const DropdownAction: React.FC<DropdownActionProps> = ({
       key: "exportExcel",
       icon: <Icon icon="mdi:file-excel-outline" className={`${iconCls} bg-green-500`} />,
       onClick: onExportExcel,
+    },
+    onPrint && {
+      label: "In phiếu",
+      key: "print",
+      icon: <Icon icon="mdi:printer-outline" className={`${iconCls} bg-blue-500`} />,
+      onClick: onPrint,
+    },
+    onPrintBarcode && {
+      label: "In tem mã",
+      key: "printBarcode",
+      icon: <Icon icon="mdi:barcode" className={`${iconCls} bg-purple-500`} />,
+      onClick: onPrintBarcode,
     },
     onSetDefault && {
       label: "Đặt làm mặc định",

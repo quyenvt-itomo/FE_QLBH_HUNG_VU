@@ -21,6 +21,7 @@ const AddSelect = <T extends { id: string; name: string }>({
   hideOptions,
   value,
   onOpen,
+  className: customClassName,
   ...rest
 }: AddSelectProps<T>) => {
   const hideOptionKeys = hideOptions?.map((item) => item.id);
@@ -37,7 +38,7 @@ const AddSelect = <T extends { id: string; name: string }>({
         allowClear
         showSearch
         value={value}
-        className={`${CLASSNAME.inputHeight} ${showAddButton ? "!w-[calc(100%-36px)] rounded-e-none" : "w-full"} z-10`}
+        className={`${CLASSNAME.inputHeight} ${showAddButton ? "!w-[calc(100%-36px)] rounded-e-none" : "w-full"} z-10 ${customClassName || ""}`}
         suffixIcon={<ChevronDownIcon className="h-3.5" />}
         dropdownRender={(menu) => (
           <>

@@ -4,7 +4,7 @@ import { DeleteOutlined } from "@ant-design/icons";
 import { Product } from "../product.model";
 import "./ProductBarcodePrintModal.css";
 
-interface BarcodePrintItem {
+export interface BarcodePrintItem {
   id: string;
   barcode: string;
   code: string;
@@ -16,6 +16,7 @@ interface BarcodePrintItem {
 interface ProductBarcodePrintModalProps {
   open: boolean;
   products: Product[];
+  initialItems?: BarcodePrintItem[];
   onClose: () => void;
 }
 
@@ -80,6 +81,7 @@ const formatMoney = (value?: number | null): string =>
 export const ProductBarcodePrintModal: React.FC<ProductBarcodePrintModalProps> = ({
   open,
   products,
+  initialItems,
   onClose,
 }) => {
   const printRef = useRef<HTMLDivElement>(null);
@@ -89,20 +91,22 @@ export const ProductBarcodePrintModal: React.FC<ProductBarcodePrintModalProps> =
   useEffect(() => {
     if (open) {
       setPrintItems(
-        products
-          .filter((product) => product.barcode?.trim())
-          .map((product) => ({
-            id: product.id,
-            barcode: product.barcode!.trim(),
-            code: product.code,
-            name: product.name,
-            price: product.salePrice,
-            quantity: 1,
-          })),
+        initialItems?.length
+          ? initialItems.map((item) => ({ ...item }))
+          : products
+            .filter((product) => product.barcode?.trim())
+            .map((product) => ({
+              id: product.id,
+              barcode: product.barcode!.trim(),
+              code: product.code,
+              name: product.name,
+              price: product.salePrice,
+              quantity: 1,
+            })),
       );
       setIsPreview(false);
     }
-  }, [open, products]);
+  }, [open, products, initialItems]);
 
   const updateQuantity = (index: number, quantity: number | null) => {
     setPrintItems((current) =>

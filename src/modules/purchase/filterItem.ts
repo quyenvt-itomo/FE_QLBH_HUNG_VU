@@ -1,15 +1,17 @@
-﻿import { FilterKey, RangerItem, SortItem } from "@/shared/interfaces/common";
+import { FilterKey, RangerItem, SortItem } from "@/shared/interfaces/common";
 
 export const sortItems: SortItem[] = [
-  { label: "Ngày đặt", value: "orderedAt", ascLabel: "Từ cũ đến mới", descLabel: "Từ mới đến cũ" },
-  { label: "Số đơn", value: "code", ascLabel: "A → Z", descLabel: "Z → A" },
-  { label: "Tổng tiền", value: "totalAmount", ascLabel: "Thấp nhất", descLabel: "Cao nhất" },
+  { label: "Ngày đặt hàng", value: "orderAt", ascLabel: "Cũ nhất", descLabel: "Mới nhất" },
+  { label: "Mã phiếu", value: "code", ascLabel: "A → Z", descLabel: "Z → A" },
+  { label: "Tổng đơn", value: "totalAmount", ascLabel: "Thấp nhất", descLabel: "Cao nhất" },
 ];
 
 export const rangerItems: RangerItem[] = [
-  { label: "Tổng tiền", key: "totalAmount" },
-  { label: "Đã thanh toán", key: "totalPaidAmount" },
-  { label: "Còn nợ", key: "totalOutstandingAmount" },
+  { label: "Ngày đặt hàng", key: "orderAt", type: "date" },
+  { label: "Ngày hoàn thành", key: "occurredAt", type: "date" },
+  { label: "Tiền hàng", key: "grossAmount" },
+  { label: "Giảm giá", key: "discountAmount" },
+  { label: "Tổng đơn", key: "totalAmount" },
 ];
 
-export const filterUses: FilterKey[] = ["supplierIds", "creatorIds"];
+export const filterUses: FilterKey[] = ["supplierIds", "creatorIds", "completerIds"];

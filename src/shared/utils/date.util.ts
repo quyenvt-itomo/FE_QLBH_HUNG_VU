@@ -171,6 +171,7 @@ const dateFields: string[] = [
   "timeAt",
 
   // Order
+  "orderAt",
   "timeAt",
 
   // Quotation
@@ -236,6 +237,7 @@ const dateTimeFields: string[] = [
   "lockedUntil",
 
   // Common datetime fields
+  "orderAt",
   "timeAt",
   "occurredAt",
   "orderedAt",

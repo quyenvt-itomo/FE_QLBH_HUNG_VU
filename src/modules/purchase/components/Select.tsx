@@ -5,32 +5,31 @@ import { usePurchaseStore } from "../purchase.store";
 import { DropdownColumn } from "@/shared/components";
 import { SmartSelect } from "@/shared/components";
 import { useRemoteSelect } from "@/shared/hooks/useRemoteSelect";
-import { resolveByPath } from "@/shared/utils/common.util";
-import { ApproveStatusTag } from "@/shared/components";
+import { purchaseStatusMap } from "../purchase.model";
 
 const columns: DropdownColumn<Purchase>[] = [
-  { label: "Số ĐH", dataIndex: "code", className: "w-32" },
-  { label: "Ngày", dataIndex: "orderedAt", className: "w-24", dataType: "date" },
+  { label: "Số phiếu", dataIndex: "code", className: "w-32" },
+  { label: "Ngày", dataIndex: "orderAt", className: "w-24", dataType: "date" },
   {
     label: "NCC",
     className: "w-48",
-    render: (record) => resolveByPath(record, ["supplier", "name"]),
+    render: (record) => record.partner?.name || record.partnerSnapshot?.name,
   },
   {
     label: "Mã NCC",
     className: "w-20",
-    render: (record) => resolveByPath(record, ["supplier", "code"]),
+    render: (record) => record.partner?.code || record.partnerSnapshot?.code,
   },
   {
-    label: "NV mua hàng",
+    label: "Người hoàn thành",
     className: "w-36",
-    render: (record) => resolveByPath(record, ["staff", "name"]),
+    render: (record) => record.completer?.name || record.completerSnapshot?.name,
   },
   {
     label: "Trạng thái",
-    dataIndex: "approveStatus",
+    dataIndex: "status",
     className: "w-24",
-    render: (record) => <ApproveStatusTag value={record.approveStatus} />,
+    render: (record) => purchaseStatusMap[record.status],
     dataType: "enum",
   },
 ];

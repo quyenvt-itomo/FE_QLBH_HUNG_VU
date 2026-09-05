@@ -1,10 +1,12 @@
 import { MultipleSelectProps, SelectProps } from "@/shared/interfaces/common";
 import { Product, ProductQuery } from "../product.model";
 import { useProductStore, usePublicProductStore } from "../product.store";
-import { DropdownColumn } from "@/shared/components";
+import { AddSelect, DropdownColumn } from "@/shared/components";
 import { SmartSelect } from "@/shared/components";
 import { useRemoteSelect } from "@/shared/hooks/useRemoteSelect";
 import { SmartMultipleSelect } from "@/shared/components";
+import { useEffect, useState } from "react";
+import { ProductAddUpdateModal } from "./ProductAddUpdateModal";
 
 const columns: DropdownColumn<Product>[] = [
   { label: "Tên hàng", dataIndex: "name", className: "w-64" },
@@ -109,6 +111,75 @@ export const ProductMultipleSelect: React.FC<MultipleSelectProps<Product, Produc
         unlock();
         onFocus?.(e);
       }}
+      {...rest}
+    />
+  );
+};
+
+export const ProductAddSelect: React.FC<SelectProps<Product, ProductQuery>> = ({
+  value,
+  defaultData,
+  query,
+  onChange,
+  onChangeData,
+  onFocus,
+  ...rest
+}) => {
+  const [open, setOpen] = useState(false);
+  const { errors, creating, create, newItem } = useProductStore({ isLocked: true }, () =>
+    setOpen(false),
+  );
+  const { list, loading, setKeywordTemp, unlock, handlePopupScroll } = useRemoteSelect<
+    Product,
+    ProductQuery
+  >({
+    defaultData,
+    queryHook: useProductStore,
+    buildParams: ({ keyword, page, isLocked }) => ({
+      keyword,
+      page,
+      size: 10,
+      isLocked,
+      ...query,
+    }),
+    resetPageDeps: [query],
+  });
+
+  useEffect(() => {
+    if (!newItem) return;
+    onChange?.(newItem.id);
+    onChangeData?.(newItem);
+  }, [newItem, onChange, onChangeData]);
+
+  return (
+    <AddSelect<Product>
+      options={list}
+      columns={columns}
+      value={value}
+      loading={loading}
+      onSearch={setKeywordTemp}
+      onPopupScroll={handlePopupScroll}
+      onChange={(id) => {
+        onChange?.(id);
+        onChangeData?.(list.find((item) => item.id === id));
+      }}
+      onFocus={(event) => {
+        unlock();
+        onFocus?.(event);
+      }}
+      placeholder="Chọn hàng hóa"
+      disabled={rest.disabled}
+      showAddButton={!!create}
+      modal={
+        <ProductAddUpdateModal
+          open={open}
+          errors={errors}
+          loading={creating}
+          onAdd={create}
+          onClose={() => setOpen(false)}
+        />
+      }
+      onOpen={() => setOpen(true)}
       {...rest}
     />
   );

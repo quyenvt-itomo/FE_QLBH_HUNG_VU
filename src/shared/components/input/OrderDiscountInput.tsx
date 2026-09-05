@@ -35,7 +35,7 @@ export const OrderDiscountInput: React.FC<Props> = ({
 
   return (
     <div
-      className={`flex w-full items-center overflow-hidden rounded transition ${CLASSNAME.inputHeight} ${
+      className={`flex w-full items-center overflow-hidden rounded-md transition ${CLASSNAME.inputHeight} ${
         borderNone ? CLASSNAME.inputHeight : "border border-gray-300 hover:border-primary"
       }`}
     >
@@ -47,6 +47,7 @@ export const OrderDiscountInput: React.FC<Props> = ({
           onChange={(val) => triggerChange(val || 0, DiscountTypeEnum.PERCENT)}
           className="!border-none !shadow-none !ring-0 rounded-none"
           placeholder="% giảm"
+          variant="borderless"
           notRightAlign={notRightAlign}
         />
       ) : (
@@ -54,7 +55,7 @@ export const OrderDiscountInput: React.FC<Props> = ({
           value={tempValue || undefined}
           min={0}
           onChange={(val) => triggerChange(val || 0, DiscountTypeEnum.AMOUNT)}
-          className="!border-none !shadow-none !ring-0 rounded-none"
+          variant="borderless"
           placeholder="Số tiền giảm"
           notRightAlign={notRightAlign}
         />

@@ -34,6 +34,7 @@ type FilterDefinition = {
 
 const filterMap: Partial<Record<FilterKey, FilterDefinition>> = {
   creatorIds: { defaultLabel: "Người tạo", component: UserFilter },
+  completerIds: { defaultLabel: "Người hoàn thành", component: UserFilter },
   updaterIds: { defaultLabel: "Người cập nhật", component: UserFilter },
   userIds: { defaultLabel: "Người dùng", component: UserFilter },
   supplierIds: { defaultLabel: "Nhà cung cấp", component: SupplierFilter },

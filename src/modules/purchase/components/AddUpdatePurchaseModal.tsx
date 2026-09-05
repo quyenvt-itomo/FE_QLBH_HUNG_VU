@@ -1,38 +1,45 @@
-import React, { useEffect, useMemo } from "react";
-import { Modal, Form, Input, FormProps, App, Row, Col, Select, Button, Empty } from "antd";
-import { AdditionalInfo, AddUpdateModalProps } from "@/shared/interfaces/common";
-import {
-  Purchase,
-  PaymentMethod,
-  paymentMethodOptions,
-  PurchaseSortOrderFields,
-} from "../purchase.model";
-import {
-  defaultAdditionalInfo,
-  DiscountTypeEnum,
-  EntityType,
-  FileCategory,
-} from "@/shared/constants/enum";
-import { handleCloseWithPendingFiles, randomId } from "@/shared/utils/common.util";
-import { extractListErrorCells, setFormErrors } from "@/shared/utils/form.util";
-import { formatFormData, parseFormDataDates } from "@/shared/utils/date.util";
-import { SubmitButton } from "@/shared/components";
-import { Label } from "@/shared/components";
-import { EmployeeSelect } from "@/modules/employee";
-import { PartnerSelect } from "@/modules/partner/components/Select";
-import { PartnerType } from "@/modules/partner/partner.model";
-import { AppDatePicker } from "@/shared/components";
+import React, { useEffect, useRef, useState } from "react";
+import ExcelJS from "exceljs";
 import dayjs from "dayjs";
+import { App, Button, Col, Divider, Form, Input, Modal, Row, Space } from "antd";
+import { LeftOutlined, RightOutlined, UploadOutlined } from "@ant-design/icons";
+import { AddUpdateModalProps } from "@/shared/interfaces/common";
+import { AppDatePicker, InputMoney, Label, OrderDiscountInput } from "@/shared/components";
+import { PartnerSelect, SupplierAddSelect } from "@/modules/partner/components/Select";
+import { FundListSelect } from "@/modules/fund/components/FundListSelect";
+import { getProductsByCodes } from "@/modules/product/product.store";
+import { collectUnits, getDefaultPurchaseUnit } from "@/modules/product/product.util";
+import { Product } from "@/modules/product";
+import { DiscountTypeEnum } from "@/shared/constants/enum";
+import { IncomeExpenseTypeEnum } from "@/modules/incomeExpense/incomeExpense.model";
+import {
+  OrderType,
+  Purchase,
+  PurchaseLine,
+  purchaseStatusMap,
+  OrderStatus,
+} from "../purchase.model";
+import { PurchaseFile, purchaseExcelColumns } from "../purchase.file";
 import { PurchaseLineFormList } from "./PurchaseLineFormList";
-import { FormSection } from "@/shared/components";
-import { FormListTable, FormColumn  } from "@/shared/components";
-import { InputMoney, InputPercentage } from "@/shared/components";
-import { AppSelect } from "@/shared/components";
-import { FileUploadBox } from "@/shared/components";
-import { AddressInput } from "@/shared/components";
-import { PartnerContactSelect } from "@/modules/partnerContact";
-import { PlusOutlined } from "@ant-design/icons";
+import { ProductDetailDrawer } from "./ProductDetailDrawer";
+import { formatVnd } from "../purchase.util";
+import { randomId } from "@/shared/utils/common.util";
+import { formatFormData, parseFormDataDates } from "@/shared/utils/date.util";
+import { setFormErrors } from "@/shared/utils/form.util";
 import { useAppMessage } from "@/shared/hooks/useAppMessage";
+
+const cellText = (value: unknown): string => {
+  if (value == null) return "";
+  if (typeof value === "object" && value && "richText" in value) {
+    return ((value as any).richText || []).map((item: any) => item.text || "").join("");
+  }
+  return String(value).trim();
+};
+
+const cellNumber = (value: unknown) => {
+  const number = Number(String(value ?? "").replace(/,/g, ""));
+  return Number.isFinite(number) ? number : 0;
+};
 
 export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = ({
   open,
@@ -44,331 +51,404 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
   onEdit,
   onClose,
 }) => {
-  const { modal } = App.useApp();
-  const { message, errorCells, setErrorCells, showFormErrorMessages } = useAppMessage();
-  const [form] = Form.useForm<Purchase>();
-  const id = editData?.id || randomId();
-  const supplier = Form.useWatch("supplier", form);
-  const staff = Form.useWatch("staff", form);
-  const seller = Form.useWatch("seller", form);
-  const additionalInfo = Form.useWatch("additionalInfo", form) || [];
+  const { modal, message } = App.useApp();
+  const { showFormErrorMessages } = useAppMessage();
+  const [form] = Form.useForm<any>();
+  const [showInfo, setShowInfo] = useState(true);
+  const [unmatchedRows, setUnmatchedRows] = useState<unknown[][]>([]);
+  const [detailProduct, setDetailProduct] = useState<Product>();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const partner = Form.useWatch("partner", form);
+  const discountValue = Form.useWatch("discountValue", form) || 0;
+  const discountType = Form.useWatch("discountType", form);
+  const taxValue = Form.useWatch("taxValue", form) || 0;
+  const taxType = Form.useWatch("taxType", form);
+  const shippingFee = Form.useWatch("shippingFee", form) || 0;
+  const isFreeShipping = Form.useWatch("isFreeShipping", form);
+  const paymentAmount = Form.useWatch("paymentAmount", form) || 0;
+  const paymentFund = Form.useWatch("paymentFund", form);
+  const lines: PurchaseLine[] = Form.useWatch("lines", form) || [];
+  const createIdRef = useRef(randomId());
+  const id = editData?.id || createIdRef.current;
 
   useEffect(() => {
-    if (!errors) {
-      setErrorCells(new Map());
-      return;
-    }
-    setFormErrors(form, errors, { scrollToFirst: true });
-    // Trích xuất các cell bị lỗi để highlight
-    const cells = extractListErrorCells(errors, "lines");
-    setErrorCells(cells);
+    if (errors) setFormErrors(form, errors, { scrollToFirst: true });
   }, [errors, form]);
 
-  const onFinish: FormProps<Purchase>["onFinish"] = async (values: Purchase) => {
-    const formattedData = formatFormData({ ...values, id, tempId: id }, PurchaseSortOrderFields);
+  useEffect(() => {
+    if (!open) return;
+    setUnmatchedRows([]);
+    setDetailProduct(undefined);
+    setShowInfo(true);
+    if (editData) {
+      const parsed = parseFormDataDates(editData as any) as any;
+      const payment = editData.incomeExpenses?.[0];
+      form.setFieldsValue({
+        ...parsed,
+        paymentAmount: Number(payment?.amount || 0),
+        paymentFundId: payment?.fundId || undefined,
+        paymentFund: payment?.fund || undefined,
+      });
+    } else {
+      const createId = randomId();
+      createIdRef.current = createId;
+      form.resetFields();
+      form.setFieldsValue({
+        id: createId,
+        tempId: createId,
+        type: OrderType.PURCHASE,
+        orderAt: dayjs(),
+        lines: [],
+        discountValue: 0,
+        discountType: DiscountTypeEnum.AMOUNT,
+        taxValue: 0,
+        taxType: DiscountTypeEnum.PERCENT,
+        shippingFee: 0,
+        isFreeShipping: false,
+        paymentAmount: 0,
+        completeImmediately: false,
+      });
+      if (defaultData) form.setFieldsValue(parseFormDataDates(defaultData as any) as any);
+    }
+  }, [open, editData, defaultData, form]);
 
-    modal.confirm({
-      title: editData ? "Xác nhận sửa đơn mua hàng?" : "Xác nhận thêm đơn mua hàng?",
-      content: editData
-        ? "Bạn có chắc chắn muốn sửa đơn mua hàng này không?"
-        : "Bạn có chắc chắn muốn thêm đơn mua hàng này không?",
-      okText: "Xác nhận",
-      cancelText: "Hủy",
-      onOk: () => {
-        editData ? onEdit?.(formattedData) : onAdd?.(formattedData);
-      },
-    });
+  const importExcel = async (file: File) => {
+    try {
+      const workbook = new ExcelJS.Workbook();
+      await workbook.xlsx.load((await file.arrayBuffer()) as any);
+      const sheet = workbook.worksheets[0];
+      const rows: unknown[][] = [];
+      sheet.eachRow((row, index) => {
+        if (index > 1 && cellText(row.getCell(1).value)) {
+          rows.push(
+            purchaseExcelColumns.map((_column, columnIndex) =>
+              cellText(row.getCell(columnIndex + 1).value),
+            ),
+          );
+        }
+      });
+      if (!rows.length) {
+        message.warning("File Excel chưa có dòng hàng hóa hợp lệ");
+        return;
+      }
+
+      const codes = Array.from(new Set(rows.map((row) => cellText(row[0])).filter(Boolean)));
+      const products = await getProductsByCodes(codes);
+      const productMap = new Map(
+        products.map((product) => [product.code.trim().toLowerCase(), product]),
+      );
+      const missing = rows.filter((row) => !productMap.has(cellText(row[0]).toLowerCase()));
+      const importedLines = rows
+        .map((row) => {
+          const product = productMap.get(cellText(row[0]).toLowerCase());
+          if (!product) return null;
+          const unitName = cellText(row[2]).toLowerCase();
+          const unit =
+            collectUnits(product, getDefaultPurchaseUnit(product)).find(
+              (item) => item.name.toLowerCase() === unitName,
+            ) || getDefaultPurchaseUnit(product);
+          return {
+            tempId: randomId(),
+            productId: product.id,
+            product,
+            unitId: unit?.id || product.baseUnitId,
+            unit,
+            quantity: cellNumber(row[6]) || 1,
+            unitPrice: cellNumber(row[3]),
+          };
+        })
+        .filter(Boolean);
+      form.setFieldValue("lines", [...(form.getFieldValue("lines") || []), ...importedLines]);
+      setUnmatchedRows(missing);
+      if (missing.length) {
+        modal.warning({
+          title: "Không tìm thấy hàng hóa",
+          content: (
+            <div>
+              Không tìm thấy hàng hóa có mã:
+              <ul className="mt-2 list-disc pl-5">
+                {missing.map((row, index) => (
+                  <li key={`${row[0]}-${index}`} className="font-mono">
+                    {String(row[0] ?? "")}
+                  </li>
+                ))}
+              </ul>
+              <Button
+                type="link"
+                className="!px-0"
+                onClick={() => PurchaseFile.exportRows(missing)}
+              >
+                Tải file các dòng chưa thêm
+              </Button>
+            </div>
+          ),
+        });
+      } else {
+        message.success(`Đã thêm ${importedLines.length} hàng hóa từ Excel`);
+      }
+    } catch {
+      message.error("Không thể đọc file Excel. Vui lòng dùng đúng biểu mẫu phiếu nhập.");
+    }
   };
 
-  const additionalColumns: FormColumn<AdditionalInfo>[] = useMemo(
-    () => [
-      {
-        title: "STT",
-        dataIndex: "__idx",
-        width: 40,
-        align: "center",
-        render: ({ index }) => index + 1,
-      },
-      {
-        title: "Hạng mục",
-        dataIndex: "label",
-        width: 200,
-        editable: true,
-        render: ({ record }) => <Input placeholder="Tên hạng mục" variant="borderless" />,
-      },
-      {
-        title: "Nội dung",
-        dataIndex: "value",
-        editable: true,
-        render: ({ record }) => (
-          <Input.TextArea
-            placeholder={`Nội dung ${String(record?.label || "")?.toLocaleLowerCase() || ""}`}
-            variant="borderless"
-            autoSize={{ minRows: 1, maxRows: 4 }}
-          />
-        ),
-      },
-    ],
-    [],
+  const onFinish = (values: any) => {
+    const formattedValues = formatFormData(values);
+    const payload = {
+      ...formattedValues,
+      id: editData?.id,
+      tempId: id,
+      type: OrderType.PURCHASE,
+      partnerId: values.partnerId || null,
+      shippingFee: Number(values.shippingFee || 0),
+      isFreeShipping: values.isFreeShipping === true,
+      lines: (values.lines || []).map((line: any) => ({
+        productId: line.productId,
+        unitId: line.unitId || null,
+        quantity: Number(line.quantity || 0),
+        unitPrice: Number(line.unitPrice || 0),
+        note: line.note || null,
+      })),
+      incomeExpenses: [
+        {
+          type: IncomeExpenseTypeEnum.EXPENSE,
+          fundId: values.paymentFundId || null,
+          amount: Math.max(0, Number(values.paymentAmount || 0)),
+          partnerId: values.partnerId || null,
+          occurredAt: formattedValues.occurredAt || formattedValues.orderAt,
+          description: values.code
+            ? `Thanh toán phiếu nhập ${values.code}`
+            : "Thanh toán phiếu nhập hàng",
+        },
+      ],
+    };
+    delete (payload as any).partner;
+    delete (payload as any).paymentAmount;
+    delete (payload as any).paymentFundId;
+    delete (payload as any).paymentFund;
+    editData ? onEdit?.(payload as any) : onAdd?.(payload as any);
+  };
+
+  const totalAmount = lines.reduce(
+    (sum, line) => sum + Number(line.quantity || 0) * Number(line.unitPrice || 0),
+    0,
   );
+  const calculateRateAmount = (value: number, type?: DiscountTypeEnum) =>
+    type === DiscountTypeEnum.PERCENT
+      ? (totalAmount * Number(value || 0)) / 100
+      : Number(value || 0);
+  const discountAmount = Math.min(
+    totalAmount,
+    calculateRateAmount(Number(discountValue), discountType),
+  );
+  const netAmount = Math.max(0, totalAmount - discountAmount);
+  const taxAmount =
+    taxType === DiscountTypeEnum.PERCENT
+      ? (netAmount * Number(taxValue || 0)) / 100
+      : Number(taxValue || 0);
+  const shippingAmount =
+    Number(shippingFee || 0) > 0 && isFreeShipping === false ? Number(shippingFee || 0) : 0;
+  const payableAmount = netAmount + taxAmount + shippingAmount;
 
   return (
-    <Modal
-      title={editData ? "Sửa đơn mua hàng" : "Thêm đơn mua hàng"}
-      open={open}
-      onCancel={() => handleCloseWithPendingFiles(id, onClose)}
-      footer={null}
-      maskClosable={false}
-      centered
-      width="100vw"
-      className="fullscreen-modal"
-      afterOpenChange={(isOpen) => {
-        if (!isOpen) {
-          form.resetFields();
-          return;
-        }
-
-        if (editData) {
-          const formatted = parseFormDataDates(editData, PurchaseSortOrderFields);
-          form.setFieldsValue(formatted);
-          return;
-        }
-
-        if (defaultData) form.setFieldsValue(parseFormDataDates(defaultData));
-      }}
-      destroyOnClose
-    >
-      <Form
-        form={form}
-        onFinish={onFinish}
-        onFinishFailed={showFormErrorMessages}
-        className="flex flex-col h-full overflow-y-auto overflow-x-hidden scrollbar-hide"
-        initialValues={{
-          orderedAt: dayjs(),
-          discountType: DiscountTypeEnum.AMOUNT,
-          discountValue: 0,
-          taxType: DiscountTypeEnum.PERCENT,
-          taxValue: 0,
-          paymentMethod: PaymentMethod.BANK_TRANSFER,
-          toleranceRate: 5,
-          additionalInfo: defaultAdditionalInfo,
-        }}
+    <>
+      <Modal
+        title={editData ? "Sửa phiếu nhập hàng" : "Thêm phiếu nhập hàng"}
+        open={open}
+        onCancel={onClose}
+        footer={null}
+        width="100vw"
+        className="fullscreen-modal"
+        centered
+        destroyOnClose
+        maskClosable={false}
       >
-        <FormSection title="Thông tin chung">
-          <Row gutter={[64, 0]}>
-            <Col span={10}>
-              <Form.Item
-                name="supplierId"
-                label={<Label width={120} title="Nhà cung cấp" required />}
-                rules={[{ required: true, message: "Vui lòng chọn nhà cung cấp" }]}
-              >
-                <PartnerSelect
-                  defaultData={supplier}
-                  onChangeData={(val) => {
-                    form.setFieldValue("supplier", val);
-                    form.setFieldValue("sellerId", null);
-                    form.setFieldValue("seller", null);
-                  }}
-                  query={{ type: PartnerType.SUPPLIER }}
-                />
-              </Form.Item>
-              <Form.Item name="supplier" hidden />
-            </Col>
-            <Col span={7}>
-              <Form.Item name="sellerId" label={<Label width={120} title="Người bán" />}>
-                <PartnerContactSelect
-                  defaultData={seller}
-                  onChangeData={(val) => form.setFieldValue("seller", val)}
-                  disabled={!supplier}
-                  query={{ partnerId: supplier?.id }}
-                />
-              </Form.Item>
-              <Form.Item name="seller" hidden />
-            </Col>
-            <Col span={7}>
-              <Form.Item name="code" label={<Label width={120} title="Số đơn hàng" />}>
-                <Input placeholder="Tự động tạo nếu để trống khi lưu" />
-              </Form.Item>
-            </Col>
-            <Col span={10}>
-              <Form.Item
-                name={["supplier", "taxCode"]}
-                label={<Label width={120} title="Mã số thuế" />}
-              >
-                <Input disabled />
-              </Form.Item>
-            </Col>
-            <Col span={7}>
-              <Form.Item
-                name={["seller", "phone"]}
-                label={<Label width={120} title="SĐT người bán" />}
-              >
-                <Input disabled />
-              </Form.Item>
-            </Col>
-            <Col span={7}>
-              <Form.Item name="orderedAt" label={<Label width={120} title="Ngày đơn hàng" />}>
-                <AppDatePicker />
-              </Form.Item>
-            </Col>
-            <Col span={10}>
-              <Form.Item
-                name={["supplier", "address"]}
-                label={<Label width={120} title="Địa chỉ" />}
-              >
-                <AddressInput disabled />
-              </Form.Item>
-            </Col>
-            <Col span={7}>
-              <Form.Item name="paymentMethod" label={<Label width={120} title="Hình thức TT" />}>
-                <AppSelect options={paymentMethodOptions} />
-              </Form.Item>
-            </Col>
-            <Col span={7}>
-              <Form.Item name="staffId" label={<Label width={120} title="NV mua hàng" />}>
-                <EmployeeSelect
-                  defaultData={staff}
-                  onChangeData={(val) => {
-                    form.setFieldValue("staff", val);
-                  }}
-                />
-              </Form.Item>
-              <Form.Item name="staff" hidden />
-            </Col>
-            <Col span={10}>
-              <Form.Item
-                name={["supplier", "representative", "name"]}
-                label={<Label width={120} title="Người đại diện" />}
-              >
-                <Input disabled />
-              </Form.Item>
-            </Col>
-            <Col span={7}>
-              <Form.Item name="toleranceRate" label={<Label width={120} title="Dung sai (%)" />}>
-                <InputPercentage notRightAlign />
-              </Form.Item>
-            </Col>
-
-            <Col span={7}>
-              <Form.Item name="discountType" label={<Label width={120} title="Chiết khấu" />}>
-                <AppSelect
-                  options={[
-                    { value: DiscountTypeEnum.AMOUNT, label: "Số tiền" },
-                    { value: DiscountTypeEnum.PERCENT, label: "%" },
-                  ]}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={7}>
-              <Form.Item name="discountValue" label={<Label width={120} title="Giá trị CK" />}>
-                <InputMoney />
-              </Form.Item>
-            </Col>
-            <Col span={7}>
-              <Form.Item name="taxType" label={<Label width={120} title="VAT tính theo" />}>
-                <AppSelect
-                  options={[
-                    { value: DiscountTypeEnum.AMOUNT, label: "Số tiền" },
-                    { value: DiscountTypeEnum.PERCENT, label: "%" },
-                  ]}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={7}>
-              <Form.Item name="taxValue" label={<Label width={120} title="Giá trị VAT" />}>
-                <InputMoney />
-              </Form.Item>
-            </Col>
-
-            <Col span={7}>
-              <Form.Item name="note" label={<Label width={120} title="Ghi chú" />}>
-                <Input.TextArea autoSize={{ minRows: 1, maxRows: 4 }} />
-              </Form.Item>
-            </Col>
-          </Row>
-        </FormSection>
-
-        <PurchaseLineFormList form={form} errorCells={errorCells} />
-
-        <FormSection title="Thông tin bổ sung">
-          <FormListTable
-            form={form}
-            sortable
-            fieldName="additionalInfo"
-            columns={additionalColumns}
-            records={additionalInfo}
-            emptyText={(addFn: (data: any, insertIndex?: number) => void) => (
-              <div className="flex flex-col items-center">
-                <Empty
-                  image={Empty.PRESENTED_IMAGE_SIMPLE}
-                  description={
-                    <div className="flex flex-col items-center">
-                      <span>
-                        Thêm các hạng mục bổ sung để cung cấp thông tin chi tiết về đơn mua hàng
-                      </span>
-                      <Button
-                        className={`pl-3 rounded-md text-primary border border-primary hover:bg-primary/20`}
-                        onClick={() =>
-                          addFn?.({
-                            tempId: randomId(),
-                          })
-                        }
-                      >
-                        <PlusOutlined className="text-lg text-primary" />
-                        Thêm hạng mục
-                      </Button>
-                    </div>
-                  }
-                />
-              </div>
-            )}
-            renderSummary={({
-              addFn,
-            }: {
-              records: AdditionalInfo[];
-              addFn: (data: any, insertIndex?: number) => void;
-            }) => {
-              return (
-                <td className="" colSpan={3}>
-                  <Button
-                    className={`pl-3 rounded-md text-primary border border-primary hover:bg-primary/20`}
-                    onClick={() =>
-                      addFn?.({
-                        tempId: randomId(),
-                      })
-                    }
-                  >
-                    <PlusOutlined className="text-lg text-primary" />
-                    Thêm hạng mục
-                  </Button>
-                </td>
-              );
+        <Form
+          form={form}
+          onFinish={onFinish}
+          onFinishFailed={showFormErrorMessages}
+          className="flex h-full min-h-0 flex-col"
+        >
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".xlsx,.xls"
+            hidden
+            onChange={(event) => {
+              const file = event.target.files?.[0];
+              if (file) void importExcel(file);
+              event.target.value = "";
             }}
           />
-        </FormSection>
+          <div className="flex min-h-0 flex-1 gap-3">
+            <div className="flex min-w-0 flex-1 flex-col h-full">
+              <PurchaseLineFormList
+                form={form}
+                onImportExcel={() => fileInputRef.current?.click()}
+                onImportFile={importExcel}
+                onProductInfo={setDetailProduct}
+              />
+            </div>
 
-        <div className="flex justify-between items-end mt-auto mb-0 action-sticky-bottom">
-          <div className="flex w-[520px]">
-            <FileUploadBox
-              defaultFiles={editData?.document}
-              oId={id}
-              entity={EntityType.PURCHASE}
-              category={FileCategory.DOCUMENT}
-              maxCount={5}
-              onMoveToTrash={(file) => {
-                const trashFileIds: string[] = form?.getFieldValue("__trashFileIds") || [];
-                if (trashFileIds.includes(file.id)) return;
-                form?.setFieldValue("__trashFileIds", [...trashFileIds, file.id]);
-              }}
-            />
-            <Form.Item name="__trashFileIds" hidden />
+            <div className="relative flex shrink-0 items-start h-full">
+              <Button
+                shape="circle"
+                size="small"
+                icon={showInfo ? <RightOutlined /> : <LeftOutlined />}
+                className="absolute -left-3 top-1/2 z-10"
+                onClick={() => setShowInfo((value) => !value)}
+              />
+              <div
+                className={`${showInfo ? "w-[480px]" : "w-0"} relative  h-full shrink-0 overflow-hidden rounded-md border border-gray-200 bg-white transition-all`}
+              >
+                {showInfo && (
+                  <div className="h-full overflow-y-auto">
+                    <div className="p-4 flex flex-col">
+                      <Row gutter={24}>
+                        <Col span={12}>
+                          <Form.Item name="code">
+                            <Input placeholder="Mã phiếu nhập (Tự động tạo)" />
+                          </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                          <Form.Item name="orderAt">
+                            <AppDatePicker showTime />
+                          </Form.Item>
+                        </Col>
+                      </Row>
+                      <Form.Item name="partnerId">
+                        <SupplierAddSelect
+                          defaultData={partner}
+                          onChangeData={(value) => form.setFieldValue("partner", value)}
+                        />
+                      </Form.Item>
+                      <Form.Item name="partner" hidden />
+
+                      <Form.Item name="invoiceNumber" label={<Label title="Số hóa đơn" />}>
+                        <Input placeholder="Số hóa đơn đầu vào" />
+                      </Form.Item>
+
+                      <Divider className="my-2" />
+                      <div className="flex justify-between pt-2 pb-4">
+                        <span>Tổng tiền hàng</span>
+                        <span>{formatVnd(totalAmount)}</span>
+                      </div>
+
+                      <div className="flex gap-2.5 w-full pb-[22px]">
+                        <Form.Item name="discountValue" hidden />
+                        <Form.Item name="discountType" hidden />
+                        <Label title="Giảm giá" />
+                        <OrderDiscountInput
+                          discountValue={discountValue}
+                          discountType={discountType}
+                          onChange={(value, type) => {
+                            form.setFieldValue("discountValue", value);
+                            form.setFieldValue("discountType", type);
+                          }}
+                          notRightAlign
+                        />
+                      </div>
+
+                      <div className="flex w-full items-center gap-2 pb-3">
+                        <Label title="Thuế/VAT" />
+                        <Form.Item name="taxValue" hidden />
+                        <Form.Item name="taxType" hidden />
+                        <OrderDiscountInput
+                          discountValue={taxValue}
+                          discountType={taxType}
+                          onChange={(value, type) => {
+                            form.setFieldValue("taxValue", value);
+                            form.setFieldValue("taxType", type);
+                          }}
+                          notRightAlign
+                        />
+                      </div>
+
+                      <Form.Item name="shippingFee" label={<Label title="Phí vận chuyển" />}>
+                        <InputMoney notRightAlign placeholder="Nhập phí vận chuyển" />
+                      </Form.Item>
+                      <Form.Item name="isFreeShipping" hidden />
+                      <div className="mb-3 text-xs text-slate-500">
+                        Phí vận chuyển được tính vào tổng đơn.
+                      </div>
+
+                      <Divider className="my-2" />
+                      <div className="mb-2 font-semibold text-gray-800">Thanh toán</div>
+                      <Form.Item name="paymentAmount" label={<Label title="Số tiền thanh toán" />}>
+                        <InputMoney notRightAlign placeholder="Nhập số tiền thanh toán" />
+                      </Form.Item>
+                      <Form.Item
+                        name="paymentFundId"
+                        rules={[
+                          ({ getFieldValue }) => ({
+                            validator: async (_rule, value) => {
+                              if (Number(getFieldValue("paymentAmount") || 0) > 0 && !value) {
+                                throw new Error("Vui lòng chọn quỹ thanh toán");
+                              }
+                            },
+                          }),
+                        ]}
+                      >
+                        <FundListSelect
+                          defaultData={paymentFund}
+                          showBalance
+                          onChangeData={(value) => form.setFieldValue("paymentFund", value || null)}
+                        />
+                      </Form.Item>
+                      <Form.Item name="paymentFund" hidden />
+                      <div className="flex justify-between pb-3 text-sm">
+                        <span>Còn nợ nhà cung cấp</span>
+                        <span className="font-medium text-orange-600">
+                          {formatVnd(Math.max(0, payableAmount - Number(paymentAmount || 0)))}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-between py-2 font-semibold">
+                        <span>Tổng đơn</span>
+                        <span className="text-blue-600">{formatVnd(payableAmount)}</span>
+                      </div>
+                      <Form.Item name="note">
+                        <Input.TextArea rows={2} placeholder="Ghi chú cho phiếu nhập" />
+                      </Form.Item>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
-          <SubmitButton
-            loading={loading}
-            onCancel={() => handleCloseWithPendingFiles(id, onClose)}
-          />
-        </div>
-      </Form>
-    </Modal>
+          <div className="mt-3 flex shrink-0 justify-between border-t pt-3">
+            <Button onClick={onClose}>Hủy</Button>
+            <Space>
+              {!editData && (
+                <Button
+                  loading={loading}
+                  onClick={() => {
+                    form.setFieldValue("completeImmediately", false);
+                    form.submit();
+                  }}
+                >
+                  Lưu tạm
+                </Button>
+              )}
+              <Button
+                type="primary"
+                loading={loading}
+                onClick={() => {
+                  form.setFieldValue("completeImmediately", !editData);
+                  form.submit();
+                }}
+              >
+                {editData ? "Lưu phiếu" : "Nhập kho ngay"}
+              </Button>
+            </Space>
+          </div>
+          <Form.Item name="completeImmediately" hidden />
+        </Form>
+      </Modal>
+      <ProductDetailDrawer
+        open={!!detailProduct}
+        product={detailProduct}
+        onClose={() => setDetailProduct(undefined)}
+      />
+    </>
   );
 };

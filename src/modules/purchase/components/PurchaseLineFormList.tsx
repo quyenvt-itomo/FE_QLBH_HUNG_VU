@@ -1,227 +1,218 @@
-import React from "react";
-import { App, Form, FormInstance, Input, Select } from "antd";
-import { FormListTable, FormColumn } from "@/shared/components";
-import { Purchase } from "../purchase.model";
-import { collectProduct, collectUnits, getDefaultPurchaseUnit } from "@/modules/product/product.util";
-import { Product } from "@/modules/product/product.model";
-import { ProductMultipleSelect } from "@/modules/product/components/Select";
-import { InputMoney, InputPercentage, InputQuantity } from "@/shared/components";
-import { resolveByPath, randomId } from "@/shared/utils/common.util";
-import { CalculationUtil } from "@/shared/utils/calculation.util";
-import { formatMoney, formatQuantity } from "@/shared/utils/number.util";
-import { useAutoResetItem } from "@/shared/hooks/useAutoResetItem";
-import { SortOrder } from "@/shared/constants/enum";
-import MagnifyingGlassIcon from "@heroicons/react/24/solid/MagnifyingGlassIcon";
-import { makeFormListEnterHandler } from "@/shared/utils/formListKeyboard";
-import { PurchaseLine } from "@/modules/purchaseLine";
-import { AppSelect } from "@/shared/components";
+import React, { useState } from "react";
+import { DeleteOutlined, InfoCircleOutlined, InboxOutlined, UploadOutlined } from "@ant-design/icons";
+import { Button, Form, FormInstance, Input, Select } from "antd";
+import { InputMoney, InputQuantity } from "@/shared/components";
+import { ProductAddSelect } from "@/modules/product/components/Select";
+import {
+  Product,
+  collectUnits,
+  getDefaultPricePerUnit,
+  getDefaultPurchaseUnit,
+} from "@/modules/product";
+import { Purchase, PurchaseLine } from "../purchase.model";
+import { formatVnd, getLineProduct } from "../purchase.util";
+import { randomId } from "@/shared/utils/common.util";
+import { useAutoResetItem } from "@/shared/hooks";
 
 interface Props {
   form: FormInstance<Purchase>;
-  errorCells: Map<number, Set<string>>;
+  onImportExcel?: () => void;
+  onImportFile?: (file: File) => void;
+  onProductInfo?: (product: Product) => void;
 }
 
-export const PurchaseLineFormList: React.FC<Props> = ({ form, errorCells }) => {
-  const { message } = App.useApp();
+export const PurchaseLineFormList: React.FC<Props> = ({
+  form,
+  onImportExcel,
+  onImportFile,
+  onProductInfo,
+}) => {
   const [defaultProduct, setDefaultProduct] = useAutoResetItem<Product>();
-  const lines: PurchaseLine[] = Form.useWatch("lines", form) || [];
-  const calc = new CalculationUtil();
-  const hideProducts = collectProduct(lines);
+  const [dragging, setDragging] = useState(false);
+  const lines = Form.useWatch("lines", form) || [];
 
-  const columns: FormColumn<PurchaseLine>[] = [
-    {
-      title: "STT",
-      dataIndex: "__idx",
-      width: 40,
-      align: "center",
-      render: ({ index }) => index + 1,
-    },
-    {
-      title: "T�n h�ng h�a",
-      dataIndex: "productName",
-      width: 180,
-      fixed: "left",
-      render: ({ record }) => (
-        <span className="cursor-not-allowed">{resolveByPath(record, ["product", "name"])}</span>
-      ),
-    },
-    {
-      title: "M? h�ng h�a",
-      dataIndex: "productCode",
-      width: 100,
-      fixed: "left",
-      render: ({ record }) => (
-        <span className="cursor-not-allowed">{resolveByPath(record, ["product", "code"])}</span>
-      ),
-    },
-    {
-      title: "�VT",
-      dataIndex: "unitId",
-      width: 100,
-      align: "center",
-      render: ({ record, form, name }) => {
-        const p = record?.product;
-        if (!p) return null;
-        const units = collectUnits(p, record?.unit);
+  const addProduct = (product?: Product | null) => {
+    if (!product || lines.some((line: PurchaseLine) => line.productId === product.id)) return;
 
-        return (
-          <AppSelect
-            className={`text-center w-full`}
-            options={units.map((u) => ({ value: u.id, label: u.name }))}
-            suffixIcon={null}
-            value={record?.unitId}
-            onChange={(value: string) => {
-              const unit = units.find((u: any) => u.id === value);
-              form.setFieldValue(["lines", name, "unitId"], value);
-              form.setFieldValue(["lines", name, "unit"], unit);
-            }}
-            variant="borderless"
-          />
-        );
+    setDefaultProduct(product);
+    const unit = getDefaultPurchaseUnit(product);
+    form.setFieldValue("lines", [
+      ...lines,
+      {
+        tempId: randomId(),
+        productId: product.id,
+        product,
+        unitId: unit?.id || product.baseUnitId,
+        unit,
+        quantity: 1,
+        unitPrice: getDefaultPricePerUnit(product, unit?.id || product.baseUnitId || "") || 0,
       },
-    },
-    {
-      title: "SL",
-      dataIndex: "quantity",
-      width: 100,
-      align: "right",
-      editable: true,
-      render: () => <InputQuantity variant="borderless" />,
-    },
-    {
-      title: "��n gi�",
-      dataIndex: "unitPrice",
-      width: 130,
-      align: "right",
-      editable: true,
-      render: () => <InputMoney variant="borderless" />,
-    },
-    {
-      title: "Th�nh ti?n",
-      dataIndex: "subTotal",
-      width: 130,
-      align: "right",
-      render: ({ record }) => formatMoney(calc.calculateSubTotal(record)),
-    },
-    {
-      title: "%VAT",
-      dataIndex: "taxRate",
-      width: 100,
-      align: "right",
-      editable: true,
-      fillable: true,
-      render: () => <InputPercentage variant="borderless" />,
-    },
-    {
-      title: "Ti?n VAT",
-      dataIndex: "taxAmount",
-      width: 130,
-      align: "right",
-      render: ({ record }) => formatMoney(calc.calculateTaxAmount(record)),
-    },
-    {
-      title: "T?ng ti?n",
-      dataIndex: "grossAmount",
-      width: 130,
-      align: "right",
-      render: ({ record }) => formatMoney(calc.calculateGrossAmount(record)),
-    },
-    {
-      title: "%Hoa h?ng",
-      dataIndex: "commissionRate",
-      width: 100,
-      align: "right",
-      className: "yellow-column",
-      editable: true,
-      fillable: true,
-      render: () => <InputPercentage variant="borderless" />,
-    },
-    {
-      title: "Ti?n hoa h?ng",
-      dataIndex: "commissionAmount",
-      width: 130,
-      align: "right",
-      className: "yellow-column",
-      render: ({ record }) => formatMoney(calc.calculateCommissionAmount(record)),
-    },
-    {
-      title: "Ghi ch�",
-      dataIndex: "note",
-      width: 150,
-      editable: true,
-      render: () => <Input placeholder="Nh?p ghi ch�" variant="borderless" />,
-    },
-  ];
+    ]);
+  };
+
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setDragging(false);
+    const file = event.dataTransfer.files?.[0];
+    if (file) onImportFile?.(file);
+  };
 
   return (
-    <div className="mb-4 px-6">
-      <FormListTable
-        title="Danh s�ch h�ng h�a"
-        form={form}
-        fieldName="lines"
-        sortable
-        columns={columns}
-        records={lines}
-        errorCells={errorCells}
-        fillableColumns={["taxRate", "commissionRate"]}
-        renderAdd={(add) => (
-          <ProductMultipleSelect
-            value={defaultProduct ? [defaultProduct.id] : undefined}
-            defaultData={defaultProduct ? [defaultProduct] : undefined}
-            query={{ sortBy: "type", sortOrder: SortOrder.ASC }}
-            placeholder="T?m ki?m v� ch?n h�ng h�a �? th�m"
-            hideOptions={hideProducts}
-            prefix={<MagnifyingGlassIcon className="w-6 h-6 text-secondary" />}
-            suffixIcon={null}
-            onChangeData={(data) => {
-              const item = data?.[0];
-              setDefaultProduct(item);
-              if (!item) return;
+    <div className="flex h-full min-h-0 flex-1 flex-col px-4 pb-4">
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <ProductAddSelect
+          value={defaultProduct?.id}
+          className="w-[650px]"
+          placeholder="Tìm mã hoặc tên hàng để thêm"
+          onChangeData={addProduct}
+        />
+        <Button icon={<UploadOutlined />} onClick={onImportExcel}>
+          Thêm từ Excel
+        </Button>
+      </div>
 
-              add({
-                tempId: randomId(),
-                productId: item.id,
-                product: item,
-                unitId: getDefaultPurchaseUnit(item)?.id || item.baseUnitId,
-                unit: getDefaultPurchaseUnit(item),
-                unitPrice: item.price,
-                taxRate: item.taxRate,
-              });
-            }}
-          />
-        )}
-        renderSummary={() => {
-          const total = calc.calculatePurchaseTotal(lines);
-          return (
-            <>
-              <td className="border border-l-0 border-b-0 text-center" colSpan={4}>
-                <span className="font-semibold">T?ng</span>
-              </td>
-              <td className="border border-b-0 text-end px-3 font-semibold">
-                {formatQuantity(total.quantity)}
-              </td>
-              <td className="border border-b-0" />
-              <td className="border border-b-0 text-end">
-                <span className="px-3">{formatMoney(total.subTotal)}</span>
-              </td>
-              <td className="border border-b-0" />
-              <td className="px-3 border border-b-0 text-end">{formatMoney(total.taxAmount)}</td>
-              <td className="border border-b-0 text-end text-primary font-semibold">
-                <span className="px-3">{formatMoney(total.grossAmount)}</span>
-              </td>
-              <td className="border border-b-0" />
-              <td className="px-3 border border-b-0 text-end text-primary font-semibold">
-                {formatMoney(total.totalCommissionAmount)}
-              </td>
-              <td className="border border-b-0" />
-            </>
-          );
-        }}
-        onKeyDown={makeFormListEnterHandler(
-          { type: "select", message: "Vui l?ng ch?n h�ng h�a ? � t?m ki?m �? th�m v�o ��n" },
-          { messageApi: message },
-        )}
-      />
+      <div className="min-h-0 flex-1 overflow-x-auto overflow-y-auto rounded-md">
+        <table className="w-full min-w-[1090px] table-auto border-collapse text-sm">
+          <colgroup>
+            <col style={{ width: 55 }} />
+            <col style={{ width: 140 }} />
+            <col style={{ width: 280 }} />
+            <col style={{ width: 140 }} />
+            <col style={{ width: 120 }} />
+            <col style={{ width: 150 }} />
+            <col style={{ width: 140 }} />
+            <col style={{ width: 48 }} />
+          </colgroup>
+          <thead className="bg-primary/20 text-gray-900">
+            <tr>
+              <th className="px-2 py-2 text-center font-semibold">STT</th>
+              <th className="px-2 py-2 text-left font-semibold">Mã hàng</th>
+              <th className="px-2 py-2 text-left font-semibold">Tên hàng</th>
+              <th className="px-2 py-2 text-left font-semibold">ĐVT</th>
+              <th className="px-2 py-2 text-right font-semibold">Số lượng</th>
+              <th className="px-2 py-2 text-right font-semibold">Đơn giá</th>
+              <th className="px-2 py-2 text-right font-semibold">Thành tiền</th>
+              <th className="px-2 py-2" />
+            </tr>
+          </thead>
+          <Form.List name="lines">
+            {(fields, { remove }) => (
+              <tbody>
+                {fields.map((field, index) => {
+                  const line = lines[field.name] as PurchaseLine | undefined;
+                  const product = getLineProduct(line);
+                  const units = line?.product ? collectUnits(line.product, line.unit) : [];
+                  const total = Number(line?.quantity || 0) * Number(line?.unitPrice || 0);
+
+                  return (
+                    <tr key={field.key} className="border-b border-slate-200 dark:border-slate-700">
+                      <td className="px-2 py-2 align-top text-center text-gray-500">{index + 1}</td>
+                      <td className="px-2 py-2 align-top font-mono text-blue-600">
+                        {product.code || "—"}
+                      </td>
+                      <td className="min-w-0 px-2 py-2 align-top">
+                        <div className="flex items-center gap-1">
+                          <span className="truncate" title={product.name}>
+                            {product.name || "—"}
+                          </span>
+                          {line?.product && (
+                            <Button
+                              type="text"
+                              size="small"
+                              className="!h-5 !w-5 !p-0 !text-slate-500 hover:!text-primary"
+                              icon={<InfoCircleOutlined />}
+                              title="Xem chi tiết hàng hóa"
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                onProductInfo?.(line.product as Product);
+                              }}
+                            />
+                          )}
+                        </div>
+                        <Form.Item name={[field.name, "note"]} noStyle>
+                          <Input
+                            variant="borderless"
+                            className="!h-5 !w-full !p-0 !text-xs !italic"
+                            placeholder="Ghi chú..."
+                          />
+                        </Form.Item>
+                      </td>
+                      <td className="px-2 py-2 align-top">
+                        <Form.Item name={[field.name, "unitId"]} noStyle>
+                          <Select
+                            className="w-full"
+                            options={units.map((unit) => ({ value: unit.id, label: unit.name }))}
+                            onChange={(unitId) => {
+                              const unit = units.find((item) => item.id === unitId);
+                              form.setFieldValue(["lines", field.name, "unit"], unit);
+                            }}
+                          />
+                        </Form.Item>
+                      </td>
+                      <td className="px-2 py-2 align-top">
+                        <Form.Item
+                          name={[field.name, "quantity"]}
+                          noStyle
+                          rules={[{ required: true, type: "number", min: 0.0001 }]}
+                        >
+                          <InputQuantity />
+                        </Form.Item>
+                      </td>
+                      <td className="px-2 py-2 align-top">
+                        <Form.Item name={[field.name, "unitPrice"]} noStyle>
+                          <InputMoney />
+                        </Form.Item>
+                      </td>
+                      <td className="px-2 py-2 align-top text-right font-medium">
+                        {formatVnd(total)}
+                      </td>
+                      <td className="px-2 py-2 align-top text-right">
+                        <Button
+                          type="text"
+                          danger
+                          title="Xóa hàng hóa"
+                          icon={<DeleteOutlined />}
+                          onClick={() => remove(field.name)}
+                        />
+                      </td>
+                    </tr>
+                  );
+                })}
+
+                {fields.length === 0 && (
+                  <tr>
+                    <td colSpan={8} className="h-[280px] border-b border-slate-200 p-0 dark:border-slate-700">
+                      <div
+                        className={`flex h-full min-h-[280px] items-center justify-center transition-colors ${dragging ? "bg-primary/10" : "bg-white"}`}
+                        onDragEnter={(event) => {
+                          event.preventDefault();
+                          setDragging(true);
+                        }}
+                        onDragOver={(event) => event.preventDefault()}
+                        onDragLeave={(event) => {
+                          if (event.currentTarget === event.target) setDragging(false);
+                        }}
+                        onDrop={handleDrop}
+                      >
+                        <div className="flex flex-col items-center gap-3 text-center">
+                          <InboxOutlined className="text-4xl text-primary" />
+                          <div className="font-semibold text-gray-800">Thêm sản phẩm từ file Excel</div>
+                          <div className="text-sm text-slate-500">
+                            Kéo thả file Excel vào đây hoặc chọn file dữ liệu
+                          </div>
+                          <Button type="primary" icon={<UploadOutlined />} onClick={onImportExcel}>
+                            Chọn file dữ liệu
+                          </Button>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            )}
+          </Form.List>
+        </table>
+      </div>
     </div>
   );
 };

@@ -6,12 +6,12 @@ import { IncomeExpensePage } from "@/modules/incomeExpense";
 import { InventoryAdjustmentPage } from "@/modules/inventoryAdjustment";
 import { InventoryPage } from "@/modules/inventory";
 import {
-  PurchasePage,
   PurchaseReturnPage,
   SalePage,
   SaleReturnPage,
   PosPage,
 } from "@/modules/order";
+import { PurchasePage } from "@/modules/purchase";
 import { CustomerPage, ShipperPage, SupplierPage } from "@/modules/partner";
 import { ProductPage, ProductPriceHistoryPage } from "@/modules/product";
 import { RolePage } from "@/modules/role";

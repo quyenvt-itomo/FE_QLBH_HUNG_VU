@@ -14,6 +14,7 @@ import { AddSelect } from "@/shared/components";
 import { PartnerAddUpdateModal } from "./PartnerAddUpdateModal";
 import { CustomerAddModal } from "./CustomerAddModal";
 import { useEffect, useState } from "react";
+import SupplierAddUpdateModal from "./SupplierAddUpdateModal";
 
 const columns: DropdownColumn<Partner>[] = [
   { label: "Tên đối tác", dataIndex: "name", className: "w-64" },
@@ -216,6 +217,77 @@ export const CustomerAddSelect: React.FC<PartnerSelectProps> = ({
       showAddButton={!!create}
       modal={
         <CustomerAddModal
+          open={open}
+          errors={errors}
+          loading={creating}
+          onAdd={create}
+          onClose={() => setOpen(false)}
+        />
+      }
+      onOpen={() => setOpen(true)}
+      {...rest}
+    />
+  );
+};
+
+export const SupplierAddSelect: React.FC<PartnerSelectProps> = ({
+  value,
+  defaultData,
+  query,
+  onChange,
+  onChangeData,
+  onFocus,
+  ...rest
+}) => {
+  const [open, setOpen] = useState(false);
+  const { errors, creating, create, newItem } = useSupplierStore(
+    { isLocked: true, type: PartnerType.SUPPLIER },
+    () => setOpen(false),
+  );
+  const { list, loading, setKeywordTemp, unlock, handlePopupScroll } = useRemoteSelect<
+    Partner,
+    PartnerQuery
+  >({
+    defaultData,
+    queryHook: useSupplierStore,
+    buildParams: ({ keyword, page, isLocked }) => ({
+      keyword,
+      page,
+      size: 10,
+      isLocked,
+      ...query,
+      type: PartnerType.SUPPLIER,
+    }),
+    resetPageDeps: [query],
+  });
+
+  useEffect(() => {
+    if (!newItem) return;
+    onChange?.(newItem.id);
+    onChangeData?.(newItem);
+  }, [newItem, onChange, onChangeData]);
+
+  return (
+    <AddSelect<Partner>
+      options={list}
+      columns={columns}
+      value={value}
+      loading={loading}
+      onSearch={setKeywordTemp}
+      onPopupScroll={handlePopupScroll}
+      onChange={(id) => {
+        onChange?.(id);
+        onChangeData?.(list.find((item) => item.id === id));
+      }}
+      onFocus={(event) => {
+        unlock();
+        onFocus?.(event);
+      }}
+      placeholder="Chọn nhà cung cấp"
+      disabled={rest.disabled}
+      showAddButton={!!create}
+      modal={
+        <SupplierAddUpdateModal
           open={open}
           errors={errors}
           loading={creating}
