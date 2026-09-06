@@ -39,7 +39,7 @@ export const OrderLineTable: React.FC<Props> = ({
   <div className="min-h-0 flex-1 overflow-auto">
     <table className="w-full min-w-[930px] table-auto border-collapse text-sm">
       <colgroup>
-        <col style={{ width: 58 }} />
+        <col style={{ width: 52 }} />
         <col style={{ width: 20 }} />
         <col style={{ width: 120 }} />
         <col style={{ width: 40 }} />
@@ -51,7 +51,7 @@ export const OrderLineTable: React.FC<Props> = ({
       </colgroup>
       <thead className="sticky top-0 z-10 border-b bg-white">
         <tr>
-          <th className="px-3 py-2 text-center font-semibold text-slate-600">STT</th>
+          <th className="px-1 py-2 text-center font-semibold text-slate-600">STT</th>
           <th />
           <th className="px-3 py-2 text-left font-semibold uppercase text-slate-600">Mã hàng</th>
           <th />
@@ -76,7 +76,7 @@ export const OrderLineTable: React.FC<Props> = ({
               key={line.id}
               className="border-b border-gray-200 align-top bg-white transition-all ease-in-out"
             >
-              <td className="px-3 py-2 text-center text-gray-500">{index + 1}</td>
+              <td className="px-1 py-2 text-center text-gray-500">{index + 1}</td>
               <td className="px-0.5 py-1">
                 <Button
                   type="text"

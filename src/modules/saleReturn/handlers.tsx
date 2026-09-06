@@ -1,7 +1,10 @@
 import { App } from "antd";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { HandlersInput } from "@/shared/interfaces/common";
 import { privateRoutesName } from "@/shared/constants/routerName";
+import { RootState } from "@/shared/stores";
+import { removeOrderCache } from "@/shared/stores/orderCache.slice";
 import { OrderStatus } from "./model";
 import { SaleReturn } from "./model";
 
@@ -20,6 +23,14 @@ export const useSaleReturnHandlers = ({
 }: Props) => {
   const { modal } = App.useApp();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const cachedOrders = useSelector((state: RootState) => state.OrderCache.cachedOrders);
+
+  const removeCachedOrder = (sourceId: string) => {
+    Object.values(cachedOrders)
+      .filter((cache) => cache.id === sourceId || cache.sourceId === sourceId)
+      .forEach((cache) => dispatch(removeOrderCache(cache.id)));
+  };
 
   const withDetails = (record: SaleReturn, callback: (data: SaleReturn) => void) => {
     if (!getById) return callback(record);
@@ -44,7 +55,7 @@ export const useSaleReturnHandlers = ({
       okText: "Xóa",
       okButtonProps: { danger: true },
       cancelText: "Hủy",
-      onOk: () => remove(data.id),
+      onOk: () => remove(data.id, { onSuccess: () => removeCachedOrder(data.id) }),
     }));
   } : undefined;
   const handleCancel = cancel ? (record: SaleReturn) => {
@@ -56,7 +67,7 @@ export const useSaleReturnHandlers = ({
       okText: "Hủy phiếu",
       okButtonProps: { danger: true },
       cancelText: "Đóng",
-      onOk: () => cancel(data.id),
+      onOk: () => cancel(data.id).then(() => removeCachedOrder(data.id)),
     }));
   } : undefined;
   const handleEditFromDetail = handleOpenEdit

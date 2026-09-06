@@ -38,13 +38,13 @@ export const QuantityStepper: React.FC<QuantityStepperProps> = ({
 
   return (
     <div
-      className={`inline-flex items-center ${padding} bg-slate-100 dark:bg-slate-800 rounded-full w-full quantity-stepper-input ${className}`}
+      className={`inline-flex items-center ${padding} bg-slate-100 dark:bg-slate-800 rounded-md w-full quantity-stepper-input ${className}`}
       onClick={(e) => e.stopPropagation()}
     >
       <button
         type="button"
         onClick={handleDecrement}
-        className={`${btnSize} rounded-full flex items-center justify-center bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 active:scale-90 transition-transform flex-shrink-0`}
+        className={`${btnSize} rounded flex items-center justify-center bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 active:scale-90 transition-transform flex-shrink-0`}
       >
         <Minus className={`${iconSize} text-primary`} />
       </button>
@@ -67,7 +67,7 @@ export const QuantityStepper: React.FC<QuantityStepperProps> = ({
       <button
         type="button"
         onClick={handleIncrement}
-        className={`${btnSize} rounded-full flex items-center justify-center bg-primary active:scale-90 transition-transform flex-shrink-0`}
+        className={`${btnSize} rounded flex items-center justify-center bg-primary active:scale-90 transition-transform flex-shrink-0`}
       >
         <Plus className={`${iconSize} text-white`} />
       </button>

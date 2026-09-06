@@ -154,3 +154,38 @@ export function getDiscontContent<
 
   return formatMoney(data.discountValue);
 }
+
+export const getCashSuggestions = (paymentDue: number) => {
+  if (!paymentDue || paymentDue <= 0) return [];
+
+  const suggestions = new Set<number>();
+
+  suggestions.add(paymentDue);
+
+  // Các mệnh giá/tổ hợp tiền thực dụng
+  const steps = [10_000, 20_000, 50_000];
+  const smallestStep = steps[0];
+  const firstRoundedAmount = Math.ceil(paymentDue / smallestStep) * smallestStep;
+
+  // Các số tiền tiếp theo vẫn có thể ghép từ mệnh giá 10k/20k/50k.
+  // Ví dụ: 475k -> 480k -> 490k -> 500k.
+  suggestions.add(firstRoundedAmount + smallestStep);
+
+  // Tìm các giá trị tiếp theo bằng cách cộng các mệnh giá
+  // nhưng không tạo chuỗi cộng dồn từ option trước.
+  for (const step of steps) {
+    const amount = Math.ceil(paymentDue / step) * step;
+
+    suggestions.add(amount);
+  }
+
+  // Các mốc tròn 100k
+  suggestions.add(Math.ceil(paymentDue / 100_000) * 100_000);
+
+  // Các mốc 500k
+  if (paymentDue < 500_000) {
+    suggestions.add(500_000);
+  }
+
+  return [...suggestions].filter((amount) => amount >= paymentDue).sort((a, b) => a - b);
+};

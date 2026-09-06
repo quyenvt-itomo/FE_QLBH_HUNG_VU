@@ -51,16 +51,19 @@ export const InputPercentage = React.forwardRef<any, InputPercentageProps>(
       return (
         <AutoComplete
           options={suggestionItems}
-          value={value == null ? "" : String(value)}
-          onChange={(nextValue) => onChange?.(parsePercentage(nextValue, min, max))}
-          onSelect={(selectedValue) => onChange?.(parsePercentage(String(selectedValue), min, max))}
+          onSelect={(selectedValue) => {
+            onChange?.(parsePercentage(String(selectedValue), min, max));
+          }}
           filterOption={false}
           variant="borderless"
-          className="w-full"
+          className="w-full percentage-autocomplete"
         >
           <InputNumber
             ref={ref}
             value={value}
+            onChange={(nextValue) => {
+              onChange?.(parsePercentage(nextValue == null ? "" : String(nextValue), min, max));
+            }}
             placeholder={placeholder}
             disabled={disabled}
             readOnly={readOnly}

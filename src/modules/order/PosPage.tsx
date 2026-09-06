@@ -499,7 +499,7 @@ export const PosPage = () => {
             onSelect={addProduct}
             className="w-[360px]"
           />
-          <div className="overflow-x-scroll overflow-y-hidden pb-1.5 -mb-1.5 scrollbar-dark [scrollbar-gutter:stable]">
+          <div className="overflow-x-scroll overflow-y-hidden scrollbar-dark pt-1.5">
             <div className="flex min-w-0 w-fit items-center gap-2 pr-2">
               {caches.map((cache) => {
                 const isActive = cache.id === activeOrder?.id;

@@ -1,7 +1,10 @@
 import { App } from "antd";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { HandlersInput } from "@/shared/interfaces/common";
 import { privateRoutesName } from "@/shared/constants/routerName";
+import { RootState } from "@/shared/stores";
+import { removeOrderCache } from "@/shared/stores/orderCache.slice";
 import { OrderStatus } from "./model";
 import { Sale } from "./model";
 
@@ -22,6 +25,14 @@ export const useSaleHandlers = ({
 }: Props) => {
   const { modal } = App.useApp();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const cachedOrders = useSelector((state: RootState) => state.OrderCache.cachedOrders);
+
+  const removeCachedOrder = (sourceId: string) => {
+    Object.values(cachedOrders)
+      .filter((cache) => cache.id === sourceId || cache.sourceId === sourceId)
+      .forEach((cache) => dispatch(removeOrderCache(cache.id)));
+  };
 
   const withDetails = (record: Sale, callback: (data: Sale) => void) => {
     if (!getById) return callback(record);
@@ -37,35 +48,41 @@ export const useSaleHandlers = ({
   };
 
   const handleOpenAdd = create ? () => openPos() : undefined;
-  const handleOpenDetail = (record: Sale) => withDetails(record, (data) => {
-    setRowData(data);
-    setOpenDetail?.(true);
-  });
+  const handleOpenDetail = (record: Sale) =>
+    withDetails(record, (data) => {
+      setRowData(data);
+      setOpenDetail?.(true);
+    });
   const handleOpenEdit = update ? (record: Sale) => withDetails(record, openPos) : undefined;
-  const handleDelete = remove ? (record: Sale) => {
-    if (record.status !== OrderStatus.DRAFT) return;
-    withDetails(record, (data) => modal.confirm({
-      centered: true,
-      title: "Xóa đơn bán hàng",
-      content: `Bạn có chắc muốn xóa đơn ${data.code}?`,
-      okText: "Xóa",
-      okButtonProps: { danger: true },
-      cancelText: "Hủy",
-      onOk: () => remove(data.id),
-    }));
-  } : undefined;
-  const handleCancel = cancel ? (record: Sale) => {
-    if (record.status === OrderStatus.CANCELED) return;
-    withDetails(record, (data) => modal.confirm({
-      centered: true,
-      title: "Hủy đơn bán hàng",
-      content: `Bạn có chắc muốn hủy đơn ${data.code}?`,
-      okText: "Hủy đơn",
-      okButtonProps: { danger: true },
-      cancelText: "Đóng",
-      onOk: () => cancel(data.id),
-    }));
-  } : undefined;
+  const handleDelete = remove
+    ? (record: Sale) => {
+        modal.confirm({
+          centered: true,
+          title: "Xóa đơn bán hàng",
+          content: `Bạn có chắc muốn xóa đơn ${record.code}?`,
+          okText: "Xóa",
+          okButtonProps: { danger: true },
+          cancelText: "Hủy",
+          onOk: () => remove(record.id, { onSuccess: () => removeCachedOrder(record.id) }),
+        });
+      }
+    : undefined;
+  const handleCancel = cancel
+    ? (record: Sale) => {
+        if (record.status === OrderStatus.CANCELED) return;
+        withDetails(record, (data) =>
+          modal.confirm({
+            centered: true,
+            title: "Hủy đơn bán hàng",
+            content: `Bạn có chắc muốn hủy đơn ${data.code}?`,
+            okText: "Hủy đơn",
+            okButtonProps: { danger: true },
+            cancelText: "Đóng",
+            onOk: () => cancel(data.id).then(() => removeCachedOrder(data.id)),
+          }),
+        );
+      }
+    : undefined;
   const handleEditFromDetail = handleOpenEdit
     ? (record: Sale) => {
         setOpenDetail?.(false);
@@ -73,5 +90,12 @@ export const useSaleHandlers = ({
       }
     : undefined;
 
-  return { handleOpenAdd, handleOpenDetail, handleOpenEdit, handleDelete, handleCancel, handleEditFromDetail };
+  return {
+    handleOpenAdd,
+    handleOpenDetail,
+    handleOpenEdit,
+    handleDelete,
+    handleCancel,
+    handleEditFromDetail,
+  };
 };

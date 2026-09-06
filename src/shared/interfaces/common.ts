@@ -224,7 +224,10 @@ export interface HandlersInput<T extends Entity> {
     | ((data: Partial<T>[], opts?: { onSuccess?: () => void }) => void);
 
   update?: (data: Partial<T>, opts?: { onSuccess?: () => void }) => void;
-  remove?: (id: string | PayloadWithSubId) => void;
+  remove?: (
+    id: string | PayloadWithSubId,
+    opts?: { onSuccess?: () => void },
+  ) => void;
   cancel?: (id: string, reason?: string) => Promise<void>;
   getById?: (
     id: string | PayloadWithSubId,

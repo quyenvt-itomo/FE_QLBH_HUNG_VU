@@ -14,12 +14,15 @@ export const SaleTable: React.FC<Props> = ({ onViewDetail, isReturn = false, ...
   const columns: ColumnsConfigType<Sale> = useMemo(
     () => [
       ...(isReturn
-        ? [{
-            title: "Đơn bán gốc",
-            key: "refOrder",
-            width: 140,
-            render: (record: Sale) => (record as any).refOrder?.code || (record as any).refOrderId || "—",
-          }]
+        ? [
+            {
+              title: "Đơn bán gốc",
+              key: "refOrder",
+              width: 140,
+              render: (record: Sale) =>
+                (record as any).refOrder?.code || (record as any).refOrderId || "—",
+            },
+          ]
         : []),
       {
         title: "Mã đơn bán",
@@ -84,7 +87,13 @@ export const SaleTable: React.FC<Props> = ({ onViewDetail, isReturn = false, ...
         width: 130,
         align: "right",
         render: (value, record) =>
-          !value ? "—" : record.isFreeShipping ? <span className="line-through text-gray-400">{formatMoney(value)}</span> : formatMoney(value),
+          !value ? (
+            "—"
+          ) : record.isFreeShipping ? (
+            <span className="line-through text-gray-400">{formatMoney(value)}</span>
+          ) : (
+            formatMoney(value)
+          ),
       },
       {
         title: isReturn ? "Tổng tiền trả" : "Tổng đơn",
@@ -100,7 +109,7 @@ export const SaleTable: React.FC<Props> = ({ onViewDetail, isReturn = false, ...
         key: "paidAmount",
         width: 150,
         align: "right",
-        render: (record) =>
+        render: (record: Sale) =>
           formatMoney(
             (record.incomeExpenses || []).reduce(
               (total, item) => total + Math.max(0, Number(item.amount || 0)),
@@ -112,7 +121,7 @@ export const SaleTable: React.FC<Props> = ({ onViewDetail, isReturn = false, ...
         title: "Trạng thái",
         dataIndex: "status",
         key: "status",
-        width: 120,
+        width: 100,
         align: "center",
         fixed: "right",
         render: (value: OrderStatus) => <SaleStatusTag value={value} isReturn={isReturn} />,

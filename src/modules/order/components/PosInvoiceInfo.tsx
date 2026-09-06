@@ -13,7 +13,7 @@ import { bank_bin_map } from "@/shared/constants/option/bank";
 import { DiscountTypeEnum } from "@/shared/constants/enum";
 import { InputMoney, Label, OrderValueInput } from "@/shared/components";
 import { CachedOrder, PosOrderType } from "@/shared/stores/orderCache.slice";
-import { formatMoney } from "@/shared/utils/number.util";
+import { formatMoney, getCashSuggestions } from "@/shared/utils/number.util";
 import { QrPay } from "@/shared/utils/qrcode";
 import QRCode from "qrcode";
 
@@ -65,17 +65,18 @@ export const PosInvoiceInfo: React.FC<Props> = ({
   const bankFund = paymentMode === FundTypeEnum.BANK ? payment?.fund : undefined;
   const paymentDue = Math.max(0, totals.totalAmount);
   const paidAmount = Number(payment?.amount ?? activeOrder.paidAmount ?? 0);
-  const cashAmountOptions = useMemo(() => {
-    if (!paymentDue || paymentDue <= 0) return [];
+  // const cashAmountOptions = useMemo(() => {
+  //   if (!paymentDue || paymentDue <= 0) return [];
 
-    const rounded = Math.ceil(paymentDue / 10_000) * 10_000;
-    const nextStep = rounded < 100_000 ? 10_000 : rounded < 500_000 ? 50_000 : 100_000;
-    const nextHundred = Math.ceil((rounded + nextStep) / 100_000) * 100_000;
+  //   const rounded = Math.ceil(paymentDue / 10_000) * 10_000;
+  //   const nextStep = rounded < 100_000 ? 10_000 : rounded < 500_000 ? 50_000 : 100_000;
+  //   const nextHundred = Math.ceil((rounded + nextStep) / 100_000) * 100_000;
 
-    return [...new Set([paymentDue, rounded, rounded + nextStep, nextHundred, 500_000])].filter(
-      (amount) => amount >= paymentDue,
-    );
-  }, [paymentDue]);
+  //   return [...new Set([paymentDue, rounded, rounded + nextStep, nextHundred, 500_000])].filter(
+  //     (amount) => amount >= paymentDue,
+  //   );
+  // }, [paymentDue]);
+  const cashAmountOptions = useMemo(() => getCashSuggestions(paymentDue), [paymentDue]);
 
   useEffect(() => {
     const bin = bank_bin_map[bankFund?.bank || ""];
@@ -115,8 +116,8 @@ export const PosInvoiceInfo: React.FC<Props> = ({
 
   return (
     <aside className="flex w-[520px] shrink-0 flex-col overflow-y-auto border-l border-gray-200 bg-white">
-      <section className="border-b border-gray-200 p-4">
-        <div className="mb-2 text-xs font-bold uppercase tracking-wide text-gray-500">
+      <section className="border-b border-gray-200 px-4 py-2">
+        <div className="mb-1 text-xs font-bold uppercase tracking-wide text-gray-500">
           Khách hàng
         </div>
         <div ref={customerSelectRef}>
@@ -221,6 +222,11 @@ export const PosInvoiceInfo: React.FC<Props> = ({
               max={paymentMode === FundTypeEnum.BANK ? paymentDue : undefined}
               value={paidAmount}
               onChange={(amount) => updatePayment({ amount: Number(amount || 0) })}
+              placeholder={
+                type === OrderType.SALE_RETURN
+                  ? "Nhập số tiền hoàn khách"
+                  : "Nhập số tiền khách thanh toán"
+              }
             />
           </div>
         </div>
