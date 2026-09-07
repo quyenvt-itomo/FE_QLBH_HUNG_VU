@@ -120,7 +120,7 @@ export const SaleTable: React.FC<Props> = ({ dataSource, summaryData, onViewDeta
         title: "Trạng thái",
         dataIndex: "status",
         key: "status",
-        width: 100,
+        width: 80,
         align: "center",
         fixed: "right",
         render: (value: OrderStatus) => <SaleStatusTag value={value} />,

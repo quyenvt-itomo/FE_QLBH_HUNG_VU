@@ -61,7 +61,7 @@ export const UserTable: React.FC<ObjectTableProps> = ({ ...rest }) => {
       title: "Trạng thái",
       dataIndex: "isActive",
       key: "isActive",
-      width: 100,
+      width: 80,
       fixed: "right",
       render: (isActive: boolean) => <UserActiveTag value={isActive} />,
     },

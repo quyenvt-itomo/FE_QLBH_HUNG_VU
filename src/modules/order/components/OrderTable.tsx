@@ -65,7 +65,7 @@ export const OrderTable: React.FC<OrderTableProps> = ({ onViewDetail, ...rest })
       title: "Trạng thái",
       dataIndex: "isCompleted",
       key: "status",
-      width: 100,
+      width: 80,
       align: "center",
       fixed: "right",
       render: (v: boolean) =>

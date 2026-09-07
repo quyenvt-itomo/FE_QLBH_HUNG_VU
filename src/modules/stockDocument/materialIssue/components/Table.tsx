@@ -26,7 +26,7 @@ export const Table: React.FC<ObjectTableProps> = ({ onViewDetail, ...rest }) => 
       {
         title: "Trạng thái",
         key: "status",
-        width: 120,
+        width: 80,
         align: "center",
         render: (r: StockDocument) => stockDocumentStatusMap[r.status] || r.status,
       },
