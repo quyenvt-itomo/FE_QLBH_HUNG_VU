@@ -1,6 +1,7 @@
 import { AutoComplete, Input, InputNumber, InputNumberProps } from "antd";
 import { formatPercentage } from "@/shared/utils/number.util";
 import React from "react";
+import { AppSelect } from "../select";
 
 interface InputPercentageProps extends Omit<
   InputNumberProps<number>,
@@ -41,38 +42,25 @@ export const InputPercentage = React.forwardRef<any, InputPercentageProps>(
     const suggestionItems = (suggestions || [])
       .filter((item, index, values) => Number.isFinite(item) && values.indexOf(item) === index)
       .map((item) => ({
-        value: String(item),
-        label: `${item}%`,
+        value: item,
+        label: `${item}`,
       }));
 
-    const inputClassName = `w-full ${className ?? ""} ${notRightAlign ? "not-right" : ""}`;
+    const inputClassName = `w-full ${className ?? ""} ${notRightAlign ? "not-right" : "text-right"}`;
 
     if (suggestionItems.length) {
       return (
-        <AutoComplete
+        <AppSelect
+          placeholder={placeholder}
           options={suggestionItems}
-          onSelect={(selectedValue) => {
-            onChange?.(parsePercentage(String(selectedValue), min, max));
-          }}
-          filterOption={false}
           variant="borderless"
-          className="w-full percentage-autocomplete"
-        >
-          <InputNumber
-            ref={ref}
-            value={value}
-            onChange={(nextValue) => {
-              onChange?.(parsePercentage(nextValue == null ? "" : String(nextValue), min, max));
-            }}
-            placeholder={placeholder}
-            disabled={disabled}
-            readOnly={readOnly}
-            status={status}
-            variant={variant}
-            className={inputClassName}
-            {...rest}
-          />
-        </AutoComplete>
+          className={inputClassName}
+          suffixIcon={null}
+          showSearch={false}
+          value={value}
+          onChange={(nextValue) => onChange?.(nextValue == null ? 0 : nextValue)}
+          disabled={disabled}
+        />
       );
     }
 

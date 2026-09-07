@@ -18,6 +18,8 @@ export interface ApiRequestQuery {
   isLockedReport?: boolean;
   isLockedTransaction?: boolean;
   useFullDetail?: boolean;
+  /** Filter a list request by a set of entity ids. */
+  ids?: string[];
 }
 
 export interface PayloadWithSubId {
@@ -70,16 +72,21 @@ export type SummaryKey =
   | "totalUnread"
 
   // Order / Sale
-  | "totalSubTotal"
-  | "totalLineDiscountAmount"
-  | "totalOrderDiscountAmount"
+  | "totalGrossAmount"
+  | "totalDiscountAmount"
   | "totalNetAmount"
   | "totalTaxAmount"
   | "totalAmount"
-  | "totalSurchargeAmount"
   | "totalCost"
+  | "totalReturnGrossAmount"
+  | "totalReturnDiscountAmount"
+  | "totalReturnNetAmount"
+  | "totalReturnTaxAmount"
+  | "totalReturnAmount"
+  | "totalReturnCost"
+  | "totalSettlementAmount"
   | "totalPaidAmount"
-  | "totalCustomerCount"
+  | "totalActualShippingFee"
 
   // Inventory
   | "openingAmount"

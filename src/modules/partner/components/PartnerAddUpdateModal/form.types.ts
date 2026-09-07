@@ -7,4 +7,6 @@ export interface PartnerFormPartialProps {
   editData?: Partner;
 }
 
-export type PartnerFormModalProps = AddUpdateModalProps<Partner>;
+export type PartnerFormModalProps = AddUpdateModalProps<Partner> & {
+  defaultPhone?: string;
+};

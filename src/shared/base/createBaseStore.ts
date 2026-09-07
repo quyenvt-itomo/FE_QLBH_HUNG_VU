@@ -38,9 +38,11 @@ export type BaseStoreReturn<T> = {
     payload: string | PayloadWithSubId,
     opts?: { onSuccess?: (data: T | null) => void },
   ) => void;
-  create?: (data: Partial<T>, opts?: { onSuccess?: () => void }) => void;
-  createMany?: (data: Partial<T>[], opts?: { onSuccess?: () => void }) => void;
-  update?: (data: Partial<T>, opts?: { onSuccess?: () => void }) => void;
+  /** Fetch a non-paginated, full-detail list without changing the current list query. */
+  getAll?: (params?: any) => Promise<T[]>;
+  create?: (data: Partial<T>, opts?: { onSuccess?: (data?: T) => void }) => void;
+  createMany?: (data: Partial<T>[], opts?: { onSuccess?: (data?: T[]) => void }) => void;
+  update?: (data: Partial<T>, opts?: { onSuccess?: (data?: T) => void }) => void;
   remove?: (payload: string | PayloadWithSubId, opts?: { onSuccess?: () => void }) => void;
   removeMany?: (ids: string[], opts?: { onSuccess?: () => void }) => void;
 
@@ -111,14 +113,14 @@ export function createBaseStore<
       mutationFn: async (data: Partial<T>) => await postData(config.apiUrl, data),
     });
     const create = can("create")
-      ? (data: Partial<T>, opts?: { onSuccess?: () => void }) => {
+      ? (data: Partial<T>, opts?: { onSuccess?: (createdItem: T) => void }) => {
           createMutation.mutate(data, {
             onSuccess: (res) => {
               setNewItem(res.data || null);
               queryClient.invalidateQueries({
                 queryKey: [config.key],
               });
-              opts?.onSuccess?.();
+              if (res.data) opts?.onSuccess?.(res.data);
               onSuccess?.();
               notify("success", config.messages?.ADD || "Thêm mới thành công");
             },
@@ -132,13 +134,13 @@ export function createBaseStore<
       mutationFn: async (data: Partial<T>[]) => await postData(`${config.apiUrl}/bulk`, { data }),
     });
     const createMany = can("create")
-      ? (data: Partial<T>[], opts?: { onSuccess?: () => void }) => {
+      ? (data: Partial<T>[], opts?: { onSuccess?: (createdItems: T[]) => void }) => {
           createManyMutation.mutate(data, {
             onSuccess: (res) => {
               queryClient.invalidateQueries({
                 queryKey: [config.key],
               });
-              opts?.onSuccess?.();
+              if (res.data) opts?.onSuccess?.(res.data);
               onSuccess?.();
               notify("success", config.messages?.ADD || "Thêm mới thành công");
             },
@@ -152,14 +154,14 @@ export function createBaseStore<
       mutationFn: async (data: Partial<T>) => await putData(`${config.apiUrl}/${data.id}`, data),
     });
     const update = can("update")
-      ? (data: Partial<T>, opts?: { onSuccess?: () => void }) => {
+      ? (data: Partial<T>, opts?: { onSuccess?: (updatedItem: T) => void }) => {
           updateMutation.mutate(data, {
             onSuccess: (res) => {
               setNewItem(res.data || null);
               queryClient.invalidateQueries({
                 queryKey: [config.key],
               });
-              opts?.onSuccess?.();
+              if (res.data) opts?.onSuccess?.(res.data);
               onSuccess?.();
               notify("success", config.messages?.UPDATE || "Cập nhật thành công");
             },
@@ -251,6 +253,13 @@ export function createBaseStore<
         }
       : undefined;
 
+    const getAll = can("read")
+      ? async (params?: any): Promise<T[]> => {
+          const response = await getData<T[]>(config.apiUrl, formatPayload(params));
+          return response.data || [];
+        }
+      : undefined;
+
     // Handle error for query
     useEffect(() => {
       if (!query.error) return;
@@ -304,6 +313,7 @@ export function createBaseStore<
 
       // actions
       getById,
+      getAll,
       create,
       createMany,
       update,

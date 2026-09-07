@@ -17,6 +17,7 @@ export const QuantityStepper: React.FC<QuantityStepperProps> = ({
   size = "md",
   className = "",
   max,
+  disabled = false,
   ...rest
 }) => {
   const btnSize = size === "sm" ? "!w-5 !h-5" : "!w-6 !h-6";
@@ -43,8 +44,9 @@ export const QuantityStepper: React.FC<QuantityStepperProps> = ({
     >
       <button
         type="button"
+        disabled={disabled}
         onClick={handleDecrement}
-        className={`${btnSize} rounded flex items-center justify-center bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 active:scale-90 transition-transform flex-shrink-0`}
+        className={`${btnSize} rounded flex items-center justify-center bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 active:scale-90 transition-transform flex-shrink-0 disabled:cursor-not-allowed disabled:opacity-50`}
       >
         <Minus className={`${iconSize} text-primary`} />
       </button>
@@ -55,6 +57,7 @@ export const QuantityStepper: React.FC<QuantityStepperProps> = ({
           className={`${valueClass} flex-1 bg-transparent text-primary dark:text-white !text-center font-semibold`}
           onChange={onChange}
           max={max}
+          disabled={disabled}
           {...rest}
         />
       ) : (
@@ -66,8 +69,9 @@ export const QuantityStepper: React.FC<QuantityStepperProps> = ({
       )}
       <button
         type="button"
+        disabled={disabled}
         onClick={handleIncrement}
-        className={`${btnSize} rounded flex items-center justify-center bg-primary active:scale-90 transition-transform flex-shrink-0`}
+        className={`${btnSize} rounded flex items-center justify-center bg-primary active:scale-90 transition-transform flex-shrink-0 disabled:cursor-not-allowed disabled:opacity-50`}
       >
         <Plus className={`${iconSize} text-white`} />
       </button>

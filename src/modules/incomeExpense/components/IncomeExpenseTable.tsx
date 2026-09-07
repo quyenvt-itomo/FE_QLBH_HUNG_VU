@@ -3,7 +3,7 @@ import { Tag } from "antd";
 import { ObjectTableProps, TableColumnConfig } from "@/shared/components/table";
 import { formatDateTimeDDMMYYYY } from "@/shared/utils/date.util";
 import { formatMoney } from "@/shared/utils/number.util";
-import { IncomeExpense, IncomeExpenseTypeEnum, incomeExpenseTypeMap } from "../incomeExpense.model";
+import { IncomeExpense, IncomeExpenseStatusEnum, IncomeExpenseTypeEnum, incomeExpenseStatusMap, incomeExpenseTypeMap } from "../incomeExpense.model";
 
 export const IncomeExpenseTable: React.FC<ObjectTableProps> = ({ ...rest }) => {
   const columns = useMemo(
@@ -17,6 +17,18 @@ export const IncomeExpenseTable: React.FC<ObjectTableProps> = ({ ...rest }) => {
         width: 110,
         align: "center" as const,
         render: (value: IncomeExpenseTypeEnum) => <Tag color={value === IncomeExpenseTypeEnum.INCOME ? "success" : "error"}>{incomeExpenseTypeMap[value] || value}</Tag>,
+      },
+      {
+        title: "Trạng thái",
+        dataIndex: "status",
+        key: "status",
+        width: 120,
+        align: "center" as const,
+        render: (value: IncomeExpenseStatusEnum) => (
+          <Tag color={value === IncomeExpenseStatusEnum.COMPLETED ? "success" : value === IncomeExpenseStatusEnum.CANCELED ? "error" : "warning"}>
+            {incomeExpenseStatusMap[value] || value}
+          </Tag>
+        ),
       },
       { title: "Số tiền", dataIndex: "amount", key: "amount", width: 160, align: "right" as const, render: (value: number, record: IncomeExpense) => <span className={record.type === IncomeExpenseTypeEnum.INCOME ? "font-medium text-emerald-600" : "font-medium text-red-600"}>{formatMoney(value)}</span> },
       { title: "Danh mục", key: "category", width: 180, render: (_: unknown, record: IncomeExpense) => record.category?.name || record.categorySnapshot?.name || "—" },

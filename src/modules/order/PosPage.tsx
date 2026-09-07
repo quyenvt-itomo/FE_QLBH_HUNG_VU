@@ -1,18 +1,29 @@
-import { App, Button, Empty, Input, Layout, Spin } from "antd";
-import { ArrowLeftOutlined, PlusOutlined } from "@ant-design/icons";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { App, Button, Layout, Spin } from "antd";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-
-import { Product } from "@/modules/product/product.model";
 import { useProductStore } from "@/modules/product/product.store";
-import { collectUnits, getDefaultPricePerUnit } from "@/modules/product/product.util";
 import { useSaleStore } from "@/modules/sale/store";
 import { useSaleReturnStore } from "@/modules/saleReturn/store";
 import { Order, OrderType } from "./order.model";
-import { OrderProductSelect } from "./components/OrderProductSelect";
-import { OrderLineTable, PosLine } from "./components/OrderLineTable";
-import { PosInvoiceInfo, PosPayment } from "./components/PosInvoiceInfo";
+import { PosContent } from "./components/PosContent";
+import { PosLine } from "./components/OrderLineTable";
+import { PosPayment } from "./components/PosInvoiceInfo";
+import { PosActionMenu } from "./components/PosActionMenu";
+import { PosHeader } from "./components/PosHeader";
+import { SaleReturnSourceModal } from "@/modules/saleReturn/components/SaleReturnSourceModal";
+import { importPosLines } from "./pos.import";
+import {
+  calculateTotals,
+  emptyOrder,
+  getAllocatedReturnValue,
+  getLinesGrossAmount,
+  hasCacheChanges,
+} from "./pos.utils";
+import { usePosLineActions } from "./hooks/usePosLineActions";
+import { usePosProductActions } from "./hooks/usePosProductActions";
+import { usePosSubmit } from "./hooks/usePosSubmit";
+import { usePosReturnSource } from "./hooks/usePosReturnSource";
 import {
   addNewCache,
   CachedOrder,
@@ -26,83 +37,18 @@ import { StoreCardLite } from "@/modules/store/components/Card";
 import { icons } from "@/shared/assets/icons";
 import { useGlobalData } from "@/shared/hooks/useGlobalData";
 import { DiscountTypeEnum } from "@/shared/constants/enum";
-import { formatMoney } from "@/shared/utils/number.util";
-import { randomId } from "@/shared/utils/common.util";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { privateRoutesName } from "@/shared/constants/routerName";
 import { FundTypeEnum } from "@/modules/fund/fund.model";
-import { ProductImage } from "@/shared/components";
-import { getMainFile } from "@/shared/utils";
+import { Sale } from "../sale";
+import { SaleA4PrintDocument } from "../sale/components/SaleA4Print";
+import { usePrintHtml } from "@/shared/hooks/usePrintHtml";
 
-type PosLocationState = { order?: Order };
+type PosLocationState = { order?: Order; openSourcePicker?: boolean };
 
 const POS_TYPE_PARAM = "type";
 const POS_EDIT_PARAM = "editId";
 
-const emptyOrder = (type: PosOrderType): Partial<CachedOrder> => ({
-  type,
-  orderAt: new Date().toISOString(),
-  lines: [],
-  returnLines: [],
-  discountType: DiscountTypeEnum.AMOUNT,
-  discountValue: 0,
-  taxType: DiscountTypeEnum.PERCENT,
-  taxValue: 0,
-  returnDiscountType: DiscountTypeEnum.AMOUNT,
-  returnDiscountValue: 0,
-  returnTaxType: DiscountTypeEnum.PERCENT,
-  returnTaxValue: 0,
-  shippingFee: 0,
-  isFreeShipping: true,
-  paymentMode: FundTypeEnum.CASH,
-  incomeExpenses: [{ amount: 0, fundId: null, fund: null }],
-});
-
-const CACHE_META_FIELDS = new Set(["id", "tempId", "label", "mode", "sourceId", "initialOrder"]);
-
-const comparableCacheData = (cache: Partial<CachedOrder>) =>
-  Object.fromEntries(Object.entries(cache).filter(([key]) => !CACHE_META_FIELDS.has(key)));
-
-const hasCacheChanges = (cache: CachedOrder): boolean => {
-  const lines = cache.type === OrderType.SALE_RETURN ? cache.returnLines : cache.lines;
-
-  if (cache.mode === "create") return Boolean(lines?.length);
-  if (!cache.initialOrder) return Boolean(lines?.length || cache.returnLines?.length);
-
-  return (
-    JSON.stringify(comparableCacheData(cache)) !==
-    JSON.stringify(comparableCacheData(cache.initialOrder))
-  );
-};
-
-const getProductPrice = (product: Product) => Number(product.salePrice ?? 0);
-
-const calculateTotals = (lines: PosLine[], order: CachedOrder) => {
-  const grossAmount = lines.reduce(
-    (total, line) => total + Number(line.quantity || 0) * Number(line.unitPrice || 0),
-    0,
-  );
-  const discountValue = Math.max(0, Number(order.discountValue || 0));
-  const discountAmount =
-    order.discountType === DiscountTypeEnum.PERCENT
-      ? Math.min(grossAmount, (grossAmount * discountValue) / 100)
-      : Math.min(grossAmount, discountValue);
-  const netAmount = Math.max(0, grossAmount - discountAmount);
-  const taxValue = Math.max(0, Number(order.taxValue || 0));
-  const taxAmount =
-    order.taxType === DiscountTypeEnum.PERCENT ? (netAmount * taxValue) / 100 : taxValue;
-  const shippingFee = Math.max(0, Number(order.shippingFee || 0));
-  const shippingAmount = order.isFreeShipping === false ? shippingFee : 0;
-
-  return {
-    grossAmount,
-    discountAmount,
-    netAmount,
-    taxAmount,
-    totalAmount: netAmount + taxAmount + shippingAmount,
-  };
-};
-
-export const PosPage = () => {
+export const PosPage: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -110,17 +56,26 @@ export const PosPage = () => {
   const { message, modal } = App.useApp();
   const { currentStore, info, handleSetCurrentStore } = useGlobalData();
   const initializedEdit = useRef<string | null>(null);
+  const initializedLocationOrder = useRef<unknown>(null);
+  const initializedReturnAdjustments = useRef<string | null>(null);
   const customerSelectRef = useRef<HTMLDivElement>(null);
+  const [sourcePickerOpen, setSourcePickerOpen] = useState(false);
+  const {
+    contentRef: printContentRef,
+    printData,
+    handlePrint: printSales,
+  } = usePrintHtml<Sale[]>();
 
   const type: PosOrderType =
     searchParams.get(POS_TYPE_PARAM) === OrderType.SALE_RETURN
       ? OrderType.SALE_RETURN
       : OrderType.SALE;
   const editId = searchParams.get(POS_EDIT_PARAM);
+
   const locationState = location.state as PosLocationState | null;
 
-  const saleStore = useSaleStore({ page: 1, size: 100, isLocked: !currentStore });
-  const saleReturnStore = useSaleReturnStore({ page: 1, size: 100, isLocked: !currentStore });
+  const saleStore = useSaleStore({ page: 1, size: 100, isLocked: true });
+  const saleReturnStore = useSaleReturnStore({ page: 1, size: 100, isLocked: true });
   const orderStore = type === OrderType.SALE ? saleStore : saleReturnStore;
   const productStore = useProductStore({ page: 1, size: 16, isLocked: !currentStore });
 
@@ -129,10 +84,35 @@ export const PosPage = () => {
   const typeCaches = useMemo(() => caches.filter((item) => item.type === type), [caches, type]);
   const activeCache = cachedOrders[currentCacheId || ""];
   const activeOrder = activeCache?.type === type ? activeCache : undefined;
+  const activeOrderId = activeOrder?.id;
+  const isSaleReturn = type === OrderType.SALE_RETURN;
+  const isReadOnlyReturn =
+    type === OrderType.SALE_RETURN &&
+    !!activeOrder?.refOrderId &&
+    activeOrder.mode === "edit" &&
+    !!activeOrder.sourceId;
   const allStores = info?.allStores || [];
 
   useEffect(() => {
-    if (!currentStore || editId || locationState?.order) return;
+    if (!(location.state as PosLocationState | null)?.openSourcePicker) return;
+    setSourcePickerOpen(true);
+    navigate(`${location.pathname}${location.search}`, { replace: true, state: null });
+  }, [location.pathname, location.search, location.state, navigate]);
+
+  useEffect(() => {
+    if (!currentStore || editId) return;
+    if (locationState?.order) {
+      if (initializedLocationOrder.current === locationState.order) return;
+      initializedLocationOrder.current = locationState.order;
+      dispatch(
+        addNewCache({
+          type,
+          mode: "create",
+          order: locationState.order as unknown as Partial<CachedOrder>,
+        }),
+      );
+      return;
+    }
     if (typeCaches.some((item) => item.mode === "create")) return;
     dispatch(addNewCache({ type, order: emptyOrder(type) }));
   }, [currentStore, dispatch, editId, locationState?.order, type, typeCaches]);
@@ -199,131 +179,181 @@ export const PosPage = () => {
     return () => window.removeEventListener("keydown", handleShortcut);
   }, []);
 
-  const lines = useMemo<PosLine[]>(() => {
-    if (!activeOrder) return [];
-    const source = type === OrderType.SALE_RETURN ? activeOrder.returnLines : activeOrder.lines;
-    return (source || []) as PosLine[];
-  }, [activeOrder, type]);
+  const returnLines = useMemo<PosLine[]>(
+    () => (activeOrder?.returnLines || []) as PosLine[],
+    [activeOrder?.returnLines],
+  );
+  const exchangeLines = useMemo<PosLine[]>(
+    () => (activeOrder?.lines || []) as PosLine[],
+    [activeOrder?.lines],
+  );
+  const lines = type === OrderType.SALE ? exchangeLines : returnLines;
 
-  const totals = useMemo(
-    () => calculateTotals(lines, activeOrder || (emptyOrder(type) as CachedOrder)),
-    [activeOrder, lines, type],
+  const totals = useMemo(() => {
+    const order = activeOrder || (emptyOrder(type) as CachedOrder);
+    if (type !== OrderType.SALE) {
+      const returned = calculateTotals(
+        returnLines.filter((line) => Number(line.quantity || 0) > 0),
+        {
+          ...order,
+          discountType: order.returnDiscountType,
+          discountValue: order.returnDiscountValue,
+          taxType: order.returnTaxType,
+          taxValue: order.returnTaxValue,
+        },
+      );
+      const exchanged = calculateTotals(exchangeLines, order);
+      return {
+        ...exchanged,
+        totalAmount: exchanged.totalAmount - returned.totalAmount,
+      };
+    }
+    return calculateTotals(lines, order);
+  }, [activeOrder, exchangeLines, lines, returnLines, type]);
+
+  const returnTotals = useMemo(
+    () =>
+      calculateTotals(
+        returnLines.filter((line) => Number(line.quantity || 0) > 0),
+        {
+          ...(activeOrder || (emptyOrder(type) as CachedOrder)),
+          discountType: activeOrder?.returnDiscountType,
+          discountValue: activeOrder?.returnDiscountValue,
+          taxType: activeOrder?.returnTaxType,
+          taxValue: activeOrder?.returnTaxValue,
+        },
+      ),
+    [activeOrder, returnLines, type],
+  );
+  const exchangeTotals = useMemo(
+    () => calculateTotals(exchangeLines, activeOrder || (emptyOrder(type) as CachedOrder)),
+    [activeOrder, exchangeLines, type],
   );
 
   const updateActive = useCallback(
     (values: Partial<CachedOrder>) => {
-      if (!activeOrder) return;
-      dispatch(updateOrderCache({ id: activeOrder.id, order: values }));
+      if (!activeOrderId || isReadOnlyReturn) return;
+      dispatch(updateOrderCache({ id: activeOrderId, order: values }));
     },
-    [activeOrder, dispatch],
+    [activeOrderId, dispatch, isReadOnlyReturn],
   );
 
   const updateLines = useCallback(
-    (nextLines: PosLine[]) => {
-      updateActive(type === OrderType.SALE ? { lines: nextLines } : { returnLines: nextLines });
-    },
+    (nextLines: PosLine[]) =>
+      updateActive(type === OrderType.SALE ? { lines: nextLines } : { returnLines: nextLines }),
     [type, updateActive],
   );
-
-  const addProduct = useCallback(
-    (product: Product) => {
-      if (!activeOrder) return;
-      const unit = product.baseUnit;
-      const found = lines.find(
-        (line) => line.productId === product.id && line.unitId === product.baseUnitId,
-      );
-      if (found) {
-        updateLines(
-          lines.map((line) =>
-            line.id === found.id
-              ? {
-                  ...line,
-                  quantity: Number(line.quantity || 0) + 1,
-                  subTotal: (Number(line.quantity || 0) + 1) * Number(line.unitPrice || 0),
-                }
-              : line,
-          ),
-        );
-        return;
-      }
-
-      const line: PosLine = {
-        id: randomId(),
-        productId: product.id,
-        productSnapshot: { id: product.id, code: product.code, name: product.name },
-        product,
-        unitId: product.baseUnitId,
-        unit: unit || null,
-        unitSnapshot: unit ? { id: unit.id, name: unit.name } : null,
-        conversionRateAtTime: 1,
-        quantity: 1,
-        unitPrice: getProductPrice(product),
-        subTotal: getProductPrice(product),
-      };
-      updateLines([...lines, line]);
-    },
-    [activeOrder, lines, updateLines],
+  const updateExchangeLines = useCallback(
+    (nextLines: PosLine[]) => updateActive({ lines: nextLines }),
+    [updateActive],
   );
 
-  const updateQuantity = (lineId: string, quantity: number | null) => {
-    if (!quantity || quantity <= 0) {
-      updateLines(lines.filter((line) => line.id !== lineId));
+  const returnGrossAmount = useMemo(() => getLinesGrossAmount(returnLines), [returnLines]);
+
+  useEffect(() => {
+    if (
+      type !== OrderType.SALE_RETURN ||
+      !activeOrder ||
+      activeOrder.mode !== "create" ||
+      !activeOrder.refOrderId ||
+      !activeOrder.refOrder
+    ) {
       return;
     }
-    updateLines(
-      lines.map((line) =>
-        line.id === lineId
-          ? { ...line, quantity, subTotal: quantity * Number(line.unitPrice || 0) }
-          : line,
-      ),
-    );
+
+    const source = activeOrder.refOrder;
+    const sourceGrossAmount = Number(source.grossAmount || 0) || getLinesGrossAmount(source.lines);
+    const syncKey = `${activeOrder.id}:${source.id}`;
+    const isFirstSync = initializedReturnAdjustments.current !== syncKey;
+    const sourceDiscountType = (source.discountType || DiscountTypeEnum.AMOUNT) as DiscountTypeEnum;
+    const sourceTaxType = (source.taxType || DiscountTypeEnum.PERCENT) as DiscountTypeEnum;
+
+    if (isFirstSync) initializedReturnAdjustments.current = syncKey;
+
+    const nextValues: Partial<CachedOrder> = {};
+    if (isFirstSync || activeOrder.returnDiscountType === sourceDiscountType) {
+      nextValues.returnDiscountType = sourceDiscountType;
+      nextValues.returnDiscountValue = getAllocatedReturnValue(
+        sourceDiscountType,
+        source.discountValue,
+        returnGrossAmount,
+        sourceGrossAmount,
+      );
+    }
+    if (isFirstSync || activeOrder.returnTaxType === sourceTaxType) {
+      nextValues.returnTaxType = sourceTaxType;
+      nextValues.returnTaxValue = getAllocatedReturnValue(
+        sourceTaxType,
+        source.taxValue,
+        returnGrossAmount,
+        sourceGrossAmount,
+      );
+    }
+
+    if (
+      Object.entries(nextValues).some(
+        ([key, value]) => (activeOrder as Record<string, unknown>)[key] !== value,
+      )
+    ) {
+      updateActive(nextValues);
+    }
+  }, [
+    activeOrder,
+    activeOrder?.id,
+    activeOrder?.mode,
+    activeOrder?.refOrder,
+    activeOrder?.refOrderId,
+    activeOrder?.returnDiscountType,
+    activeOrder?.returnTaxType,
+    returnGrossAmount,
+    type,
+    updateActive,
+  ]);
+
+  const { addProduct, addExchangeProduct } = usePosProductActions({
+    type,
+    activeOrder,
+    isSaleReturn,
+    isReadOnlyReturn,
+    returnLines,
+    exchangeLines,
+    updateLines,
+    updateExchangeLines,
+    onError: (text) => message.error(text),
+  });
+
+  const handleImportFile = (file: File) => {
+    if (!activeOrder || isReadOnlyReturn) return;
+    void importPosLines({
+      file,
+      type,
+      activeOrder,
+      returnLines,
+      exchangeLines,
+      onReturnLines: updateLines,
+      onExchangeLines: updateExchangeLines,
+      onWarning: (text) => message.warning(text),
+      onSuccess: (text) => message.success(text),
+      onError: (text) => message.error(text),
+    });
   };
 
-  const updateUnitPrice = (lineId: string, unitPrice: number | null) => {
-    const nextUnitPrice = Math.max(0, Number(unitPrice || 0));
-    updateLines(
-      lines.map((line) =>
-        line.id === lineId
-          ? {
-              ...line,
-              unitPrice: nextUnitPrice,
-              subTotal: Number(line.quantity || 0) * nextUnitPrice,
-            }
-          : line,
-      ),
-    );
-  };
-
-  const updateUnit = (lineId: string, unitId: string) => {
-    const line = lines.find((item) => item.id === lineId);
-    const product = line?.product as Product | undefined;
-    if (!line || !product || !unitId) return;
-
-    const units = collectUnits(product, line.unit || line.unitSnapshot);
-    const unit = units.find((item) => item.id === unitId);
-    if (!unit) return;
-
-    const extraUnit = product.extraUnits?.find((item) => item.unitId === unitId);
-    const conversionRateAtTime =
-      unitId === product.baseUnitId ? 1 : Number(extraUnit?.conversionRate || 1);
-    const unitPrice = Number(getDefaultPricePerUnit(product, unitId) ?? line.unitPrice ?? 0);
-
-    updateLines(
-      lines.map((item) =>
-        item.id === lineId
-          ? {
-              ...item,
-              unitId,
-              unit,
-              unitSnapshot: { id: unit.id, name: unit.name },
-              conversionRateAtTime,
-              unitPrice,
-              subTotal: Number(item.quantity || 0) * unitPrice,
-            }
-          : item,
-      ),
-    );
-  };
+  const {
+    updateQuantity,
+    updateUnitPrice,
+    updateExchangeQuantity,
+    updateExchangeUnitPrice,
+    updateUnit,
+    updateExchangeUnit,
+  } = usePosLineActions({
+    isSaleReturn,
+    isReadOnlyReturn,
+    lines,
+    exchangeLines,
+    updateLines,
+    updateExchangeLines,
+    onError: (text) => message.error(text),
+  });
 
   const payment = activeOrder?.incomeExpenses?.[0] as PosPayment | undefined;
 
@@ -351,66 +381,27 @@ export const PosPage = () => {
     });
   };
 
-  const submit = () => {
-    if (!activeOrder || !currentStore || !lines.length) return;
-    const {
-      id: cacheId,
-      tempId: _tempId,
-      label: _label,
-      mode,
-      sourceId,
-      initialOrder: _initialOrder,
-      paymentMethod: _paymentMethod,
-      paidAmount: _paidAmount,
-      paymentMode: _paymentMode,
-      ...data
-    } = activeOrder;
-    const paymentAmount = Math.max(0, Number(payment?.amount ?? activeOrder.paidAmount ?? 0));
-    const payload: Partial<Order> = {
-      ...(data as Partial<Order>),
-      ...(mode === "edit" && sourceId ? { id: sourceId } : { tempId: cacheId }),
-      storeId: currentStore.id,
-      type: type as Order["type"],
-      orderAt: String(activeOrder.orderAt || new Date().toISOString()),
-      ...(type === OrderType.SALE_RETURN
-        ? {
-            returnDiscountType: activeOrder.discountType as any,
-            returnDiscountValue: activeOrder.discountValue,
-            returnTaxType: activeOrder.taxType as any,
-            returnTaxValue: activeOrder.taxValue,
-          }
-        : {}),
-      grossAmount: totals.grossAmount,
-      discountAmount: totals.discountAmount,
-      netAmount: totals.netAmount,
-      taxAmount: totals.taxAmount,
-      totalAmount: totals.totalAmount,
-      settlementAmount: totals.totalAmount,
-      incomeExpenses: [
-        {
-          ...(payment || {}),
-          amount: paymentAmount,
-          fundId: payment?.fundId || null,
-          partnerId: activeOrder.partnerId || null,
-          occurredAt: activeOrder.orderAt,
-          description: activeOrder.code
-            ? `Thanh toán hóa đơn ${activeOrder.code}`
-            : "Thanh toán hóa đơn",
-        },
-      ] as any,
-      lines: (type === OrderType.SALE ? lines : []) as any,
-      returnLines: (type === OrderType.SALE_RETURN ? lines : []) as any,
-    };
+  const submit = usePosSubmit({
+    type,
+    activeOrder,
+    currentStoreId: currentStore?.id,
+    isReadOnlyReturn,
+    returnLines,
+    exchangeLines,
+    totals,
+    returnTotals,
+    exchangeTotals,
+    payment,
+    orderStore,
+    printSales,
+  });
 
-    const onSuccess = () => {
-      dispatch(removeOrderCache(activeOrder.id));
-      dispatch(addNewCache({ type, order: emptyOrder(type) }));
-      message.success(mode === "edit" ? "Đã cập nhật phiếu" : "Đã tạo phiếu");
-    };
-
-    if (mode === "edit" && sourceId) orderStore.update?.(payload, { onSuccess });
-    else orderStore.create?.(payload, { onSuccess });
-  };
+  const { openReturnFromSale } = usePosReturnSource({
+    saleStore,
+    saleReturnStore,
+    cachedOrders,
+    onClosePicker: () => setSourcePickerOpen(false),
+  });
 
   const handleRemoveCache = (cache: CachedOrder) => {
     const remove = () => {
@@ -484,167 +475,83 @@ export const PosPage = () => {
 
   return (
     <Layout className={`h-screen w-screen flex overflow-hidden`}>
-      <div className="flex h-full min-h-0 flex-col overflow-hidden bg-[#f3f7f4] text-[#10251b]">
-        <header className="flex h-14 shrink-0 items-center gap-3 bg-[#062d1d] px-4 text-white">
-          <Button
-            type="text"
-            icon={<ArrowLeftOutlined />}
-            className="!text-white p-0"
-            onClick={() => navigate(type === OrderType.SALE ? "/sales" : "/sales-returns")}
-          >
-            Quản lý
-          </Button>
-          <OrderProductSelect
-            type={type as OrderType}
-            onSelect={addProduct}
-            className="w-[360px]"
-          />
-          <div className="overflow-x-scroll overflow-y-hidden scrollbar-dark pt-1.5">
-            <div className="flex min-w-0 w-fit items-center gap-2 pr-2">
-              {caches.map((cache) => {
-                const isActive = cache.id === activeOrder?.id;
-
-                return (
-                  <div key={cache.id} className="flex shrink-0 items-center">
-                    <Button
-                      type={isActive ? "default" : "text"}
-                      className={`${isActive ? "!font-semibold" : "!text-white hover:!bg-white/10"} pr-2`}
-                      onClick={() => {
-                        dispatch(setCurrentOrderCache(cache.id));
-                        if (cache.type !== type) {
-                          navigate(`/pos?${POS_TYPE_PARAM}=${cache.type}`);
-                        }
-                      }}
-                    >
-                      {cache.label}
-                      <Button
-                        type="text"
-                        size="small"
-                        danger
-                        title={`Đóng ${cache.label}`}
-                        aria-label={`Đóng ${cache.label}`}
-                        className={`${isActive ? "!text-red-500" : "!text-white/70 hover:!text-red-400 hover:!bg-transparent"} p-0`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleRemoveCache(cache);
-                        }}
-                      >
-                        <XMarkIcon className="h-4" />
-                      </Button>
-                    </Button>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-          <Button
-            type="text"
-            className="!text-white hover:!bg-white/10 p-0 h-8 w-8 ml-0 mr-auto"
-            onClick={() => dispatch(addNewCache({ type, order: emptyOrder(type) }))}
-          >
-            <PlusOutlined />
-          </Button>
-          <span className="text-xs text-white/70 w-60 text-right">
-            {currentStore.name} · {info?.name}
-          </span>
-        </header>
+      <div className="flex h-full min-h-0 w-full flex-col overflow-hidden bg-[#f3f7f4] text-[#10251b]">
+        <PosHeader
+          type={type}
+          caches={caches}
+          activeOrder={activeOrder}
+          currentStoreName={currentStore.name}
+          userName={info?.name}
+          showProductSearch={type === OrderType.SALE || (isSaleReturn && !isReadOnlyReturn)}
+          productPlaceholder={isSaleReturn ? "Tìm hàng trả (F3)" : undefined}
+          onProductSelect={addProduct}
+          onAddCache={() => dispatch(addNewCache({ type, order: emptyOrder(type) }))}
+          onSelectCache={(cache) => {
+            dispatch(setCurrentOrderCache(cache.id));
+            if (cache.type !== type) navigate(`/pos?${POS_TYPE_PARAM}=${cache.type}`);
+          }}
+          onRemoveCache={handleRemoveCache}
+          actions={
+            <PosActionMenu
+              type={type}
+              activeOrder={activeOrder}
+              readOnlyReturn={isReadOnlyReturn}
+              onCreateReturn={() => setSourcePickerOpen(true)}
+              onImportFile={handleImportFile}
+            />
+          }
+        />
 
         {!activeOrder ? (
           <div className="flex flex-1 items-center justify-center">
             <Spin />
           </div>
         ) : (
-          <div className="flex min-h-0 flex-1">
-            <main className="flex min-w-0 flex-1 flex-col overflow-hidden bg-[#f5f5f5]">
-              {lines.length === 0 ? (
-                <div className="flex min-h-0 flex-1 flex-col overflow-auto p-5">
-                  <div className="mb-4 text-center">
-                    <h2 className="font-semibold">
-                      {type === OrderType.SALE_RETURN ? "Phiếu trả hàng" : "Hóa đơn"} chưa có hàng
-                      hóa
-                    </h2>
-                    <p className="text-sm text-gray-500">Tìm hàng hóa hoặc chọn nhanh bên dưới</p>
-                  </div>
-                  {productStore.loading ? (
-                    <div className="flex justify-center p-10">
-                      <Spin />
-                    </div>
-                  ) : (
-                    <ProductGrid products={filteredProducts} onSelect={addProduct} />
-                  )}
-                </div>
-              ) : (
-                <OrderLineTable
-                  lines={lines}
-                  onQuantityChange={updateQuantity}
-                  onUnitChange={updateUnit}
-                  onUnitPriceChange={updateUnitPrice}
-                  onNoteChange={(id, note) =>
-                    updateLines(lines.map((line) => (line.id === id ? { ...line, note } : line)))
-                  }
-                  onRemove={(id) => updateQuantity(id, 0)}
-                />
-              )}
-              <div className="flex shrink-0 items-center gap-2 border-t border-dashed border-gray-300 bg-[#f3f7f4] p-2 text-xs text-gray-500">
-                <span>✎</span>
-                <Input.TextArea
-                  autoSize={{ minRows: 2, maxRows: 3 }}
-                  value={String(activeOrder.note || "")}
-                  onChange={(event) => updateActive({ note: event.target.value })}
-                  placeholder="Ghi chú đơn hàng..."
-                />
-                <span className="whitespace-nowrap w-20 h-full py-2 font-semibold uppercase">
-                  Tổng SL: {lines.reduce((sum, line) => sum + Number(line.quantity || 0), 0)}
-                </span>
-              </div>
-            </main>
-
-            <PosInvoiceInfo
-              type={type}
-              activeOrder={activeOrder}
-              totals={totals}
-              payment={payment}
-              customerSelectRef={customerSelectRef}
-              updateActive={updateActive}
-              updatePayment={updatePayment}
-              changePaymentMode={changePaymentMode}
-              onSubmit={submit}
-              loading={orderStore.creating || orderStore.updating}
-            />
-          </div>
+          <PosContent
+            type={type}
+            activeOrder={activeOrder}
+            isSaleReturn={isSaleReturn}
+            isReadOnlyReturn={isReadOnlyReturn}
+            returnLines={returnLines}
+            exchangeLines={exchangeLines}
+            lines={lines}
+            totals={totals}
+            returnTotals={returnTotals}
+            exchangeTotals={exchangeTotals}
+            payment={payment}
+            productLoading={productStore.loading}
+            products={filteredProducts}
+            customerSelectRef={customerSelectRef}
+            onProductSelect={addProduct}
+            onExchangeProduct={addExchangeProduct}
+            onQuantityChange={updateQuantity}
+            onUnitChange={updateUnit}
+            onUnitPriceChange={updateUnitPrice}
+            onExchangeQuantityChange={updateExchangeQuantity}
+            onExchangeUnitChange={updateExchangeUnit}
+            onExchangeUnitPriceChange={updateExchangeUnitPrice}
+            updateActive={updateActive}
+            updateLines={updateLines}
+            updateExchangeLines={updateExchangeLines}
+            updatePayment={updatePayment}
+            changePaymentMode={changePaymentMode}
+            onSubmit={submit}
+            loading={orderStore.creating || orderStore.updating}
+          />
         )}
       </div>
+      <div className="pointer-events-none fixed left-[-100000px] top-0" aria-hidden="true">
+        <div ref={printContentRef}>{printData && <SaleA4PrintDocument data={printData} />}</div>
+      </div>
+      <SaleReturnSourceModal
+        open={sourcePickerOpen}
+        onClose={() => setSourcePickerOpen(false)}
+        onSelect={openReturnFromSale}
+        onQuickReturn={() => {
+          setSourcePickerOpen(false);
+          navigate(`${privateRoutesName.pos}?type=${OrderType.SALE_RETURN}`);
+        }}
+      />
     </Layout>
   );
 };
-
-const ProductGrid = ({
-  products,
-  onSelect,
-}: {
-  products: Product[];
-  onSelect: (product: Product) => void;
-}) => (
-  <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
-    {products.map((product) => (
-      <button
-        key={product.id}
-        type="button"
-        onClick={() => onSelect(product)}
-        className="min-h-24 rounded-lg border border-gray-200 bg-white p-3 text-left transition hover:border-green-500 hover:shadow"
-      >
-        <div className="flex gap-2">
-          <ProductImage shape="square" size={40} image={getMainFile(product.image)} />
-          <div className="line-clamp-2 min-h-10 text-sm font-medium">{product.name}</div>
-        </div>
-        <div className="mt-2 font-semibold text-green-700">
-          {formatMoney(getProductPrice(product))}
-        </div>
-        <div className="mt-1 text-xs text-gray-400">
-          {product.code} · Tồn: {product.stockMetadata?.total?.quantity ?? 0}
-        </div>
-      </button>
-    ))}
-    {!products.length && <Empty className="col-span-full" description="Không tìm thấy hàng hóa" />}
-  </div>
-);

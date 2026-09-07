@@ -1,15 +1,16 @@
 import { MultipleSelectProps, SelectProps } from "@/shared/interfaces/common";
 import { Product, ProductQuery } from "../product.model";
 import { useProductStore, usePublicProductStore } from "../product.store";
-import { AddSelect, DropdownColumn } from "@/shared/components";
+import { AddSelect, DropdownColumn, ProductImage } from "@/shared/components";
 import { SmartSelect } from "@/shared/components";
 import { useRemoteSelect } from "@/shared/hooks/useRemoteSelect";
 import { SmartMultipleSelect } from "@/shared/components";
 import { useEffect, useMemo, useState } from "react";
 import { ProductAddUpdateModal } from "./ProductAddUpdateModal";
 import { useGlobalData } from "@/shared/hooks";
-import { formatMoney } from "@/shared/utils";
+import { formatMoney, getMainFile } from "@/shared/utils";
 import { Store } from "@/modules/store";
+import { Empty } from "antd";
 
 const columns: DropdownColumn<Product>[] = [
   { label: "Tên hàng", dataIndex: "name", className: "w-64" },
@@ -308,3 +309,31 @@ export const PublicProductMultipleSelect: React.FC<MultipleSelectProps<Product, 
     />
   );
 };
+
+export const ProductGrid: React.FC<{
+  products: Product[];
+  onSelect: (product: Product) => void;
+}> = ({ products, onSelect }) => (
+  <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
+    {products.map((product) => (
+      <button
+        key={product.id}
+        type="button"
+        onClick={() => onSelect(product)}
+        className="min-h-24 rounded-lg border border-gray-200 bg-white p-3 text-left transition hover:border-green-500 hover:shadow"
+      >
+        <div className="flex gap-2">
+          <ProductImage shape="square" size={40} image={getMainFile(product.image)} />
+          <div className="line-clamp-2 min-h-10 text-sm font-medium">{product.name}</div>
+        </div>
+        <div className="mt-2 font-semibold text-green-700">
+          {formatMoney(Number(product.salePrice ?? 0))}
+        </div>
+        <div className="mt-1 text-xs text-gray-400">
+          {product.code} · Tồn: {product.stockMetadata?.total?.quantity ?? 0}
+        </div>
+      </button>
+    ))}
+    {!products.length && <Empty className="col-span-full" description="Không tìm thấy hàng hóa" />}
+  </div>
+);

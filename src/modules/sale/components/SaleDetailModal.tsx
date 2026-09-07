@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Modal, Space } from "antd";
-import { CloseCircleOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { CheckCircleOutlined, CloseCircleOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { formatDateTimeDDMMYYYY } from "@/shared/utils/date.util";
 import { formatMoney } from "@/shared/utils/number.util";
 import { getLineProduct } from "@/modules/purchase/purchase.util";
@@ -14,7 +14,9 @@ interface Props {
   onClose: () => void;
   onOpenUpdate?: (record: Sale) => void;
   onDelete?: (record: Sale) => void;
+  onComplete?: (record: Sale) => void;
   onCancel?: (record: Sale) => void;
+  onCreateReturn?: (record: Sale) => void;
 }
 
 const valueOrDash = (value?: string | null) => value || "—";
@@ -37,7 +39,9 @@ export const SaleDetailModal: React.FC<Props> = ({
   onClose,
   onOpenUpdate,
   onDelete,
+  onComplete,
   onCancel,
+  onCreateReturn,
 }) => {
   const lines = isReturn
     ? data?.returnLines?.length
@@ -54,8 +58,12 @@ export const SaleDetailModal: React.FC<Props> = ({
 
   const isCanceled = data.status === OrderStatus.CANCELED;
   const isDraft = data.status === OrderStatus.DRAFT;
-  const canEdit = !isCanceled && !!onOpenUpdate;
+  const canEdit =
+    !isCanceled &&
+    !!onOpenUpdate &&
+    !(isReturn && !!(data as any).refOrderId);
   const canDelete = isDraft && !!onDelete;
+  const canComplete = isDraft && !!onComplete;
   const canCancel = !isCanceled && !!onCancel;
   const amount = Number(isReturn ? data.returnTotalAmount : data.totalAmount) || 0;
 
@@ -199,9 +207,17 @@ export const SaleDetailModal: React.FC<Props> = ({
 
         <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-slate-200 px-5 py-3">
           <Space wrap>
+            {!isReturn && onCreateReturn && (
+              <Button onClick={() => onCreateReturn(data)}>Tạo phiếu trả</Button>
+            )}
             {canCancel && (
               <Button danger icon={<CloseCircleOutlined />} onClick={() => onCancel?.(data)}>
                 Hủy
+              </Button>
+            )}
+            {canComplete && (
+              <Button type="primary" icon={<CheckCircleOutlined />} onClick={() => onComplete?.(data)}>
+                Hoàn thành
               </Button>
             )}
             {canDelete && (

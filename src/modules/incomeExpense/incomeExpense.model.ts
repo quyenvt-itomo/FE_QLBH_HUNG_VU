@@ -63,9 +63,21 @@ export enum IncomeExpenseTypeEnum {
   EXPENSE = "EXPENSE",
 }
 
+export enum IncomeExpenseStatusEnum {
+  DRAFT = "draft",
+  COMPLETED = "completed",
+  CANCELED = "canceled",
+}
+
 export const incomeExpenseTypeMap: Record<IncomeExpenseTypeEnum, string> = {
   [IncomeExpenseTypeEnum.INCOME]: "Phiếu thu",
   [IncomeExpenseTypeEnum.EXPENSE]: "Phiếu chi",
+};
+
+export const incomeExpenseStatusMap: Record<IncomeExpenseStatusEnum, string> = {
+  [IncomeExpenseStatusEnum.DRAFT]: "Chưa xác nhận",
+  [IncomeExpenseStatusEnum.COMPLETED]: "Đã xác nhận",
+  [IncomeExpenseStatusEnum.CANCELED]: "Đã hủy",
 };
 
 export interface IncomeExpenseQuery extends ApiRequestQuery {
@@ -120,6 +132,7 @@ export interface IncomeExpense extends StoreEntity {
   code: string;
 
   type: IncomeExpenseTypeEnum;
+  status: IncomeExpenseStatusEnum;
 
   //? quỹ
   fundId: string | null;

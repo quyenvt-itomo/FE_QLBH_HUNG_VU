@@ -143,6 +143,7 @@ export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
   onCustomerReject,
   onCreatePurchase,
   onCreateQuotation,
+  rowSelection,
   ...rest
 }) => {
   const fullTableKey = `${projectName}-${tableKey}`;
@@ -302,7 +303,7 @@ export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
             title: "Cửa hàng",
             dataIndex: ["store", "name"],
             key: "storeName",
-            width: 150,
+            width: 80,
             ellipsis: true,
             fixed: isMobile ? undefined : "right",
             onHeaderCell: () => ({ width: 150 }),
@@ -345,6 +346,7 @@ export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
           const canComplete = !!onComplete && !!checkCanPermission(record, "complete");
 
           const canExport = !!onExport && !!checkCanPermission(record, "export");
+          const canPrint = !!onPrint && !!checkCanPermission(record, "export");
           const canImport = !!onImport && !!checkCanPermission(record, "import");
 
           const canApprove = !!onApprove && !!checkCanPermission(record, "approve");
@@ -398,7 +400,7 @@ export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
                     onViewDetail={onViewDetail ? () => onViewDetail(record) : undefined}
                     onExportPdf={onExportPdf ? () => onExportPdf(record) : undefined}
                     onExportExcel={onExportExcel ? () => onExportExcel(record) : undefined}
-                    onPrint={onPrint ? () => onPrint(record) : undefined}
+                    onPrint={canPrint ? () => onPrint(record) : undefined}
                     onPrintBarcode={onPrintBarcode ? () => onPrintBarcode(record) : undefined}
                   />
                 )}
@@ -477,6 +479,27 @@ export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
       order ? order.replace("end", "").toUpperCase() : undefined,
     );
   };
+
+  // Summary rows are display-only. Keep them out of Ant Design's selection
+  // calculation so the header checkbox can still show the correct state.
+  const normalizedRowSelection = rowSelection
+    ? {
+        ...rowSelection,
+        getCheckboxProps: (record: any) => ({
+          ...(rowSelection.getCheckboxProps?.(record) || {}),
+          ...(record?.isSummary ? { disabled: true } : {}),
+        }),
+        renderCell: (
+          checked: boolean,
+          record: any,
+          index: number,
+          originNode: React.ReactNode,
+        ) =>
+          record?.isSummary
+            ? null
+            : rowSelection.renderCell?.(checked, record, index, originNode) ?? originNode,
+      }
+    : undefined;
 
   return (
     <div className="flex flex-col w-full h-full relative">
@@ -558,6 +581,7 @@ export const TableColumnConfig: React.FC<TableColumnConfigProps> = ({
         rowClassName={(record: any) =>
           record.isSummary ? "summary-row sticky-top-row font-semibold" : "cursor-pointer"
         }
+        rowSelection={normalizedRowSelection}
         {...rest}
       />
     </div>

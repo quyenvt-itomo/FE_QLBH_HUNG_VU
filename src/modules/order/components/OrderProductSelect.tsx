@@ -15,12 +15,13 @@ interface Props {
   onSelect: (product: Product) => void;
   placeholder?: string;
   className?: string;
+  shortcutKey?: "F3" | "F7";
 }
 
 const isPurchaseType = (type: OrderType) =>
   type === OrderType.PURCHASE || type === OrderType.PURCHASE_RETURN;
 
-export const OrderProductSelect = ({ type, onSelect, placeholder, className }: Props) => {
+export const OrderProductSelect = ({ type, onSelect, placeholder, className, shortcutKey = "F3" }: Props) => {
   const { currentStore } = useGlobalData();
   const containerRef = useRef<HTMLDivElement>(null);
   const [selectedId, setSelectedId] = useAutoResetItem<string>();
@@ -59,14 +60,14 @@ export const OrderProductSelect = ({ type, onSelect, placeholder, className }: P
 
   useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {
-      const isF3 = event.key === "F3";
-      const isF = event.key.toLowerCase() === "f";
+      const isShortcut = event.key === shortcutKey;
+      const isLegacyF = shortcutKey === "F3" && event.key.toLowerCase() === "f";
       const target = event.target as HTMLElement | null;
       const isEditing = Boolean(target?.closest("input, textarea, [contenteditable='true']"));
 
       if (
-        (!isF3 && !isF) ||
-        (!isF3 && isEditing) ||
+        (!isShortcut && !isLegacyF) ||
+        (!isShortcut && isEditing) ||
         event.ctrlKey ||
         event.altKey ||
         event.metaKey
@@ -80,7 +81,7 @@ export const OrderProductSelect = ({ type, onSelect, placeholder, className }: P
 
     window.addEventListener("keydown", handleShortcut);
     return () => window.removeEventListener("keydown", handleShortcut);
-  }, []);
+  }, [shortcutKey]);
 
   const options = useMemo(
     () =>

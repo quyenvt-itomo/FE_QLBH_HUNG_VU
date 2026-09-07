@@ -12,7 +12,7 @@ export interface SaleReturn extends Order {
 }
 
 export interface SaleReturnQuery extends ApiRequestQuery {
-  type?: OrderType;
+  type?: string;
   statuses?: OrderStatus[];
   customerIds?: string[];
   creatorIds?: string[];

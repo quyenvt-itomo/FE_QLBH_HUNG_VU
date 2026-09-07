@@ -26,6 +26,9 @@ interface Props {
   onUnitPriceChange: (id: string, unitPrice: number | null) => void;
   onNoteChange: (id: string, note: string) => void;
   onRemove: (id: string) => void;
+  minQuantity?: number;
+  maxQuantity?: (line: PosLine) => number | undefined;
+  readOnly?: boolean;
 }
 
 export const OrderLineTable: React.FC<Props> = ({
@@ -35,6 +38,9 @@ export const OrderLineTable: React.FC<Props> = ({
   onUnitPriceChange,
   onNoteChange,
   onRemove,
+  minQuantity = 1,
+  maxQuantity,
+  readOnly = false,
 }) => (
   <div className="min-h-0 flex-1 overflow-auto">
     <table className="w-full min-w-[930px] table-auto border-collapse text-sm">
@@ -78,13 +84,15 @@ export const OrderLineTable: React.FC<Props> = ({
             >
               <td className="px-1 py-2 text-center text-gray-500">{index + 1}</td>
               <td className="px-0.5 py-1">
-                <Button
-                  type="text"
-                  danger
-                  title="Xóa hàng hóa"
-                  icon={<DeleteOutlined />}
-                  onClick={() => onRemove(line.id)}
-                />
+                {!readOnly && (
+                  <Button
+                    type="text"
+                    danger
+                    title="Xóa hàng hóa"
+                    icon={<DeleteOutlined />}
+                    onClick={() => onRemove(line.id)}
+                  />
+                )}
               </td>
               <td className="px-3 py-2 font-mono text-blue-600">
                 {product?.code || line.productSnapshot.code}
@@ -101,6 +109,7 @@ export const OrderLineTable: React.FC<Props> = ({
                   variant="borderless"
                   value={String(line.note || "")}
                   onChange={(event) => onNoteChange(line.id, event.target.value)}
+                  disabled={readOnly}
                   placeholder="Ghi chú..."
                   className="!h-5 !w-full !p-0 !text-xs !italic"
                 />
@@ -111,6 +120,7 @@ export const OrderLineTable: React.FC<Props> = ({
                     value={line.unitId || undefined}
                     options={units.map((unit) => ({ value: unit.id, label: unit.name }))}
                     onChange={(unitId) => onUnitChange(line.id, unitId)}
+                    disabled={readOnly}
                     className="w-full"
                   />
                 ) : (
@@ -119,18 +129,26 @@ export const OrderLineTable: React.FC<Props> = ({
               </td>
               <td className="px-0.5 py-1">
                 <QuantityStepper
-                  min={1}
+                  min={minQuantity}
+                  max={maxQuantity?.(line)}
                   allowInput
                   value={line.quantity}
                   onChange={(value) => onQuantityChange(line.id, value)}
+                  disabled={readOnly}
                   className="w-full"
                 />
+                {maxQuantity?.(line) !== undefined && (
+                  <div className="mt-0.5 text-center text-xs text-gray-500">
+                    / {maxQuantity(line)}
+                  </div>
+                )}
               </td>
               <td className="px-0.5 py-1">
                 <InputMoney
                   min={0}
                   value={Number(line.unitPrice || 0)}
                   onChange={(value) => onUnitPriceChange(line.id, value)}
+                  disabled={readOnly}
                   className="w-full"
                 />
               </td>

@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { randomId } from "@/shared/utils/common.util";
+import { Order } from "@/modules/order";
 
 export type PosOrderType = "sale" | "sale_return";
 export type PosCacheMode = "create" | "edit";
@@ -21,6 +22,7 @@ export interface CachedOrder {
   shippingFee?: number | null;
   isFreeShipping?: boolean;
   refOrderId?: string | null;
+  refOrder?: Order;
   lines?: Record<string, unknown>[];
   returnLines?: Record<string, unknown>[];
   incomeExpenses?: Array<{
@@ -52,8 +54,7 @@ const initialState: OrderCacheState = {
   currentCacheId: null,
 };
 
-const getTypeLabel = (type: PosOrderType) =>
-  type === "sale_return" ? "Trả hàng" : "Hóa đơn";
+const getTypeLabel = (type: PosOrderType) => (type === "sale_return" ? "Trả hàng" : "Hóa đơn");
 
 const makeLabel = (
   state: OrderCacheState,
@@ -63,10 +64,20 @@ const makeLabel = (
 ) => {
   if (mode === "edit" && code) return `Chỉnh sửa ${code}`;
 
-  const count = Object.values(state.cachedOrders).filter(
-    (item) => item.type === type && item.mode === "create",
-  ).length;
-  return `${getTypeLabel(type)} ${count + 1}`;
+  const usedLabels = new Set(
+    Object.values(state.cachedOrders)
+      .filter((item) => item.type === type)
+      .map((item) => item.label),
+  );
+
+  let index = 1;
+  let label = `${getTypeLabel(type)} ${index}`;
+  while (usedLabels.has(label)) {
+    index += 1;
+    label = `${getTypeLabel(type)} ${index}`;
+  }
+
+  return label;
 };
 
 const createNewCache = (
@@ -107,8 +118,7 @@ const createNewCache = (
   return cache;
 };
 
-const cloneValue = <T,>(value: T): T =>
-  JSON.parse(JSON.stringify(value)) as T;
+const cloneValue = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
 
 const orderCacheSlice = createSlice({
   name: "orderCache",
@@ -118,12 +128,7 @@ const orderCacheSlice = createSlice({
       reducer: (state, action: PayloadAction<CachedOrder>) => {
         const cache = {
           ...action.payload,
-          label: makeLabel(
-            state,
-            action.payload.type,
-            action.payload.mode,
-            action.payload.code,
-          ),
+          label: makeLabel(state, action.payload.type, action.payload.mode, action.payload.code),
         };
         state.cachedOrders[cache.id] = cache;
         state.currentCacheId = cache.id;

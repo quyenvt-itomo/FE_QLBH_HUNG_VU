@@ -3,7 +3,7 @@ import { Button, Descriptions, Modal, Tag } from "antd";
 import { DetailModalProps } from "@/shared/interfaces/common";
 import { formatDateTimeDDMMYYYY } from "@/shared/utils/date.util";
 import { formatMoney } from "@/shared/utils/number.util";
-import { IncomeExpense, IncomeExpenseTypeEnum, incomeExpenseTypeMap } from "../incomeExpense.model";
+import { IncomeExpense, IncomeExpenseStatusEnum, IncomeExpenseTypeEnum, incomeExpenseStatusMap, incomeExpenseTypeMap } from "../incomeExpense.model";
 
 export const IncomeExpenseDetailModal: React.FC<DetailModalProps<IncomeExpense>> = ({ open, data, onClose, onOpenUpdate }) => {
   if (!data) return null;
@@ -11,6 +11,7 @@ export const IncomeExpenseDetailModal: React.FC<DetailModalProps<IncomeExpense>>
   return <Modal open={open} centered destroyOnClose footer={null} title={`Chi tiết ${isIncome ? "phiếu thu" : "phiếu chi"} ${data.code || ""}`} onCancel={onClose}>
     <Descriptions bordered size="small" column={1}>
       <Descriptions.Item label="Loại"><Tag color={isIncome ? "success" : "error"}>{incomeExpenseTypeMap[data.type] || data.type}</Tag></Descriptions.Item>
+      <Descriptions.Item label="Trạng thái"><Tag color={data.status === IncomeExpenseStatusEnum.COMPLETED ? "success" : data.status === IncomeExpenseStatusEnum.CANCELED ? "error" : "warning"}>{incomeExpenseStatusMap[data.status] || data.status}</Tag></Descriptions.Item>
       <Descriptions.Item label="Thời gian">{formatDateTimeDDMMYYYY(data.occurredAt)}</Descriptions.Item>
       <Descriptions.Item label="Số tiền"><span className={isIncome ? "font-semibold text-emerald-600" : "font-semibold text-red-600"}>{formatMoney(data.amount)}</span></Descriptions.Item>
       <Descriptions.Item label="Quỹ">{data.fund?.name || data.fundSnapshot?.name || "—"}</Descriptions.Item>

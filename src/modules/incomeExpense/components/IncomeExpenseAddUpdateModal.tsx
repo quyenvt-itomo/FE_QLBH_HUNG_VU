@@ -39,6 +39,7 @@ export const IncomeExpenseAddUpdateModal: React.FC<Props> = ({
   const partner = Form.useWatch("partner", form);
   const id = editData?.id || randomId();
   const isIncome = type === IncomeExpenseTypeEnum.INCOME;
+  const isOrderLinked = Boolean(editData?.orderId);
 
   useEffect(() => {
     if (errors) setFormErrors(form, errors);
@@ -93,7 +94,7 @@ export const IncomeExpenseAddUpdateModal: React.FC<Props> = ({
           label={<Label title="Thời gian" required />}
           rules={[{ required: true, message: "Vui lòng chọn thời gian" }]}
         >
-          <DatePickerCustom />
+          <DatePickerCustom disabled={isOrderLinked} />
         </Form.Item>
         <Form.Item
           name="categoryId"
@@ -103,6 +104,7 @@ export const IncomeExpenseAddUpdateModal: React.FC<Props> = ({
             type={isIncome ? AttributeType.INCOME_CATEGORY : AttributeType.EXPENSE_CATEGORY}
             defaultData={category}
             onChangeData={(value) => form.setFieldValue("category", value || null)}
+            disabled={isOrderLinked}
           />
         </Form.Item>
         <Form.Item name="category" hidden />
@@ -135,11 +137,12 @@ export const IncomeExpenseAddUpdateModal: React.FC<Props> = ({
             query={{ types: [isIncome ? PartnerType.CUSTOMER : PartnerType.SUPPLIER] }}
             defaultData={partner}
             onChangeData={(value) => form.setFieldValue("partner", value || null)}
+            disabled={isOrderLinked}
           />
         </Form.Item>
         <Form.Item name="partner" hidden />
         <Form.Item name="description" label={<Label title="Nội dung" />}>
-          <Input.TextArea autoSize={{ minRows: 2, maxRows: 4 }} />
+          <Input.TextArea disabled={isOrderLinked} autoSize={{ minRows: 2, maxRows: 4 }} />
         </Form.Item>
         <Form.Item name="note" label={<Label title="Ghi chú" />}>
           <Input.TextArea autoSize={{ minRows: 2, maxRows: 4 }} />

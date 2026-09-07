@@ -1,11 +1,10 @@
 import React from "react";
 
-import { AddUpdateModalProps } from "@/shared/interfaces/common";
-
-import { Partner, PartnerType } from "../partner.model";
+import { Partner } from "../partner.model";
 import { CustomerAddUpdateModal } from "./CustomerAddUpdateModal";
+import { PartnerFormModalProps } from "./PartnerAddUpdateModal/form.types";
 
 /** Customer-only entry point used by selectors that create a customer inline. */
-export const CustomerAddModal: React.FC<AddUpdateModalProps<Partner>> = (props) => (
+export const CustomerAddModal: React.FC<PartnerFormModalProps> = (props) => (
   <CustomerAddUpdateModal {...props} />
 );

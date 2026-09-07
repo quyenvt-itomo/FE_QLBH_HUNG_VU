@@ -292,6 +292,8 @@
 
 .sidebar-menu .ant-menu-sub .ant-menu-item:hover {
   background: var(--sidebar-green-900) !important;
+}
+.sidebar-menu .ant-menu-sub .ant-menu-item:hover:not(.ant-menu-item-selected) {
   color: #fff !important;
 }
 

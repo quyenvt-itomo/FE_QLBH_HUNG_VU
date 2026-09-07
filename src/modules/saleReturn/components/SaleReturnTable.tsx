@@ -2,15 +2,20 @@ import React, { useMemo } from "react";
 import { ColumnsConfigType, ObjectTableProps, TableColumnConfig } from "@/shared/components";
 import { formatDateTimeDDMMYYYY } from "@/shared/utils/date.util";
 import { formatMoney } from "@/shared/utils/number.util";
-import { Sale, OrderStatus } from "../model";
-import { SaleStatusTag } from "./Tag";
+import { SaleReturn, OrderStatus } from "../model";
+import { SaleReturnStatusTag } from "./Tag";
 
 interface Props extends ObjectTableProps {
-  onViewDetail?: (record: Sale) => void;
+  onViewDetail?: (record: SaleReturn) => void;
   isReturn?: boolean;
 }
 
-export const SaleTable: React.FC<Props> = ({ dataSource, summaryData, onViewDetail, ...rest }) => {
+export const SaleReturnTable: React.FC<Props> = ({
+  dataSource,
+  summaryData,
+  onViewDetail,
+  ...rest
+}) => {
   const formatedDataSource = useMemo(() => {
     const summaryRow = {
       id: "summary",
@@ -20,6 +25,7 @@ export const SaleTable: React.FC<Props> = ({ dataSource, summaryData, onViewDeta
       netAmount: summaryData?.totalNetAmount || 0,
       taxAmount: summaryData?.totalTaxAmount || 0,
       totalAmount: summaryData?.totalAmount || 0,
+      returnTotalAmount: summaryData?.totalReturnAmount || 0,
       paidAmount: summaryData?.totalPaidAmount || 0,
       actualShippingFee: summaryData?.totalActualShippingFee || 0,
       isSummary: true,
@@ -28,12 +34,12 @@ export const SaleTable: React.FC<Props> = ({ dataSource, summaryData, onViewDeta
     return [summaryRow, ...(dataSource || [])];
   }, [dataSource, summaryData]);
 
-  const columns: ColumnsConfigType<Sale> = useMemo(
+  const columns: ColumnsConfigType<SaleReturn> = useMemo(
     () => [
       {
         title: "Mã đơn bán",
         key: "code",
-        width: 100,
+        width: 150,
         fixed: "left",
         className: "font-mono",
         render: (record) =>
@@ -69,7 +75,40 @@ export const SaleTable: React.FC<Props> = ({ dataSource, summaryData, onViewDeta
         },
       },
       {
-        title: "Tiền hàng",
+        title: "Tiền hàng trả",
+        dataIndex: "returnGrossAmount",
+        key: "returnGrossAmount",
+        width: 140,
+        align: "right",
+        render: (value) => formatMoney(value),
+      },
+      {
+        title: "Giảm giá hàng trả",
+        dataIndex: "returnDiscountAmount",
+        key: "returnDiscountAmount",
+        width: 120,
+        align: "right",
+        render: (value) => formatMoney(value),
+      },
+      {
+        title: "VAT hàng trả",
+        dataIndex: "returnTaxAmount",
+        key: "returnTaxAmount",
+        width: 120,
+        align: "right",
+        render: (value) => formatMoney(value),
+      },
+      {
+        title: "Tổng tiền trả",
+        dataIndex: "returnTotalAmount",
+        key: "returnTotalAmount",
+        width: 150,
+        align: "right",
+        className: "font-semibold",
+        render: (value) => formatMoney(value),
+      },
+      {
+        title: "Tiền hàng đổi",
         dataIndex: "grossAmount",
         key: "grossAmount",
         width: 140,
@@ -77,7 +116,7 @@ export const SaleTable: React.FC<Props> = ({ dataSource, summaryData, onViewDeta
         render: (value) => formatMoney(value),
       },
       {
-        title: "Giảm giá",
+        title: "Giảm giá hàng đổi",
         dataIndex: "discountAmount",
         key: "discountAmount",
         width: 120,
@@ -85,12 +124,21 @@ export const SaleTable: React.FC<Props> = ({ dataSource, summaryData, onViewDeta
         render: (value) => formatMoney(value),
       },
       {
-        title: "VAT",
+        title: "VAT hàng đổi",
         dataIndex: "taxAmount",
         key: "taxAmount",
         width: 120,
         align: "right",
-        render: (value, record) => formatMoney(value),
+        render: (value) => formatMoney(value),
+      },
+      {
+        title: "Tổng đơn đổi",
+        dataIndex: "totalAmount",
+        key: "totalAmount",
+        width: 150,
+        align: "right",
+        className: "font-semibold",
+        render: (value) => formatMoney(value),
       },
       {
         title: "Phí vận chuyển",
@@ -101,20 +149,19 @@ export const SaleTable: React.FC<Props> = ({ dataSource, summaryData, onViewDeta
         render: (value) => formatMoney(value),
       },
       {
-        title: "Tổng đơn",
-        dataIndex: "totalAmount",
-        key: "totalAmount",
+        title: "Cần trả khách",
+        key: "settlementAmount",
         width: 150,
         align: "right",
-        className: "font-semibold",
-        render: (value, record) => formatMoney(value),
+        render: (record: SaleReturn) =>
+          formatMoney(Math.max(0, Number(record.settlementAmount || 0))),
       },
       {
-        title: "Khách thanh toán",
+        title: "Đã hoàn khách",
         key: "paidAmount",
         width: 150,
         align: "right",
-        render: (record: Sale) => formatMoney(Number(record.paidAmount || 0)),
+        render: (record: SaleReturn) => formatMoney(Number(record.paidAmount || 0)),
       },
       {
         title: "Trạng thái",
@@ -123,7 +170,7 @@ export const SaleTable: React.FC<Props> = ({ dataSource, summaryData, onViewDeta
         width: 100,
         align: "center",
         fixed: "right",
-        render: (value: OrderStatus) => <SaleStatusTag value={value} />,
+        render: (value: OrderStatus) => <SaleReturnStatusTag value={value} />,
       },
     ],
     [onViewDetail],
@@ -134,9 +181,9 @@ export const SaleTable: React.FC<Props> = ({ dataSource, summaryData, onViewDeta
       dataSource={formatedDataSource}
       hasSummary
       columns={columns}
-      itemName={"đơn bán"}
+      itemName={"phiếu trả hàng"}
       hasStoreInfo
-      tableKey={"sale-table"}
+      tableKey={"sale-return-table"}
       onViewDetail={onViewDetail}
       {...rest}
     />

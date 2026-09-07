@@ -1,4 +1,4 @@
-import { Entity } from "@/shared/base/entity";
+import { Entity, Store } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { PartnerSnapshot } from "../partner/partner.model";
 import { ProductSnapshot } from "../product/product.model";
@@ -6,11 +6,33 @@ import { AttributeSnapshot } from "../attribute/attribute.model";
 import { DiscountTypeEnum } from "@/shared/constants/enum";
 import type { IncomeExpense } from "@/modules/incomeExpense/incomeExpense.model";
 
-export enum OrderType { PURCHASE = "purchase", SALE = "sale", PURCHASE_RETURN = "purchase_return", SALE_RETURN = "sale_return" }
-export enum OrderStatus { DRAFT = "draft", COMPLETED = "completed", CANCELED = "canceled" }
+export enum OrderType {
+  PURCHASE = "purchase",
+  SALE = "sale",
+  PURCHASE_RETURN = "purchase_return",
+  SALE_RETURN = "sale_return",
+}
+export enum OrderStatus {
+  DRAFT = "draft",
+  COMPLETED = "completed",
+  CANCELED = "canceled",
+}
 
-export interface OrderQuery extends ApiRequestQuery { partnerId?: string; customerId?: string; storeId?: string; isCompleted?: boolean; approveStatus?: string; }
-export interface OrderSnapshot { id: string; type: OrderType; code: string; orderAt: string; partnerId: string | null; partnerSnapshot: PartnerSnapshot | null; }
+export interface OrderQuery extends ApiRequestQuery {
+  partnerId?: string;
+  customerId?: string;
+  storeId?: string;
+  isCompleted?: boolean;
+  approveStatus?: string;
+}
+export interface OrderSnapshot {
+  id: string;
+  type: OrderType;
+  code: string;
+  orderAt: string;
+  partnerId: string | null;
+  partnerSnapshot: PartnerSnapshot | null;
+}
 
 /** OrderLine is an embedded child of Order; it has no standalone module/API. */
 export interface OrderLine extends Entity {
@@ -38,11 +60,9 @@ export interface OrderLine extends Entity {
   type?: string;
 }
 
-export interface OrderCommission extends Entity { orderId: string; totalAmount: number; }
-export interface OrderCommissionDetail extends Entity { orderCommissionId: string; orderLineId: string; totalAmount: number; }
-
 export interface Order extends Entity {
   storeId: string;
+  store?: Store;
   type: OrderType;
   status: OrderStatus;
   code: string;
@@ -67,6 +87,7 @@ export interface Order extends Entity {
   totalAmount: number;
   totalCost: number;
   refOrderId: string | null;
+  refOrder?: Order | null;
   returnGrossAmount: number;
   returnDiscountType: DiscountTypeEnum;
   returnDiscountValue: number | null;
@@ -91,4 +112,8 @@ export interface Order extends Entity {
   completedAt?: string | null;
   commissionMode?: any;
   taxRate?: number;
+
+  // TODO: Các trường khác (nếu có) sẽ được lưu trong metadata
+  paidAmount?: number; // số tiền đã thanh toán (nếu có)
+  actualShippingFee?: number; // phí vận chuyển thực tế (nếu có)
 }

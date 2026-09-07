@@ -13,7 +13,7 @@ import {
 } from "@/shared/components";
 import { Gender } from "@/shared/constants/enum";
 import { getPhoneRules, getTaxCodeRules } from "@/shared/constants/formItemRule";
-import { handleCloseWithPendingFiles, randomId } from "@/shared/utils/common.util";
+import { handleCloseWithPendingFiles, isPhoneNumber, randomId } from "@/shared/utils/common.util";
 import { setFormErrors } from "@/shared/utils/form.util";
 import { Partner, PartnerType } from "../partner.model";
 import { BankList } from "./PartnerAddUpdateModal/Bank";
@@ -30,6 +30,7 @@ const CustomerAddUpdateModal: React.FC<PartnerFormModalProps> = ({
   onAdd,
   onEdit,
   onClose,
+  defaultPhone,
 }) => {
   const [form] = Form.useForm<Partner>();
   const id = useMemo(() => editData?.id || randomId(), [editData?.id]);
@@ -42,7 +43,15 @@ const CustomerAddUpdateModal: React.FC<PartnerFormModalProps> = ({
 
   const setValues = () => {
     if (!editData) {
-      form.setFieldsValue({ isOrganization: false, address: {}, banks: [], contacts: [] });
+      form.setFieldsValue({
+        isOrganization: false,
+        address: {},
+        banks: [],
+        contacts: [],
+        ...(isPhoneNumber(defaultPhone)
+          ? { phone: defaultPhone?.trim() }
+          : {}),
+      });
       return;
     }
     form.setFieldsValue({

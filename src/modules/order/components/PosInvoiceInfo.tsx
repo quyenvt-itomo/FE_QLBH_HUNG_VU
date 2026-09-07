@@ -1,6 +1,6 @@
 import { ExportOutlined, PrinterOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Modal, Segmented } from "antd";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import { FundListSelect } from "@/modules/fund/components";
 import { FundSelect } from "@/modules/fund/components/Select";
@@ -35,12 +35,14 @@ interface Props {
   type: PosOrderType;
   activeOrder: CachedOrder;
   totals: PosTotals;
+  returnTotals?: PosTotals;
+  exchangeTotals?: PosTotals;
   payment?: PosPayment;
   customerSelectRef: React.RefObject<HTMLDivElement>;
   updateActive: (values: Partial<CachedOrder>) => void;
   updatePayment: (values: Record<string, unknown>) => void;
   changePaymentMode: (mode: FundTypeEnum) => void;
-  onSubmit: () => void;
+  onSubmit: (print?: boolean) => void;
   loading?: boolean;
 }
 
@@ -48,6 +50,8 @@ export const PosInvoiceInfo: React.FC<Props> = ({
   type,
   activeOrder,
   totals,
+  returnTotals,
+  exchangeTotals,
   payment,
   customerSelectRef,
   updateActive,
@@ -63,8 +67,26 @@ export const PosInvoiceInfo: React.FC<Props> = ({
       ? FundTypeEnum.BANK
       : FundTypeEnum.CASH)) as FundTypeEnum;
   const bankFund = paymentMode === FundTypeEnum.BANK ? payment?.fund : undefined;
-  const paymentDue = Math.max(0, totals.totalAmount);
+  const paymentDue =
+    type === OrderType.SALE_RETURN ? Math.abs(totals.totalAmount) : Math.max(0, totals.totalAmount);
   const paidAmount = Number(payment?.amount ?? activeOrder.paidAmount ?? 0);
+  const previousPaymentDue = useRef<{ orderId: string; amount: number }>();
+
+  useEffect(() => {
+    const previous = previousPaymentDue.current;
+    const isDifferentOrder = previous?.orderId !== activeOrder.id;
+    const isPaymentDueChanged = previous?.amount !== paymentDue;
+
+    previousPaymentDue.current = { orderId: activeOrder.id, amount: paymentDue };
+
+    // Keep the payment amount loaded from an existing order. For subsequent
+    // changes to the order total, reset it to the new amount while leaving the
+    // input editable afterwards.
+    if (isDifferentOrder || !previous || !isPaymentDueChanged) return;
+
+    updatePayment({ amount: paymentDue });
+  }, [activeOrder.id, paymentDue, updatePayment]);
+
   // const cashAmountOptions = useMemo(() => {
   //   if (!paymentDue || paymentDue <= 0) return [];
 
@@ -128,16 +150,6 @@ export const PosInvoiceInfo: React.FC<Props> = ({
             placeholder="Tìm khách hàng (F4) — bỏ trống là Khách lẻ"
           />
         </div>
-        {type === OrderType.SALE_RETURN && (
-          <div className="mt-3">
-            <OrderSelect
-              value={activeOrder.refOrderId || undefined}
-              query={{ type: OrderType.SALE }}
-              onChange={(refOrderId) => updateActive({ refOrderId })}
-              placeholder="Chọn hóa đơn gốc"
-            />
-          </div>
-        )}
       </section>
 
       <section className="border-b border-gray-200 p-4">
@@ -146,7 +158,7 @@ export const PosInvoiceInfo: React.FC<Props> = ({
             Vận chuyển
           </h3>
           <Checkbox
-            checked={activeOrder.isFreeShipping !== false}
+            checked={!!activeOrder.isFreeShipping}
             onChange={(event) => updateActive({ isFreeShipping: event.target.checked })}
           >
             Miễn phí vận chuyển
@@ -180,8 +192,21 @@ export const PosInvoiceInfo: React.FC<Props> = ({
       <section className="border-b border-gray-200 p-4">
         <h3 className="mb-4 text-xs font-semibold uppercase tracking-wide text-gray-500">
           Tổng kết đơn
+          {activeOrder.refOrder && (
+            <span className="ml-2 text-xs font-normal text-gray-400">
+              (Hóa đơn: {activeOrder.refOrder.code})
+            </span>
+          )}
         </h3>
-        <SummaryRow label="Tổng tiền hàng" value={totals.grossAmount} />
+
+        {type === OrderType.SALE ? (
+          <SummaryRow label="Tổng tiền hàng" value={totals.grossAmount} />
+        ) : (
+          <>
+            <SummaryRow label="Tổng tiền hàng trả" value={returnTotals?.grossAmount || 0} />
+            <SummaryRow label="Tổng tiền hàng đổi" value={exchangeTotals?.grossAmount || 0} />
+          </>
+        )}
         <div className="flex items-center justify-between gap-3 py-2 text-sm">
           <span>Giảm giá</span>
           <div className="w-56">
@@ -212,7 +237,7 @@ export const PosInvoiceInfo: React.FC<Props> = ({
         </div>
       </section>
 
-      <section className={`p-4 ${paymentDue <= 0 ? "hidden" : ""}`}>
+      <section className={`p-4`}>
         <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">Thanh toán</h3>
         <div className="flex items-center justify-between gap-3 py-2 text-sm">
           <span>{type === OrderType.SALE_RETURN ? "Tiền hoàn khách" : "Khách thanh toán"}</span>
@@ -251,7 +276,7 @@ export const PosInvoiceInfo: React.FC<Props> = ({
         </div>
 
         {paymentMode === FundTypeEnum.CASH ? (
-          <div className="min-h-[120px] rounded-md bg-[#f5f5f5] px-3 py-2">
+          <div className="min-h-[84px] rounded-md bg-[#f5f5f5] px-3 py-2">
             <div className="flex flex-wrap gap-1.5">
               {cashAmountOptions.map((amount) => (
                 <Button
@@ -266,12 +291,12 @@ export const PosInvoiceInfo: React.FC<Props> = ({
             </div>
           </div>
         ) : (
-          <div className="mt-2 flex min-h-[120px] gap-3 rounded-md bg-[#f5f5f5] p-2">
+          <div className="mt-2 flex gap-3 rounded-md bg-[#f5f5f5] p-2">
             {qrImage && (
               <img
                 src={qrImage}
                 alt="VietQR thanh toán"
-                className="h-28 w-28 rounded bg-white object-contain"
+                className="h-[68px] w-[68px] rounded bg-white object-contain"
               />
             )}
             <div className="flex flex-1 flex-col gap-3">
@@ -281,22 +306,24 @@ export const PosInvoiceInfo: React.FC<Props> = ({
                 defaultData={payment?.fund}
                 onChangeData={(fund) => updatePayment({ fundId: fund?.id || null, fund })}
               />
-              <Button
-                size="small"
-                className="w-fit"
-                icon={<ExportOutlined />}
-                disabled={!qrImage}
-                onClick={() => setQrModalOpen(true)}
-              >
-                Hiện mã QR
-              </Button>
-              <button
-                type="button"
-                className="w-fit font-semibold text-slate-500 transition-all ease-in-out hover:text-primary"
-                onClick={() => updatePayment({ amount: paymentDue })}
-              >
-                Thanh toán toàn bộ
-              </button>
+              <div className="flex items-center justify-between">
+                <Button
+                  size="small"
+                  className="w-fit"
+                  icon={<ExportOutlined />}
+                  disabled={!qrImage}
+                  onClick={() => setQrModalOpen(true)}
+                >
+                  Hiện mã QR
+                </Button>
+                <button
+                  type="button"
+                  className="w-fit font-semibold text-slate-500 transition-all ease-in-out hover:text-primary"
+                  onClick={() => updatePayment({ amount: paymentDue })}
+                >
+                  Thanh toán toàn bộ
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -331,6 +358,7 @@ export const PosInvoiceInfo: React.FC<Props> = ({
         <Button
           className="flex h-12 w-14 items-center justify-center p-0 text-lg"
           disabled={!activeOrder.lines?.length && !activeOrder.returnLines?.length}
+          onClick={() => onSubmit(true)}
         >
           <PrinterOutlined />
         </Button>
@@ -340,7 +368,7 @@ export const PosInvoiceInfo: React.FC<Props> = ({
           className="h-12"
           disabled={!activeOrder.lines?.length && !activeOrder.returnLines?.length}
           loading={loading}
-          onClick={onSubmit}
+          onClick={() => onSubmit(false)}
         >
           <span className="text-lg font-semibold">
             {activeOrder.mode === "edit" ? "CẬP NHẬT" : "THANH TOÁN"}

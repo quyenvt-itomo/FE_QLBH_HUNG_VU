@@ -1,0 +1,172 @@
+import { App, Button, Drawer, Dropdown } from "antd";
+import type { MenuProps } from "antd";
+import { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  ArrowLeftStartOnRectangleIcon,
+  ArrowUpTrayIcon,
+  ArrowUturnLeftIcon,
+  BanknotesIcon,
+  Bars3Icon,
+  ChartBarIcon,
+  CommandLineIcon,
+  WrenchScrewdriverIcon,
+} from "@heroicons/react/24/outline";
+
+import { IncomeExpenseAddUpdateModal } from "@/modules/incomeExpense/components/IncomeExpenseAddUpdateModal";
+import { useIncomeStore } from "@/modules/incomeExpense/incomeExpense.store";
+import { IncomeExpenseTypeEnum } from "@/modules/incomeExpense/incomeExpense.model";
+import { useAuth } from "@/shared/hooks/useAuth";
+import { privateRoutesName, publicRoutesName } from "@/shared/constants/routerName";
+import type { CachedOrder, PosOrderType } from "@/shared/stores/orderCache.slice";
+import { OrderType } from "../order.model";
+
+interface Props {
+  type: PosOrderType;
+  activeOrder?: CachedOrder;
+  readOnlyReturn: boolean;
+  onCreateReturn: () => void;
+  onImportFile: (file: File) => void;
+}
+
+export const PosActionMenu = ({
+  type,
+  activeOrder,
+  readOnlyReturn,
+  onCreateReturn,
+  onImportFile,
+}: Props) => {
+  const navigate = useNavigate();
+  const { modal } = App.useApp();
+  const { logout } = useAuth();
+  const importFileRef = useRef<HTMLInputElement>(null);
+  const [incomeExpenseOpen, setIncomeExpenseOpen] = useState(false);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const incomeStore = useIncomeStore({ isLocked: true }, () => setIncomeExpenseOpen(false));
+  const isSaleReturn = type === OrderType.SALE_RETURN;
+
+  const handleLogout = () => {
+    modal.confirm({
+      title: "Đăng xuất",
+      content: "Xác nhận đăng xuất",
+      okText: "Xác nhận",
+      cancelText: "Hủy",
+      onOk: () => {
+        logout();
+        localStorage.clear();
+        sessionStorage.clear();
+        window.setTimeout(() => navigate(publicRoutesName.login), 1000);
+      },
+    });
+  };
+
+  const handleImportFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (file) onImportFile(file);
+  };
+
+  const items: MenuProps["items"] = [
+    {
+      key: "end-of-day",
+      label: "Xem báo cáo cuối ngày (Chờ chức năng)",
+      disabled: true,
+      icon: <ChartBarIcon className="h-5 w-5" />,
+    },
+    {
+      key: "return",
+      label: "Trả hàng",
+      icon: <ArrowUturnLeftIcon className="h-5 w-5" />,
+      onClick: onCreateReturn,
+    },
+    ...(incomeStore.create
+      ? [
+          {
+            key: "income",
+            label: "Lập phiếu thu",
+            icon: <BanknotesIcon className="h-5 w-5" />,
+            onClick: () => setIncomeExpenseOpen(true),
+          },
+        ]
+      : []),
+    { type: "divider" as const },
+    {
+      key: "import",
+      label: isSaleReturn ? "Nhập file hàng hoàn" : "Nhập file hàng bán",
+      icon: <ArrowUpTrayIcon className="h-5 w-5" />,
+      disabled: !activeOrder || readOnlyReturn,
+      onClick: () => importFileRef.current?.click(),
+    },
+    {
+      key: "shortcuts",
+      label: "Phím tắt",
+      icon: <CommandLineIcon className="h-5 w-5" />,
+      onClick: () => setShortcutsOpen(true),
+    },
+    {
+      key: "manage",
+      label: "Quản lý",
+      icon: <WrenchScrewdriverIcon className="h-5 w-5" />,
+      onClick: () => navigate(privateRoutesName.sale),
+    },
+    {
+      key: "logout",
+      label: "Đăng xuất",
+      danger: true,
+      icon: <ArrowLeftStartOnRectangleIcon className="h-5 w-5" />,
+      onClick: handleLogout,
+    },
+  ];
+
+  return (
+    <>
+      <Dropdown menu={{ items }} trigger={["click"]} placement="bottomRight">
+        <Button
+          type="text"
+          className="!text-white hover:!bg-white/10 p-0 h-8 w-8 shrink-0"
+          aria-label="Thao tác POS"
+          title="Thao tác POS"
+        >
+          <Bars3Icon className="h-5 w-5" />
+        </Button>
+      </Dropdown>
+      <input
+        ref={importFileRef}
+        type="file"
+        accept=".xlsx,.xls"
+        className="hidden"
+        onChange={handleImportFileChange}
+      />
+      <Drawer
+        title="Phím tắt POS"
+        placement="right"
+        width={360}
+        open={shortcutsOpen}
+        onClose={() => setShortcutsOpen(false)}
+      >
+        <div className="space-y-3">
+          {[
+            ["F3", isSaleReturn ? "Tìm hàng trả" : "Tìm hàng bán"],
+            ...(isSaleReturn ? [["F7", "Tìm hàng đổi"]] : []),
+            ["F4", "Tìm khách hàng"],
+          ].map(([key, label]) => (
+            <div key={key} className="flex items-center justify-between gap-3">
+              <span className="text-gray-600">{label}</span>
+              <kbd className="rounded border border-gray-300 bg-gray-50 px-2 py-1 text-xs font-semibold text-gray-700">
+                {key}
+              </kbd>
+            </div>
+          ))}
+        </div>
+      </Drawer>
+      <IncomeExpenseAddUpdateModal
+        open={incomeExpenseOpen}
+        type={IncomeExpenseTypeEnum.INCOME}
+        errors={incomeStore.errors}
+        loading={incomeStore.creating}
+        onAdd={(data) => incomeStore.create?.(data)}
+        onClose={() => setIncomeExpenseOpen(false)}
+      />
+    </>
+  );
+};

@@ -12,12 +12,14 @@ export interface Sale extends Order {
 }
 
 export interface SaleQuery extends ApiRequestQuery {
-  type?: OrderType;
+  type?: string;
   statuses?: OrderStatus[];
+  customerId?: string;
   customerIds?: string[];
   creatorIds?: string[];
   completerIds?: string[];
   shipperIds?: string[];
+  productId?: string;
   productIds?: string[];
   fundIds?: string[];
   orderAtGte?: string;

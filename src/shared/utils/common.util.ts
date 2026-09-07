@@ -95,6 +95,9 @@ export const randomId = (): string => {
   });
 };
 
+export const isPhoneNumber = (value?: unknown): boolean =>
+  /^\d{8,12}$/.test(String(value ?? "").trim());
+
 export function normalizeIdsField(
   field: any[] | any | undefined,
   mapKey: string = "id",

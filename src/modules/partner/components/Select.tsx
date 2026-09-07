@@ -16,6 +16,7 @@ import { CustomerAddModal } from "./CustomerAddModal";
 import { useEffect, useState } from "react";
 import SupplierAddUpdateModal from "./SupplierAddUpdateModal";
 import { ShipperAddUpdateModal } from "./ShipperAddUpdateModal";
+import { isPhoneNumber } from "@/shared/utils/common.util";
 
 const columns: DropdownColumn<Partner>[] = [
   { label: "Tên đối tác", dataIndex: "name", className: "w-64" },
@@ -47,7 +48,7 @@ const getPartnerQueryHook = (type?: PartnerType) => {
   }
 };
 
-interface PartnerSelectProps extends SelectProps<Partner, PartnerQuery> {}
+type PartnerSelectProps = SelectProps<Partner, PartnerQuery>;
 
 export const PartnerSelect: React.FC<PartnerSelectProps> = ({
   value,
@@ -174,7 +175,7 @@ export const CustomerAddSelect: React.FC<PartnerSelectProps> = ({
     { isLocked: true, type: PartnerType.CUSTOMER },
     () => setOpen(false),
   );
-  const { list, loading, setKeywordTemp, unlock, handlePopupScroll } = useRemoteSelect<
+  const { list, loading, keywordTemp, setKeywordTemp, unlock, handlePopupScroll } = useRemoteSelect<
     Partner,
     PartnerQuery
   >({
@@ -223,6 +224,7 @@ export const CustomerAddSelect: React.FC<PartnerSelectProps> = ({
           loading={creating}
           onAdd={create}
           onClose={() => setOpen(false)}
+          defaultPhone={isPhoneNumber(keywordTemp) ? keywordTemp.trim() : undefined}
         />
       }
       onOpen={() => setOpen(true)}
