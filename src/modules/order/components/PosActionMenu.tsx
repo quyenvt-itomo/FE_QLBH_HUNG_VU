@@ -10,7 +10,7 @@ import {
   Bars3Icon,
   ChartBarIcon,
   CommandLineIcon,
-  WrenchScrewdriverIcon,
+  ComputerDesktopIcon,
 } from "@heroicons/react/24/outline";
 
 import { IncomeExpenseAddUpdateModal } from "@/modules/incomeExpense/components/IncomeExpenseAddUpdateModal";
@@ -106,7 +106,7 @@ export const PosActionMenu = ({
     {
       key: "manage",
       label: "Quản lý",
-      icon: <WrenchScrewdriverIcon className="h-5 w-5" />,
+      icon: <ComputerDesktopIcon className="h-5 w-5" />,
       onClick: () => navigate(privateRoutesName.sale),
     },
     {

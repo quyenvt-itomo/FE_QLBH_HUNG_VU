@@ -1,15 +1,19 @@
-import { PrinterOutlined } from "@ant-design/icons";
-import { Button, Segmented } from "antd";
-import React, { useEffect, useMemo, useRef } from "react";
+import { ExportOutlined, PrinterOutlined } from "@ant-design/icons";
+import { Button, Modal, Segmented } from "antd";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import { CustomerAddSelect } from "@/modules/partner/components/Select";
 import { Partner } from "@/modules/partner/partner.model";
+import { FundListSelect } from "@/modules/fund/components";
 import { FundSelect } from "@/modules/fund/components/Select";
 import { FundTypeEnum } from "@/modules/fund/fund.model";
 import { OrderValueInput, InputMoney } from "@/shared/components";
 import { DiscountTypeEnum } from "@/shared/constants/enum";
 import { CachedOrder } from "@/shared/stores/orderCache.slice";
+import { bank_bin_map } from "@/shared/constants/option/bank";
 import { formatMoney, getCashSuggestions } from "@/shared/utils/number.util";
+import { QrPay } from "@/shared/utils/qrcode";
+import QRCode from "qrcode";
 import { PosPayment, PosTotals } from "./PosInvoiceInfo";
 
 interface Props {
@@ -41,29 +45,8 @@ const SummaryRow: React.FC<{
     <span>{label}</span>
     <span className="flex items-center gap-6">
       {quantity !== undefined && <span>{quantity}</span>}
-      <b className={strong ? "text-lg text-primary" : ""}>{formatMoney(value)}</b>
+      <b className={strong ? "text-base text-primary" : ""}>{formatMoney(value)}</b>
     </span>
-  </div>
-);
-
-const EditableMoneyRow: React.FC<{
-  label: string;
-  value: number;
-  onChange: (value: number) => void;
-  readOnly?: boolean;
-}> = ({ label, value, onChange, readOnly = false }) => (
-  <div className="flex items-center justify-between gap-3 py-2 text-sm">
-    <span>{label}</span>
-    {readOnly ? (
-      <span>{formatMoney(value)}</span>
-    ) : (
-      <InputMoney
-        min={0}
-        value={value}
-        onChange={(next) => onChange(Number(next || 0))}
-        className="w-56"
-      />
-    )}
   </div>
 );
 
@@ -83,24 +66,33 @@ export const SaleReturnInvoiceInfo: React.FC<Props> = ({
   const settlementAmount = exchangeTotals.totalAmount - returnTotals.totalAmount;
   const paymentDue = Math.abs(settlementAmount);
   const paidAmount = Number(payment?.amount || 0);
-  const paymentMode = (activeOrder.paymentMode || FundTypeEnum.CASH) as FundTypeEnum;
+  const paymentMode = (activeOrder.paymentMode ||
+    (payment?.fund?.type === FundTypeEnum.BANK ? FundTypeEnum.BANK : FundTypeEnum.CASH)) as FundTypeEnum;
   const returnLines = useMemo(() => activeOrder.returnLines || [], [activeOrder.returnLines]);
   const exchangeLines = activeOrder.lines || [];
-  const hasExchange = exchangeLines.length > 0;
-  const hasLines =
-    returnLines.some((line) => Number((line as any).quantity || 0) > 0) || hasExchange;
+  const hasExchange = exchangeLines.some((line) => Number((line as any).quantity || 0) > 0);
   const returnQuantity = getLineQuantity(returnLines);
   const exchangeQuantity = getLineQuantity(exchangeLines);
-  const returnCost = useMemo(
+  const originalReturnGrossAmount = useMemo(
     () =>
       returnLines.reduce(
-        (sum, line) =>
-          sum + Number((line as any).quantity || 0) * Number((line as any).costPriceAtTime || 0),
+        (sum, line) => {
+          const sourceLine = activeOrder.refOrder?.lines?.find(
+            (item) => item.id === (line as any).refOrderLineId,
+          );
+          return (
+            sum +
+            Number((line as any).quantity || 0) *
+              Number(sourceLine?.unitPrice ?? (line as any).originalUnitPrice ?? 0)
+          );
+        },
         0,
       ),
-    [returnLines],
+    [activeOrder.refOrder?.lines, returnLines],
   );
   const previousPaymentDue = useRef<{ orderId: string; amount: number }>();
+  const [qrImage, setQrImage] = useState<string>();
+  const [qrModalOpen, setQrModalOpen] = useState(false);
 
   useEffect(() => {
     const previous = previousPaymentDue.current;
@@ -119,6 +111,37 @@ export const SaleReturnInvoiceInfo: React.FC<Props> = ({
   const customer = activeOrder.partner as Partner | undefined;
   const sourceCode = activeOrder.refOrder?.code || activeOrder.code || "Trả nhanh";
   const isCustomerPaying = settlementAmount > 0;
+  const bankFund = paymentMode === FundTypeEnum.BANK ? payment?.fund : undefined;
+
+  useEffect(() => {
+    const bin = bank_bin_map[bankFund?.bank || ""];
+    if (!bankFund?.accountNumber || !paymentDue || !bin || paymentMode !== FundTypeEnum.BANK) {
+      setQrImage(undefined);
+      return;
+    }
+
+    const qrPayData = QrPay.vietQR({
+      bin,
+      bankNumber: bankFund.accountNumber,
+      amount: String(paymentDue),
+      purpose: isCustomerPaying
+        ? `Thanh toan don hang ${sourceCode}`
+        : `Hoan tien don hang ${sourceCode}`,
+    }).build();
+
+    let disposed = false;
+    QRCode.toDataURL(qrPayData, { width: 260, margin: 1 })
+      .then((image) => {
+        if (!disposed) setQrImage(image);
+      })
+      .catch(() => {
+        if (!disposed) setQrImage(undefined);
+      });
+
+    return () => {
+      disposed = true;
+    };
+  }, [bankFund, isCustomerPaying, paymentDue, paymentMode, sourceCode]);
 
   return (
     <aside className="flex w-[520px] shrink-0 flex-col overflow-y-auto border-l border-gray-200 bg-white">
@@ -154,6 +177,11 @@ export const SaleReturnInvoiceInfo: React.FC<Props> = ({
           <span>{sourceCode}</span>
         </div>
         <SummaryRow
+          label="Tổng giá gốc hàng mua"
+          value={originalReturnGrossAmount}
+          quantity={returnQuantity}
+        />
+        <SummaryRow
           label="Tổng tiền hàng trả"
           value={returnTotals.grossAmount}
           quantity={returnQuantity}
@@ -172,6 +200,26 @@ export const SaleReturnInvoiceInfo: React.FC<Props> = ({
                 }
                 onChange={(value, discountType) =>
                   updateActive({ returnDiscountValue: value, returnDiscountType: discountType })
+                }
+              />
+            </div>
+          </div>
+        )}
+
+        {readOnly ? (
+          <SummaryRow label="VAT" value={returnTotals.taxAmount} />
+        ) : (
+          <div className="flex items-center justify-between gap-3 py-2 text-sm">
+            <span>VAT</span>
+            <div className="w-56">
+              <OrderValueInput
+                type="tax"
+                discountValue={Number(activeOrder.returnTaxValue || 0)}
+                discountType={
+                  (activeOrder.returnTaxType || DiscountTypeEnum.PERCENT) as DiscountTypeEnum
+                }
+                onChange={(value, taxType) =>
+                  updateActive({ returnTaxValue: value, returnTaxType: taxType })
                 }
               />
             </div>
@@ -198,27 +246,31 @@ export const SaleReturnInvoiceInfo: React.FC<Props> = ({
             <>
               <div className="flex items-center justify-between gap-3 py-2 text-sm">
                 <span>Giảm giá</span>
-                <OrderValueInput
-                  type="discount"
-                  discountValue={Number(activeOrder.discountValue || 0)}
-                  discountType={
-                    (activeOrder.discountType || DiscountTypeEnum.AMOUNT) as DiscountTypeEnum
-                  }
-                  onChange={(value, discountType) =>
-                    updateActive({ discountValue: value, discountType })
-                  }
-                />
+                <div className="w-56">
+                  <OrderValueInput
+                    type="discount"
+                    discountValue={Number(activeOrder.discountValue || 0)}
+                    discountType={
+                      (activeOrder.discountType || DiscountTypeEnum.AMOUNT) as DiscountTypeEnum
+                    }
+                    onChange={(value, discountType) =>
+                      updateActive({ discountValue: value, discountType })
+                    }
+                  />
+                </div>
               </div>
               <div className="flex items-center justify-between gap-3 py-2 text-sm">
                 <span>VAT</span>
-                <OrderValueInput
-                  type="tax"
-                  discountValue={Number(activeOrder.taxValue || 0)}
-                  discountType={
-                    (activeOrder.taxType || DiscountTypeEnum.PERCENT) as DiscountTypeEnum
-                  }
-                  onChange={(value, taxType) => updateActive({ taxValue: value, taxType })}
-                />
+                <div className="w-56">
+                  <OrderValueInput
+                    type="tax"
+                    discountValue={Number(activeOrder.taxValue || 0)}
+                    discountType={
+                      (activeOrder.taxType || DiscountTypeEnum.PERCENT) as DiscountTypeEnum
+                    }
+                    onChange={(value, taxType) => updateActive({ taxValue: value, taxType })}
+                  />
+                </div>
               </div>
             </>
           )}
@@ -236,13 +288,15 @@ export const SaleReturnInvoiceInfo: React.FC<Props> = ({
           <>
             <div className="flex items-center justify-between gap-3 py-2 text-sm">
               <span>{isCustomerPaying ? "Khách thanh toán" : "Hoàn tiền khách"}</span>
-              <InputMoney
-                min={0}
-                value={paidAmount}
-                disabled={readOnly}
-                onChange={(amount) => updatePayment({ amount: Number(amount || 0) })}
-                className="w-56"
-              />
+              <div className="w-56">
+                <InputMoney
+                  min={0}
+                  value={paidAmount}
+                  disabled={readOnly}
+                  onChange={(amount) => updatePayment({ amount: Number(amount || 0) })}
+                  className="w-56"
+                />
+              </div>
             </div>
             {!readOnly && (
               <>
@@ -255,8 +309,8 @@ export const SaleReturnInvoiceInfo: React.FC<Props> = ({
                   ]}
                   onChange={(value) => changePaymentMode(value as FundTypeEnum)}
                 />
-                <div className="mt-3">
-                  <FundSelect
+                <div className="hidden">
+                  <FundListSelect
                     query={{ type: paymentMode }}
                     value={payment?.fundId || undefined}
                     defaultData={payment?.fund}
@@ -277,17 +331,71 @@ export const SaleReturnInvoiceInfo: React.FC<Props> = ({
                     ))}
                   </div>
                 )}
+                {paymentMode === FundTypeEnum.BANK && (
+                  <div className="mt-2 flex gap-3 rounded-md bg-gray-100 p-2">
+                    {qrImage && (
+                      <img
+                        src={qrImage}
+                        alt="VietQR hoàn tiền"
+                        className="h-[68px] w-[68px] rounded bg-white object-contain"
+                      />
+                    )}
+                    <div className="flex flex-1 flex-col gap-3">
+                      <FundSelect
+                        query={{ type: FundTypeEnum.BANK }}
+                        value={payment?.fundId || undefined}
+                        defaultData={payment?.fund}
+                        onChangeData={(fund) => updatePayment({ fundId: fund?.id || null, fund })}
+                      />
+                      <div className="flex items-center justify-between">
+                        <Button
+                          size="small"
+                          className="w-fit"
+                          icon={<ExportOutlined />}
+                          disabled={!qrImage}
+                          onClick={() => setQrModalOpen(true)}
+                        >
+                          Hiện mã QR
+                        </Button>
+                        <button
+                          type="button"
+                          className="w-fit font-semibold text-slate-500 transition-all ease-in-out hover:text-primary"
+                          onClick={() => updatePayment({ amount: paymentDue })}
+                        >
+                          {isCustomerPaying ? "Thanh toán toàn bộ" : "Hoàn tiền toàn bộ"}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </>
             )}
           </>
         )}
       </section>
 
+      <Modal
+        open={qrModalOpen}
+        centered
+        title="Mã QR chuyển khoản"
+        footer={null}
+        onCancel={() => setQrModalOpen(false)}
+      >
+        {qrImage && (
+          <div className="flex justify-center py-2">
+            <img
+              src={qrImage}
+              alt="VietQR hoàn tiền"
+              className="h-[196px] w-[196px] object-contain"
+            />
+          </div>
+        )}
+      </Modal>
+
       {!readOnly && (
         <div className="sticky bottom-0 mt-auto flex gap-2 border-t border-gray-200 bg-white p-4 pt-1.5">
           <Button
             className="flex h-12 w-14 items-center justify-center p-0 text-lg"
-            disabled={!hasLines}
             onClick={() => onSubmit(true)}
           >
             <PrinterOutlined />
@@ -296,7 +404,6 @@ export const SaleReturnInvoiceInfo: React.FC<Props> = ({
             type="primary"
             block
             className="h-12"
-            disabled={!hasLines}
             loading={loading}
             onClick={() => onSubmit(false)}
           >

@@ -19,7 +19,7 @@ export const RangerItemPanel: React.FC<RangerItemPanelProps> = ({
 }) => {
   const [activeKeys, setActiveKeys] = useState<string[]>(() =>
     defaultOpenAll
-      ? rangerItems.map((item) => item.key)
+      ? rangerItems.filter((item) => item.type === "date").map((item) => item.key)
       : rangerItems
           .filter((item) => {
             const k = item.key;

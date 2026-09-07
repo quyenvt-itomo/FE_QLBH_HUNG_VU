@@ -1,6 +1,11 @@
 import React from "react";
 import { Button, Modal, Space } from "antd";
-import { CheckCircleOutlined, CloseCircleOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  DeleteOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
 import { formatDateTimeDDMMYYYY } from "@/shared/utils/date.util";
 import { formatMoney } from "@/shared/utils/number.util";
 import { getLineProduct } from "@/modules/purchase/purchase.util";
@@ -58,10 +63,7 @@ export const SaleDetailModal: React.FC<Props> = ({
 
   const isCanceled = data.status === OrderStatus.CANCELED;
   const isDraft = data.status === OrderStatus.DRAFT;
-  const canEdit =
-    !isCanceled &&
-    !!onOpenUpdate &&
-    !(isReturn && !!(data as any).refOrderId);
+  const canEdit = !isCanceled && !!onOpenUpdate && !(isReturn && !!(data as any).refOrderId);
   const canDelete = isDraft && !!onDelete;
   const canComplete = isDraft && !!onComplete;
   const canCancel = !isCanceled && !!onCancel;
@@ -111,13 +113,17 @@ export const SaleDetailModal: React.FC<Props> = ({
               {valueOrDash(partner?.name) === "—" ? "Khách lẻ" : partner?.name}
             </div>
             <div>
+              <span className="text-slate-500">Ngày hoàn thành: </span>
+              {formatDateTimeDDMMYYYY(data.occurredAt)}
+            </div>
+            <div>
               <span className="text-slate-500">Số điện thoại: </span>
               {valueOrDash(partner?.phone)}
             </div>
             {isReturn && (
               <div>
                 <span className="text-slate-500">Đơn bán gốc: </span>
-                {valueOrDash((data as any).refOrder?.code)}
+                {valueOrDash(data.refOrder?.code)}
               </div>
             )}
           </div>
@@ -216,7 +222,11 @@ export const SaleDetailModal: React.FC<Props> = ({
               </Button>
             )}
             {canComplete && (
-              <Button type="primary" icon={<CheckCircleOutlined />} onClick={() => onComplete?.(data)}>
+              <Button
+                type="primary"
+                icon={<CheckCircleOutlined />}
+                onClick={() => onComplete?.(data)}
+              >
                 Hoàn thành
               </Button>
             )}

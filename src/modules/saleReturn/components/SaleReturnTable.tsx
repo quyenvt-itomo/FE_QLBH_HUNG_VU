@@ -20,14 +20,27 @@ export const SaleReturnTable: React.FC<Props> = ({
     const summaryRow = {
       id: "summary",
       code: "Tổng",
+
+      returnGrossAmount: summaryData?.totalReturnGrossAmount || 0,
+      returnDiscountAmount: summaryData?.totalReturnDiscountAmount || 0,
+      returnTaxAmount: summaryData?.totalReturnTaxAmount || 0,
+      returnTotalAmount: summaryData?.totalReturnTotalAmount || 0,
+
       grossAmount: summaryData?.totalGrossAmount || 0,
       discountAmount: summaryData?.totalDiscountAmount || 0,
       netAmount: summaryData?.totalNetAmount || 0,
       taxAmount: summaryData?.totalTaxAmount || 0,
       totalAmount: summaryData?.totalAmount || 0,
-      returnTotalAmount: summaryData?.totalReturnAmount || 0,
+
+      settlementAmount: summaryData?.totalSettlementAmount || 0,
+
       paidAmount: summaryData?.totalPaidAmount || 0,
+      customerPaidAmount: summaryData?.totalCustomerPaidAmount || 0,
+      refundedAmount: summaryData?.totalRefundedAmount || 0,
+      amountToRefund: summaryData?.totalAmountToRefund || 0,
+      amountToCollect: summaryData?.totalAmountToCollect || 0,
       actualShippingFee: summaryData?.totalActualShippingFee || 0,
+
       isSummary: true,
     };
 
@@ -39,7 +52,7 @@ export const SaleReturnTable: React.FC<Props> = ({
       {
         title: "Mã đơn bán",
         key: "code",
-        width: 150,
+        width: 100,
         fixed: "left",
         className: "font-mono",
         render: (record) =>
@@ -62,13 +75,22 @@ export const SaleReturnTable: React.FC<Props> = ({
         title: "Ngày bán",
         dataIndex: "orderAt",
         key: "orderAt",
-        width: 150,
+        width: 120,
         render: (value) => formatDateTimeDDMMYYYY(value),
+      },
+      {
+        title: "Mã KH",
+        key: "partnerCode",
+        width: 80,
+        render: (record) => {
+          const partnerDisplay = record.partner?.code || record.partnerSnapshot?.code || "";
+          return record.isSummary ? "" : partnerDisplay;
+        },
       },
       {
         title: "Khách hàng",
         key: "partner",
-        width: 220,
+        width: 120,
         render: (record) => {
           const partnerDisplay = record.partner?.name || record.partnerSnapshot?.name || "Khách lẻ";
           return record.isSummary ? "" : partnerDisplay;
@@ -80,6 +102,7 @@ export const SaleReturnTable: React.FC<Props> = ({
         key: "returnGrossAmount",
         width: 140,
         align: "right",
+        hidden: true,
         render: (value) => formatMoney(value),
       },
       {
@@ -88,6 +111,7 @@ export const SaleReturnTable: React.FC<Props> = ({
         key: "returnDiscountAmount",
         width: 120,
         align: "right",
+        hidden: true,
         render: (value) => formatMoney(value),
       },
       {
@@ -96,6 +120,7 @@ export const SaleReturnTable: React.FC<Props> = ({
         key: "returnTaxAmount",
         width: 120,
         align: "right",
+        hidden: true,
         render: (value) => formatMoney(value),
       },
       {
@@ -113,6 +138,7 @@ export const SaleReturnTable: React.FC<Props> = ({
         key: "grossAmount",
         width: 140,
         align: "right",
+        hidden: true,
         render: (value) => formatMoney(value),
       },
       {
@@ -121,6 +147,7 @@ export const SaleReturnTable: React.FC<Props> = ({
         key: "discountAmount",
         width: 120,
         align: "right",
+        hidden: true,
         render: (value) => formatMoney(value),
       },
       {
@@ -129,6 +156,7 @@ export const SaleReturnTable: React.FC<Props> = ({
         key: "taxAmount",
         width: 120,
         align: "right",
+        hidden: true,
         render: (value) => formatMoney(value),
       },
       {
@@ -149,19 +177,60 @@ export const SaleReturnTable: React.FC<Props> = ({
         render: (value) => formatMoney(value),
       },
       {
-        title: "Cần trả khách",
+        title: "Doanh thu",
         key: "settlementAmount",
         width: 150,
         align: "right",
-        render: (record: SaleReturn) =>
-          formatMoney(Math.max(0, Number(record.settlementAmount || 0))),
+        render: (record: SaleReturn) => formatMoney(Number(record.settlementAmount || 0)),
+      },
+      {
+        title: "Cần trả khách",
+        dataIndex: "amountToRefund",
+        key: "amountToRefund",
+        width: 150,
+        align: "right",
+        render: (value) => <span className="text-red-600">{formatMoney(Number(value || 0))}</span>,
+      },
+      {
+        title: "Cần thu thêm",
+        dataIndex: "amountToCollect",
+        key: "amountToCollect",
+        width: 150,
+        align: "right",
+        render: (value) => (
+          <span className="text-green-600">{formatMoney(Number(value || 0))}</span>
+        ),
       },
       {
         title: "Đã hoàn khách",
-        key: "paidAmount",
+        dataIndex: "refundedAmount",
+        key: "refundedAmount",
         width: 150,
         align: "right",
-        render: (record: SaleReturn) => formatMoney(Number(record.paidAmount || 0)),
+        render: (value) => formatMoney(Number(value || 0)),
+      },
+      {
+        title: "Khách thanh toán",
+        dataIndex: "customerPaidAmount",
+        key: "customerPaidAmount",
+        width: 150,
+        align: "right",
+        render: (value) => formatMoney(Number(value || 0)),
+      },
+      {
+        title: "Người hoàn thành",
+        key: "completerName",
+        width: 150,
+        hidden: true,
+        render: (record) => record.completer?.name || record.completerSnapshot?.name,
+      },
+      {
+        title: "Thời điểm HT",
+        dataIndex: "occurredAt",
+        key: "occurredAt",
+        width: 120,
+        hidden: true,
+        render: (value) => formatDateTimeDDMMYYYY(value),
       },
       {
         title: "Trạng thái",

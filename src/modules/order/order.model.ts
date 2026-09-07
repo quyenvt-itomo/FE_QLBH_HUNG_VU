@@ -115,5 +115,9 @@ export interface Order extends Entity {
 
   // TODO: Các trường khác (nếu có) sẽ được lưu trong metadata
   paidAmount?: number; // số tiền đã thanh toán (nếu có)
+  customerPaidAmount?: number; // tổng tiền khách đã thanh toán
+  refundedAmount?: number; // tổng tiền đã hoàn khách
+  amountToRefund?: number; // số tiền cần trả khách
+  amountToCollect?: number; // số tiền cần thu thêm
   actualShippingFee?: number; // phí vận chuyển thực tế (nếu có)
 }

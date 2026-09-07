@@ -65,20 +65,20 @@ const SaleReturnPage: React.FC = () => {
   const selectedRecords = store.data.filter((record) => selectedRowKeys.includes(record.id));
   const hasSelectedRecords = selectedRecords.length > 0;
   const selectedActionItems = [
-    selectedRecords.some((record) => record._actions?.complete?.can) && {
+    selectedRecords.every((record) => record._actions?.complete?.can) && {
       key: "complete",
       label: "Hoàn thành",
       icon: <CheckCircleIcon className="h-4 w-4" />,
       onClick: () => handlers.handleCompleteMany(selectedRecords),
     },
-    selectedRecords.some((record) => record._actions?.cancel?.can) && {
+    selectedRecords.every((record) => record._actions?.cancel?.can) && {
       key: "cancel",
       label: "Hủy",
       danger: true,
       icon: <NoSymbolIcon className="h-4 w-4" />,
       onClick: () => handlers.handleCancelMany(selectedRecords),
     },
-    selectedRecords.some((record) => record._actions?.delete?.can) && {
+    selectedRecords.every((record) => record._actions?.delete?.can) && {
       key: "delete",
       label: "Xóa",
       danger: true,
@@ -173,6 +173,7 @@ const SaleReturnPage: React.FC = () => {
             dataSource={store.data}
             loading={store.loading}
             pagination={store.pagination}
+            summaryData={store.summary}
             setPage={state.setPage}
             setSize={state.setSize}
             onViewDetail={handlers.handleOpenDetail}

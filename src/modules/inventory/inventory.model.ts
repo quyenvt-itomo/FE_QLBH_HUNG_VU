@@ -50,6 +50,8 @@ export interface InventoryTransaction extends Entity {
   amount: number;
   type: TransactionType;
   costPriceAfter: number;
+  costPrice?: number;
+  runningCostPrice?: number;
   quantityAfter: number;
   inventoryValueAfter: number;
   refType: InventoryTransactionRefTypeEnum;

@@ -82,10 +82,14 @@ export type SummaryKey =
   | "totalReturnDiscountAmount"
   | "totalReturnNetAmount"
   | "totalReturnTaxAmount"
-  | "totalReturnAmount"
+  | "totalReturnTotalAmount"
   | "totalReturnCost"
   | "totalSettlementAmount"
   | "totalPaidAmount"
+  | "totalCustomerPaidAmount"
+  | "totalRefundedAmount"
+  | "totalAmountToRefund"
+  | "totalAmountToCollect"
   | "totalActualShippingFee"
 
   // Inventory
@@ -113,7 +117,6 @@ export type SummaryKey =
   | "totalOrders"
   | "totalSuccessOrders"
   | "totalRevenue"
-  | "totalRefundedAmount"
   | "totalDebtAmount"
   | "totalCashInFromOrders"
   | "totalCashOutFromOrders"

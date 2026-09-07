@@ -55,13 +55,13 @@ export const PosHeader = ({
             <div
               key={cache.id}
               className={`flex shrink-0 items-center rounded-md pr-1 ${
-                isActive ? "bg-white text-[#062d1d]" : "text-white"
+                isActive ? "bg-white text-[#062d1d]" : "text-white hover:bg-white/10"
               }`}
             >
               <button
                 type="button"
                 className={`flex h-8 shrink-0 cursor-pointer items-center rounded-s-md bg-transparent px-2 pr-1 ${
-                  isActive ? "font-semibold" : "hover:bg-white/10"
+                  isActive ? "font-semibold" : ""
                 }`}
                 onClick={() => onSelectCache(cache)}
               >
@@ -73,7 +73,7 @@ export const PosHeader = ({
                 danger
                 title={`Đóng ${cache.label}`}
                 aria-label={`Đóng ${cache.label}`}
-                className={`${isActive ? "!text-red-500" : "!text-white/70 hover:!text-red-400 hover:!bg-transparent"} rounded-full h-5 w-5 p-0`}
+                className={`${isActive ? "!text-red-500" : "!text-white/70 hover:!text-red-400  hover:!bg-white/10"} rounded-full h-5 w-5 p-0`}
                 onClick={() => onRemoveCache(cache)}
               >
                 <XMarkIcon className="h-4" />

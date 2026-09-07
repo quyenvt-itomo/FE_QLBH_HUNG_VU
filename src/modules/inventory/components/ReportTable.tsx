@@ -63,7 +63,10 @@ export const ReportTable: React.FC<ObjectTableProps> = ({
         dataIndex: "name",
         key: "name",
         fixed: "left",
-        width: 150,
+        width: 200,
+        render: (value) => (
+          <span className="font-medium max-w-52 text-wrap block line-clamp-2">{value}</span>
+        ),
       },
       {
         title: "ĐVT",

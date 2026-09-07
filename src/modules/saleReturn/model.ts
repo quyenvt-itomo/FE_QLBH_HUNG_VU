@@ -34,7 +34,7 @@ export interface SaleReturnQuery extends ApiRequestQuery {
 
 export const saleReturnStatusMap: Record<OrderStatus, string> = {
   [OrderStatus.DRAFT]: "Phiếu tạm",
-  [OrderStatus.COMPLETED]: "Đã hoàn thành",
+  [OrderStatus.COMPLETED]: "Đã HT",
   [OrderStatus.CANCELED]: "Đã hủy",
 };
 

@@ -21,7 +21,13 @@ interface Props {
 const isPurchaseType = (type: OrderType) =>
   type === OrderType.PURCHASE || type === OrderType.PURCHASE_RETURN;
 
-export const OrderProductSelect = ({ type, onSelect, placeholder, className, shortcutKey = "F3" }: Props) => {
+export const OrderProductSelect = ({
+  type,
+  onSelect,
+  placeholder,
+  className,
+  shortcutKey = "F3",
+}: Props) => {
   const { currentStore } = useGlobalData();
   const containerRef = useRef<HTMLDivElement>(null);
   const [selectedId, setSelectedId] = useAutoResetItem<string>();
@@ -146,6 +152,7 @@ export const OrderProductSelect = ({ type, onSelect, placeholder, className, sho
             : "Tìm mã hoặc tên hàng để bán (F3)")
         }
         className={`!h-9 min-w-0 flex-1 ${create ? "rounded-e-none" : ""}`}
+        popupClassName="min-h-80"
         popupMatchSelectWidth={false}
         filterOption={false}
         onSearch={setKeywordTemp}

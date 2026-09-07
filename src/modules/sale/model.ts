@@ -36,7 +36,7 @@ export interface SaleQuery extends ApiRequestQuery {
 
 export const saleStatusMap: Record<OrderStatus, string> = {
   [OrderStatus.DRAFT]: "Đơn tạm",
-  [OrderStatus.COMPLETED]: "Đã hoàn thành",
+  [OrderStatus.COMPLETED]: "Đã HT",
   [OrderStatus.CANCELED]: "Đã hủy",
 };
 

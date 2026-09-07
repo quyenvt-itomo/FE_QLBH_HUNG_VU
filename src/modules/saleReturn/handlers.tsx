@@ -48,54 +48,68 @@ export const useSaleReturnHandlers = ({
   };
 
   const openPos = (data: SaleReturn) => {
-    navigate(`${privateRoutesName.pos}?type=sale_return&editId=${data.id}`, { state: { order: data } });
+    navigate(`${privateRoutesName.pos}?type=sale_return&editId=${data.id}`, {
+      state: { order: data },
+    });
   };
   const handleOpenAdd = create ? () => onOpenSourcePicker?.() : undefined;
-  const handleOpenDetail = (record: SaleReturn) => withDetails(record, (data) => {
-    setRowData(data);
-    setOpenDetail?.(true);
-  });
+  const handleOpenDetail = (record: SaleReturn) =>
+    withDetails(record, (data) => {
+      setRowData(data);
+      setOpenDetail?.(true);
+    });
   const handleOpenEdit = update
     ? (record: SaleReturn) => {
-        if (record.refOrderId) return;
         withDetails(record, openPos);
       }
     : undefined;
-  const handleDelete = remove ? (record: SaleReturn) => {
-    if (record.status !== OrderStatus.DRAFT) return;
-    withDetails(record, (data) => modal.confirm({
-      centered: true,
-      title: "Xóa phiếu trả hàng",
-      content: `Bạn có chắc muốn xóa phiếu ${data.code}?`,
-      okText: "Xóa",
-      okButtonProps: { danger: true },
-      cancelText: "Hủy",
-      onOk: () => remove(data.id, { onSuccess: () => removeCachedOrder(data.id) }),
-    }));
-  } : undefined;
-  const handleCancel = cancel ? (record: SaleReturn) => {
-    if (record.status === OrderStatus.CANCELED) return;
-    withDetails(record, (data) => modal.confirm({
-      centered: true,
-      title: "Hủy phiếu trả hàng",
-      content: `Bạn có chắc muốn hủy phiếu ${data.code}?`,
-      okText: "Hủy phiếu",
-      okButtonProps: { danger: true },
-      cancelText: "Đóng",
-      onOk: () => cancel(data.id).then(() => removeCachedOrder(data.id)),
-    }));
-  } : undefined;
-  const handleComplete = complete ? (record: SaleReturn) => {
-    if (!record._actions?.complete?.can) return;
-    withDetails(record, (data) => modal.confirm({
-      centered: true,
-      title: "Hoàn thành phiếu trả hàng",
-      content: `Bạn có chắc muốn hoàn thành phiếu ${data.code}?`,
-      okText: "Hoàn thành",
-      cancelText: "Đóng",
-      onOk: () => complete(data.id),
-    }));
-  } : undefined;
+  const handleDelete = remove
+    ? (record: SaleReturn) => {
+        if (record.status !== OrderStatus.DRAFT) return;
+        withDetails(record, (data) =>
+          modal.confirm({
+            centered: true,
+            title: "Xóa phiếu trả hàng",
+            content: `Bạn có chắc muốn xóa phiếu ${data.code}?`,
+            okText: "Xóa",
+            okButtonProps: { danger: true },
+            cancelText: "Hủy",
+            onOk: () => remove(data.id, { onSuccess: () => removeCachedOrder(data.id) }),
+          }),
+        );
+      }
+    : undefined;
+  const handleCancel = cancel
+    ? (record: SaleReturn) => {
+        if (record.status === OrderStatus.CANCELED) return;
+        withDetails(record, (data) =>
+          modal.confirm({
+            centered: true,
+            title: "Hủy phiếu trả hàng",
+            content: `Bạn có chắc muốn hủy phiếu ${data.code}?`,
+            okText: "Hủy phiếu",
+            okButtonProps: { danger: true },
+            cancelText: "Đóng",
+            onOk: () => cancel(data.id).then(() => removeCachedOrder(data.id)),
+          }),
+        );
+      }
+    : undefined;
+  const handleComplete = complete
+    ? (record: SaleReturn) => {
+        if (!record._actions?.complete?.can) return;
+        withDetails(record, (data) =>
+          modal.confirm({
+            centered: true,
+            title: "Hoàn thành phiếu trả hàng",
+            content: `Bạn có chắc muốn hoàn thành phiếu ${data.code}?`,
+            okText: "Hoàn thành",
+            cancelText: "Đóng",
+            onOk: () => complete(data.id),
+          }),
+        );
+      }
+    : undefined;
   const handleEditFromDetail = handleOpenEdit
     ? (record: SaleReturn) => {
         setOpenDetail?.(false);

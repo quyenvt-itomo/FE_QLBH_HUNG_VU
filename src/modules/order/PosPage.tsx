@@ -58,6 +58,7 @@ export const PosPage: React.FC = () => {
   const initializedEdit = useRef<string | null>(null);
   const initializedLocationOrder = useRef<unknown>(null);
   const initializedReturnAdjustments = useRef<string | null>(null);
+  const previousReturnGrossAmount = useRef<{ syncKey: string; amount: number }>();
   const customerSelectRef = useRef<HTMLDivElement>(null);
   const [sourcePickerOpen, setSourcePickerOpen] = useState(false);
   const {
@@ -86,11 +87,8 @@ export const PosPage: React.FC = () => {
   const activeOrder = activeCache?.type === type ? activeCache : undefined;
   const activeOrderId = activeOrder?.id;
   const isSaleReturn = type === OrderType.SALE_RETURN;
-  const isReadOnlyReturn =
-    type === OrderType.SALE_RETURN &&
-    !!activeOrder?.refOrderId &&
-    activeOrder.mode === "edit" &&
-    !!activeOrder.sourceId;
+  // Phiếu trả theo đơn vẫn được chỉnh sửa; backend sẽ kiểm tra giới hạn hàng hoàn.
+  const isReadOnlyReturn = false;
   const allStores = info?.allStores || [];
 
   useEffect(() => {
@@ -118,16 +116,25 @@ export const PosPage: React.FC = () => {
   }, [currentStore, dispatch, editId, locationState?.order, type, typeCaches]);
 
   useEffect(() => {
-    if (!currentStore || !editId || initializedEdit.current === editId) return;
+    // Khi chỉnh sửa, currentStore có thể chưa được chọn nhưng order đã chứa store.
+    // Không được return sớm ở đây, nếu không các nhánh khôi phục cửa hàng bên dưới
+    // sẽ không bao giờ được thực thi.
+    if (!editId || initializedEdit.current === editId) return;
     const existing = caches.find((item) => item.sourceId === editId);
     if (existing) {
       initializedEdit.current = editId;
+      if (!currentStore && existing.store) {
+        handleSetCurrentStore(existing.store as Order["store"], false);
+      }
       dispatch(setCurrentOrderCache(existing.id));
       return;
     }
 
-    initializedEdit.current = editId;
     if (locationState?.order) {
+      initializedEdit.current = editId;
+      if (!currentStore && locationState.order.store) {
+        handleSetCurrentStore(locationState.order.store, false);
+      }
       dispatch(
         addNewCache({
           type,
@@ -139,12 +146,16 @@ export const PosPage: React.FC = () => {
       return;
     }
 
+    initializedEdit.current = editId;
     orderStore.getById?.(editId, {
       onSuccess: (order) => {
         if (!order) {
           message.error("Không tìm thấy phiếu cần chỉnh sửa");
-          navigate(type === OrderType.SALE ? "/sales" : "/sales-returns");
+          navigate(type === OrderType.SALE ? privateRoutesName.sale : privateRoutesName.saleReturn);
           return;
+        }
+        if (!currentStore && order.store) {
+          handleSetCurrentStore(order.store, false);
         }
         dispatch(
           addNewCache({
@@ -161,6 +172,7 @@ export const PosPage: React.FC = () => {
     currentStore,
     dispatch,
     editId,
+    handleSetCurrentStore,
     locationState?.order,
     message,
     navigate,
@@ -265,10 +277,17 @@ export const PosPage: React.FC = () => {
     const sourceGrossAmount = Number(source.grossAmount || 0) || getLinesGrossAmount(source.lines);
     const syncKey = `${activeOrder.id}:${source.id}`;
     const isFirstSync = initializedReturnAdjustments.current !== syncKey;
+    const shouldSync =
+      isFirstSync ||
+      previousReturnGrossAmount.current?.syncKey !== syncKey ||
+      previousReturnGrossAmount.current.amount !== returnGrossAmount;
     const sourceDiscountType = (source.discountType || DiscountTypeEnum.AMOUNT) as DiscountTypeEnum;
     const sourceTaxType = (source.taxType || DiscountTypeEnum.PERCENT) as DiscountTypeEnum;
 
+    if (!shouldSync) return;
+
     if (isFirstSync) initializedReturnAdjustments.current = syncKey;
+    previousReturnGrossAmount.current = { syncKey, amount: returnGrossAmount };
 
     const nextValues: Partial<CachedOrder> = {};
     if (isFirstSync || activeOrder.returnDiscountType === sourceDiscountType) {

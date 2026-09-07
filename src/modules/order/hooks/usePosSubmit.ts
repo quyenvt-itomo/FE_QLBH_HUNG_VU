@@ -49,15 +49,22 @@ export const usePosSubmit = ({
   return useCallback(
     (print = false) => {
       if (isReadOnlyReturn) return;
-      const hasReturnLines = returnLines.some((line) => Number(line.quantity || 0) > 0);
-      const hasExchangeLines = exchangeLines.length > 0;
-      if (
-        !activeOrder ||
-        !currentStoreId ||
-        (type === OrderType.SALE ? !hasExchangeLines : !hasReturnLines && !hasExchangeLines)
-      ) {
+      const linesWithQuantity = (lines: Record<string, any>[]) =>
+        lines.filter((line) => {
+          const quantity = Number(line.quantity || 0);
+          return Number.isFinite(quantity) && quantity > 0;
+        });
+      const payloadReturnLines = linesWithQuantity(returnLines);
+      const payloadExchangeLines = linesWithQuantity(exchangeLines);
+      const hasReturnLines = payloadReturnLines.length > 0;
+      const hasExchangeLines = payloadExchangeLines.length > 0;
+
+      if (!activeOrder || !currentStoreId) return;
+      if (type === OrderType.SALE_RETURN && !hasReturnLines) {
+        message.error("Vui lòng chọn ít nhất 1 hàng hóa để hoàn trả");
         return;
       }
+      if (type === OrderType.SALE && !hasExchangeLines) return;
 
       const {
         id: cacheId,
@@ -75,7 +82,6 @@ export const usePosSubmit = ({
         0,
         Number(payment?.amount ?? Math.abs(totals.totalAmount) ?? 0),
       );
-      const payloadReturnLines = returnLines.filter((line) => Number(line.quantity || 0) > 0);
       const payload: Partial<Order> = {
         ...(data as Partial<Order>),
         ...(mode === "edit" && sourceId ? { id: sourceId } : { tempId: cacheId }),
@@ -118,7 +124,7 @@ export const usePosSubmit = ({
               : "Thanh toán hóa đơn",
           },
         ] as any,
-        lines: exchangeLines as any,
+        lines: payloadExchangeLines as any,
         returnLines: (type === OrderType.SALE_RETURN ? payloadReturnLines : []) as any,
       };
 

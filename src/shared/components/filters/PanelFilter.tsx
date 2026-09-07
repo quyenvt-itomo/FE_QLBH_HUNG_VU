@@ -289,7 +289,7 @@ export const PanelFilter: React.FC<PanelFilterProps> = ({
               {addressFilter && <AddressFilter {...addressFilter} />}
 
               {filterUses.length > 0 && (
-                <FilterPanel filterUses={filterUses} filterLabels={filterLabels} defaultOpenAll />
+                <FilterPanel filterUses={filterUses} filterLabels={filterLabels} />
               )}
             </div>
           </div>

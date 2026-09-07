@@ -42,7 +42,6 @@ export const InventoryPage: React.FC = () => {
     filterUses,
     size: 20,
   });
-  const [type, setType] = useState<string>("finished");
   const [refType, setRefType] = useState<InventoryTransactionRefTypeEnum | undefined>();
 
   // TODO For Detail
@@ -83,12 +82,6 @@ export const InventoryPage: React.FC = () => {
     setOpenDetail(true);
   };
 
-  const handleTabChange = (key: string) => {
-    setType(key);
-    setPageReport(1);
-    pageAction.handleSearch("");
-  };
-
   return (
     <div className="flex gap-3 w-full h-full">
       <PanelFilter
@@ -102,23 +95,8 @@ export const InventoryPage: React.FC = () => {
         filterUses={filterUses}
         onClearFilter={pageAction.resetFilter}
       />
-      <div className="flex flex-col h-full w-full gap-1">
+      <div className="flex flex-col h-full min-w-0 flex-1 gap-3">
         <div className="flex justify-between items-start gap-3">
-          <Tabs
-            activeKey={type}
-            onChange={handleTabChange}
-            items={[
-              {
-                key: "finished",
-                label: "Th�nh ph?m",
-              },
-              {
-                key: "material",
-                label: "Nguy�n v?t li?u",
-              },
-            ]}
-            className="custom-tabs"
-          />
           <div className="flex items-center gap-3 flex-shrink-0">
             <SearchInput value={keyword} onSearch={pageAction.handleSearch} maxWidth={480} />
             <DateRangeFilter
