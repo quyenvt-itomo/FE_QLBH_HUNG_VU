@@ -9,5 +9,5 @@ export const usePartnerDebtReportStore = createBaseReportStore<
 >({
   key: "partnerDebtReportReport",
   apiUrl: apiEndpoint.partnerDebt.base,
-  permissionModule: "partnerDebtReport",
+  permissionModule: "debtReport",
 });

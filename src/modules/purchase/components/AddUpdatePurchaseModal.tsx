@@ -7,7 +7,7 @@ import { AppDatePicker, InputMoney, Label, OrderValueInput } from "@/shared/comp
 import { SupplierAddSelect } from "@/modules/partner/components/Select";
 import { getProductsByCodes } from "@/modules/product/product.store";
 import { collectUnits, getDefaultPurchaseUnit } from "@/modules/product/product.util";
-import { DiscountTypeEnum } from "@/shared/constants/enum";
+import { DiscountType } from "@/shared/constants/enum";
 import { OrderStatus, OrderType, Purchase, PurchaseLine } from "../purchase.model";
 import { PurchaseFile, purchaseExcelColumns } from "../purchase.file";
 import { PurchaseLineFormList } from "./PurchaseLineFormList";
@@ -89,9 +89,9 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
       orderAt: dayjs(),
       lines: [],
       discountValue: 0,
-      discountType: DiscountTypeEnum.AMOUNT,
+      discountType: DiscountType.AMOUNT,
       taxValue: 0,
-      taxType: DiscountTypeEnum.PERCENT,
+      taxType: DiscountType.PERCENT,
       shippingFee: 0,
       isFreeShipping: false,
       incomeExpenses: [{ amount: 0 }],
@@ -193,17 +193,15 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
     (sum, line) => sum + Number(line.quantity || 0) * Number(line.unitPrice || 0),
     0,
   );
-  const calculateRateAmount = (value: number, type?: DiscountTypeEnum) =>
-    type === DiscountTypeEnum.PERCENT
-      ? (totalAmount * Number(value || 0)) / 100
-      : Number(value || 0);
+  const calculateRateAmount = (value: number, type?: DiscountType) =>
+    type === DiscountType.PERCENT ? (totalAmount * Number(value || 0)) / 100 : Number(value || 0);
   const discountAmount = Math.min(
     totalAmount,
     calculateRateAmount(Number(discountValue), discountType),
   );
   const netAmount = Math.max(0, totalAmount - discountAmount);
   const taxAmount =
-    taxType === DiscountTypeEnum.PERCENT
+    taxType === DiscountType.PERCENT
       ? (netAmount * Number(taxValue || 0)) / 100
       : Number(taxValue || 0);
   const shippingAmount =
@@ -232,10 +230,7 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
         >
           <div className="flex min-h-0 flex-1 gap-3">
             <div className="flex min-w-0 flex-1 flex-col h-full">
-              <PurchaseLineFormList
-                form={form}
-                onImportFile={importExcel}
-              />
+              <PurchaseLineFormList form={form} onImportFile={importExcel} />
             </div>
 
             <div className="relative flex shrink-0 items-start h-full">
@@ -271,17 +266,17 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
                         />
                       </Form.Item>
 
-                  <Form.Item name="invoiceNumber" label={<Label title="Số hóa đơn" />}>
-                    <Input placeholder="Số hóa đơn đầu vào" />
-                  </Form.Item>
+                      <Form.Item name="invoiceNumber" label={<Label title="Số hóa đơn" />}>
+                        <Input placeholder="Số hóa đơn đầu vào" />
+                      </Form.Item>
 
-                  {editData?.status === OrderStatus.COMPLETED && (
-                    <Form.Item name="occurredAt" label={<Label title="Ngày nhập kho" />}>
-                      <AppDatePicker showTime />
-                    </Form.Item>
-                  )}
+                      {editData?.status === OrderStatus.COMPLETED && (
+                        <Form.Item name="occurredAt" label={<Label title="Ngày nhập kho" />}>
+                          <AppDatePicker showTime />
+                        </Form.Item>
+                      )}
 
-                  <Divider className="my-2" />
+                      <Divider className="my-2" />
                       <div className="flex justify-between pt-2 pb-4">
                         <span>Tổng tiền hàng</span>
                         <span>{formatVnd(totalAmount)}</span>

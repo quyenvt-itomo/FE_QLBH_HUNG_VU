@@ -1,18 +1,15 @@
 import React from "react";
-import {
-  InventoryTransactionRefTypeEnum,
-  inventoryTransactionRefTypeMap,
-} from "../inventory.model";
+import { InventoryTransactionRefType, inventoryTransactionRefTypeMap } from "../inventory.model";
 
 interface Props {
-  refType?: InventoryTransactionRefTypeEnum | null;
-  setRefType?: (value?: InventoryTransactionRefTypeEnum) => void;
+  refType?: InventoryTransactionRefType | null;
+  setRefType?: (value?: InventoryTransactionRefType) => void;
 }
 
 export const RefTypeFilter: React.FC<Props> = ({ refType, setRefType }) => {
-  const refTypes = Object.values(InventoryTransactionRefTypeEnum);
+  const refTypes = Object.values(InventoryTransactionRefType);
 
-  const renderCard = (value: InventoryTransactionRefTypeEnum) => {
+  const renderCard = (value: InventoryTransactionRefType) => {
     const isSelected = refType === value;
     return (
       <div

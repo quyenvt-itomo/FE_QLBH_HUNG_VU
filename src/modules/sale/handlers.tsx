@@ -5,6 +5,7 @@ import { HandlersInput } from "@/shared/interfaces/common";
 import { privateRoutesName } from "@/shared/constants/routerName";
 import { RootState } from "@/shared/stores";
 import { removeOrderCache } from "@/shared/stores/orderCache.slice";
+import { randomId } from "@/shared/utils/common.util";
 import { OrderStatus } from "./model";
 import { Sale } from "./model";
 
@@ -16,7 +17,6 @@ type Props = HandlersInput<Sale> & {
   removeMany?: (ids: string[], opts?: { onSuccess?: () => void }) => void;
   getAll?: (params?: Record<string, unknown>) => Promise<Sale[]>;
   print?: (records: Sale[]) => void;
-  setDefaultData?: (data: Partial<Sale> | undefined) => void;
 };
 
 export const useSaleHandlers = ({
@@ -66,6 +66,76 @@ export const useSaleHandlers = ({
       setOpenDetail?.(true);
     });
   const handleOpenEdit = update ? (record: Sale) => withDetails(record, openPos) : undefined;
+  const handleCopy = create
+    ? (record: Sale) =>
+        withDetails(record, (data) => {
+          const {
+            id: _id,
+            tempId: _tempId,
+            code: _code,
+            status: _status,
+            occurredAt: _occurredAt,
+            canceledAt: _canceledAt,
+            completedAt: _completedAt,
+            completerId: _completerId,
+            completer: _completer,
+            completerSnapshot: _completerSnapshot,
+            creatorId: _creatorId,
+            creatorSnapshot: _creatorSnapshot,
+            updaterId: _updaterId,
+            updaterSnapshot: _updaterSnapshot,
+            createdAt: _createdAt,
+            updatedAt: _updatedAt,
+            deleterId: _deleterId,
+            deleterSnapshot: _deleterSnapshot,
+            _actions: _actions,
+            lines,
+            returnLines: _returnLines,
+            incomeExpenses,
+            ...copyData
+          } = data as Sale & {
+            completedAt?: string | null;
+            completerId?: string | null;
+          };
+
+          navigate(`${privateRoutesName.pos}?type=sale`, {
+            state: {
+              order: {
+                ...copyData,
+                tempId: randomId(),
+                code: "",
+                status: OrderStatus.DRAFT,
+                occurredAt: null,
+                canceledAt: null,
+                completedAt: null,
+                completerId: null,
+                refOrderId: null,
+                refOrder: null,
+                lines: (lines || []).map((line) => ({
+                  ...line,
+                  id: undefined,
+                  tempId: randomId(),
+                  orderId: null,
+                  returnOrderId: null,
+                  refOrderLineId: null,
+                })),
+                returnLines: [],
+                incomeExpenses: (incomeExpenses || []).map((item) => {
+                  const {
+                    id: _incomeExpenseId,
+                    tempId: _incomeExpenseTempId,
+                    orderId: _incomeExpenseOrderId,
+                    createdAt: _incomeExpenseCreatedAt,
+                    updatedAt: _incomeExpenseUpdatedAt,
+                    ...payment
+                  } = item as any;
+                  return { ...payment, id: undefined, tempId: randomId(), orderId: null };
+                }),
+              },
+            },
+          });
+        })
+    : undefined;
   const handleDelete = remove
     ? (record: Sale) => {
         modal.confirm({
@@ -180,6 +250,7 @@ export const useSaleHandlers = ({
     handleOpenAdd,
     handleOpenDetail,
     handleOpenEdit,
+    handleCopy,
     handleDelete,
     handleComplete,
     handleCancel,

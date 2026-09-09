@@ -36,9 +36,9 @@ import { RootState } from "@/shared/stores";
 import { StoreCardLite } from "@/modules/store/components/Card";
 import { icons } from "@/shared/assets/icons";
 import { useGlobalData } from "@/shared/hooks/useGlobalData";
-import { DiscountTypeEnum } from "@/shared/constants/enum";
+import { DiscountType } from "@/shared/constants/enum";
 import { privateRoutesName } from "@/shared/constants/routerName";
-import { FundTypeEnum } from "@/modules/fund/fund.model";
+import { FundType } from "@/modules/fund/fund.model";
 import { Sale } from "../sale";
 import { SaleA4PrintDocument } from "../sale/components/SaleA4Print";
 import { usePrintHtml } from "@/shared/hooks/usePrintHtml";
@@ -281,8 +281,8 @@ export const PosPage: React.FC = () => {
       isFirstSync ||
       previousReturnGrossAmount.current?.syncKey !== syncKey ||
       previousReturnGrossAmount.current.amount !== returnGrossAmount;
-    const sourceDiscountType = (source.discountType || DiscountTypeEnum.AMOUNT) as DiscountTypeEnum;
-    const sourceTaxType = (source.taxType || DiscountTypeEnum.PERCENT) as DiscountTypeEnum;
+    const sourceDiscountType = (source.discountType || DiscountType.AMOUNT) as DiscountType;
+    const sourceTaxType = (source.taxType || DiscountType.PERCENT) as DiscountType;
 
     if (!shouldSync) return;
 
@@ -387,7 +387,7 @@ export const PosPage: React.FC = () => {
     });
   };
 
-  const changePaymentMode = (mode: FundTypeEnum) => {
+  const changePaymentMode = (mode: FundType) => {
     updateActive({
       paymentMode: mode,
       incomeExpenses: [

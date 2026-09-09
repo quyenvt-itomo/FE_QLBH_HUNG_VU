@@ -2,20 +2,20 @@ import { Entity, Store } from "@/shared/base/entity";
 import { getOptionsByMap } from "@/shared/constants/enum";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 
-export enum FundTypeEnum {
+export enum FundType {
   CASH = "cash",
   BANK = "bank",
 }
 
-export const fundTypeMap: Record<FundTypeEnum, string> = {
-  [FundTypeEnum.CASH]: "Tiền mặt",
-  [FundTypeEnum.BANK]: "Ngân hàng",
+export const fundTypeMap: Record<FundType, string> = {
+  [FundType.CASH]: "Tiền mặt",
+  [FundType.BANK]: "Ngân hàng",
 };
 
 export const fundTypeOptions = getOptionsByMap(fundTypeMap);
 
 export interface fundQuery extends ApiRequestQuery {
-  type?: FundTypeEnum;
+  type?: FundType;
   moreQuery?: any;
 }
 
@@ -23,14 +23,14 @@ export interface FundSnapshot {
   id: string;
   code: string;
   name: string;
-  type: FundTypeEnum;
+  type: FundType;
   storeId?: string | null;
 }
 
 export interface Fund extends Entity {
   code: string;
   name: string;
-  type: FundTypeEnum;
+  type: FundType;
   storeId: string | null;
   store?: Store | null;
   bank?: string | null;

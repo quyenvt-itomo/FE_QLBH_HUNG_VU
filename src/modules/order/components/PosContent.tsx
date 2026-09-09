@@ -3,7 +3,7 @@ import type { RefObject } from "react";
 
 import type { Product } from "@/modules/product/product.model";
 import { ProductGrid } from "@/modules/product/components";
-import { FundTypeEnum } from "@/modules/fund/fund.model";
+import { FundType } from "@/modules/fund/fund.model";
 import type { CachedOrder, PosOrderType } from "@/shared/stores/orderCache.slice";
 import { OrderType } from "../order.model";
 import { OrderProductSelect } from "./OrderProductSelect";
@@ -38,7 +38,7 @@ interface Props {
   updateLines: (lines: PosLine[]) => void;
   updateExchangeLines: (lines: PosLine[]) => void;
   updatePayment: (values: Record<string, unknown>) => void;
-  changePaymentMode: (mode: FundTypeEnum) => void;
+  changePaymentMode: (mode: FundType) => void;
   onSubmit: (print?: boolean) => void;
   loading: boolean;
 }

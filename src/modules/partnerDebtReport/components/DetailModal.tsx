@@ -3,7 +3,7 @@ import { Modal, Table } from "antd";
 import {
   PartnerDebtReport,
   DebtTransaction,
-  PartnerDebtRefTypeEnum,
+  PartnerDebtRefType,
   partnerDebtRefTypeMap,
 } from "../partnerDebtReport.model";
 import { PaginationProps, SummaryData } from "@/shared/interfaces/api";
@@ -15,10 +15,10 @@ import { PartnerCardLite } from "@/modules/partner";
 import { useGlobalData } from "@/shared/hooks/useGlobalData";
 import { CustomPagination } from "@/shared/components";
 import { RefTypeFilter } from "./RefTypeFilter";
-import { DebtSideEnum, debtSideMap, TransactionType } from "@/shared/constants/enum";
+import { DebtSide, debtSideMap, TransactionType } from "@/shared/constants/enum";
 
 interface Props {
-  side: DebtSideEnum;
+  side: DebtSide;
   partner?: PartnerDebtReport;
   dataSource: DebtTransaction[];
   summaryData?: SummaryData | null;
@@ -28,8 +28,8 @@ interface Props {
   open: boolean;
   startAt?: string;
   endAt?: string;
-  refType?: PartnerDebtRefTypeEnum;
-  setRefType?: (refType?: PartnerDebtRefTypeEnum) => void;
+  refType?: PartnerDebtRefType;
+  setRefType?: (refType?: PartnerDebtRefType) => void;
   onDateRangerChange?: (startAt?: string, endAt?: string) => void;
   onClose: () => void;
 }

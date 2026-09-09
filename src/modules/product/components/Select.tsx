@@ -126,10 +126,18 @@ export const ProductSelect: React.FC<ProductSelectProps> = ({
   );
 };
 
-export const ProductMultipleSelect: React.FC<MultipleSelectProps<Product, ProductQuery>> = ({
+interface ProductMultipleSelectProps extends MultipleSelectProps<Product, ProductQuery> {
+  showCostPrice?: boolean;
+  showSalePrice?: boolean;
+  showStock?: boolean;
+}
+export const ProductMultipleSelect: React.FC<ProductMultipleSelectProps> = ({
   value,
   defaultData,
   query,
+  showCostPrice,
+  showSalePrice,
+  showStock,
   onChange,
   onChangeData,
   onFocus,
@@ -159,10 +167,15 @@ export const ProductMultipleSelect: React.FC<MultipleSelectProps<Product, Produc
     onChangeData?.(selectedData);
   };
 
+  const finalColumns = useMemo(
+    () => getFinalColumns({ showCostPrice, showSalePrice, showStock }),
+    [showCostPrice, showSalePrice, showStock],
+  );
+
   return (
     <SmartMultipleSelect<Product>
       dataSource={finalList}
-      columns={columns}
+      columns={finalColumns}
       value={value}
       onChange={handleChange}
       onPopupScroll={handlePopupScroll}
@@ -258,10 +271,13 @@ export const ProductAddSelect: React.FC<ProductSelectProps> = ({
 /**
  * Public product multiple select — không cần auth, dùng cho trang public (khách hàng bên ngoài)
  */
-export const PublicProductMultipleSelect: React.FC<MultipleSelectProps<Product, ProductQuery>> = ({
+export const PublicProductMultipleSelect: React.FC<ProductMultipleSelectProps> = ({
   value,
   defaultData,
   query,
+  showCostPrice,
+  showSalePrice,
+  showStock,
   onChange,
   onChangeData,
   onFocus,
@@ -291,10 +307,15 @@ export const PublicProductMultipleSelect: React.FC<MultipleSelectProps<Product, 
     onChangeData?.(selectedData);
   };
 
+  const finalColumns = useMemo(
+    () => getFinalColumns({ showCostPrice, showSalePrice, showStock }),
+    [showCostPrice, showSalePrice, showStock],
+  );
+
   return (
     <SmartMultipleSelect<Product>
       dataSource={finalList}
-      columns={columns}
+      columns={finalColumns}
       value={value}
       onChange={handleChange}
       onPopupScroll={handlePopupScroll}

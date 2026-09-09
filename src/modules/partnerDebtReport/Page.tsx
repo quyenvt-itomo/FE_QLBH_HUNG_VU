@@ -1,36 +1,18 @@
 import { usePageState } from "@/shared/hooks/usePageState";
-import { useNavigate } from "react-router-dom";
-import {
-  PartnerDebtReport,
-  PartnerDebtRefTypeEnum,
-  PartnerCurrentDebt,
-  PartnerDebtInvoice,
-} from "./partnerDebtReport.model";
+import { PartnerDebtReport, PartnerDebtRefType } from "./partnerDebtReport.model";
 import { usePartnerDebtReportStore } from "./partnerDebtReport.store";
-import { useCurrentDebtReportStore } from "./currentDebtReport.store";
 import { SearchInput } from "@/shared/components";
 import { DateRangeFilter } from "@/shared/components";
 import { Panel } from "@/shared/components";
-import {
-  DetailPartnerDebtReportModal,
-  ReportTable,
-  CurrentDebtTable,
-  CurrentDebtDetailModal,
-} from "./components";
+import { DetailPartnerDebtReportModal, ReportTable } from "./components";
 import { checkSelection } from "@/shared/utils/common.util";
 import { PanelFilter } from "@/shared/components";
 import { filterUses, rangerItems, sortItems } from "./filterItem";
-import {
-  sortItems as currentDebtSortItems,
-  filterUses as currentDebtFilterUses,
-} from "./currentDebtFilterItem";
 import { useState } from "react";
-import { DebtSideEnum, debtSideOptions, SortOrder } from "@/shared/constants/enum";
+import { DebtSide, debtSideOptions, SortOrder } from "@/shared/constants/enum";
 import { Radio } from "antd";
-import { InvoiceType, invoiceTypeMap } from "../invoice";
 
 export const PartnerDebtReportPage: React.FC = () => {
-  const navigate = useNavigate();
   const {
     isFilterActive,
     keyword,
@@ -58,8 +40,8 @@ export const PartnerDebtReportPage: React.FC = () => {
     filterUses,
     size: 20,
   });
-  const [side, setSide] = useState<DebtSideEnum>(DebtSideEnum.RECEIVABLE);
-  const [refType, setRefType] = useState<PartnerDebtRefTypeEnum | undefined>();
+  const [side, setSide] = useState<DebtSide>(DebtSide.RECEIVABLE);
+  const [refType, setRefType] = useState<PartnerDebtRefType | undefined>();
 
   // TODO For Detail
   const {
@@ -101,7 +83,7 @@ export const PartnerDebtReportPage: React.FC = () => {
   };
 
   const handleSideChange = (key: string) => {
-    setSide(key as DebtSideEnum);
+    setSide(key as DebtSide);
     setPageReport(1);
     pageAction.handleSearch("");
   };
@@ -175,115 +157,6 @@ export const PartnerDebtReportPage: React.FC = () => {
           setRefType(undefined);
           setPageDetail(1);
           setSizeDetail(50);
-        }}
-      />
-    </div>
-  );
-};
-
-interface CurrentDebtReportPageProps {
-  invoiceType: InvoiceType;
-}
-export const CurrentDebtReportPage: React.FC<CurrentDebtReportPageProps> = ({ invoiceType }) => {
-  const {
-    isFilterActive,
-    keyword,
-    page: pagePartner,
-    size: sizePartner,
-    sortBy,
-    sortOrder,
-    reload,
-    filter,
-    setPage: setPagePartner,
-    setSize: setSizePartner,
-    openDetail,
-    setOpenDetail,
-    rowData,
-    setRowData,
-    pageAction,
-  } = usePageState<PartnerCurrentDebt>({
-    sortBy: "totalDebt",
-    sortOrder: SortOrder.DESC,
-    filterUses: currentDebtFilterUses,
-    size: 20,
-  });
-
-  // TODO For Detail (invoices)
-  const {
-    page: pageInvoice,
-    size: sizeInvoice,
-    setPage: setPageInvoice,
-    setSize: setSizeInvoice,
-  } = usePageState<PartnerDebtInvoice>();
-
-  const { partners, loading, pagination, summary, invoices, invoicePagination } =
-    useCurrentDebtReportStore({
-      invoiceType,
-      keyword,
-      page: rowData ? pageInvoice : pagePartner,
-      size: rowData ? sizeInvoice : sizePartner,
-      reload,
-      sortBy,
-      sortOrder,
-      isLockedReport: !!rowData,
-      isLockedTransaction: !rowData,
-      partnerId: rowData?.id,
-      ...filter,
-    });
-
-  const handleOpenDetailModal = (record: PartnerCurrentDebt) => {
-    setRowData(record);
-    setOpenDetail(true);
-  };
-
-  return (
-    <div className="flex flex-col h-full w-full gap-1">
-      <div className="flex justify-between items-center gap-3">
-        <div className="text-base font-semibold">{invoiceTypeMap[invoiceType]}</div>
-        <div className="flex items-center gap-3 flex-shrink-0">
-          <SearchInput value={keyword} onSearch={pageAction.handleSearch} maxWidth={480} />
-          <PanelFilter
-            filterActive={isFilterActive}
-            sortItems={currentDebtSortItems}
-            sortValue={{ sortBy, sortOrder }}
-            onSortChange={pageAction.handleSortChange}
-            filterUses={currentDebtFilterUses}
-            onClearFilter={pageAction.resetFilter}
-          />
-        </div>
-      </div>
-      <Panel>
-        <CurrentDebtTable
-          dataSource={partners}
-          loading={loading}
-          pagination={pagination}
-          summaryData={summary}
-          setPage={setPagePartner}
-          setSize={setSizePartner}
-          onRow={(record: any) => {
-            return {
-              onClick: () => {
-                if (record.isSummary || checkSelection()) return;
-                handleOpenDetailModal(record);
-              },
-              className: rowData?.id === record.id ? "selected-row" : "",
-            };
-          }}
-        />
-      </Panel>
-
-      <CurrentDebtDetailModal
-        invoiceType={invoiceType}
-        open={openDetail}
-        partner={rowData}
-        dataSource={invoices}
-        pagination={invoicePagination}
-        setPage={setPageInvoice}
-        setSize={setSizeInvoice}
-        onClose={() => {
-          pageAction.handleClose();
-          setPageInvoice(1);
-          setSizeInvoice(50);
         }}
       />
     </div>

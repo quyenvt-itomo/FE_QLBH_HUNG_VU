@@ -107,17 +107,17 @@ export enum ActionType {
   CANCEL = "CANCEL",
 }
 
-export enum MaritalStatusEnum {
+export enum MaritalStatus {
   SINGLE = "SINGLE", // Độc thân
   MARRIED = "MARRIED", // Đã kết hôn
   DIVORCED = "DIVORCED", // Đã ly hôn
 }
-export const maritalStatusMap: Record<MaritalStatusEnum, string> = {
-  [MaritalStatusEnum.SINGLE]: "Độc thân",
-  [MaritalStatusEnum.MARRIED]: "Đã kết hôn",
-  [MaritalStatusEnum.DIVORCED]: "Đã ly hôn",
+export const maritalStatusMap: Record<MaritalStatus, string> = {
+  [MaritalStatus.SINGLE]: "Độc thân",
+  [MaritalStatus.MARRIED]: "Đã kết hôn",
+  [MaritalStatus.DIVORCED]: "Đã ly hôn",
 };
-export const maritalStatusOptions = Object.values(MaritalStatusEnum).map((status) => ({
+export const maritalStatusOptions = Object.values(MaritalStatus).map((status) => ({
   label: maritalStatusMap[status],
   value: status,
 }));
@@ -199,87 +199,36 @@ export enum FileStatus {
   ARCHIVED = "archived",
 }
 
-export enum OrderStatusEnum {
-  PENDING = "pending", // moi tao
-  IN_PROGRESS = "in_progress", // da goi mon (cho bep), da thanh toan 1 phan
-  SERVED = "served", // da phuc vu xong, chua thanh toan
-  COMPLETED = "completed", // da thanh toan het, da phuc vu xong
-  CANCELED = "canceled", // da huy
-}
-
-export enum PurchaseStatusEnum {
-  PENDING = "pending", // moi tao
-  PARTIAL = "partial", // da nhap 1 phan
-  COMPLETED = "completed", // da nhap het
-  CANCELED = "canceled", // da huy
-}
-
 export enum TransactionType {
   IN = "in",
   OUT = "out",
 }
 
-export enum ReferenceTypeEnum {
-  IN = "IN", // phieu nhap
-  OUT = "OUT", // phieu xuat
-  ADJUSTMENT = "ADJUSTMENT", // phieu dieu chinh
-  TRANSFER = "TRANSFER", // phieu chuyen kho
-}
-
-export enum InventoryTypeEnum {
-  IN = "IN",
-  OUT = "OUT",
-}
-
-export enum DiscountTypeEnum {
+export enum DiscountType {
   AMOUNT = "amount",
   PERCENT = "percent",
 }
 
-export enum FundTypeEnum {
+export enum FundType {
   CASH = "cash",
   BANK = "bank",
 }
 export const DEFAULT_FUND_CASH_TYPE_NAME = "QUỸ TIỀN MẶT CỬA HÀNG";
-export enum IncomeExpenseTypeEnum {
+export enum IncomeExpenseType {
   INCOME = "income", // Thu
   EXPENSE = "expense", // Chi
 }
 
-export enum FundTransactionRefTypeEnum {
-  INCOME = "income",
-  EXPENSE = "expense",
-  TRANSFER = "transfer",
-  ADJUSTMENT = "adjustment",
-  ORDER = "order",
-}
-
 // TODO: Debt
-export enum DebtSideEnum {
+export enum DebtSide {
   RECEIVABLE = "receivable",
   PAYABLE = "payable",
 }
-export const debtSideMap: Record<DebtSideEnum, string> = {
-  [DebtSideEnum.RECEIVABLE]: "Nợ phải thu",
-  [DebtSideEnum.PAYABLE]: "Nợ phải trả",
+export const debtSideMap: Record<DebtSide, string> = {
+  [DebtSide.RECEIVABLE]: "Nợ phải thu",
+  [DebtSide.PAYABLE]: "Nợ phải trả",
 };
 export const debtSideOptions = getOptionsByMap(debtSideMap);
-
-export enum DebtDirectionEnum {
-  INCREASE = "increase",
-  DECREASE = "decrease",
-}
-
-export enum DebtRefTypeEnum {
-  ORDER = "order", // SALE -> RECEIVABLE
-  PURCHASE = "purchase", // -> PAYABLE
-  INCOME = "income", // thu tiền KH -> giảm RECEIVABLE
-  EXPENSE = "expense", // chi trả NCC -> giảm PAYABLE
-  ADJUSTMENT = "adjustment", // điều chỉnh đầu/cuối kỳ
-  DEBT_OFFSET = "debt_offset", // đối trừ payable <-> receivable
-}
-
-// ── Helpers ──
 
 /**
  * Chuyển map Record<Enum, string> thành mảng options { value, label }

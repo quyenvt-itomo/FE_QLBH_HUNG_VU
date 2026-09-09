@@ -1,6 +1,6 @@
 import { usePageState } from "@/shared/hooks/usePageState";
 import { useNavigate } from "react-router-dom";
-import { InventoryReport, InventoryTransactionRefTypeEnum } from "./inventory.model";
+import { InventoryReport, InventoryTransactionRefType } from "./inventory.model";
 import { useInventoryReportStore } from "./inventory.store";
 import { SearchInput } from "@/shared/components";
 import { DateRangeFilter } from "@/shared/components";
@@ -42,7 +42,7 @@ export const InventoryPage: React.FC = () => {
     filterUses,
     size: 20,
   });
-  const [refType, setRefType] = useState<InventoryTransactionRefTypeEnum | undefined>();
+  const [refType, setRefType] = useState<InventoryTransactionRefType | undefined>();
 
   // TODO For Detail
   const {

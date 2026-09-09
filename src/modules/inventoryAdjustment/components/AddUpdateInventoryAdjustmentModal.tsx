@@ -27,7 +27,7 @@ export const AddUpdateInventoryAdjustmentModal: React.FC<
   }, [open, editData, form]);
   return (
     <Modal
-      title={editData ? "S?a Ki?m kê" : "Thêm Ki?m kê"}
+      title={editData ? "Sá»­a kiá»ƒm kho" : "ThÃªm kiá»ƒm kho"}
       open={open}
       onCancel={onClose}
       footer={null}
@@ -39,11 +39,11 @@ export const AddUpdateInventoryAdjustmentModal: React.FC<
         layout="vertical"
         onFinish={(v) => (editData ? onEdit?.({ ...v, id: editData.id }) : onAdd?.(v))}
       >
-        <Title content="Thông tin chung" />
-        <Form.Item name="code" label="M?">
+        <Title content="ThÃ´ng tin chung" />
+        <Form.Item name="code" label="MÃ£">
           <Input disabled />
         </Form.Item>
-        <Form.Item name="note" label="Ghi chú">
+        <Form.Item name="note" label="Ghi chÃº">
           <Input.TextArea rows={3} />
         </Form.Item>
         <div className="flex justify-end mt-4">

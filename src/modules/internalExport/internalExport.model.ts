@@ -2,18 +2,20 @@ import { Entity } from "@/shared/base/entity";
 import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { Product, ProductSnapshot } from "../product/product.model";
 import { Attribute } from "../attribute/attribute.model";
+import { getOptionsByMap } from "@/shared/constants";
 
 export type InternalExportQuery = ApiRequestQuery;
 
-export enum InternalExportTypeEnum {
+export enum InternalExportType {
   DAMAGED = "damaged",
   USAGE = "usage",
 }
+export const internalExportTypeMap: Record<InternalExportType, string> = {
+  [InternalExportType.USAGE]: "Xuất sử dụng",
+  [InternalExportType.DAMAGED]: "Xuất hỏng",
+};
 
-export const internalExportTypeItems = [
-  { label: "Xuất hỏng", value: InternalExportTypeEnum.DAMAGED },
-  { label: "Xuất sử dụng", value: InternalExportTypeEnum.USAGE },
-];
+export const internalExportTypeOptions = getOptionsByMap(internalExportTypeMap);
 
 export interface InternalExportLine extends Entity {
   internalExportId: string;
@@ -30,7 +32,7 @@ export interface InternalExportLine extends Entity {
 export interface InternalExport extends Entity {
   code: string;
   storeId: string;
-  type: InternalExportTypeEnum;
+  type: InternalExportType;
   occurredAt: string;
   reason: string | null;
   lines: InternalExportLine[];

@@ -8,7 +8,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { DropdownAction } from "@/shared/components";
 import { formatMoney } from "@/shared/utils/number.util";
-import { Fund, FundTypeEnum } from "../fund.model";
+import { Fund, FundType } from "../fund.model";
 
 interface FundCardProps {
   showBalance?: boolean;
@@ -30,7 +30,7 @@ export const FundCard: React.FC<FundCardProps> = ({
   onChangeScope,
   onSetActive,
 }) => {
-  const isBank = item.type === FundTypeEnum.BANK;
+  const isBank = item.type === FundType.BANK;
   const isLocked = Boolean(item.isDefault);
   const Icon = isBank ? CreditCardIcon : BanknotesIcon;
 
@@ -129,7 +129,7 @@ export const FundCard: React.FC<FundCardProps> = ({
 };
 
 export const FundCardLite: React.FC<FundCardProps> = ({ showBalance, item, selected, onClick }) => {
-  const isBank = item.type === FundTypeEnum.BANK;
+  const isBank = item.type === FundType.BANK;
 
   const bankInfo = isBank
     ? [item.accountNumber, item.bank, item.accountHolderName, item.branch]

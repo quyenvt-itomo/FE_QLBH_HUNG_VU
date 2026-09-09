@@ -187,6 +187,7 @@ const SalePage: React.FC = () => {
             setSize={state.setSize}
             onViewDetail={handlers.handleOpenDetail}
             onEdit={handlers.handleOpenEdit}
+            onCopy={handlers.handleCopy}
             onDelete={handlers.handleDelete}
             onComplete={handlers.handleComplete}
             onCancel={handlers.handleCancel}
@@ -206,6 +207,7 @@ const SalePage: React.FC = () => {
         data={state.rowData}
         onClose={() => state.pageAction.handleClose()}
         onOpenUpdate={handlers.handleEditFromDetail}
+        onCopy={handlers.handleCopy}
         onDelete={handlers.handleDelete}
         onComplete={handlers.handleComplete}
         onCancel={handlers.handleCancel}

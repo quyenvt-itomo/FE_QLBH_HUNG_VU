@@ -6,9 +6,9 @@ import { CustomerAddSelect } from "@/modules/partner/components/Select";
 import { Partner } from "@/modules/partner/partner.model";
 import { FundListSelect } from "@/modules/fund/components";
 import { FundSelect } from "@/modules/fund/components/Select";
-import { FundTypeEnum } from "@/modules/fund/fund.model";
+import { FundType } from "@/modules/fund/fund.model";
 import { OrderValueInput, InputMoney } from "@/shared/components";
-import { DiscountTypeEnum } from "@/shared/constants/enum";
+import { DiscountType } from "@/shared/constants/enum";
 import { CachedOrder } from "@/shared/stores/orderCache.slice";
 import { bank_bin_map } from "@/shared/constants/option/bank";
 import { formatMoney, getCashSuggestions } from "@/shared/utils/number.util";
@@ -24,7 +24,7 @@ interface Props {
   customerSelectRef: React.RefObject<HTMLDivElement>;
   updateActive: (values: Partial<CachedOrder>) => void;
   updatePayment: (values: Record<string, unknown>) => void;
-  changePaymentMode: (mode: FundTypeEnum) => void;
+  changePaymentMode: (mode: FundType) => void;
   onSubmit: (print?: boolean) => void;
   loading?: boolean;
   readOnly?: boolean;
@@ -67,7 +67,7 @@ export const SaleReturnInvoiceInfo: React.FC<Props> = ({
   const paymentDue = Math.abs(settlementAmount);
   const paidAmount = Number(payment?.amount || 0);
   const paymentMode = (activeOrder.paymentMode ||
-    (payment?.fund?.type === FundTypeEnum.BANK ? FundTypeEnum.BANK : FundTypeEnum.CASH)) as FundTypeEnum;
+    (payment?.fund?.type === FundType.BANK ? FundType.BANK : FundType.CASH)) as FundType;
   const returnLines = useMemo(() => activeOrder.returnLines || [], [activeOrder.returnLines]);
   const exchangeLines = activeOrder.lines || [];
   const hasExchange = exchangeLines.some((line) => Number((line as any).quantity || 0) > 0);
@@ -75,19 +75,16 @@ export const SaleReturnInvoiceInfo: React.FC<Props> = ({
   const exchangeQuantity = getLineQuantity(exchangeLines);
   const originalReturnGrossAmount = useMemo(
     () =>
-      returnLines.reduce(
-        (sum, line) => {
-          const sourceLine = activeOrder.refOrder?.lines?.find(
-            (item) => item.id === (line as any).refOrderLineId,
-          );
-          return (
-            sum +
-            Number((line as any).quantity || 0) *
-              Number(sourceLine?.unitPrice ?? (line as any).originalUnitPrice ?? 0)
-          );
-        },
-        0,
-      ),
+      returnLines.reduce((sum, line) => {
+        const sourceLine = activeOrder.refOrder?.lines?.find(
+          (item) => item.id === (line as any).refOrderLineId,
+        );
+        return (
+          sum +
+          Number((line as any).quantity || 0) *
+            Number(sourceLine?.unitPrice ?? (line as any).originalUnitPrice ?? 0)
+        );
+      }, 0),
     [activeOrder.refOrder?.lines, returnLines],
   );
   const previousPaymentDue = useRef<{ orderId: string; amount: number }>();
@@ -111,11 +108,11 @@ export const SaleReturnInvoiceInfo: React.FC<Props> = ({
   const customer = activeOrder.partner as Partner | undefined;
   const sourceCode = activeOrder.refOrder?.code || activeOrder.code || "Trả nhanh";
   const isCustomerPaying = settlementAmount > 0;
-  const bankFund = paymentMode === FundTypeEnum.BANK ? payment?.fund : undefined;
+  const bankFund = paymentMode === FundType.BANK ? payment?.fund : undefined;
 
   useEffect(() => {
     const bin = bank_bin_map[bankFund?.bank || ""];
-    if (!bankFund?.accountNumber || !paymentDue || !bin || paymentMode !== FundTypeEnum.BANK) {
+    if (!bankFund?.accountNumber || !paymentDue || !bin || paymentMode !== FundType.BANK) {
       setQrImage(undefined);
       return;
     }
@@ -196,7 +193,7 @@ export const SaleReturnInvoiceInfo: React.FC<Props> = ({
                 type="discount"
                 discountValue={Number(activeOrder.returnDiscountValue || 0)}
                 discountType={
-                  (activeOrder.returnDiscountType || DiscountTypeEnum.AMOUNT) as DiscountTypeEnum
+                  (activeOrder.returnDiscountType || DiscountType.AMOUNT) as DiscountType
                 }
                 onChange={(value, discountType) =>
                   updateActive({ returnDiscountValue: value, returnDiscountType: discountType })
@@ -215,9 +212,7 @@ export const SaleReturnInvoiceInfo: React.FC<Props> = ({
               <OrderValueInput
                 type="tax"
                 discountValue={Number(activeOrder.returnTaxValue || 0)}
-                discountType={
-                  (activeOrder.returnTaxType || DiscountTypeEnum.PERCENT) as DiscountTypeEnum
-                }
+                discountType={(activeOrder.returnTaxType || DiscountType.PERCENT) as DiscountType}
                 onChange={(value, taxType) =>
                   updateActive({ returnTaxValue: value, returnTaxType: taxType })
                 }
@@ -250,9 +245,7 @@ export const SaleReturnInvoiceInfo: React.FC<Props> = ({
                   <OrderValueInput
                     type="discount"
                     discountValue={Number(activeOrder.discountValue || 0)}
-                    discountType={
-                      (activeOrder.discountType || DiscountTypeEnum.AMOUNT) as DiscountTypeEnum
-                    }
+                    discountType={(activeOrder.discountType || DiscountType.AMOUNT) as DiscountType}
                     onChange={(value, discountType) =>
                       updateActive({ discountValue: value, discountType })
                     }
@@ -265,9 +258,7 @@ export const SaleReturnInvoiceInfo: React.FC<Props> = ({
                   <OrderValueInput
                     type="tax"
                     discountValue={Number(activeOrder.taxValue || 0)}
-                    discountType={
-                      (activeOrder.taxType || DiscountTypeEnum.PERCENT) as DiscountTypeEnum
-                    }
+                    discountType={(activeOrder.taxType || DiscountType.PERCENT) as DiscountType}
                     onChange={(value, taxType) => updateActive({ taxValue: value, taxType })}
                   />
                 </div>
@@ -304,10 +295,10 @@ export const SaleReturnInvoiceInfo: React.FC<Props> = ({
                   block
                   value={paymentMode}
                   options={[
-                    { label: "Tiền mặt", value: FundTypeEnum.CASH },
-                    { label: "Chuyển khoản", value: FundTypeEnum.BANK },
+                    { label: "Tiền mặt", value: FundType.CASH },
+                    { label: "Chuyển khoản", value: FundType.BANK },
                   ]}
-                  onChange={(value) => changePaymentMode(value as FundTypeEnum)}
+                  onChange={(value) => changePaymentMode(value as FundType)}
                 />
                 <div className="hidden">
                   <FundListSelect
@@ -317,7 +308,7 @@ export const SaleReturnInvoiceInfo: React.FC<Props> = ({
                     onChangeData={(fund) => updatePayment({ fundId: fund?.id || null, fund })}
                   />
                 </div>
-                {paymentMode === FundTypeEnum.CASH && (
+                {paymentMode === FundType.CASH && (
                   <div className="mt-3 flex flex-wrap gap-1.5 rounded-md bg-gray-100 p-3">
                     {cashAmountOptions.map((amount) => (
                       <Button
@@ -331,7 +322,7 @@ export const SaleReturnInvoiceInfo: React.FC<Props> = ({
                     ))}
                   </div>
                 )}
-                {paymentMode === FundTypeEnum.BANK && (
+                {paymentMode === FundType.BANK && (
                   <div className="mt-2 flex gap-3 rounded-md bg-gray-100 p-2">
                     {qrImage && (
                       <img
@@ -342,7 +333,7 @@ export const SaleReturnInvoiceInfo: React.FC<Props> = ({
                     )}
                     <div className="flex flex-1 flex-col gap-3">
                       <FundSelect
-                        query={{ type: FundTypeEnum.BANK }}
+                        query={{ type: FundType.BANK }}
                         value={payment?.fundId || undefined}
                         defaultData={payment?.fund}
                         onChangeData={(fund) => updatePayment({ fundId: fund?.id || null, fund })}

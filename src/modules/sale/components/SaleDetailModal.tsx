@@ -3,6 +3,7 @@ import { Button, Modal, Space } from "antd";
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
+  CopyOutlined,
   DeleteOutlined,
   EditOutlined,
 } from "@ant-design/icons";
@@ -18,6 +19,7 @@ interface Props {
   isReturn?: boolean;
   onClose: () => void;
   onOpenUpdate?: (record: Sale) => void;
+  onCopy?: (record: Sale) => void;
   onDelete?: (record: Sale) => void;
   onComplete?: (record: Sale) => void;
   onCancel?: (record: Sale) => void;
@@ -43,6 +45,7 @@ export const SaleDetailModal: React.FC<Props> = ({
   isReturn = false,
   onClose,
   onOpenUpdate,
+  onCopy,
   onDelete,
   onComplete,
   onCancel,
@@ -233,6 +236,11 @@ export const SaleDetailModal: React.FC<Props> = ({
             {canDelete && (
               <Button danger type="text" icon={<DeleteOutlined />} onClick={() => onDelete?.(data)}>
                 Xóa
+              </Button>
+            )}
+            {onCopy && (
+              <Button icon={<CopyOutlined />} onClick={() => onCopy(data)}>
+                Sao chép
               </Button>
             )}
           </Space>

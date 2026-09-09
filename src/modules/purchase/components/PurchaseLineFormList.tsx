@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  DeleteOutlined,
-  HolderOutlined,
-  InboxOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
+import { DeleteOutlined, HolderOutlined, InboxOutlined, UploadOutlined } from "@ant-design/icons";
 import { Button, Form, FormInstance, Input, Select, Upload, UploadProps } from "antd";
 import { ReactSortable } from "react-sortablejs";
 import { AppSelect, InputMoney, QuantityStepper } from "@/shared/components";
@@ -22,6 +17,7 @@ import { randomId } from "@/shared/utils/common.util";
 import { useAutoResetItem, useGlobalData } from "@/shared/hooks";
 import { PurchaseFile } from "../purchase.file";
 import { formatMoney } from "@/shared/utils";
+import { Icon } from "@iconify/react";
 
 interface Props {
   form: FormInstance<Purchase>;
@@ -95,7 +91,7 @@ export const PurchaseLineFormList: React.FC<Props> = ({ form, onImportFile }) =>
           />
         </div>
         <Upload {...uploadProps}>
-          <Button icon={<UploadOutlined />}>Thêm từ Excel</Button>
+          <Button icon={<Icon icon={"bytesize:import"} />}>Thêm từ Excel</Button>
         </Upload>
       </div>
 
@@ -238,7 +234,7 @@ export const PurchaseLineFormList: React.FC<Props> = ({ form, onImportFile }) =>
                     <tr>
                       <td
                         colSpan={8}
-                        className="h-[280px] border-b border-slate-200 p-0 dark:border-slate-700"
+                        className="h-[280px] border-b border-slate-200 p-0 dark:border-slate-700 p-6"
                       >
                         <Dragger {...uploadProps} className="!border-0 !bg-transparent">
                           <p className="ant-upload-drag-icon">

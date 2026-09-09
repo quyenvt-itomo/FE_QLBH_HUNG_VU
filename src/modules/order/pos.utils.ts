@@ -1,5 +1,5 @@
-import { DiscountTypeEnum } from "@/shared/constants/enum";
-import { FundTypeEnum } from "@/modules/fund/fund.model";
+import { DiscountType } from "@/shared/constants/enum";
+import { FundType } from "@/modules/fund/fund.model";
 import type { Product } from "@/modules/product/product.model";
 import type { PosLine } from "./components/OrderLineTable";
 import { OrderType } from "./order.model";
@@ -10,17 +10,17 @@ export const emptyOrder = (type: PosOrderType): Partial<CachedOrder> => ({
   orderAt: new Date().toISOString(),
   lines: [],
   returnLines: [],
-  discountType: DiscountTypeEnum.AMOUNT,
+  discountType: DiscountType.AMOUNT,
   discountValue: 0,
-  taxType: DiscountTypeEnum.PERCENT,
+  taxType: DiscountType.PERCENT,
   taxValue: 0,
-  returnDiscountType: DiscountTypeEnum.AMOUNT,
+  returnDiscountType: DiscountType.AMOUNT,
   returnDiscountValue: 0,
-  returnTaxType: DiscountTypeEnum.PERCENT,
+  returnTaxType: DiscountType.PERCENT,
   returnTaxValue: 0,
   shippingFee: 0,
   isFreeShipping: false,
-  paymentMode: FundTypeEnum.CASH,
+  paymentMode: FundType.CASH,
   incomeExpenses: [{ amount: 0, fundId: null, fund: null }],
 });
 
@@ -47,7 +47,10 @@ export const cellText = (value: unknown): string => {
   if (value == null) return "";
   if (typeof value === "object" && value && "richText" in value) {
     const richText = (value as { richText?: Array<{ text?: string }> }).richText || [];
-    return richText.map((item) => item.text || "").join("").trim();
+    return richText
+      .map((item) => item.text || "")
+      .join("")
+      .trim();
   }
   return String(value).trim();
 };
@@ -64,13 +67,13 @@ export const getLinesGrossAmount = (lines?: Array<{ quantity?: number; unitPrice
   );
 
 export const getAllocatedReturnValue = (
-  type: DiscountTypeEnum | undefined,
+  type: DiscountType | undefined,
   value: number | null | undefined,
   returnedGrossAmount: number,
   sourceGrossAmount: number,
 ) => {
   const sourceValue = Math.max(0, Number(value || 0));
-  if (type === DiscountTypeEnum.PERCENT) return sourceValue;
+  if (type === DiscountType.PERCENT) return sourceValue;
   if (sourceGrossAmount <= 0 || returnedGrossAmount <= 0) return 0;
   return Math.round((sourceValue * returnedGrossAmount) / sourceGrossAmount);
 };
@@ -82,13 +85,13 @@ export const calculateTotals = (lines: PosLine[], order: CachedOrder) => {
   );
   const discountValue = Math.max(0, Number(order.discountValue || 0));
   const discountAmount =
-    order.discountType === DiscountTypeEnum.PERCENT
+    order.discountType === DiscountType.PERCENT
       ? Math.min(grossAmount, (grossAmount * discountValue) / 100)
       : Math.min(grossAmount, discountValue);
   const netAmount = Math.max(0, grossAmount - discountAmount);
   const taxValue = Math.max(0, Number(order.taxValue || 0));
   const taxAmount =
-    order.taxType === DiscountTypeEnum.PERCENT ? (netAmount * taxValue) / 100 : taxValue;
+    order.taxType === DiscountType.PERCENT ? (netAmount * taxValue) / 100 : taxValue;
   const shippingFee = Math.max(0, Number(order.shippingFee || 0));
   const shippingAmount = order.isFreeShipping === false ? shippingFee : 0;
 

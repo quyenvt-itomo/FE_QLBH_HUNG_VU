@@ -5,14 +5,17 @@ import { InfoTab } from "./InfoTab";
 import { BankTab } from "./BankTab";
 import { ContactTab } from "./ContactTab";
 import { Partner } from "../../partner.model";
+import { checkModule } from "@/shared/utils";
+import { useGlobalData } from "@/shared/hooks";
+import { CustomerDebtReport } from "@/modules/partnerDebtReport";
 
 export const PartnerDetailModal: React.FC<DetailModalProps<Partner>> = ({
   open,
   data,
   onClose,
-  onOpenUpdate,
 }) => {
   const [activeTab, setActiveTab] = useState("info");
+  const { permissions } = useGlobalData();
 
   useEffect(() => {
     if (open) setActiveTab("info");
@@ -26,10 +29,25 @@ export const PartnerDetailModal: React.FC<DetailModalProps<Partner>> = ({
     { key: "contacts", label: `Người liên hệ (${data.contacts?.length ?? 0})` },
   ];
 
+  if (checkModule(permissions, "sale")) {
+    tabItems.push({ key: "sales", label: "Lịch sử mua hàng" });
+  }
+
+  if (checkModule(permissions, "saleReturn")) {
+    tabItems.push({ key: "saleReturns", label: "Trả hàng" });
+  }
+
+  if (checkModule(permissions, "debtReport")) {
+    tabItems.push({ key: "debts", label: "Công nợ" });
+  }
+
   const contentMap: Record<string, React.ReactNode> = {
     info: <InfoTab data={data} />,
     banks: <BankTab data={data} />,
     contacts: <ContactTab data={data} />,
+    sales: <div>Chưa có dữ liệu</div>,
+    saleReturns: <div>Chưa có dữ liệu</div>,
+    debts: <CustomerDebtReport customer={data} />,
   };
 
   return (

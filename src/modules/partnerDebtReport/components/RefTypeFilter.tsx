@@ -1,15 +1,15 @@
 import React from "react";
-import { PartnerDebtRefTypeEnum, partnerDebtRefTypeMap } from "../partnerDebtReport.model";
+import { PartnerDebtRefType, partnerDebtRefTypeMap } from "../partnerDebtReport.model";
 
 interface Props {
-  refType?: PartnerDebtRefTypeEnum | null;
-  setRefType?: (value?: PartnerDebtRefTypeEnum) => void;
+  refType?: PartnerDebtRefType | null;
+  setRefType?: (value?: PartnerDebtRefType) => void;
 }
 
 export const RefTypeFilter: React.FC<Props> = ({ refType, setRefType }) => {
-  const refTypes = Object.values(PartnerDebtRefTypeEnum);
+  const refTypes = Object.values(PartnerDebtRefType);
 
-  const renderCard = (value: PartnerDebtRefTypeEnum) => {
+  const renderCard = (value: PartnerDebtRefType) => {
     const isSelected = refType === value;
     return (
       <div

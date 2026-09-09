@@ -15,7 +15,7 @@ import {
 
 import { IncomeExpenseAddUpdateModal } from "@/modules/incomeExpense/components/IncomeExpenseAddUpdateModal";
 import { useIncomeStore } from "@/modules/incomeExpense/incomeExpense.store";
-import { IncomeExpenseTypeEnum } from "@/modules/incomeExpense/incomeExpense.model";
+import { IncomeExpenseType } from "@/modules/incomeExpense/incomeExpense.model";
 import { useAuth } from "@/shared/hooks/useAuth";
 import { privateRoutesName, publicRoutesName } from "@/shared/constants/routerName";
 import type { CachedOrder, PosOrderType } from "@/shared/stores/orderCache.slice";
@@ -161,7 +161,7 @@ export const PosActionMenu = ({
       </Drawer>
       <IncomeExpenseAddUpdateModal
         open={incomeExpenseOpen}
-        type={IncomeExpenseTypeEnum.INCOME}
+        type={IncomeExpenseType.INCOME}
         errors={incomeStore.errors}
         loading={incomeStore.creating}
         onAdd={(data) => incomeStore.create?.(data)}

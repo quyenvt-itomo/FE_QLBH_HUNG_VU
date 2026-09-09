@@ -3,7 +3,7 @@ import { Modal, Table } from "antd";
 import {
   InventoryReport,
   InventoryTransaction,
-  InventoryTransactionRefTypeEnum,
+  InventoryTransactionRefType,
   inventoryTransactionRefTypeMap,
 } from "../inventory.model";
 import { PaginationProps, SummaryData } from "@/shared/interfaces/api";
@@ -27,8 +27,8 @@ interface Props {
   open: boolean;
   startAt?: string;
   endAt?: string;
-  refType?: InventoryTransactionRefTypeEnum;
-  setRefType?: (refType?: InventoryTransactionRefTypeEnum) => void;
+  refType?: InventoryTransactionRefType;
+  setRefType?: (refType?: InventoryTransactionRefType) => void;
   onDateRangerChange?: (startAt?: string, endAt?: string) => void;
   onClose: () => void;
 }

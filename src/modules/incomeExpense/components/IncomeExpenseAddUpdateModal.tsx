@@ -17,10 +17,10 @@ import { FundSelect } from "@/modules/fund/components";
 import { randomId } from "@/shared/utils/common.util";
 import { formatFormData, parseFormDataDates } from "@/shared/utils/date.util";
 import { setFormErrors } from "@/shared/utils/form.util";
-import { IncomeExpense, IncomeExpenseTypeEnum } from "../incomeExpense.model";
+import { IncomeExpense, IncomeExpenseType } from "../incomeExpense.model";
 
 interface Props extends AddUpdateModalProps<IncomeExpense> {
-  type: IncomeExpenseTypeEnum;
+  type: IncomeExpenseType;
 }
 
 export const IncomeExpenseAddUpdateModal: React.FC<Props> = ({
@@ -38,7 +38,7 @@ export const IncomeExpenseAddUpdateModal: React.FC<Props> = ({
   const fund = Form.useWatch("fund", form);
   const partner = Form.useWatch("partner", form);
   const id = editData?.id || randomId();
-  const isIncome = type === IncomeExpenseTypeEnum.INCOME;
+  const isIncome = type === IncomeExpenseType.INCOME;
   const isOrderLinked = Boolean(editData?.orderId);
 
   useEffect(() => {

@@ -3,17 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 import type { Sale } from "@/modules/sale";
-import { DiscountTypeEnum } from "@/shared/constants/enum";
+import { DiscountType } from "@/shared/constants/enum";
 import { CachedOrder, setCurrentOrderCache } from "@/shared/stores/orderCache.slice";
 import { randomId } from "@/shared/utils/common.util";
 import { privateRoutesName } from "@/shared/constants/routerName";
 import { OrderType } from "../order.model";
 
 interface SourceStore {
-  getById?: (
-    id: string,
-    options?: { onSuccess?: (data: Sale | null) => void },
-  ) => void;
+  getById?: (id: string, options?: { onSuccess?: (data: Sale | null) => void }) => void;
   getAll?: (params?: Record<string, unknown>) => Promise<any[]>;
 }
 
@@ -76,9 +73,12 @@ export const usePosReturnSource = ({
               });
 
               onClosePicker();
-              navigate(`${privateRoutesName.pos}?type=${OrderType.SALE_RETURN}&editId=${existing.id}`, {
-                state: { order: { ...existing, refOrder: source, returnLines } },
-              });
+              navigate(
+                `${privateRoutesName.pos}?type=${OrderType.SALE_RETURN}&editId=${existing.id}`,
+                {
+                  state: { order: { ...existing, refOrder: source, returnLines } },
+                },
+              );
               return;
             }
 
@@ -114,10 +114,9 @@ export const usePosReturnSource = ({
                   partner: source.partner,
                   returnDiscountType: source.discountType,
                   returnDiscountValue:
-                    source.discountType === DiscountTypeEnum.PERCENT ? source.discountValue : 0,
+                    source.discountType === DiscountType.PERCENT ? source.discountValue : 0,
                   returnTaxType: source.taxType,
-                  returnTaxValue:
-                    source.taxType === DiscountTypeEnum.PERCENT ? source.taxValue : 0,
+                  returnTaxValue: source.taxType === DiscountType.PERCENT ? source.taxValue : 0,
                   returnLines,
                 },
               },

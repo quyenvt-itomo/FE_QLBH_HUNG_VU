@@ -5,8 +5,8 @@ import { formatDateTimeDDMMYYYY } from "@/shared/utils/date.util";
 import { formatMoney } from "@/shared/utils/number.util";
 import {
   IncomeExpense,
-  IncomeExpenseStatusEnum,
-  IncomeExpenseTypeEnum,
+  IncomeExpenseStatus,
+  IncomeExpenseType,
   incomeExpenseStatusMap,
   incomeExpenseTypeMap,
 } from "../incomeExpense.model";
@@ -35,8 +35,8 @@ export const IncomeExpenseTable: React.FC<ObjectTableProps> = ({ ...rest }) => {
         key: "type",
         width: 110,
         align: "center" as const,
-        render: (value: IncomeExpenseTypeEnum) => (
-          <Tag color={value === IncomeExpenseTypeEnum.INCOME ? "success" : "error"}>
+        render: (value: IncomeExpenseType) => (
+          <Tag color={value === IncomeExpenseType.INCOME ? "success" : "error"}>
             {incomeExpenseTypeMap[value] || value}
           </Tag>
         ),
@@ -47,12 +47,12 @@ export const IncomeExpenseTable: React.FC<ObjectTableProps> = ({ ...rest }) => {
         key: "status",
         width: 80,
         align: "center" as const,
-        render: (value: IncomeExpenseStatusEnum) => (
+        render: (value: IncomeExpenseStatus) => (
           <Tag
             color={
-              value === IncomeExpenseStatusEnum.COMPLETED
+              value === IncomeExpenseStatus.COMPLETED
                 ? "success"
-                : value === IncomeExpenseStatusEnum.CANCELED
+                : value === IncomeExpenseStatus.CANCELED
                   ? "error"
                   : "warning"
             }
@@ -70,7 +70,7 @@ export const IncomeExpenseTable: React.FC<ObjectTableProps> = ({ ...rest }) => {
         render: (value: number, record: IncomeExpense) => (
           <span
             className={
-              record.type === IncomeExpenseTypeEnum.INCOME
+              record.type === IncomeExpenseType.INCOME
                 ? "font-medium text-emerald-600"
                 : "font-medium text-red-600"
             }

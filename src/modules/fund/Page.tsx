@@ -5,7 +5,7 @@ import { AddButton, Panel, SearchInput } from "@/shared/components";
 import { useGlobalData } from "@/shared/hooks/useGlobalData";
 import { usePageState } from "@/shared/hooks/usePageState";
 import { SortOrder } from "@/shared/constants/enum";
-import { Fund, FundTypeEnum } from "./fund.model";
+import { Fund, FundType } from "./fund.model";
 import { useFundStore } from "./fund.store";
 import { FundAddUpdateModal, FundDetailModal, FundList, FundScopeModal } from "./components";
 
@@ -24,7 +24,7 @@ const FundPage: React.FC = () => {
     setRowData,
     pageAction,
   } = usePageState<Fund>();
-  const [formType, setFormType] = useState<FundTypeEnum>(FundTypeEnum.BANK);
+  const [formType, setFormType] = useState<FundType>(FundType.BANK);
   const [scopeData, setScopeData] = useState<Fund | undefined>();
   const [scopeOpen, setScopeOpen] = useState(false);
 
@@ -42,7 +42,7 @@ const FundPage: React.FC = () => {
 
   const allStores = info?.allStores || [];
 
-  const handleOpenAdd = (type: FundTypeEnum) => {
+  const handleOpenAdd = (type: FundType) => {
     setFormType(type);
     setRowData(undefined);
     setOpen(true);
@@ -85,7 +85,7 @@ const FundPage: React.FC = () => {
     : undefined;
 
   const handleChangeScope = (record: Fund) => {
-    if (record.isDefault || record.type !== FundTypeEnum.BANK) return;
+    if (record.isDefault || record.type !== FundType.BANK) return;
     setScopeData(record);
     setScopeOpen(true);
   };
@@ -129,13 +129,13 @@ const FundPage: React.FC = () => {
             <AddButton
               title="Thêm quỹ tiền mặt"
               icon={<BanknotesIcon className="h-4 w-4" />}
-              onOpenAdd={store.create ? () => handleOpenAdd(FundTypeEnum.CASH) : undefined}
+              onOpenAdd={store.create ? () => handleOpenAdd(FundType.CASH) : undefined}
             />
           )}
           <AddButton
             title="Thêm tài khoản ngân hàng"
             icon={<CreditCardIcon className="h-4 w-4" />}
-            onOpenAdd={store.create ? () => handleOpenAdd(FundTypeEnum.BANK) : undefined}
+            onOpenAdd={store.create ? () => handleOpenAdd(FundType.BANK) : undefined}
           />
         </div>
       </div>

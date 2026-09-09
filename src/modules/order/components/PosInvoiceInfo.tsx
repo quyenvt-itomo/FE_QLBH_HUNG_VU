@@ -4,13 +4,13 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import { FundListSelect } from "@/modules/fund/components";
 import { FundSelect } from "@/modules/fund/components/Select";
-import { Fund, FundTypeEnum } from "@/modules/fund/fund.model";
+import { Fund, FundType } from "@/modules/fund/fund.model";
 import { Partner, PartnerType } from "@/modules/partner/partner.model";
 import { CustomerAddSelect, ShipperAddSelect } from "@/modules/partner/components/Select";
 import { OrderSelect } from "@/modules/order/components/Select";
 import { OrderType } from "@/modules/order/order.model";
 import { bank_bin_map } from "@/shared/constants/option/bank";
-import { DiscountTypeEnum } from "@/shared/constants/enum";
+import { DiscountType } from "@/shared/constants/enum";
 import { InputMoney, Label, OrderValueInput } from "@/shared/components";
 import { CachedOrder, PosOrderType } from "@/shared/stores/orderCache.slice";
 import { formatMoney, getCashSuggestions } from "@/shared/utils/number.util";
@@ -41,7 +41,7 @@ interface Props {
   customerSelectRef: React.RefObject<HTMLDivElement>;
   updateActive: (values: Partial<CachedOrder>) => void;
   updatePayment: (values: Record<string, unknown>) => void;
-  changePaymentMode: (mode: FundTypeEnum) => void;
+  changePaymentMode: (mode: FundType) => void;
   onSubmit: (print?: boolean) => void;
   loading?: boolean;
 }
@@ -63,10 +63,8 @@ export const PosInvoiceInfo: React.FC<Props> = ({
   const [qrImage, setQrImage] = useState<string>();
   const [qrModalOpen, setQrModalOpen] = useState(false);
   const paymentMode = (activeOrder.paymentMode ||
-    (payment?.fund?.type === FundTypeEnum.BANK
-      ? FundTypeEnum.BANK
-      : FundTypeEnum.CASH)) as FundTypeEnum;
-  const bankFund = paymentMode === FundTypeEnum.BANK ? payment?.fund : undefined;
+    (payment?.fund?.type === FundType.BANK ? FundType.BANK : FundType.CASH)) as FundType;
+  const bankFund = paymentMode === FundType.BANK ? payment?.fund : undefined;
   const paymentDue =
     type === OrderType.SALE_RETURN ? Math.abs(totals.totalAmount) : Math.max(0, totals.totalAmount);
   const paidAmount = Number(payment?.amount ?? activeOrder.paidAmount ?? 0);
@@ -104,7 +102,7 @@ export const PosInvoiceInfo: React.FC<Props> = ({
     const bin = bank_bin_map[bankFund?.bank || ""];
     if (
       type !== OrderType.SALE ||
-      paymentMode !== FundTypeEnum.BANK ||
+      paymentMode !== FundType.BANK ||
       !bankFund?.accountNumber ||
       !paymentDue ||
       !bin
@@ -213,7 +211,7 @@ export const PosInvoiceInfo: React.FC<Props> = ({
             <OrderValueInput
               type="discount"
               discountValue={Number(activeOrder.discountValue || 0)}
-              discountType={activeOrder.discountType as DiscountTypeEnum}
+              discountType={activeOrder.discountType as DiscountType}
               onChange={(discountValue, discountType) =>
                 updateActive({ discountValue, discountType })
               }
@@ -226,7 +224,7 @@ export const PosInvoiceInfo: React.FC<Props> = ({
             <OrderValueInput
               type="tax"
               discountValue={Number(activeOrder.taxValue || 0)}
-              discountType={activeOrder.taxType as DiscountTypeEnum}
+              discountType={activeOrder.taxType as DiscountType}
               onChange={(taxValue, taxType) => updateActive({ taxValue, taxType })}
             />
           </div>
@@ -244,7 +242,7 @@ export const PosInvoiceInfo: React.FC<Props> = ({
           <div className="w-56">
             <InputMoney
               min={0}
-              max={paymentMode === FundTypeEnum.BANK ? paymentDue : undefined}
+              max={paymentMode === FundType.BANK ? paymentDue : undefined}
               value={paidAmount}
               onChange={(amount) => updatePayment({ amount: Number(amount || 0) })}
               placeholder={
@@ -260,10 +258,10 @@ export const PosInvoiceInfo: React.FC<Props> = ({
           className="mb-3"
           value={paymentMode}
           options={[
-            { label: "Tiền mặt", value: FundTypeEnum.CASH },
-            { label: "Chuyển khoản", value: FundTypeEnum.BANK },
+            { label: "Tiền mặt", value: FundType.CASH },
+            { label: "Chuyển khoản", value: FundType.BANK },
           ]}
-          onChange={(value) => changePaymentMode(value as FundTypeEnum)}
+          onChange={(value) => changePaymentMode(value as FundType)}
         />
 
         <div className="hidden">
@@ -275,7 +273,7 @@ export const PosInvoiceInfo: React.FC<Props> = ({
           />
         </div>
 
-        {paymentMode === FundTypeEnum.CASH ? (
+        {paymentMode === FundType.CASH ? (
           <div className="min-h-[84px] rounded-md bg-[#f5f5f5] px-3 py-2">
             <div className="flex flex-wrap gap-1.5">
               {cashAmountOptions.map((amount) => (
@@ -301,7 +299,7 @@ export const PosInvoiceInfo: React.FC<Props> = ({
             )}
             <div className="flex flex-1 flex-col gap-3">
               <FundSelect
-                query={{ type: FundTypeEnum.BANK }}
+                query={{ type: FundType.BANK }}
                 value={payment?.fundId || undefined}
                 defaultData={payment?.fund}
                 onChangeData={(fund) => updatePayment({ fundId: fund?.id || null, fund })}

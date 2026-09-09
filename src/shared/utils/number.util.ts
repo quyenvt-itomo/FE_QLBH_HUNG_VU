@@ -1,5 +1,5 @@
 import { FormatData, SymbolPosition } from "@/shared/interfaces/format";
-import { DiscountTypeEnum } from "@/shared/constants/enum";
+import { DiscountType } from "@/shared/constants/enum";
 
 export const formatNumber = (
   value: number | string,
@@ -142,13 +142,13 @@ export function numberToVietnameseWords(num?: number | null): string {
 
 export function getDiscontContent<
   T extends {
-    discountType?: DiscountTypeEnum | null;
+    discountType?: DiscountType | null;
     discountValue?: number | null;
   },
 >(data: T): string {
   if (!data.discountType || !data.discountValue) return "";
 
-  if (data.discountType === DiscountTypeEnum.PERCENT) {
+  if (data.discountType === DiscountType.PERCENT) {
     return `${data.discountValue}%`;
   }
 

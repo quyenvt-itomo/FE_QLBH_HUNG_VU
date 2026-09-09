@@ -1,7 +1,7 @@
 import { MultipleSelectProps, SelectProps } from "@/shared/interfaces/common";
 import { DropdownColumn, SmartMultipleSelect, SmartSelect } from "@/shared/components";
 import { useRemoteSelect } from "@/shared/hooks/useRemoteSelect";
-import { Fund, fundQuery, FundTypeEnum } from "../fund.model";
+import { Fund, fundQuery, FundType } from "../fund.model";
 import { useFundStore } from "../fund.store";
 import { SortOrder } from "@/shared/constants";
 import { useEffect, useMemo } from "react";
@@ -136,15 +136,15 @@ export const FundListSelect: React.FC<Props> = ({
     return dataWithDefault
       .filter((fund) => !hiddenIds.has(fund.id))
       .sort((first, second) => {
-        if (first.type === FundTypeEnum.CASH && second.type !== FundTypeEnum.CASH) return -1;
-        if (first.type !== FundTypeEnum.CASH && second.type === FundTypeEnum.CASH) return 1;
+        if (first.type === FundType.CASH && second.type !== FundType.CASH) return -1;
+        if (first.type !== FundType.CASH && second.type === FundType.CASH) return 1;
         return 0;
       });
   }, [data, defaultData, hideOptions]);
 
   useEffect(() => {
     if (!value && funds.length > 0) {
-      const fund = funds.find((item) => item.type === FundTypeEnum.CASH) || funds[0];
+      const fund = funds.find((item) => item.type === FundType.CASH) || funds[0];
       onChange?.(fund.id);
       onChangeData?.(fund);
     }

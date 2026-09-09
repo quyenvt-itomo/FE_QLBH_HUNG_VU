@@ -87,7 +87,7 @@ export const StoreSpace: React.FC = () => {
           <div
             className="
             absolute flex flex-col min-w-[342px] gap-4 -left-10 xl:left-auto xl:right-0 p-3
-            top-14 sm:right-0 -mt-2 bg-white drop-shadow-2xl rounded-normal z-50 store__table w-28"
+            top-12 sm:right-0 -mt-2 bg-white drop-shadow-2xl !rounded-xl z-50 store__table w-28"
             ref={StoreTableRef}
             onClick={(e) => e.stopPropagation()}
             style={CSS.container}

@@ -11,10 +11,10 @@ import {
 } from "@/shared/components";
 import { randomId } from "@/shared/utils/common.util";
 import { setFormErrors } from "@/shared/utils/form.util";
-import { Fund, FundTypeEnum } from "../fund.model";
+import { Fund, FundType } from "../fund.model";
 
 interface FundAddUpdateModalProps extends AddUpdateModalProps<Fund> {
-  type: FundTypeEnum;
+  type: FundType;
   defaultStoreId?: string | null;
 }
 
@@ -32,7 +32,7 @@ export const FundAddUpdateModal: React.FC<FundAddUpdateModalProps> = ({
   const [form] = Form.useForm<Fund>();
   const id = editData?.id || randomId();
   const formType = editData?.type || type;
-  const isBank = formType === FundTypeEnum.BANK;
+  const isBank = formType === FundType.BANK;
 
   useEffect(() => {
     if (errors) setFormErrors(form, errors);

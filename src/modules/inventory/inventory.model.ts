@@ -3,7 +3,7 @@ import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { Product } from "../product/product.model";
 import { TransactionType } from "@/shared/constants/enum";
 
-export enum InventoryTransactionRefTypeEnum {
+export enum InventoryTransactionRefType {
   PRODUCT_PRICE_UPDATE = "product_price_update",
   PURCHASE = "purchase",
   SALE = "sale",
@@ -14,21 +14,21 @@ export enum InventoryTransactionRefTypeEnum {
   INTERNAL_EXPORT = "internal_export",
 }
 
-export const inventoryTransactionRefTypeMap: Record<InventoryTransactionRefTypeEnum, string> = {
-  [InventoryTransactionRefTypeEnum.PRODUCT_PRICE_UPDATE]: "Cập nhật giá vốn",
-  [InventoryTransactionRefTypeEnum.PURCHASE]: "Nhập hàng",
-  [InventoryTransactionRefTypeEnum.SALE]: "Bán hàng",
-  [InventoryTransactionRefTypeEnum.PURCHASE_RETURN]: "Trả hàng nhà cung cấp",
-  [InventoryTransactionRefTypeEnum.SALE_RETURN]: "Khách trả hàng",
-  [InventoryTransactionRefTypeEnum.TRANSFER]: "Chuyển cửa hàng",
-  [InventoryTransactionRefTypeEnum.ADJUST]: "Điều chỉnh tồn kho",
-  [InventoryTransactionRefTypeEnum.INTERNAL_EXPORT]: "Xuất nội bộ",
+export const inventoryTransactionRefTypeMap: Record<InventoryTransactionRefType, string> = {
+  [InventoryTransactionRefType.PRODUCT_PRICE_UPDATE]: "Cập nhật giá vốn",
+  [InventoryTransactionRefType.PURCHASE]: "Nhập hàng",
+  [InventoryTransactionRefType.SALE]: "Bán hàng",
+  [InventoryTransactionRefType.PURCHASE_RETURN]: "Trả hàng nhà cung cấp",
+  [InventoryTransactionRefType.SALE_RETURN]: "Khách trả hàng",
+  [InventoryTransactionRefType.TRANSFER]: "Chuyển cửa hàng",
+  [InventoryTransactionRefType.ADJUST]: "Điều chỉnh tồn kho",
+  [InventoryTransactionRefType.INTERNAL_EXPORT]: "Xuất nội bộ",
 };
 
 export interface InventoryQuery extends ApiRequestQuery {
   productId?: string;
   storeId?: string;
-  refType?: InventoryTransactionRefTypeEnum;
+  refType?: InventoryTransactionRefType;
   types?: string[];
 }
 
@@ -56,7 +56,7 @@ export interface InventoryTransaction extends Entity {
   runningCostPrice?: number;
   quantityAfter: number;
   inventoryValueAfter: number;
-  refType: InventoryTransactionRefTypeEnum;
+  refType: InventoryTransactionRefType;
   refId: string;
   refCode?: string | null;
   closingQuantity?: number;

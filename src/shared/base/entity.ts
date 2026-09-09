@@ -113,6 +113,12 @@ export interface UserSnapshot {
   dob: Date | null;
 }
 
+export interface StoreSnapshot {
+  id: string;
+  code: string;
+  name: string;
+}
+
 export interface Store extends Entity {
   code: string;
   name: string;

@@ -17,13 +17,13 @@ export const InventoryAdjustmentDetailModal: React.FC<Props> = ({
 }) => {
   if (!data) return null;
   const info = [
-    { label: "M?", value: data.code || "--" },
-    { label: "Ng�y t?o", value: data.createdAt ? formatDate(data.createdAt) : "--" },
-    { label: "Ghi ch�", value: data.note || "--" },
+    { label: "Mã", value: data.code || "--" },
+    { label: "Ngày tạo", value: data.createdAt ? formatDate(data.createdAt) : "--" },
+    { label: "Ghi chú", value: data.note || "--" },
   ];
   return (
     <Modal
-      title={"Chi ti?t Ki?m k�"}
+      title={"Chi tiết kiểm kho"}
       open={open}
       onCancel={onClose}
       footer={
@@ -32,7 +32,7 @@ export const InventoryAdjustmentDetailModal: React.FC<Props> = ({
             className="text-blue-500 hover:underline text-sm"
             onClick={() => onOpenUpdate(data)}
           >
-            Ch?nh s?a
+            Chỉnh sửa
           </button>
         ) : null
       }

@@ -58,31 +58,31 @@ export interface PaymentRequestLine extends Entity {
   orderSnapshot: OrderSnapshot | null;
 }
 
-export enum IncomeExpenseTypeEnum {
+export enum IncomeExpenseType {
   INCOME = "INCOME",
   EXPENSE = "EXPENSE",
 }
 
-export enum IncomeExpenseStatusEnum {
+export enum IncomeExpenseStatus {
   DRAFT = "draft",
   COMPLETED = "completed",
   CANCELED = "canceled",
 }
 
-export const incomeExpenseTypeMap: Record<IncomeExpenseTypeEnum, string> = {
-  [IncomeExpenseTypeEnum.INCOME]: "Phiếu thu",
-  [IncomeExpenseTypeEnum.EXPENSE]: "Phiếu chi",
+export const incomeExpenseTypeMap: Record<IncomeExpenseType, string> = {
+  [IncomeExpenseType.INCOME]: "Phiếu thu",
+  [IncomeExpenseType.EXPENSE]: "Phiếu chi",
 };
 
-export const incomeExpenseStatusMap: Record<IncomeExpenseStatusEnum, string> = {
-  [IncomeExpenseStatusEnum.DRAFT]: "Chưa xác nhận",
-  [IncomeExpenseStatusEnum.COMPLETED]: "Đã xác nhận",
-  [IncomeExpenseStatusEnum.CANCELED]: "Đã hủy",
+export const incomeExpenseStatusMap: Record<IncomeExpenseStatus, string> = {
+  [IncomeExpenseStatus.DRAFT]: "Chưa xác nhận",
+  [IncomeExpenseStatus.COMPLETED]: "Đã xác nhận",
+  [IncomeExpenseStatus.CANCELED]: "Đã hủy",
 };
 
 export interface IncomeExpenseQuery extends ApiRequestQuery {
   moreQuery?: any;
-  type?: IncomeExpenseTypeEnum;
+  type?: IncomeExpenseType;
   fundId?: string;
   categoryId?: string;
   isDebtPayment?: boolean;
@@ -131,8 +131,8 @@ export interface IncomeExpense extends StoreEntity {
   //? số phiếu
   code: string;
 
-  type: IncomeExpenseTypeEnum;
-  status: IncomeExpenseStatusEnum;
+  type: IncomeExpenseType;
+  status: IncomeExpenseStatus;
 
   //? quỹ
   fundId: string | null;

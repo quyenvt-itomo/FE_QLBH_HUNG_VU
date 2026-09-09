@@ -3,7 +3,7 @@ import { ApiRequestQuery } from "@/shared/interfaces/api";
 import { PartnerSnapshot } from "../partner/partner.model";
 import { ProductSnapshot } from "../product/product.model";
 import { AttributeSnapshot } from "../attribute/attribute.model";
-import { DiscountTypeEnum } from "@/shared/constants/enum";
+import { DiscountType } from "@/shared/constants/enum";
 import type { IncomeExpense } from "@/modules/incomeExpense/incomeExpense.model";
 
 export enum OrderType {
@@ -76,12 +76,12 @@ export interface Order extends Entity {
   shippingFee: number | null;
   /** Purchase: doanh nghiệp tự thanh toán; sale: miễn phí cho khách. */
   isFreeShipping: boolean;
-  discountType: DiscountTypeEnum;
+  discountType: DiscountType;
   discountValue: number | null;
   grossAmount: number;
   discountAmount: number | null;
   netAmount: number;
-  taxType: DiscountTypeEnum;
+  taxType: DiscountType;
   taxValue: number | null;
   taxAmount: number;
   totalAmount: number;
@@ -89,11 +89,11 @@ export interface Order extends Entity {
   refOrderId: string | null;
   refOrder?: Order | null;
   returnGrossAmount: number;
-  returnDiscountType: DiscountTypeEnum;
+  returnDiscountType: DiscountType;
   returnDiscountValue: number | null;
   returnDiscountAmount: number | null;
   returnNetAmount: number;
-  returnTaxType: DiscountTypeEnum;
+  returnTaxType: DiscountType;
   returnTaxValue: number | null;
   returnTaxAmount: number;
   returnTotalAmount: number;
