@@ -19,6 +19,8 @@ import { StorePage } from "@/modules/store";
 import { AttributePage } from "@/modules/attribute";
 import { UserPage } from "@/modules/user";
 import ComingSoonPage from "./ComingSoonPage";
+import { StoreTransferPage } from "@/modules/storeTransfer";
+import { InternalExportPage } from "@/modules/internalExport";
 
 export const desktopPage = {
   DashboardPage,
@@ -28,6 +30,8 @@ export const desktopPage = {
   ProductPage,
   InventoryPage,
   InventoryAdjustmentPage,
+  StoreTransferPage,
+  InternalExportPage,
   SupplierPage,
   PurchasePage,
   PurchaseReturnPage,

@@ -166,6 +166,8 @@ export const apiEndpoint = {
     line: "/inventory-adjustment/:inventoryAdjustmentId/line",
     confirm: "/inventory-adjustment/:id/confirm",
   },
+  storeTransfer: { base: "/store-transfer" },
+  internalExport: { base: "/internal-export" },
   inventoryConversion: {
     base: "/inventory-conversion",
     line: "/inventory-conversion/:inventoryConversionId/line",

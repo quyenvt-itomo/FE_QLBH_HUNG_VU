@@ -38,7 +38,7 @@ export interface InventoryAdjustment extends StoreEntity {
   occurredAt: string;
   reason: string | null;
   totalAdjustmentQuantity: number;
-  totalAdjustmentValue: number;
+  totalAdjustmentAmount: number;
   isInitial: boolean;
   subTotal: number;
   discountAmount: number;

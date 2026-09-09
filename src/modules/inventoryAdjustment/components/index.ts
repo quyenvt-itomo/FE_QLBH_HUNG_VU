@@ -1,3 +1,3 @@
 ﻿export * from "./InventoryAdjustmentTable";
-export * from "./AddUpdateInventoryAdjustmentModal";
-export * from "./InventoryAdjustmentDetailModal";
+export { InventoryAdjustmentEditorModal as AddUpdateInventoryAdjustmentModal } from "./InventoryAdjustmentEditorModal";
+export { InventoryAdjustmentDetailsModal as InventoryAdjustmentDetailModal } from "./InventoryAdjustmentDetailsModal";

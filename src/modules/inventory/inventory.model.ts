@@ -11,6 +11,7 @@ export enum InventoryTransactionRefTypeEnum {
   SALE_RETURN = "sale_return",
   TRANSFER = "transfer",
   ADJUST = "adjust",
+  INTERNAL_EXPORT = "internal_export",
 }
 
 export const inventoryTransactionRefTypeMap: Record<InventoryTransactionRefTypeEnum, string> = {
@@ -21,6 +22,7 @@ export const inventoryTransactionRefTypeMap: Record<InventoryTransactionRefTypeE
   [InventoryTransactionRefTypeEnum.SALE_RETURN]: "Khách trả hàng",
   [InventoryTransactionRefTypeEnum.TRANSFER]: "Chuyển cửa hàng",
   [InventoryTransactionRefTypeEnum.ADJUST]: "Điều chỉnh tồn kho",
+  [InventoryTransactionRefTypeEnum.INTERNAL_EXPORT]: "Xuất nội bộ",
 };
 
 export interface InventoryQuery extends ApiRequestQuery {

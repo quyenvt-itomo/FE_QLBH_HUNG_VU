@@ -52,20 +52,15 @@ export const ReportTable: React.FC<ObjectTableProps> = ({
   const columns: ColumnsConfigType<InventoryReport> = useMemo(
     () => [
       {
-        title: "Mã hàng",
-        dataIndex: "code",
-        key: "code",
-        width: 100,
+        title: "Hàng hóa",
+        key: "product",
         fixed: "left",
-      },
-      {
-        title: "Tên hàng",
-        dataIndex: "name",
-        key: "name",
-        fixed: "left",
-        width: 200,
-        render: (value) => (
-          <span className="font-medium max-w-52 text-wrap block line-clamp-2">{value}</span>
+        width: 290,
+        render: (record: InventoryReport) => (
+          <div className="flex flex-col">
+            <span className="font-medium max-w-72 text-wrap block line-clamp-2">{record.name}</span>
+            <span className="text-sm text-gray-500">{record.code}</span>
+          </div>
         ),
       },
       {

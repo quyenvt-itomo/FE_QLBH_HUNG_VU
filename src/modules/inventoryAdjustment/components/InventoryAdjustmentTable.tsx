@@ -46,11 +46,11 @@ export const InventoryAdjustmentTable: React.FC<Props> = ({ onViewDetail, ...res
     },
     {
       title: "Giá trị CL",
-      dataIndex: "totalAdjustmentValue",
+      dataIndex: "totalAdjustmentAmount",
       key: "val",
       width: 150,
       align: "right",
-      render: (v: number) => (v ? formatMoney(v) : "--"),
+      render: (v: number) => formatMoney(v),
     },
   ];
   return (

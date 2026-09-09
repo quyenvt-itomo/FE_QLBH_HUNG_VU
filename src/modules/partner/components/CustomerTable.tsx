@@ -36,8 +36,14 @@ export const CustomerTable: React.FC<ObjectTableProps> = ({ onViewDetail, ...res
         render: (value: boolean) => (value ? "Tổ chức" : "Cá nhân"),
       },
       { title: "Số điện thoại", dataIndex: "phone", key: "phone", width: 140, align: "center" },
-      { title: "Mã số thuế", dataIndex: "taxCode", key: "taxCode", width: 140 },
-      { title: "CMND/CCCD", dataIndex: "identityCode", key: "identityCode", width: 140 },
+      { title: "Mã số thuế", dataIndex: "taxCode", key: "taxCode", width: 140, hidden: true },
+      {
+        title: "CMND/CCCD",
+        dataIndex: "identityCode",
+        key: "identityCode",
+        width: 140,
+        hidden: true,
+      },
       { title: "Email", dataIndex: "email", key: "email", width: 220, hidden: true },
       { title: "Nhóm khách hàng", dataIndex: ["group", "name"], key: "group", width: 170 },
       {
