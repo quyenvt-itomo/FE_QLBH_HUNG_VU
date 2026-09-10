@@ -329,7 +329,7 @@ export const StoreTransferModal: React.FC<StoreTransferModalProps> = ({
                       </thead>
                       <tbody>
                         {!fields.length ? (
-                          <tr className="border-t">
+                          <tr>
                             <td colSpan={6} className="h-[280px] p-6">
                               <Upload.Dragger
                                 {...uploadProps}

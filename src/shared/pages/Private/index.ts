@@ -21,6 +21,8 @@ import { UserPage } from "@/modules/user";
 import ComingSoonPage from "./ComingSoonPage";
 import { StoreTransferPage } from "@/modules/storeTransfer";
 import { InternalExportPage } from "@/modules/internalExport";
+import { DebtAdjustmentPage } from "@/modules/debtAdjustment";
+import { VatDebtAdjustmentPage } from "@/modules/vatDebtAdjustment";
 
 export const desktopPage = {
   DashboardPage,
@@ -46,5 +48,7 @@ export const desktopPage = {
   AttributePage,
   UserPage,
   RolePage,
+  DebtAdjustmentPage,
+  VatDebtAdjustmentPage,
   ComingSoonPage,
 };

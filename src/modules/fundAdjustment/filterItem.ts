@@ -5,5 +5,8 @@ export const sortItems: SortItem[] = [
   { label: "Số phiếu", value: "code", ascLabel: "A → Z", descLabel: "Z → A" },
   { label: "Chênh lệch", value: "deltaAmount", ascLabel: "Thấp nhất", descLabel: "Cao nhất" },
 ];
-export const rangerItems: RangerItem[] = [{ label: "Chênh lệch", key: "deltaAmount" }];
+export const rangerItems: RangerItem[] = [
+  { label: "Ngày điều chỉnh", key: "occurredAt", type: "date" },
+  { label: "Chênh lệch", key: "deltaAmount" },
+];
 export const filterUses: FilterKey[] = ["fundIds", "creatorIds"];

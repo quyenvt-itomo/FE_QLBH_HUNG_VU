@@ -127,6 +127,8 @@ export type SummaryKey =
   // Accountant
   | "totalIncome"
   | "totalExpense"
+  | "totalReceivable"
+  | "totalPayable"
 
   // Current debt (nợ hiện tại theo hóa đơn)
   | "totalDebt"

@@ -1,4 +1,3 @@
-import dayjs from "dayjs";
 import { FunnelIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { RangerItemPanel } from "./RangerItemPanel";
 import { SearchItemPanel } from "./SearchPanel";
@@ -81,10 +80,6 @@ export interface PanelFilterProps {
   status?: string;
   statusItems?: StatusItem[];
   onChangeStatus?: (status: string) => void;
-  startAt?: string;
-  endAt?: string;
-  onChangeStartAt?: (date: string) => void;
-  onChangeEndAt?: (date: string) => void;
   sortItems?: SortItem[];
   sortValue?: SortValue;
   onSortChange?: (value: SortValue) => void;
@@ -102,12 +97,6 @@ export interface PanelFilterProps {
   onClearFilter?: () => void;
 }
 
-const DATE_PRESETS = [
-  { label: "Hôm nay", start: dayjs().startOf("day"), end: dayjs().endOf("day") },
-  { label: "Tháng này", start: dayjs().startOf("month"), end: dayjs().endOf("month") },
-  { label: "Năm nay", start: dayjs().startOf("year"), end: dayjs().endOf("year") },
-];
-
 export const PanelFilter: React.FC<PanelFilterProps> = ({
   filterActive,
   className = "",
@@ -115,10 +104,6 @@ export const PanelFilter: React.FC<PanelFilterProps> = ({
   status,
   statusItems = [],
   onChangeStatus,
-  startAt,
-  endAt,
-  onChangeStartAt,
-  onChangeEndAt,
   sortItems = [],
   sortValue,
   onSortChange,

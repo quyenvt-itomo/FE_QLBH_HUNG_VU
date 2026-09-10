@@ -19,6 +19,7 @@ export enum OrderStatus {
 }
 
 export interface OrderQuery extends ApiRequestQuery {
+  statuses?: OrderStatus[];
   partnerId?: string;
   customerId?: string;
   storeId?: string;

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { formatPayload } from "@/shared/utils/common.util";
 import {
   ApiRequestQuery,
@@ -101,6 +101,7 @@ export function createBaseStore<
 
     const query = useQuery<ApiResponse<T[]>, BaseFailurePayload>({
       queryKey: [config.key, params],
+      placeholderData: keepPreviousData,
       queryFn: async () => {
         let finalParams = formatPayload(params);
         return await getData<T[]>(config.apiUrl, finalParams);

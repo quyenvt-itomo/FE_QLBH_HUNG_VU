@@ -6,6 +6,9 @@ import { Product, ProductSnapshot } from "../product/product.model";
 export interface StoreTransferQuery extends ApiRequestQuery {
   fromStoreId?: string;
   toStoreId?: string;
+  fromStoreIds?: string[];
+  toStoreIds?: string[];
+  statuses?: StoreTransferStatus[];
 }
 
 export enum StoreTransferStatus {

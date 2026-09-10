@@ -390,10 +390,12 @@ export const DropdownAction: React.FC<DropdownActionProps> = ({
       <div className="flex justify-center items-center w-[46px]">
         <Button htmlType="button" onClick={item.onClick} className="!p-0 border-0 mx-auto">
           <Tooltip title={item.label}>
-            <Icon
-              icon={iconConfigItem.icon}
-              className={`${iconCls.replace("text-white", "")} ${iconConfigItem.textColor}`}
-            />
+            <span className="inline-flex">
+              <Icon
+                icon={iconConfigItem.icon}
+                className={`${iconCls.replace("text-white", "")} ${iconConfigItem.textColor}`}
+              />
+            </span>
           </Tooltip>
         </Button>
       </div>

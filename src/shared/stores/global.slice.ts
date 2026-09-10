@@ -4,6 +4,9 @@ import { PermissionStructure } from "@/shared/constants/permission";
 import { Filter, ThemeMode } from "@/shared/interfaces/common";
 import { UserInfo } from "../interfaces/auth";
 import { Store } from "@/shared/base/entity";
+import { ensureClientCacheVersion } from "../utils/clientCache.util";
+
+ensureClientCacheVersion();
 
 export interface GlobalState {
   horizontal: boolean;

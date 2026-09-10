@@ -1,6 +1,6 @@
 import React from "react";
 import { Tag } from "antd";
-import { TableColumnConfig, ObjectTableProps } from "@/shared/components";
+import { TableColumnConfig, ObjectTableProps, TableBooleanCell } from "@/shared/components";
 import { InventoryAdjustment } from "../inventoryAdjustment.model";
 import { formatDateTimeDDMMYYYY } from "@/shared/utils/date.util";
 import { formatMoney, formatQuantity } from "@/shared/utils/number.util";
@@ -39,14 +39,6 @@ export const InventoryAdjustmentTable: React.FC<Props> = ({ onViewDetail, ...res
       render: (v: string) => (v ? formatDateTimeDDMMYYYY(v) : "--"),
     },
     {
-      title: "SL chênh lệch",
-      dataIndex: "totalAdjustmentQuantity",
-      key: "quantity",
-      width: 120,
-      align: "right",
-      render: (v: number) => (v === null || v === undefined ? "--" : formatQuantity(v)),
-    },
-    {
       title: "Lý do",
       dataIndex: "reason",
       key: "reason",
@@ -54,22 +46,28 @@ export const InventoryAdjustmentTable: React.FC<Props> = ({ onViewDetail, ...res
       render: (v: string | null) => v || "--",
     },
     {
+      title: "SL chênh lệch",
+      dataIndex: "totalAdjustmentQuantity",
+      key: "totalAdjustmentQuantity",
+      width: 120,
+      align: "right",
+      render: (v: number) => (v === null || v === undefined ? "--" : formatQuantity(v)),
+    },
+    {
       title: "Giá trị CL",
       dataIndex: "totalAdjustmentAmount",
-      key: "val",
+      key: "totalAdjustmentAmount",
       width: 150,
       align: "right",
       render: (v: number) => formatMoney(v),
     },
     {
-      title: "Loại phiếu",
+      title: "Đầu kỳ ?",
       dataIndex: "isInitial",
       key: "isInitial",
       width: 120,
       align: "center",
-      render: (v: boolean) => (
-        <Tag color={v ? "blue" : "default"}>{v ? "Tồn đầu kỳ" : "Kiểm kho"}</Tag>
-      ),
+      render: (v: boolean) => <TableBooleanCell value={v} />,
     },
   ];
   return (

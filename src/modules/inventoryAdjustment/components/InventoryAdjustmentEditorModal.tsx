@@ -4,12 +4,7 @@ import { App, Button, Form, Input, Modal, Upload, UploadProps } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import { Icon } from "@iconify/react";
 import { AddUpdateModalProps } from "@/shared/interfaces/common";
-import {
-  AppDatePicker,
-  InputQuantity,
-  Label,
-  SubmitButton,
-} from "@/shared/components";
+import { AppDatePicker, AppSwitch, InputQuantity, Label, SubmitButton } from "@/shared/components";
 import {
   Product,
   ProductFile,
@@ -25,6 +20,8 @@ import { randomId } from "@/shared/utils/common.util";
 import { parseFormDataDates } from "@/shared/utils/date.util";
 import { setFormErrors } from "@/shared/utils/form.util";
 import { InventoryAdjustment } from "../inventoryAdjustment.model";
+import { TrashIcon } from "@heroicons/react/24/solid";
+import { formatQuantity } from "@/shared/utils";
 
 const getBaseUnit = (product?: Product | null) => product?.baseUnit || null;
 
@@ -33,9 +30,16 @@ const getConversionRate = (product: Product, unitId?: string) => {
   return Number(product.extraUnits?.find((item) => item.unitId === unitId)?.conversionRate) || 1;
 };
 
-export const InventoryAdjustmentEditorModal: React.FC<
-  AddUpdateModalProps<InventoryAdjustment>
-> = ({ open, editData, defaultData, loading, errors, onAdd, onEdit, onClose }) => {
+export const InventoryAdjustmentEditorModal: React.FC<AddUpdateModalProps<InventoryAdjustment>> = ({
+  open,
+  editData,
+  defaultData,
+  loading,
+  errors,
+  onAdd,
+  onEdit,
+  onClose,
+}) => {
   const [form] = Form.useForm<any>();
   const { modal, message } = App.useApp();
   const { currentStore } = useGlobalData();
@@ -58,22 +62,20 @@ export const InventoryAdjustmentEditorModal: React.FC<
     }
 
     const unit = getBaseUnit(product);
-    const stock = Number(
-      product.stockMetadata?.byStore?.[currentStore?.id || ""]?.quantity || 0,
-    );
+    const stock = Number(product.stockMetadata?.byStore?.[currentStore?.id || ""]?.quantity || 0);
 
     form.setFieldValue("lines", [
       {
-      tempId: randomId(),
-      productId: product.id,
-      product,
-      productSnapshot: buildProductSnapshot(product),
-      unitId: unit?.id || product.baseUnitId,
-      unit,
-      unitSnapshot: unit,
-      conversionRateAtTime: 1,
-      expectedQuantity: stock,
-      countedQuantity: stock,
+        tempId: randomId(),
+        productId: product.id,
+        product,
+        productSnapshot: buildProductSnapshot(product),
+        unitId: unit?.id || product.baseUnitId,
+        unit,
+        unitSnapshot: unit,
+        conversionRateAtTime: 1,
+        expectedQuantity: stock,
+        countedQuantity: stock,
       },
       ...lines,
     ]);
@@ -91,9 +93,7 @@ export const InventoryAdjustmentEditorModal: React.FC<
       const productMap = new Map(
         products.map((product) => [product.code.trim().toLowerCase(), product]),
       );
-      const missingRows = rows.filter(
-        (row) => !productMap.has(row.code.trim().toLowerCase()),
-      );
+      const missingRows = rows.filter((row) => !productMap.has(row.code.trim().toLowerCase()));
       const importedLines = rows
         .map((row) => {
           const product = productMap.get(row.code.trim().toLowerCase());
@@ -102,7 +102,9 @@ export const InventoryAdjustmentEditorModal: React.FC<
           const unit =
             collectUnits(product, product.baseUnit).find(
               (item) => item.name.trim().toLowerCase() === row.unitName,
-            ) || product.baseUnit || collectUnits(product)[0];
+            ) ||
+            product.baseUnit ||
+            collectUnits(product)[0];
           const conversionRate = getConversionRate(
             product,
             unit?.id || product.baseUnitId || undefined,
@@ -212,7 +214,7 @@ export const InventoryAdjustmentEditorModal: React.FC<
         form={form}
         layout="vertical"
         onFinish={finish}
-        className="flex min-h-0 flex-col"
+        className="flex flex-col h-[70vh]"
         initialValues={{
           ...parseFormDataDates(defaultData || {}),
           occurredAt: dayjs(),
@@ -220,144 +222,191 @@ export const InventoryAdjustmentEditorModal: React.FC<
         }}
       >
         <div className="flex min-h-0 flex-1 gap-4">
-          <div className="order-2 h-full w-80 shrink-0 overflow-y-auto rounded-md border border-gray-200 bg-white">
-            <div className="p-4">
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
-            <Form.Item name="code" label={<Label title="Số phiếu" />}>
-              <Input placeholder="Tự động nếu để trống" />
-            </Form.Item>
-            <Form.Item
-              name="occurredAt"
-              label={<Label title="Ngày kiểm" required />}
-              rules={[{ required: true, message: "Vui lòng chọn ngày kiểm" }]}
-            >
-              <AppDatePicker />
-            </Form.Item>
-            <Form.Item name="reason" label={<Label title="Lý do" />}>
-              <Input placeholder="Nhập lý do kiểm kho" />
-            </Form.Item>
-          </div>
-            </div>
-          </div>
-
-          <div className="order-1 flex h-full min-w-0 flex-1 flex-col">
-          <Form.List name="lines">
-            {(fields, { remove }) => (
-              <div className="flex h-full min-h-0 flex-1 flex-col">
-                <div className="mb-2 flex items-center justify-between gap-3">
-                  <div className="w-[650px]">
-                    <ProductAddSelect
-                      value={selectedProduct?.id}
-                      className="w-[650px]"
-                      query={{ storeId: currentStore?.id } as any}
-                      placeholder={
-                        currentStore
-                          ? "Tìm mã hoặc tên hàng để thêm"
-                          : "Vui lòng chọn cửa hàng trước"
-                      }
-                      onChangeData={addProduct}
-                      showCostPrice
-                      showStock
-                      disabled={!currentStore}
-                    />
+          <div className="flex h-full w-[calc(100%-336px)] flex-col">
+            <Form.List name="lines">
+              {(fields, { remove }) => (
+                <div className="flex h-full min-h-0 flex-1 flex-col">
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <div className="w-[650px]">
+                      <ProductAddSelect
+                        value={selectedProduct?.id}
+                        className="w-[650px]"
+                        query={{ storeId: currentStore?.id } as any}
+                        placeholder={
+                          currentStore
+                            ? "Tìm mã hoặc tên hàng để thêm"
+                            : "Vui lòng chọn cửa hàng trước"
+                        }
+                        onChangeData={addProduct}
+                        showCostPrice
+                        showStock
+                        disabled={!currentStore}
+                      />
+                    </div>
+                    <Upload {...uploadProps} disabled={!currentStore}>
+                      <Button icon={<Icon icon="bytesize:import" />}>Thêm từ Excel</Button>
+                    </Upload>
                   </div>
-                  <Upload {...uploadProps} disabled={!currentStore}>
-                    <Button icon={<Icon icon="bytesize:import" />}>Thêm từ Excel</Button>
-                  </Upload>
-                </div>
 
-                <div className="min-h-0 flex-1 overflow-auto rounded-md border">
-                  <table className="min-w-[900px] w-full border-collapse text-sm">
-                    <colgroup>
-                      <col style={{ width: 55 }} />
-                      <col style={{ width: 130 }} />
-                      <col />
-                      <col style={{ width: 110 }} />
-                      <col style={{ width: 140 }} />
-                      <col style={{ width: 140 }} />
-                      <col style={{ width: 130 }} />
-                      <col style={{ width: 55 }} />
-                    </colgroup>
-                    <thead className="bg-gray-50 dark:bg-gray-900">
-                      <tr>
-                        {["STT", "Mã hàng", "Tên hàng", "ĐVT cơ bản", "Tồn hệ thống", "Tồn thực tế", "Chênh lệch", ""].map((title, index) => (
-                          <th key={`${title}-${index}`} className="border px-2 py-2 text-left font-semibold first:text-center">
-                            {title}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {!fields.length ? (
-                        <tr>
-                          <td colSpan={8} className="h-[280px] border p-0">
-                            <Upload.Dragger
-                              {...uploadProps}
-                              disabled={!currentStore}
-                              className="!border-0 !bg-transparent"
+                  <div className="min-h-0 flex-1 overflow-auto rounded-md border">
+                    <table className="min-w-[900px] w-full border-collapse text-sm">
+                      <colgroup>
+                        <col style={{ width: 55 }} />
+                        <col style={{ width: 100 }} />
+                        <col />
+                        <col style={{ width: 60 }} />
+                        <col style={{ width: 120 }} />
+                        <col style={{ width: 120 }} />
+                        <col style={{ width: 100 }} />
+                        <col style={{ width: 55 }} />
+                      </colgroup>
+                      <thead className="bg-gray-50 dark:bg-gray-900">
+                        <tr className="border-b">
+                          {[
+                            "STT",
+                            "Mã hàng",
+                            "Tên hàng",
+                            "ĐVT",
+                            "Tồn hệ thống",
+                            "Tồn thực tế",
+                            "Chênh lệch",
+                            "",
+                          ].map((title, index) => (
+                            <th
+                              key={`${title}-${index}`}
+                              className={`border-r last:border-r-0 px-3 py-1 font-semibold ${
+                                index === 0 || index === 3
+                                  ? "text-center"
+                                  : index > 3
+                                    ? "text-right"
+                                    : "text-left"
+                              }`}
                             >
-                              <p className="ant-upload-drag-icon">
-                                <InboxOutlined className="text-4xl text-primary" />
-                              </p>
-                              <p className="font-semibold text-gray-800">
-                                Thêm sản phẩm từ file Excel
-                              </p>
-                              <p className="text-sm text-slate-500">
-                                Kéo thả file Excel vào đây hoặc chọn file dữ liệu
-                              </p>
-                              <button
-                                type="button"
-                                className="text-blue-500 hover:text-blue-700"
-                                onClick={(event) => {
-                                  event.stopPropagation();
-                                  void ProductFile.downloadTemplate();
-                                }}
-                              >
-                                Tải biểu mẫu
-                              </button>
-                              <p className="mt-3 text-primary">
-                                {currentStore
-                                  ? "Chọn file dữ liệu"
-                                  : "Vui lòng chọn cửa hàng trước"}
-                              </p>
-                            </Upload.Dragger>
-                          </td>
+                              {title}
+                            </th>
+                          ))}
                         </tr>
-                      ) : (
-                        fields.map(({ key, name, ...restField }) => {
-                          const line = lines[name] || {};
-                          const expected = Number(line.expectedQuantity || 0);
-                          const counted = Number(line.countedQuantity || 0);
-                          const difference = counted - expected;
+                      </thead>
+                      <tbody>
+                        {!fields.length ? (
+                          <tr>
+                            <td colSpan={8} className="h-[280px] p-6">
+                              <Upload.Dragger
+                                {...uploadProps}
+                                disabled={!currentStore}
+                                className="!border-0 !bg-transparent"
+                              >
+                                <p className="ant-upload-drag-icon">
+                                  <InboxOutlined className="text-4xl text-primary" />
+                                </p>
+                                <p className="font-semibold text-gray-800">
+                                  Thêm sản phẩm từ file Excel
+                                </p>
+                                <p className="text-sm text-slate-500">
+                                  Kéo thả file Excel vào đây hoặc chọn file dữ liệu
+                                </p>
+                                <button
+                                  type="button"
+                                  className="text-blue-500 hover:text-blue-700"
+                                  onClick={(event) => {
+                                    event.stopPropagation();
+                                    void ProductFile.downloadTemplate();
+                                  }}
+                                >
+                                  Tải biểu mẫu
+                                </button>
+                                <p className="mt-3 text-primary">
+                                  {currentStore
+                                    ? "Chọn file dữ liệu"
+                                    : "Vui lòng chọn cửa hàng trước"}
+                                </p>
+                              </Upload.Dragger>
+                            </td>
+                          </tr>
+                        ) : (
+                          fields.map(({ key, name, ...restField }) => {
+                            const line = lines[name] || {};
+                            const expected = Number(line.expectedQuantity || 0);
+                            const counted = Number(line.countedQuantity || 0);
+                            const difference = counted - expected;
 
-                          return (
-                            <tr key={key}>
-                              <td className="border px-2 py-1 text-center">{name + 1}</td>
-                              <td className="border px-2 py-1 font-mono">{line.product?.code || line.productSnapshot?.code || "--"}</td>
-                              <td className="border px-2 py-1">{line.product?.name || line.productSnapshot?.name || "--"}</td>
-                              <td className="border px-2 py-1 text-center">{line.product?.baseUnit?.name || line.unitSnapshot?.name || "--"}</td>
-                              <td className="border px-2 py-1 text-right">{expected}</td>
-                              <td className="border p-0">
-                                <Form.Item {...restField} name={[name, "countedQuantity"]} rules={[{ required: true, type: "number", min: 0, message: "Nhập tồn thực tế" }]} className="mb-0">
-                                  <InputQuantity min={0} className="!border-0 !shadow-none" />
-                                </Form.Item>
-                              </td>
-                              <td className={`border px-2 py-1 text-right font-semibold ${difference < 0 ? "text-red-500" : difference > 0 ? "text-green-600" : ""}`}>
-                                {difference}
-                              </td>
-                              <td className="border px-1 text-center">
-                                <Button type="text" danger htmlType="button" onClick={() => remove(name)}>Xóa</Button>
-                              </td>
-                            </tr>
-                          );
-                        })
-                      )}
-                    </tbody>
-                  </table>
+                            return (
+                              <tr key={key} className="border-b">
+                                <td className="border-r px-2 py-1 text-center">{name + 1}</td>
+                                <td className="border-r px-2 py-1 font-mono">
+                                  {line.product?.code || line.productSnapshot?.code || "--"}
+                                </td>
+                                <td className="border-r px-2 py-1">
+                                  {line.product?.name || line.productSnapshot?.name || "--"}
+                                </td>
+                                <td className="border-r px-2 py-1 text-center">
+                                  {line.product?.baseUnit?.name || line.unitSnapshot?.name || "--"}
+                                </td>
+                                <td className="border-r px-2 py-1 text-right">
+                                  {formatQuantity(expected) || "0"}
+                                </td>
+                                <td className="border-r p-0">
+                                  <Form.Item
+                                    {...restField}
+                                    name={[name, "countedQuantity"]}
+                                    rules={[
+                                      {
+                                        required: true,
+                                        type: "number",
+                                        min: 0,
+                                        message: "Nhập tồn thực tế",
+                                      },
+                                    ]}
+                                    noStyle
+                                  >
+                                    <InputQuantity min={0} className="!border-0 !shadow-none" />
+                                  </Form.Item>
+                                </td>
+                                <td
+                                  className={`border-r px-2 py-1 text-right font-semibold ${difference < 0 ? "text-red-500" : difference > 0 ? "text-green-600" : ""}`}
+                                >
+                                  {formatQuantity(difference) || "0"}
+                                </td>
+                                <td className="px-1 text-center">
+                                  <Button
+                                    type="text"
+                                    danger
+                                    htmlType="button"
+                                    onClick={() => remove(name)}
+                                  >
+                                    <TrashIcon className="w-4 h-4" />
+                                  </Button>
+                                </td>
+                              </tr>
+                            );
+                          })
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
-            )}
-          </Form.List>
+              )}
+            </Form.List>
+          </div>
+          <div className="h-full w-80 shrink-0 overflow-y-auto rounded-md border border-gray-200 bg-white">
+            <div className="p-4 flex flex-col min-h-full">
+              <Form.Item name="code" label={<Label title="Số phiếu" />}>
+                <Input placeholder="Tự động nếu để trống" />
+              </Form.Item>
+              <Form.Item
+                name="occurredAt"
+                label={<Label title="Ngày kiểm" required />}
+                rules={[{ required: true, message: "Vui lòng chọn ngày kiểm" }]}
+              >
+                <AppDatePicker />
+              </Form.Item>
+              <Form.Item name="reason" label={<Label title="Lý do" />}>
+                <Input.TextArea placeholder="Nhập lý do kiểm kho" />
+              </Form.Item>
+              <Form.Item name="note" label={<Label title="Ghi chú" />}>
+                <Input.TextArea placeholder="Nhập ghi chú" />
+              </Form.Item>
+            </div>
           </div>
         </div>
 

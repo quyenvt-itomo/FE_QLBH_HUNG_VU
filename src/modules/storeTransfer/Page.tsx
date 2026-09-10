@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { App } from "antd";
-import { AddButton, DateRangeFilter, Panel, PanelFilter, SearchInput } from "@/shared/components";
+import { AddButton, Panel, PanelFilter, SearchInput } from "@/shared/components";
+import { StoreMultipleSelect } from "@/modules/store/components/Select";
+import { Store } from "@/shared/base/entity";
 import { usePageState } from "@/shared/hooks/usePageState";
 import { useGlobalData } from "@/shared/hooks/useGlobalData";
 import { SortOrder } from "@/shared/constants/enum";
@@ -11,6 +13,8 @@ import {
   canEditStoreTransfer,
   canExportStoreTransfer,
   canImportStoreTransfer,
+  StoreTransferStatus,
+  storeTransferStatusLabels,
 } from "./storeTransfer.model";
 import { useStoreTransferStore } from "./storeTransfer.store";
 import { filterUses, rangerItems, sortItems } from "./filterItem";
@@ -19,6 +23,9 @@ import { StoreTransferDetailModal, StoreTransferModal, StoreTransferTable } from
 export const StoreTransferPage: React.FC = () => {
   const { modal } = App.useApp();
   const { currentStore } = useGlobalData();
+  const [statusValues, setStatusValues] = useState<StoreTransferStatus[]>([]);
+  const [fromStores, setFromStores] = useState<Store[]>([]);
+  const [toStores, setToStores] = useState<Store[]>([]);
   const {
     isFilterActive,
     keyword,
@@ -28,8 +35,6 @@ export const StoreTransferPage: React.FC = () => {
     sortOrder,
     filter,
     ranger,
-    startAt,
-    endAt,
     reload,
     open,
     openDetail: isDetailOpen,
@@ -44,7 +49,19 @@ export const StoreTransferPage: React.FC = () => {
     pageAction,
   } = usePageState<StoreTransfer>({ sortBy: "occurredAt", sortOrder: SortOrder.DESC, filterUses });
   const store = useStoreTransferStore(
-    { keyword, page, size, sortBy, sortOrder, startAt, endAt, reload, ...filter, ...ranger },
+    {
+      keyword,
+      page,
+      size,
+      sortBy,
+      sortOrder,
+      reload,
+      statuses: statusValues.length ? statusValues : undefined,
+      fromStoreIds: fromStores.map((store) => store.id),
+      toStoreIds: toStores.map((store) => store.id),
+      ...filter,
+      ...ranger,
+    },
     pageAction.handleClose,
   );
   const openEdit = (record: StoreTransfer) => {
@@ -137,11 +154,47 @@ export const StoreTransferPage: React.FC = () => {
       },
     });
   };
+  const handleClearFilter = () => {
+    pageAction.resetFilter();
+    setStatusValues([]);
+    setFromStores([]);
+    setToStores([]);
+  };
+  const storeFilterContent = (
+    <div className="space-y-3 px-4 pb-4">
+      <div>
+        <div className="mb-1 text-xs font-medium text-gray-500">Kho chuyển đi</div>
+        <StoreMultipleSelect
+          value={fromStores.map((store) => store.id)}
+          defaultData={fromStores}
+          className="w-full"
+          placeholder="Chọn kho chuyển đi"
+          onChangeData={(stores) => {
+            setFromStores(stores);
+            setPage(1);
+          }}
+        />
+      </div>
+      <div>
+        <div className="mb-1 text-xs font-medium text-gray-500">Kho nhận</div>
+        <StoreMultipleSelect
+          value={toStores.map((store) => store.id)}
+          defaultData={toStores}
+          className="w-full"
+          placeholder="Chọn kho nhận"
+          onChangeData={(stores) => {
+            setToStores(stores);
+            setPage(1);
+          }}
+        />
+      </div>
+    </div>
+  );
   return (
     <div className="flex h-full w-full flex-col gap-3">
       <div className="flex min-h-0 flex-1 gap-3">
         <PanelFilter
-          filterActive={isFilterActive}
+          filterActive={isFilterActive || statusValues.length > 0 || fromStores.length > 0 || toStores.length > 0}
           sortItems={sortItems}
           sortValue={{ sortBy, sortOrder }}
           onSortChange={pageAction.handleSortChange}
@@ -149,17 +202,27 @@ export const StoreTransferPage: React.FC = () => {
           rangerValue={ranger}
           onRangerChange={pageAction.handleRangerChange}
           filterUses={filterUses}
-          onClearFilter={pageAction.resetFilter}
+          filterContent={storeFilterContent}
+          enumFilters={[
+            {
+              label: "Trạng thái",
+              items: Object.values(StoreTransferStatus).map((status) => ({
+                key: status,
+                label: storeTransferStatusLabels[status],
+              })),
+              value: statusValues,
+              onChange: (values) => {
+                setStatusValues(values as StoreTransferStatus[]);
+                setPage(1);
+              },
+            },
+          ]}
+          onClearFilter={handleClearFilter}
         />
         <div className="flex min-w-0 flex-1 flex-col gap-3">
           <div className="flex items-center justify-between gap-3">
             <SearchInput value={keyword} onSearch={pageAction.handleSearch} maxWidth={300} />
             <div className="flex items-center gap-2">
-              <DateRangeFilter
-                startDate={startAt}
-                endDate={endAt}
-                onRangeChange={pageAction.handleDateRangerChange}
-              />
               <AddButton
                 onOpenAdd={handleOpenAdd}
                 disabled={Boolean(store.create) && !currentStore}

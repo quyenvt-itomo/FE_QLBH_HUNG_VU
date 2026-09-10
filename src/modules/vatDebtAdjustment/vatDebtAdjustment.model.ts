@@ -7,9 +7,10 @@ export interface vatDebtAdjustmentQuery extends ApiRequestQuery {
 
 export interface VatDebtAdjustment extends StoreEntity {
   code: string;
-  note?: string | null;
-  invoiceId: string | null;
-  amount: number;
+  expectedAmount: number;
+  countedAmount: number;
+  deltaAmount: number;
   reason: string | null;
   occurredAt: string;
+  isInitial?: boolean;
 }

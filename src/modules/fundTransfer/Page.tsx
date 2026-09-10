@@ -1,7 +1,6 @@
 import React from "react";
 import { App } from "antd";
-import { ArrowsRightLeftIcon } from "@heroicons/react/24/outline";
-import { AddButton, DateRangeFilter, Panel, PanelFilter, SearchInput } from "@/shared/components";
+import { AddButton, Panel, PanelFilter, SearchInput } from "@/shared/components";
 import { usePageState } from "@/shared/hooks/usePageState";
 import { checkSelection } from "@/shared/utils/common.util";
 import { SortOrder } from "@/shared/constants/enum";
@@ -13,11 +12,11 @@ import { FundTransferAddUpdateModal, FundTransferDetailModal, FundTransferTable 
 export const FundTransferPage: React.FC = () => {
   const { modal } = App.useApp();
   const {
-    isFilterActive, keyword, page, size, sortBy, sortOrder, filter, ranger, startAt, endAt,
+    isFilterActive, keyword, page, size, sortBy, sortOrder, filter, ranger,
     reload, open, openDetail, rowData, setPage, setSize, setOpen, setOpenDetail, setRowData,
     pageAction,
   } = usePageState<FundTransfer>({ sortBy: "occurredAt", sortOrder: SortOrder.DESC, filterUses });
-  const store = useFundTransferStore({ keyword, page, size, sortBy, sortOrder, startAt, endAt, reload, ...filter, ...ranger }, pageAction.handleClose);
+  const store = useFundTransferStore({ keyword, page, size, sortBy, sortOrder, reload, ...filter, ...ranger }, pageAction.handleClose);
 
   const handleDelete = store.remove ? (record: FundTransfer) => modal.confirm({
     title: "Xóa phiếu chuyển quỹ",
@@ -28,20 +27,13 @@ export const FundTransferPage: React.FC = () => {
   const handleEdit = store.update ? (record: FundTransfer) => { setRowData(record); setOpen(true); } : undefined;
   const handleDetail = (record: FundTransfer) => { setRowData(record); setOpenDetail(true); };
 
-  return <div className="flex h-full w-full flex-col gap-3">
-    <div className="flex flex-col justify-between gap-3 lg:flex-row lg:items-center">
-      <div>
-        <h2 className="flex items-center gap-2 text-xl font-bold text-blue-800 dark:text-blue-200"><ArrowsRightLeftIcon className="h-5 w-5" />Chuyển quỹ</h2>
-        <p className="text-xs text-secondary">Theo dõi các khoản tiền chuyển giữa các quỹ</p>
-      </div>
-      <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
+  return <div className="flex h-full w-full gap-3">
+    <PanelFilter filterActive={isFilterActive} sortItems={sortItems} sortValue={{ sortBy, sortOrder }} onSortChange={pageAction.handleSortChange} rangerItems={rangerItems} rangerValue={ranger} onRangerChange={pageAction.handleRangerChange} filterUses={filterUses} onClearFilter={pageAction.resetFilter} />
+    <div className="flex min-w-0 flex-1 flex-col gap-3">
+      <div className="flex items-center justify-between gap-3">
         <SearchInput value={keyword} onSearch={pageAction.handleSearch} maxWidth={300} />
-        <DateRangeFilter startDate={startAt} endDate={endAt} onRangeChange={pageAction.handleDateRangerChange} />
         <AddButton title="Thêm phiếu" onOpenAdd={store.create ? () => { setRowData(undefined); setOpen(true); } : undefined} />
       </div>
-    </div>
-    <div className="flex min-h-0 flex-1 gap-3">
-      <PanelFilter filterActive={isFilterActive} sortItems={sortItems} sortValue={{ sortBy, sortOrder }} onSortChange={pageAction.handleSortChange} rangerItems={rangerItems} rangerValue={ranger} onRangerChange={pageAction.handleRangerChange} filterUses={filterUses} onClearFilter={pageAction.resetFilter} />
       <Panel className="min-w-0 flex-1 p-1">
         <FundTransferTable dataSource={store.data} loading={store.loading} pagination={store.pagination} setPage={setPage} setSize={setSize} onEdit={handleEdit} onDelete={handleDelete} onViewDetail={handleDetail} onRow={(record: any) => ({ onClick: () => { if (!checkSelection()) handleDetail(record); } })} />
       </Panel>

@@ -1,39 +1,126 @@
 import React from "react";
+import { App } from "antd";
+import { AddButton, Panel, PanelFilter, SearchInput } from "@/shared/components";
 import { usePageState } from "@/shared/hooks/usePageState";
-import { SearchInput } from "@/shared/components";
-import { useVatDebtAdjustmentStore } from "./vatDebtAdjustment.store";
+import { checkSelection } from "@/shared/utils/common.util";
+import { SortOrder } from "@/shared/constants/enum";
 import { VatDebtAdjustment } from "./vatDebtAdjustment.model";
-import { AddButton } from "@/shared/components";
-import { Panel } from "@/shared/components";
-import { TableColumnConfig } from "@/shared/components";
-import { formatDate } from "@/shared/utils/date.util";
+import { useVatDebtAdjustmentStore } from "./vatDebtAdjustment.store";
+import { filterUses, rangerItems, sortItems } from "./filterItem";
+import {
+  VatDebtAdjustmentAddUpdateModal,
+  VatDebtAdjustmentDetailModal,
+  VatDebtAdjustmentTable,
+} from "./components";
 
 const VatDebtAdjustmentPage: React.FC = () => {
-  const { keyword, page, size, setPage, setSize, pageAction } = usePageState<VatDebtAdjustment>();
-  const { data, loading, pagination } = useVatDebtAdjustmentStore({ keyword, page, size });
+  const { modal } = App.useApp();
+  const {
+    isFilterActive,
+    keyword,
+    page,
+    size,
+    sortBy,
+    sortOrder,
+    filter,
+    ranger,
+    reload,
+    open,
+    openDetail,
+    rowData,
+    setPage,
+    setSize,
+    setOpen,
+    setOpenDetail,
+    setRowData,
+    pageAction,
+  } = usePageState<VatDebtAdjustment>({
+    sortBy: "occurredAt",
+    sortOrder: SortOrder.DESC,
+    filterUses,
+  });
+  const store = useVatDebtAdjustmentStore(
+    { keyword, page, size, sortBy, sortOrder, reload, ...filter, ...ranger },
+    pageAction.handleClose,
+  );
 
-  const columns: any = [
-    { title: "Mã", dataIndex: "code", key: "code", width: 120, className: "code-column font-mono", fixed: "left",
-      render: (v: string) => <span className="cursor-pointer text-blue-600 hover:text-blue-800 hover:underline">{v}</span> },
-    { title: "Tên", dataIndex: "name", key: "name", width: 200 },
-    { title: "Ghi chú", dataIndex: "note", key: "note", width: 200, render: (v: string) => v || "--" },
-  ];
+  const handleOpenAdd = () => {
+    setRowData(undefined);
+    setOpen(true);
+  };
+  const handleEdit = store.update
+    ? (record: VatDebtAdjustment) => {
+        setRowData(record);
+        setOpen(true);
+      }
+    : undefined;
+  const handleDetail = (record: VatDebtAdjustment) => {
+    setRowData(record);
+    setOpenDetail(true);
+  };
+  const handleDelete = store.remove
+    ? (record: VatDebtAdjustment) =>
+        modal.confirm({
+          title: "Xóa phiếu điều chỉnh VAT",
+          content: `Bạn có chắc chắn muốn xóa phiếu “${record.code}”?`,
+          okText: "Xóa",
+          okButtonProps: { danger: true },
+          cancelText: "Hủy",
+          onOk: () => store.remove?.(record.id),
+        })
+    : undefined;
 
   return (
-    <div className="flex flex-col h-full w-full gap-3">
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-        <div className="flex flex-col">
-          <h2 className="text-xl font-bold text-blue-800 dark:text-blue-200">Điều chỉnh thuế VAT</h2>
-          <p className="text-xs text-secondary">Điều chỉnh thuế VAT</p>
+    <div className="flex h-full w-full gap-3">
+      <PanelFilter
+        filterActive={isFilterActive}
+        sortItems={sortItems}
+        sortValue={{ sortBy, sortOrder }}
+        onSortChange={pageAction.handleSortChange}
+        rangerItems={rangerItems}
+        rangerValue={ranger}
+        onRangerChange={pageAction.handleRangerChange}
+        filterUses={filterUses}
+        onClearFilter={pageAction.resetFilter}
+      />
+      <div className="flex min-w-0 flex-1 flex-col gap-3">
+        <div className="flex items-center justify-between gap-3">
+          <SearchInput value={keyword} onSearch={pageAction.handleSearch} maxWidth={300} />
+          <AddButton title="Thêm phiếu" onOpenAdd={store.create ? handleOpenAdd : undefined} />
         </div>
-        <div className="flex items-center gap-3">
-          <SearchInput value={keyword} onSearch={pageAction.handleSearch} maxWidth={340} />
-          <AddButton title="Thêm mới" />
-        </div>
+        <Panel className="min-w-0 flex-1 p-1">
+          <VatDebtAdjustmentTable
+            dataSource={store.data}
+            loading={store.loading}
+            pagination={store.pagination}
+            setPage={setPage}
+            setSize={setSize}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onViewDetail={handleDetail}
+            onRow={(record: any) => ({
+              onClick: () => {
+                if (!checkSelection()) handleDetail(record);
+              },
+            })}
+          />
+        </Panel>
       </div>
-      <Panel>
-        <TableColumnConfig columns={columns} dataSource={data} loading={loading} pagination={pagination} setPage={setPage} setSize={setSize} itemName="Điều chỉnh thuế VAT" tableKey="vatDebtAdjustment-table" />
-      </Panel>
+      <VatDebtAdjustmentAddUpdateModal
+        open={open}
+        editData={rowData}
+        errors={store.errors}
+        loading={store.creating || store.updating}
+        onAdd={store.create}
+        onEdit={store.update}
+        onClose={() => pageAction.handleClose(false)}
+      />
+      <VatDebtAdjustmentDetailModal
+        open={openDetail}
+        data={rowData}
+        onClose={pageAction.handleClose}
+        onOpenUpdate={handleEdit}
+      />
     </div>
   );
 };

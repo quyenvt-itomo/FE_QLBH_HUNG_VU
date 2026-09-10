@@ -22,14 +22,19 @@ import { Icon } from "@iconify/react";
 interface Props {
   form: FormInstance<Purchase>;
   onImportFile: (file: File) => void;
+  lineFieldName?: "lines" | "returnLines";
 }
 
 const { Dragger } = Upload;
 
-export const PurchaseLineFormList: React.FC<Props> = ({ form, onImportFile }) => {
+export const PurchaseLineFormList: React.FC<Props> = ({
+  form,
+  onImportFile,
+  lineFieldName = "lines",
+}) => {
   const { currentStore } = useGlobalData();
   const [defaultProduct, setDefaultProduct] = useAutoResetItem<Product>();
-  const lines = Form.useWatch("lines", form) || [];
+  const lines = Form.useWatch(lineFieldName, form) || [];
 
   const uploadProps: UploadProps = {
     name: "file",
@@ -52,18 +57,19 @@ export const PurchaseLineFormList: React.FC<Props> = ({ form, onImportFile }) =>
     );
     if (existingLineIndex >= 0) {
       const existingQuantity = Number(lines[existingLineIndex]?.quantity || 0);
-      form.setFieldValue(["lines", existingLineIndex, "quantity"], existingQuantity + 1);
+      form.setFieldValue([lineFieldName, existingLineIndex, "quantity"], existingQuantity + 1);
       return;
     }
 
     const unit = getDefaultPurchaseUnit(product);
-    const unitPrice = getCostPriceByStore({
-      product,
-      storeId: currentStore?.id,
-      unitId: unit?.id || product.baseUnitId,
-    });
+    const unitPrice =
+      getCostPriceByStore({
+        product,
+        storeId: currentStore?.id,
+        unitId: unit?.id || product.baseUnitId,
+      }) ?? 0;
 
-    form.setFieldValue("lines", [
+    form.setFieldValue(lineFieldName, [
       {
         tempId: randomId(),
         productId: product.id,
@@ -119,7 +125,7 @@ export const PurchaseLineFormList: React.FC<Props> = ({ form, onImportFile }) =>
               <th className="px-3 py-2 text-right font-semibold">Thành tiền</th>
             </tr>
           </thead>
-          <Form.List name="lines">
+          <Form.List name={lineFieldName}>
             {(fields, { remove }) => (
               <ReactSortable
                 tag="tbody"
@@ -131,7 +137,7 @@ export const PurchaseLineFormList: React.FC<Props> = ({ form, onImportFile }) =>
                 }))}
                 setList={(newList) => {
                   form.setFieldValue(
-                    "lines",
+                    lineFieldName,
                     newList.map(({ __sortableId, ...line }) => line),
                   );
                 }}
@@ -195,7 +201,7 @@ export const PurchaseLineFormList: React.FC<Props> = ({ form, onImportFile }) =>
                               options={units.map((unit) => ({ value: unit.id, label: unit.name }))}
                               onChange={(unitId) => {
                                 const unit = units.find((item) => item.id === unitId);
-                                form.setFieldValue(["lines", field.name, "unit"], unit);
+                                form.setFieldValue([lineFieldName, field.name, "unit"], unit);
                               }}
                             />
                           </Form.Item>
@@ -234,7 +240,7 @@ export const PurchaseLineFormList: React.FC<Props> = ({ form, onImportFile }) =>
                     <tr>
                       <td
                         colSpan={8}
-                        className="h-[280px] border-b border-slate-200 p-0 dark:border-slate-700 p-6"
+                        className="h-[280px] border-slate-200 dark:border-slate-700 p-6"
                       >
                         <Dragger {...uploadProps} className="!border-0 !bg-transparent">
                           <p className="ant-upload-drag-icon">

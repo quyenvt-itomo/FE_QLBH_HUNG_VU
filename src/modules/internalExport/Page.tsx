@@ -1,23 +1,27 @@
-import React from "react";
-import { AddButton, DateRangeFilter, Panel, PanelFilter, SearchInput } from "@/shared/components";
+import React, { useState } from "react";
+import { AddButton, Panel, PanelFilter, SearchInput } from "@/shared/components";
 import { useGlobalData } from "@/shared/hooks/useGlobalData";
 import { usePageState } from "@/shared/hooks/usePageState";
 import { SortOrder } from "@/shared/constants/enum";
 import { checkSelection, randomId } from "@/shared/utils/common.util";
-import { InternalExport } from "./internalExport.model";
+import {
+  InternalExport,
+  InternalExportType,
+  internalExportTypeOptions,
+} from "./internalExport.model";
 import { useInternalExportStore } from "./internalExport.store";
 import { InternalExportDetailModal, InternalExportModal, InternalExportTable } from "./components";
+import { filterUses, rangerItems, sortItems } from "./filterItem";
 
 export const InternalExportPage: React.FC = () => {
   const { currentStore } = useGlobalData();
+  const [typeValues, setTypeValues] = useState<InternalExportType[]>([]);
   const {
     keyword,
     page,
     size,
     sortBy,
     sortOrder,
-    startAt,
-    endAt,
     reload,
     open,
     openDetail,
@@ -33,9 +37,23 @@ export const InternalExportPage: React.FC = () => {
     isFilterActive,
     filter,
     ranger,
-  } = usePageState<InternalExport>({ sortBy: "occurredAt", sortOrder: SortOrder.DESC });
+  } = usePageState<InternalExport>({
+    sortBy: "occurredAt",
+    sortOrder: SortOrder.DESC,
+    filterUses,
+  });
   const store = useInternalExportStore(
-    { keyword, page, size, sortBy, sortOrder, startAt, endAt, reload, ...filter, ...ranger },
+    {
+      keyword,
+      page,
+      size,
+      sortBy,
+      sortOrder,
+      reload,
+      type: typeValues[0],
+      ...filter,
+      ...ranger,
+    },
     pageAction.handleClose,
   );
   const edit = (record: InternalExport) => {
@@ -77,33 +95,23 @@ export const InternalExportPage: React.FC = () => {
     <div className="flex h-full w-full flex-col gap-3">
       <div className="flex min-h-0 flex-1 gap-3">
         <PanelFilter
-          filterActive={isFilterActive}
-          sortItems={[
-            {
-              label: "Ngày xuất",
-              value: "occurredAt",
-              ascLabel: "Cũ nhất",
-              descLabel: "Mới nhất",
-            },
-            { label: "Số phiếu", value: "code", ascLabel: "A → Z", descLabel: "Z → A" },
-          ]}
+          filterActive={isFilterActive || typeValues.length > 0}
+          sortItems={sortItems}
           sortValue={{ sortBy, sortOrder }}
           onSortChange={pageAction.handleSortChange}
-          rangerItems={[]}
+          rangerItems={rangerItems}
           rangerValue={ranger}
           onRangerChange={pageAction.handleRangerChange}
-          filterUses={[]}
-          onClearFilter={pageAction.resetFilter}
+          filterUses={filterUses}
+          onClearFilter={() => {
+            pageAction.resetFilter();
+            setTypeValues([]);
+          }}
         />
         <div className="flex min-w-0 flex-1 flex-col gap-3">
           <div className="flex items-center justify-between gap-3">
             <SearchInput value={keyword} onSearch={pageAction.handleSearch} maxWidth={300} />
             <div className="flex items-center gap-2">
-              <DateRangeFilter
-                startDate={startAt}
-                endDate={endAt}
-                onRangeChange={pageAction.handleDateRangerChange}
-              />
               <AddButton
                 onOpenAdd={handleOpenAdd}
                 disabled={Boolean(store.create) && !currentStore}

@@ -14,6 +14,10 @@ export const apiEndpoint = {
   files: { base: "/file", setMain: "/file/:id/set-main", deletePending: "/file/pending" },
   dashboard: {
     base: "/dashboard",
+    metrics: "/dashboard/metrics",
+    revenueReport: "/dashboard/revenue",
+    topProducts: "/dashboard/top-products",
+    topCustomers: "/dashboard/top-customers",
     today: "/dashboard/today",
     sales: "/dashboard/sales",
     production: "/dashboard/production",
@@ -211,6 +215,7 @@ export const apiEndpoint = {
 
   // ── Debt / Commission / VAT ──
   partnerDebtAdjustment: { base: "/partner-debt/adjustment" },
+  debtAdjustment: { base: "/debt-adjustment" },
   partnerDebtOffset: { base: "/partner-debt/offset" },
   partnerDebt: {
     base: "/partner-debt",
@@ -228,8 +233,8 @@ export const apiEndpoint = {
     transaction: "/commission-debt/transaction",
     adjustment: "/commission-debt/adjustment",
   },
-  vat: { transaction: "/vat-debt/report", adjustment: "/vat-debt/adjustment" },
-  vatDebtAdjustment: { base: "/vat-debt/adjustment" },
+  vat: { transaction: "/vat-debt/report", adjustment: "/vat-adjustment" },
+  vatDebtAdjustment: { base: "/vat-adjustment" },
   vatDebtReport: { base: "/vat-debt/report" },
 
   // ── System ──

@@ -10,11 +10,13 @@ import {
   PrinterOutlined,
 } from "@ant-design/icons";
 import { formatDateTimeDDMMYYYY } from "@/shared/utils/date.util";
-import { Purchase, OrderStatus, purchaseStatusMap } from "../purchase.model";
-import { getLineProduct } from "../purchase.util";
+import { Purchase, OrderStatus, purchaseReturnStatusMap, purchaseStatusMap } from "../purchase.model";
+import { getLineProduct, getLineUnit } from "../purchase.util";
 import { formatMoney, formatVnd } from "@/shared/utils";
+import { getCostPriceByStore } from "@/modules/product/product.util";
+import { useGlobalData } from "@/shared/hooks/useGlobalData";
 
-interface Props {
+export interface PurchaseDetailModalProps {
   open: boolean;
   data?: Purchase;
   onClose: () => void;
@@ -26,6 +28,7 @@ interface Props {
   onPrint?: (record: Purchase) => void;
   onPrintBarcode?: (record: Purchase) => void;
   onComplete?: (record: Purchase) => void;
+  isPurchaseReturn?: boolean;
 }
 
 const displayValue = (value?: string | null) => value || "—";
@@ -54,7 +57,7 @@ const SummaryItem: React.FC<{ label: string; value: React.ReactNode; strong?: bo
   </div>
 );
 
-export const PurchaseDetailModal: React.FC<Props> = ({
+export const PurchaseDetailModal: React.FC<PurchaseDetailModalProps> = ({
   open,
   data,
   onClose,
@@ -66,15 +69,18 @@ export const PurchaseDetailModal: React.FC<Props> = ({
   onPrint,
   onPrintBarcode,
   onComplete,
+  isPurchaseReturn = false,
 }) => {
+  const { currentStore } = useGlobalData();
+  const lines = isPurchaseReturn ? data?.returnLines || [] : data?.lines || [];
   const products = useMemo(() => {
     const map = new Map<string, any>();
-    (data?.lines || []).forEach((line: any) => {
+    lines.forEach((line: any) => {
       const product = getLineProduct(line);
       if (product?.id) map.set(product.id, product);
     });
     return Array.from(map.values());
-  }, [data?.lines]);
+  }, [lines]);
 
   if (!data) return null;
 
@@ -83,10 +89,9 @@ export const PurchaseDetailModal: React.FC<Props> = ({
   const canEdit = !isCanceled && !!onOpenUpdate;
   const canCancel = !isCanceled && !!onCancel;
   const canDelete = isDraft && !!onDelete;
-  const lines = data.lines || [];
   const totalQuantity = lines.reduce((sum, line) => sum + Number(line.quantity || 0), 0);
   const totalAmount = Number(
-    data.totalAmount ??
+    (isPurchaseReturn ? data.returnTotalAmount : data.totalAmount) ??
       lines.reduce(
         (sum, line) => sum + Number(line.quantity || 0) * Number(line.unitPrice || 0),
         0,
@@ -126,19 +131,25 @@ export const PurchaseDetailModal: React.FC<Props> = ({
               }
               className="m-0"
             >
-              {purchaseStatusMap[data.status]}
+              {isPurchaseReturn ? purchaseReturnStatusMap[data.status] : purchaseStatusMap[data.status]}
             </Tag>
           </div>
           <div className="shrink-0 text-sm text-slate-600 dark:text-slate-300">
-            {storeName ? `Chi nhánh ${storeName}` : "Phiếu nhập hàng"}
+            {storeName
+              ? `Chi nhánh ${storeName}`
+              : isPurchaseReturn
+                ? "Phiếu trả hàng nhập"
+                : "Phiếu nhập hàng"}
           </div>
         </div>
 
         <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
           <div className="grid grid-cols-1 gap-x-8 gap-y-3 md:grid-cols-3">
             <InfoItem label="Người tạo">{displayValue(data.creatorSnapshot?.name)}</InfoItem>
-            <InfoItem label="Người nhập">{displayValue(completerName)}</InfoItem>
-            <InfoItem label="Ngày nhập">
+            <InfoItem label={isPurchaseReturn ? "Người xử lý" : "Người nhập"}>
+              {displayValue(completerName)}
+            </InfoItem>
+            <InfoItem label={isPurchaseReturn ? "Ngày trả hàng" : "Ngày nhập"}>
               {data.occurredAt
                 ? formatDateTimeDDMMYYYY(data.occurredAt)
                 : formatDateTimeDDMMYYYY(data.orderAt)}
@@ -150,21 +161,40 @@ export const PurchaseDetailModal: React.FC<Props> = ({
           </div>
 
           <div className="mt-5 overflow-x-auto rounded border border-slate-200 dark:border-slate-700">
-            <table className="w-full min-w-[960px] border-collapse text-sm">
+            <table className={`w-full ${isPurchaseReturn ? "min-w-[1120px]" : "min-w-[960px]"} border-collapse text-sm`}>
               <thead className="bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-slate-100">
                 <tr>
+                  {isPurchaseReturn && (
+                    <th className="px-3 py-2 text-center font-semibold">STT</th>
+                  )}
                   <th className="px-3 py-2 text-left font-semibold">Mã hàng</th>
                   <th className="px-3 py-2 text-left font-semibold">Tên hàng</th>
+                  {isPurchaseReturn && (
+                    <th className="px-3 py-2 text-left font-semibold">ĐVT</th>
+                  )}
                   <th className="px-3 py-2 text-right font-semibold">Số lượng</th>
-                  <th className="px-3 py-2 text-right font-semibold">Đơn giá</th>
+                  {isPurchaseReturn && (
+                    <th className="px-3 py-2 text-right font-semibold">Giá nhập</th>
+                  )}
+                  <th className="px-3 py-2 text-right font-semibold">
+                    {isPurchaseReturn ? "Giá trả lại" : "Đơn giá"}
+                  </th>
                   <th className="px-3 py-2 text-right font-semibold">Thành tiền</th>
                 </tr>
               </thead>
               <tbody>
                 {lines.map((line, index) => {
                   const product = getLineProduct(line);
+                  const unit = getLineUnit(line);
                   const quantity = Number(line.quantity || 0);
                   const unitPrice = Number(line.unitPrice || 0);
+                  const currentCostPrice = isPurchaseReturn
+                    ? getCostPriceByStore({
+                        product,
+                        storeId: currentStore?.id,
+                        unitId: line.unitId,
+                      }) ?? Number(line.costPriceAtTime || 0)
+                    : 0;
                   const lineTotal = Number(line.subTotal ?? quantity * unitPrice);
 
                   return (
@@ -172,6 +202,9 @@ export const PurchaseDetailModal: React.FC<Props> = ({
                       key={line.id || line.tempId || `${product.id || "line"}-${index}`}
                       className="border-b border-slate-200 last:border-b-0 dark:border-slate-700"
                     >
+                      {isPurchaseReturn && (
+                        <td className="px-3 py-3 text-center">{index + 1}</td>
+                      )}
                       <td className="px-3 py-3 font-mono text-blue-600">
                         {displayValue(product.code)}
                       </td>
@@ -181,7 +214,17 @@ export const PurchaseDetailModal: React.FC<Props> = ({
                           <div className="mt-1 text-xs italic text-slate-500">{line.note}</div>
                         )}
                       </td>
+                      {isPurchaseReturn && (
+                        <td className="px-3 py-3 text-slate-600 dark:text-slate-300">
+                          {displayValue(unit.name)}
+                        </td>
+                      )}
                       <td className="px-3 py-3 text-right">{quantity}</td>
+                      {isPurchaseReturn && (
+                        <td className="px-3 py-3 text-right text-slate-500">
+                          {formatMoney(currentCostPrice)}
+                        </td>
+                      )}
                       <td className="px-3 py-3 text-right">{formatMoney(unitPrice)}</td>
                       <td className="px-3 py-3 text-right font-semibold">
                         {formatMoney(lineTotal)}
@@ -191,7 +234,7 @@ export const PurchaseDetailModal: React.FC<Props> = ({
                 })}
                 {!lines.length && (
                   <tr>
-                    <td colSpan={5} className="py-10 text-center text-slate-500">
+                    <td colSpan={isPurchaseReturn ? 8 : 5} className="py-10 text-center text-slate-500">
                       Chưa có hàng hóa
                     </td>
                   </tr>
@@ -211,11 +254,33 @@ export const PurchaseDetailModal: React.FC<Props> = ({
             </div>
             <div className="space-y-2 text-sm">
               <SummaryItem label={`Số lượng mặt hàng (${lines.length})`} value={totalQuantity} />
-              <SummaryItem label="Tổng tiền hàng" value={formatVnd(data.grossAmount)} />
-              <SummaryItem label="Giảm giá" value={formatVnd(data.discountAmount)} />
-              <SummaryItem label="VAT" value={formatVnd(data.taxAmount)} />
-              <SummaryItem label="Cần trả NCC" value={formatVnd(totalAmount)} strong />
-              <SummaryItem label="Tiền đã trả NCC" value={formatVnd(paidAmount)} />
+              <SummaryItem
+                label="Tổng tiền hàng"
+                value={formatVnd(isPurchaseReturn ? data.returnGrossAmount : data.grossAmount)}
+              />
+              <SummaryItem
+                label="Giảm giá"
+                value={formatVnd(isPurchaseReturn ? data.returnDiscountAmount : data.discountAmount)}
+              />
+              <SummaryItem
+                label={isPurchaseReturn ? "Thuế trả lại" : "VAT"}
+                value={formatVnd(isPurchaseReturn ? data.returnTaxAmount : data.taxAmount)}
+              />
+              <SummaryItem
+                label={isPurchaseReturn ? "Tổng tiền trả hàng" : "Cần trả NCC"}
+                value={formatVnd(totalAmount)}
+                strong
+              />
+              <SummaryItem
+                label={isPurchaseReturn ? "NCC hoàn tiền" : "Tiền đã trả NCC"}
+                value={formatVnd(paidAmount)}
+              />
+              {isPurchaseReturn && (
+                <SummaryItem
+                  label="Tính vào công nợ"
+                  value={formatVnd(Math.max(0, totalAmount - paidAmount))}
+                />
+              )}
             </div>
           </div>
         </div>
@@ -260,7 +325,7 @@ export const PurchaseDetailModal: React.FC<Props> = ({
           <Space>
             {isDraft && onComplete && (
               <Button type="primary" onClick={() => onComplete(data)}>
-                Nhập kho ngay
+                {isPurchaseReturn ? "Hoàn thành" : "Nhập kho ngay"}
               </Button>
             )}
             {canEdit && (

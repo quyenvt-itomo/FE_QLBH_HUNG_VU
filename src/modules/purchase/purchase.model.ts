@@ -41,3 +41,14 @@ export const purchaseStatusItems = Object.values(OrderStatus).map((value) => ({
   key: value,
   label: purchaseStatusMap[value],
 }));
+
+export const purchaseReturnStatusMap: Record<OrderStatus, string> = {
+  [OrderStatus.DRAFT]: "Phiếu tạm",
+  [OrderStatus.COMPLETED]: "Đã trả hàng",
+  [OrderStatus.CANCELED]: "Đã hủy",
+};
+
+export const purchaseReturnStatusItems = Object.values(OrderStatus).map((value) => ({
+  key: value,
+  label: purchaseReturnStatusMap[value],
+}));

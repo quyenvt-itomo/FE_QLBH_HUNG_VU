@@ -32,7 +32,7 @@ export const StoreTransferTable: React.FC<ObjectTableProps> = (props) => {
       {
         title: "Số phiếu",
         key: "code",
-        width: 140,
+        width: 100,
         fixed: "left",
         className: "font-mono",
         render: (_value: unknown, record: StoreTransfer) => (
@@ -52,7 +52,8 @@ export const StoreTransferTable: React.FC<ObjectTableProps> = (props) => {
         title: "Ngày lập kế hoạch",
         key: "occurredAt",
         width: 155,
-        render: (_value: unknown, record: StoreTransfer) => formatDateTimeDDMMYYYY(record.occurredAt),
+        render: (_value: unknown, record: StoreTransfer) =>
+          formatDateTimeDDMMYYYY(record.occurredAt),
       },
       {
         title: "Kho chuyển đi",
@@ -92,9 +93,7 @@ export const StoreTransferTable: React.FC<ObjectTableProps> = (props) => {
         render: (_value: unknown, record: StoreTransfer) => (
           <div className="flex flex-col">
             <span className="leading-4 font-semibold">
-              {resolveByPath(record, ["exporter", "name"]) ||
-                record.exporterSnapshot?.name ||
-                "--"}
+              {resolveByPath(record, ["exporter", "name"]) || record.exporterSnapshot?.name || "--"}
             </span>
             <span className="text-xs text-gray-500">
               {record.exportedAt ? formatDateTimeDDMMYYYY(record.exportedAt) : "--"}
@@ -109,9 +108,7 @@ export const StoreTransferTable: React.FC<ObjectTableProps> = (props) => {
         render: (_value: unknown, record: StoreTransfer) => (
           <div className="flex flex-col">
             <span className="leading-4 font-semibold">
-              {resolveByPath(record, ["importer", "name"]) ||
-                record.importerSnapshot?.name ||
-                "--"}
+              {resolveByPath(record, ["importer", "name"]) || record.importerSnapshot?.name || "--"}
             </span>
             <span className="text-xs text-gray-500">
               {record.importedAt ? formatDateTimeDDMMYYYY(record.importedAt) : "--"}

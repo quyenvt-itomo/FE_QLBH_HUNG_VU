@@ -149,17 +149,6 @@ export const IncomeExpensePage: React.FC = () => {
               rangerValue={ranger}
               onRangerChange={pageAction.handleRangerChange}
               filterUses={filterUses}
-              enumFilters={[
-                {
-                  label: "Loại chứng từ",
-                  items: [
-                    { key: IncomeExpenseType.INCOME, label: "Phiếu thu" },
-                    { key: IncomeExpenseType.EXPENSE, label: "Phiếu chi" },
-                  ],
-                  value: filterType,
-                  onChange: handleFilterTypeChange,
-                },
-              ]}
               onClearFilter={handleResetFilters}
             />
             {handleOpenAdd && (

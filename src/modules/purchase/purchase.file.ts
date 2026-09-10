@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import { Purchase, PurchaseLine } from "./purchase.model";
 import { getLineProduct, getLineUnit } from "./purchase.util";
 import { formatMoney, formatQuantity } from "@/shared/utils/number.util";
+import { OrderType } from "@/modules/order/order.model";
 
 export interface PurchaseFileOptions {
   hidePrice?: boolean;
@@ -59,7 +60,7 @@ const setColumns = (sheet: ExcelJS.Worksheet) => {
   sheet.columns = purchaseExcelColumns.map((header, index) => ({
     header,
     key: String(index),
-    width: [18, 34, 18, 16, 14, 10, 14, 18][index],
+    width: [18, 34, 18, 16, 14, 18][index],
   }));
 };
 
@@ -73,6 +74,8 @@ const escapeHtml = (value: unknown) =>
 
 const printMoney = (value: unknown) => formatMoney(Number(value) || 0) || "0";
 const printQuantity = (value: unknown) => formatQuantity(Number(value) || 0) || "0";
+const getPurchaseLines = (purchase: Purchase) =>
+  purchase.type === OrderType.PURCHASE_RETURN ? purchase.returnLines || [] : purchase.lines || [];
 
 export class PurchaseFile {
   static async exportExcel(purchase: Purchase, options: PurchaseFileOptions = {}) {
@@ -80,16 +83,15 @@ export class PurchaseFile {
     const sheet = workbook.addWorksheet("Danh sách hàng hóa");
     setColumns(sheet);
     styleHeader(sheet);
-    sheet.addRows(
-      (purchase.lines || []).map((line) => purchaseLineToExcelRow(line, options.hidePrice)),
-    );
+    sheet.addRows(getPurchaseLines(purchase).map((line) => purchaseLineToExcelRow(line, options.hidePrice)));
     sheet.eachRow((row, rowNumber) => {
       if (rowNumber > 1)
         row.eachCell((cell, index) => {
-          if ([4, 5, 7, 8].includes(index) && typeof cell.value === "number") cell.numFmt = "#,##0";
+          if ([4, 5, 6].includes(index) && typeof cell.value === "number") cell.numFmt = "#,##0";
         });
     });
-    await downloadWorkbook(workbook, `danh_sach_hang_hoa_${purchase.code || "phieu_nhap"}.xlsx`);
+    const name = purchase.type === OrderType.PURCHASE_RETURN ? "phieu_tra_hang" : "phieu_nhap";
+    await downloadWorkbook(workbook, `danh_sach_hang_hoa_${purchase.code || name}.xlsx`);
   }
 
   static async exportRows(rows: unknown[][], filename = "hang_hoa_chua_tim_thay.xlsx") {
@@ -106,7 +108,7 @@ export class PurchaseFile {
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet("Phiếu nhập");
     sheet.addRow(purchaseExcelColumns);
-    sheet.addRow(["", "", "", "", "", "", 1, ""]);
+    sheet.addRow(["", "", "", "", 1, ""]);
     setColumns(sheet);
     styleHeader(sheet);
     await downloadWorkbook(workbook, "bieu_mau_phieu_nhap_hang.xlsx");
@@ -122,7 +124,8 @@ export class PurchaseFile {
           purchaseExcelColumns[4],
         ]
       : purchaseExcelColumns;
-    const rows = (purchase.lines || [])
+    const isReturn = purchase.type === OrderType.PURCHASE_RETURN;
+    const rows = getPurchaseLines(purchase)
       .map((line) => {
         const values = purchaseLineToExcelRow(line, hidePrice);
         const visible = hidePrice
@@ -138,9 +141,10 @@ export class PurchaseFile {
         return `<tr>${visible.map((value) => `<td>${escapeHtml(value)}</td>`).join("")}</tr>`;
       })
       .join("");
-    const html = `<!doctype html><html><head><title>Phiếu nhập ${escapeHtml(purchase.code)}</title><style>
+    const title = isReturn ? "PHIẾU TRẢ HÀNG NHẬP" : "PHIẾU NHẬP HÀNG";
+    const html = `<!doctype html><html><head><title>${title} ${escapeHtml(purchase.code)}</title><style>
       *{box-sizing:border-box}body{font:14px Arial;color:#111;margin:24px}h1{text-align:center}table{width:100%;border-collapse:collapse;margin-top:16px}th,td{border:1px solid #999;padding:7px}th{background:#eef5ff}td:nth-child(n+4){text-align:right}.meta{display:flex;justify-content:space-between;margin:14px 0}@media print{body{margin:10mm}}
-    </style></head><body><h1>PHIẾU NHẬP HÀNG</h1><div class="meta"><span>Mã phiếu: ${escapeHtml(purchase.code)}</span><span>Ngày: ${dayjs(purchase.orderAt).format("DD/MM/YYYY HH:mm")}</span></div><div>Nhà cung cấp: ${escapeHtml(purchase.partner?.name || purchase.partnerSnapshot?.name)}</div><table><thead><tr>${headers.map((header) => `<th>${escapeHtml(header)}</th>`).join("")}</tr></thead><tbody>${rows}</tbody></table><script>window.onload=()=>{window.print();window.onafterprint=()=>window.close()}</script></body></html>`;
+    </style></head><body><h1>${title}</h1><div class="meta"><span>Mã phiếu: ${escapeHtml(purchase.code)}</span><span>Ngày: ${dayjs(purchase.orderAt).format("DD/MM/YYYY HH:mm")}</span></div><div>Nhà cung cấp: ${escapeHtml(purchase.partner?.name || purchase.partnerSnapshot?.name)}</div><table><thead><tr>${headers.map((header) => `<th>${escapeHtml(header)}</th>`).join("")}</tr></thead><tbody>${rows}</tbody></table><script>window.onload=()=>{window.print();window.onafterprint=()=>window.close()}</script></body></html>`;
     const printWindow = window.open("", "_blank", "width=1000,height=800");
     if (!printWindow) return;
     printWindow.document.write(html);

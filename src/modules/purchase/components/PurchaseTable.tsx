@@ -8,13 +8,14 @@ import { PurchaseStatusTag } from "./Tag";
 
 interface Props extends ObjectTableProps {
   onViewDetail?: (record: Purchase) => void;
+  isPurchaseReturn?: boolean;
 }
 
-export const PurchaseTable: React.FC<Props> = ({ onViewDetail, ...rest }) => {
+export const PurchaseTable: React.FC<Props> = ({ onViewDetail, isPurchaseReturn = false, ...rest }) => {
   const columns: ColumnsConfigType<Purchase> = useMemo(
     () => [
       {
-        title: "Mã phiếu nhập",
+        title: isPurchaseReturn ? "Mã phiếu trả" : "Mã phiếu nhập",
         key: "code",
         width: 150,
         fixed: "left",
@@ -33,14 +34,14 @@ export const PurchaseTable: React.FC<Props> = ({ onViewDetail, ...rest }) => {
         ),
       },
       {
-        title: "Ngày đặt hàng",
+        title: "Ngày lập phiếu",
         dataIndex: "orderAt",
         key: "orderAt",
         width: 150,
         render: (value) => formatDateTimeDDMMYYYY(value),
       },
       {
-        title: "Ngày hoàn thành",
+        title: isPurchaseReturn ? "Ngày trả hàng" : "Ngày hoàn thành",
         dataIndex: "occurredAt",
         key: "occurredAt",
         width: 150,
@@ -61,7 +62,7 @@ export const PurchaseTable: React.FC<Props> = ({ onViewDetail, ...rest }) => {
       },
       {
         title: "Tiền hàng",
-        dataIndex: "grossAmount",
+        dataIndex: isPurchaseReturn ? "returnGrossAmount" : "grossAmount",
         key: "grossAmount",
         width: 140,
         align: "right",
@@ -69,7 +70,7 @@ export const PurchaseTable: React.FC<Props> = ({ onViewDetail, ...rest }) => {
       },
       {
         title: "Giảm giá",
-        dataIndex: "discountAmount",
+        dataIndex: isPurchaseReturn ? "returnDiscountAmount" : "discountAmount",
         key: "discountAmount",
         width: 120,
         align: "right",
@@ -77,7 +78,7 @@ export const PurchaseTable: React.FC<Props> = ({ onViewDetail, ...rest }) => {
       },
       {
         title: "VAT",
-        dataIndex: "taxAmount",
+        dataIndex: isPurchaseReturn ? "returnTaxAmount" : "taxAmount",
         key: "taxAmount",
         width: 120,
         align: "right",
@@ -93,7 +94,7 @@ export const PurchaseTable: React.FC<Props> = ({ onViewDetail, ...rest }) => {
       },
       {
         title: "Tổng đơn",
-        dataIndex: "totalAmount",
+        dataIndex: isPurchaseReturn ? "returnTotalAmount" : "totalAmount",
         key: "totalAmount",
         width: 150,
         align: "right",
@@ -101,7 +102,7 @@ export const PurchaseTable: React.FC<Props> = ({ onViewDetail, ...rest }) => {
         render: (value) => formatMoney(value),
       },
       {
-        title: "Người hoàn thành",
+        title: isPurchaseReturn ? "Người xử lý" : "Người hoàn thành",
         key: "completer",
         width: 160,
         render: (record) => record.completer?.name || record.completerSnapshot?.name || "—",
@@ -114,19 +115,19 @@ export const PurchaseTable: React.FC<Props> = ({ onViewDetail, ...rest }) => {
         align: "center",
         fixed: "right",
         render: (value: OrderStatus) => (
-          <PurchaseStatusTag value={value} size="sm" variant="solid" />
+          <PurchaseStatusTag value={value} size="sm" variant="solid" isPurchaseReturn={isPurchaseReturn} />
         ),
       },
     ],
-    [onViewDetail],
+    [isPurchaseReturn, onViewDetail],
   );
 
   return (
     <TableColumnConfig
       columns={columns}
-      itemName="phiếu nhập"
+      itemName={isPurchaseReturn ? "phiếu trả hàng nhập" : "phiếu nhập"}
       hasStoreInfo
-      tableKey="purchase-table"
+      tableKey={isPurchaseReturn ? "purchase-return-table" : "purchase-table"}
       onViewDetail={onViewDetail}
       {...rest}
     />

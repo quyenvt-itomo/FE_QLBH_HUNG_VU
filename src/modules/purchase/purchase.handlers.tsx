@@ -1,6 +1,6 @@
 import React from "react";
 import { App, Checkbox } from "antd";
-import { OrderStatus, Purchase } from "./purchase.model";
+import { OrderStatus, OrderType, Purchase } from "./purchase.model";
 import { HandlersInput } from "@/shared/interfaces/common";
 import { PurchaseFile } from "./purchase.file";
 import { randomId } from "@/shared/utils/common.util";
@@ -10,6 +10,7 @@ type PurchaseHandlerProps = HandlersInput<Purchase> & {
   complete?: (id: string) => Promise<void>;
   setDefaultData?: (data: Partial<Purchase> | undefined) => void;
   setBarcodeData?: (data: Purchase | undefined) => void;
+  documentType?: OrderType;
 };
 
 export function usePurchaseHandlers({
@@ -24,8 +25,11 @@ export function usePurchaseHandlers({
   setRowData,
   setDefaultData,
   setBarcodeData,
+  documentType = OrderType.PURCHASE,
 }: PurchaseHandlerProps) {
   const { modal } = App.useApp();
+  const isPurchaseReturn = documentType === OrderType.PURCHASE_RETURN;
+  const documentName = isPurchaseReturn ? "phiếu trả hàng nhập" : "phiếu nhập hàng";
 
   const withDetails = (record: Purchase, callback: (data: Purchase) => void) => {
     if (!getById) return callback(record);
@@ -45,10 +49,10 @@ export function usePurchaseHandlers({
 
   const handleDelete = remove ? (record: Purchase) => {
     if (record.status !== OrderStatus.DRAFT) return;
-    withDetails(record, (data) => modal.confirm({
+      withDetails(record, (data) => modal.confirm({
       centered: true,
-      title: "Xóa phiếu nhập hàng",
-      content: `Bạn có chắc muốn xóa phiếu ${data.code}?`,
+      title: `Xóa ${documentName}`,
+      content: `Bạn có chắc muốn xóa ${documentName} ${data.code}?`,
       okText: "Xóa",
       okButtonProps: { danger: true },
       cancelText: "Hủy",
@@ -60,8 +64,8 @@ export function usePurchaseHandlers({
     if (record.status === OrderStatus.CANCELED) return;
     withDetails(record, (data) => modal.confirm({
       centered: true,
-      title: "Hủy phiếu nhập hàng",
-      content: `Bạn có chắc muốn hủy phiếu ${data.code}?`,
+      title: `Hủy ${documentName}`,
+      content: `Bạn có chắc muốn hủy ${documentName} ${data.code}?`,
       okText: "Hủy phiếu",
       okButtonProps: { danger: true },
       cancelText: "Đóng",
@@ -73,9 +77,9 @@ export function usePurchaseHandlers({
     if (record.status !== OrderStatus.DRAFT) return;
     withDetails(record, (data) => modal.confirm({
       centered: true,
-      title: "Nhập kho ngay",
-      content: `Xác nhận nhập kho phiếu ${data.code}? Sau khi hoàn thành phiếu sẽ không thể sửa dòng hàng.`,
-      okText: "Nhập kho",
+      title: isPurchaseReturn ? "Hoàn thành trả hàng" : "Nhập kho ngay",
+      content: `Xác nhận ${isPurchaseReturn ? "trả hàng" : "nhập kho"} phiếu ${data.code}? Sau khi hoàn thành phiếu sẽ không thể sửa dòng hàng.`,
+      okText: isPurchaseReturn ? "Hoàn thành" : "Nhập kho",
       cancelText: "Đóng",
       onOk: () => complete(data.id),
     }));
@@ -85,15 +89,22 @@ export function usePurchaseHandlers({
     withDetails(record, (data) => {
       setOpenDetail?.(false);
       setRowData(undefined);
+      const sourceLines = isPurchaseReturn ? data.returnLines || [] : data.lines || [];
       setDefaultData?.({
         ...data,
         id: undefined,
         tempId: randomId(),
         code: "",
+        type: documentType,
+        refOrderId: null,
+        refOrder: null,
         status: undefined,
         occurredAt: null,
         completerId: null,
-        lines: (data.lines || []).map((line) => ({ ...line, id: undefined, tempId: randomId() })),
+        lines: isPurchaseReturn ? [] : sourceLines.map((line) => ({ ...line, id: undefined, tempId: randomId() })),
+        returnLines: isPurchaseReturn
+          ? sourceLines.map((line) => ({ ...line, id: undefined, tempId: randomId() }))
+          : [],
       } as any);
       setOpen?.(true);
     });
@@ -111,8 +122,8 @@ export function usePurchaseHandlers({
     });
   };
 
-  const handleExportExcel = (record: Purchase) => withDetails(record, (data) => confirmPriceOption("Xuất danh sách hàng hóa", (hidePrice) => PurchaseFile.exportExcel(data, { hidePrice })));
-  const handlePrint = (record: Purchase) => withDetails(record, (data) => confirmPriceOption("In phiếu nhập hàng", (hidePrice) => PurchaseFile.print(data, { hidePrice })));
+  const handleExportExcel = (record: Purchase) => withDetails(record, (data) => confirmPriceOption(isPurchaseReturn ? "Xuất danh sách hàng hóa trả lại" : "Xuất danh sách hàng hóa", (hidePrice) => PurchaseFile.exportExcel(data, { hidePrice })));
+  const handlePrint = (record: Purchase) => withDetails(record, (data) => confirmPriceOption(isPurchaseReturn ? "In phiếu trả hàng nhập" : "In phiếu nhập hàng", (hidePrice) => PurchaseFile.print(data, { hidePrice })));
   const handlePrintBarcode = (record: Purchase) => withDetails(record, (data) => {
     setBarcodeData?.(data);
     if (!setBarcodeData) {

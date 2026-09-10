@@ -1,5 +1,9 @@
 import React from "react";
-import { OrderStatus as PurchaseStatus, purchaseStatusMap } from "../purchase.model";
+import {
+  OrderStatus as PurchaseStatus,
+  purchaseReturnStatusMap,
+  purchaseStatusMap,
+} from "../purchase.model";
 import { tagSizeStyleMap, tagStyle } from "@/shared/constants/ui";
 import { TagStyleValue, TagVariant } from "@/shared/interfaces/common";
 
@@ -13,14 +17,15 @@ export const PurchaseStatusTag: React.FC<{
   value?: PurchaseStatus;
   size?: "sm" | "md" | "lg";
   variant?: TagVariant;
-}> = ({ value, size = "md", variant = "default" }) => {
+  isPurchaseReturn?: boolean;
+}> = ({ value, size = "md", variant = "default", isPurchaseReturn = false }) => {
   if (!value) return null;
   const color = styleMap[value]?.[variant] || styleMap[PurchaseStatus.DRAFT][variant];
   return (
     <span
       className={`inline-flex items-center font-medium border ${color} ${tagSizeStyleMap[size]}`}
     >
-      {purchaseStatusMap[value]}
+      {isPurchaseReturn ? purchaseReturnStatusMap[value] : purchaseStatusMap[value]}
     </span>
   );
 };

@@ -6,11 +6,16 @@ import { AddUpdateModalProps } from "@/shared/interfaces/common";
 import { AppDatePicker, InputMoney, Label, OrderValueInput } from "@/shared/components";
 import { SupplierAddSelect } from "@/modules/partner/components/Select";
 import { getProductsByCodes } from "@/modules/product/product.store";
-import { collectUnits, getDefaultPurchaseUnit } from "@/modules/product/product.util";
+import {
+  collectUnits,
+  getCostPriceByStore,
+  getDefaultPurchaseUnit,
+} from "@/modules/product/product.util";
 import { DiscountType } from "@/shared/constants/enum";
 import { OrderStatus, OrderType, Purchase, PurchaseLine } from "../purchase.model";
 import { PurchaseFile, purchaseExcelColumns } from "../purchase.file";
 import { PurchaseLineFormList } from "./PurchaseLineFormList";
+import { PurchaseReturnLineFormList } from "./PurchaseReturnLineFormList";
 import { randomId } from "@/shared/utils/common.util";
 import { formatFormData, parseFormDataDates } from "@/shared/utils/date.util";
 import { setFormErrors } from "@/shared/utils/form.util";
@@ -18,6 +23,7 @@ import { useAppMessage } from "@/shared/hooks/useAppMessage";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { FundSelect } from "@/modules/fund";
 import { formatVnd } from "@/shared/utils";
+import { useGlobalData } from "@/shared/hooks/useGlobalData";
 
 const cellText = (value: unknown): string => {
   if (value == null) return "";
@@ -32,7 +38,11 @@ const cellNumber = (value: unknown) => {
   return Number.isFinite(number) ? number : 0;
 };
 
-export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = ({
+type Props = AddUpdateModalProps<Purchase> & {
+  documentType?: OrderType;
+};
+
+export const AddUpdatePurchaseModal: React.FC<Props> = ({
   open,
   editData,
   loading,
@@ -41,23 +51,31 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
   onAdd,
   onEdit,
   onClose,
+  documentType = OrderType.PURCHASE,
 }) => {
   const { modal, message } = App.useApp();
+  const { currentStore } = useGlobalData();
   const { showFormErrorMessages } = useAppMessage();
   const [form] = Form.useForm<any>();
   const [showInfo, setShowInfo] = useState(true);
   const [unmatchedRows, setUnmatchedRows] = useState<unknown[][]>([]);
   const createIdRef = useRef(randomId());
-  const discountValue = Form.useWatch("discountValue", form) || 0;
-  const discountType = Form.useWatch("discountType", form);
-  const taxValue = Form.useWatch("taxValue", form) || 0;
-  const taxType = Form.useWatch("taxType", form);
+  const isPurchaseReturn = documentType === OrderType.PURCHASE_RETURN;
+  const discountValue =
+    Form.useWatch(isPurchaseReturn ? "returnDiscountValue" : "discountValue", form) || 0;
+  const discountType = Form.useWatch(
+    isPurchaseReturn ? "returnDiscountType" : "discountType",
+    form,
+  );
+  const taxValue = Form.useWatch(isPurchaseReturn ? "returnTaxValue" : "taxValue", form) || 0;
+  const taxType = Form.useWatch(isPurchaseReturn ? "returnTaxType" : "taxType", form);
   const shippingFee = Form.useWatch("shippingFee", form) || 0;
   const isFreeShipping = Form.useWatch("isFreeShipping", form);
   const payment = Form.useWatch(["incomeExpenses", 0], form) || {};
   const paymentAmount = Number(payment.amount || 0);
   const paymentFund = payment.fund;
-  const lines: PurchaseLine[] = Form.useWatch("lines", form) || [];
+  const lineFieldName = isPurchaseReturn ? "returnLines" : "lines";
+  const lines: PurchaseLine[] = Form.useWatch(lineFieldName, form) || [];
   const id = editData?.id || createIdRef.current;
 
   useEffect(() => {
@@ -85,18 +103,23 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
     form.setFieldsValue({
       id: createId,
       tempId: createId,
-      type: OrderType.PURCHASE,
       orderAt: dayjs(),
       lines: [],
+      returnLines: [],
       discountValue: 0,
       discountType: DiscountType.AMOUNT,
+      returnDiscountValue: 0,
+      returnDiscountType: DiscountType.AMOUNT,
       taxValue: 0,
       taxType: DiscountType.PERCENT,
+      returnTaxValue: 0,
+      returnTaxType: DiscountType.PERCENT,
       shippingFee: 0,
       isFreeShipping: false,
       incomeExpenses: [{ amount: 0 }],
       completeImmediately: false,
       ...(defaultData ? parseFormDataDates(defaultData) : {}),
+      type: documentType,
     });
   };
 
@@ -135,18 +158,30 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
             collectUnits(product, getDefaultPurchaseUnit(product)).find(
               (item) => item.name.toLowerCase() === unitName,
             ) || getDefaultPurchaseUnit(product);
+          const currentCostPrice = isPurchaseReturn
+            ? (getCostPriceByStore({
+                product,
+                storeId: currentStore?.id,
+                unitId: unit?.id || product.baseUnitId,
+              }) ?? 0)
+            : undefined;
+          const unitPrice = isPurchaseReturn ? currentCostPrice : cellNumber(row[3]);
           return {
             tempId: randomId(),
             productId: product.id,
             product,
             unitId: unit?.id || product.baseUnitId,
             unit,
-            quantity: cellNumber(row[6]) || 1,
-            unitPrice: cellNumber(row[3]),
+            quantity: cellNumber(row[4]) || 1,
+            ...(isPurchaseReturn ? { currentCostPrice } : {}),
+            unitPrice,
           };
         })
         .filter(Boolean);
-      form.setFieldValue("lines", [...(form.getFieldValue("lines") || []), ...importedLines]);
+      form.setFieldValue(lineFieldName, [
+        ...(form.getFieldValue(lineFieldName) || []),
+        ...importedLines,
+      ]);
       setUnmatchedRows(missing);
       if (missing.length) {
         modal.warning({
@@ -180,10 +215,19 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
   };
 
   const onFinish = (values: Purchase) => {
+    const returnLines = (values.returnLines || []).map((line: PurchaseLine & {
+      currentCostPrice?: number;
+    }) => {
+      const { currentCostPrice: _currentCostPrice, ...payloadLine } = line;
+      return payloadLine;
+    });
     const payload = formatFormData({
       ...values,
       id,
       tempId: id,
+      type: documentType,
+      lines: isPurchaseReturn ? [] : values.lines || [],
+      returnLines: isPurchaseReturn ? returnLines : values.returnLines || [],
     });
     if (editData) onEdit?.(payload);
     else onAdd?.(payload);
@@ -211,11 +255,19 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
   return (
     <>
       <Modal
-        title={editData ? "Sửa phiếu nhập hàng" : "Thêm phiếu nhập hàng"}
+        title={
+          editData
+            ? isPurchaseReturn
+              ? "Sửa phiếu trả hàng nhập"
+              : "Sửa phiếu nhập hàng"
+            : isPurchaseReturn
+              ? "Thêm phiếu trả hàng nhập"
+              : "Thêm phiếu nhập hàng"
+        }
         open={open}
         onCancel={onClose}
         footer={null}
-        width="100vw"
+        width={"100vw"}
         className="fullscreen-modal"
         centered
         afterOpenChange={handleAfterOpenChange}
@@ -230,7 +282,11 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
         >
           <div className="flex min-h-0 flex-1 gap-3">
             <div className="flex min-w-0 flex-1 flex-col h-full">
-              <PurchaseLineFormList form={form} onImportFile={importExcel} />
+              {isPurchaseReturn ? (
+                <PurchaseReturnLineFormList form={form} onImportFile={importExcel} />
+              ) : (
+                <PurchaseLineFormList form={form} onImportFile={importExcel} />
+              )}
             </div>
 
             <div className="relative flex shrink-0 items-start h-full">
@@ -251,7 +307,13 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
                       <Row gutter={24}>
                         <Col span={12}>
                           <Form.Item name="code">
-                            <Input placeholder="Mã phiếu nhập (Tự động tạo)" />
+                            <Input
+                              placeholder={
+                                isPurchaseReturn
+                                  ? "Mã phiếu trả hàng (Tự động tạo)"
+                                  : "Mã phiếu nhập (Tự động tạo)"
+                              }
+                            />
                           </Form.Item>
                         </Col>
                         <Col span={12}>
@@ -271,7 +333,12 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
                       </Form.Item>
 
                       {editData?.status === OrderStatus.COMPLETED && (
-                        <Form.Item name="occurredAt" label={<Label title="Ngày nhập kho" />}>
+                        <Form.Item
+                          name="occurredAt"
+                          label={
+                            <Label title={isPurchaseReturn ? "Ngày trả hàng" : "Ngày nhập kho"} />
+                          }
+                        >
                           <AppDatePicker showTime />
                         </Form.Item>
                       )}
@@ -283,32 +350,50 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
                       </div>
 
                       <div className="flex gap-2.5 w-full pb-5">
-                        <Form.Item name="discountValue" hidden />
-                        <Form.Item name="discountType" hidden />
+                        <Form.Item
+                          name={isPurchaseReturn ? "returnDiscountValue" : "discountValue"}
+                          hidden
+                        />
+                        <Form.Item
+                          name={isPurchaseReturn ? "returnDiscountType" : "discountType"}
+                          hidden
+                        />
                         <Label title="Giảm giá" />
                         <OrderValueInput
                           type="discount"
                           discountValue={discountValue}
                           discountType={discountType}
                           onChange={(value, type) => {
-                            form.setFieldValue("discountValue", value);
-                            form.setFieldValue("discountType", type);
+                            form.setFieldValue(
+                              isPurchaseReturn ? "returnDiscountValue" : "discountValue",
+                              value,
+                            );
+                            form.setFieldValue(
+                              isPurchaseReturn ? "returnDiscountType" : "discountType",
+                              type,
+                            );
                           }}
                           notRightAlign
                         />
                       </div>
 
                       <div className="flex gap-2.5 w-full pb-5">
-                        <Label title="Thuế/VAT" />
-                        <Form.Item name="taxValue" hidden />
-                        <Form.Item name="taxType" hidden />
+                        <Label title={isPurchaseReturn ? "Thuế trả lại" : "Thuế/VAT"} />
+                        <Form.Item name={isPurchaseReturn ? "returnTaxValue" : "taxValue"} hidden />
+                        <Form.Item name={isPurchaseReturn ? "returnTaxType" : "taxType"} hidden />
                         <OrderValueInput
                           type="tax"
                           discountValue={taxValue}
                           discountType={taxType}
                           onChange={(value, type) => {
-                            form.setFieldValue("taxValue", value);
-                            form.setFieldValue("taxType", type);
+                            form.setFieldValue(
+                              isPurchaseReturn ? "returnTaxValue" : "taxValue",
+                              value,
+                            );
+                            form.setFieldValue(
+                              isPurchaseReturn ? "returnTaxType" : "taxType",
+                              type,
+                            );
                           }}
                           notRightAlign
                         />
@@ -325,17 +410,19 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
                       </div>
 
                       <Divider className="my-2" />
-                      <div className="mb-2 font-semibold text-gray-800">Thanh toán</div>
+                      <div className="mb-2 font-semibold text-gray-800">
+                        {isPurchaseReturn ? "NCC hoàn tiền" : "Thanh toán"}
+                      </div>
 
                       <Form.Item
                         name={["incomeExpenses", 0, "amount"]}
-                        label={<Label title="Số tiền thanh toán" />}
+                        label={<Label title={isPurchaseReturn ? "NCC hoàn tiền" : "Số tiền thanh toán"} />}
                       >
                         <InputMoney notRightAlign placeholder="Nhập số tiền thanh toán" />
                       </Form.Item>
                       <Form.Item
                         name={["incomeExpenses", 0, "fundId"]}
-                        label={<Label title="Quỹ thanh toán" />}
+                        label={<Label title={isPurchaseReturn ? "Quỹ nhận" : "Quỹ thanh toán"} />}
                         rules={[
                           { required: paymentAmount > 0, message: "Vui lòng chọn quỹ thanh toán" },
                         ]}
@@ -350,13 +437,22 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
                       <Form.Item name={["incomeExpenses", 0, "fund"]} hidden />
 
                       <div className="flex justify-between pb-3 text-sm">
-                        <span>Còn nợ nhà cung cấp</span>
+                        <span>
+                          {isPurchaseReturn ? "Tính vào công nợ" : "Còn nợ nhà cung cấp"}
+                        </span>
                         <span className="font-medium text-orange-600">
                           {formatVnd(Math.max(0, payableAmount - Number(paymentAmount || 0)))}
                         </span>
                       </div>
                       <Form.Item name="note">
-                        <Input.TextArea rows={2} placeholder="Ghi chú cho phiếu nhập" />
+                        <Input.TextArea
+                          rows={2}
+                          placeholder={
+                            isPurchaseReturn
+                              ? "Ghi chú cho phiếu trả hàng"
+                              : "Ghi chú cho phiếu nhập"
+                          }
+                        />
                       </Form.Item>
                     </div>
                   </div>
@@ -389,7 +485,7 @@ export const AddUpdatePurchaseModal: React.FC<AddUpdateModalProps<Purchase>> = (
                   form.submit();
                 }}
               >
-                {editData ? "Lưu phiếu" : "Nhập kho ngay"}
+                {editData ? "Lưu phiếu" : isPurchaseReturn ? "Trả hàng ngay" : "Nhập kho ngay"}
               </Button>
             </Space>
           </div>

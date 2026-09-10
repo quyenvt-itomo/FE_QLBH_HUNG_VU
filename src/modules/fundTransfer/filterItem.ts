@@ -5,5 +5,8 @@ export const sortItems: SortItem[] = [
   { label: "Số phiếu", value: "code", ascLabel: "A → Z", descLabel: "Z → A" },
   { label: "Số tiền", value: "amount", ascLabel: "Thấp nhất", descLabel: "Cao nhất" },
 ];
-export const rangerItems: RangerItem[] = [{ label: "Số tiền", key: "amount" }];
+export const rangerItems: RangerItem[] = [
+  { label: "Ngày chuyển", key: "occurredAt", type: "date" },
+  { label: "Số tiền", key: "amount" },
+];
 export const filterUses: FilterKey[] = ["fundIds", "creatorIds"];

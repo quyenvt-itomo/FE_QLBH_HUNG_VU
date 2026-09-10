@@ -40,7 +40,6 @@ export const Filter: React.FC<IncomeExpenseFilterProps> = ({
     setCategoryId?.(id);
     setFilterType?.(undefined);
   };
-
   return (
     <div className="flex h-full w-full flex-col overflow-y-auto rounded-lg border bg-panel px-3 py-2 scrollbar-hide">
       <div className="flex items-center justify-between px-1 pb-3">
