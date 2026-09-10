@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { Tag } from "antd";
-import { ObjectTableProps, TableColumnConfig } from "@/shared/components/table";
+import { ColumnsConfigType, ObjectTableProps, TableColumnConfig } from "@/shared/components/table";
 import { formatDateTimeDDMMYYYY } from "@/shared/utils/date.util";
 import { formatMoney } from "@/shared/utils/number.util";
 import {
@@ -10,17 +10,37 @@ import {
   incomeExpenseStatusMap,
   incomeExpenseTypeMap,
 } from "../incomeExpense.model";
+import { IncomeExpenseStatusTag, IncomeExpenseTypeTag } from "./Tag";
 
-export const IncomeExpenseTable: React.FC<ObjectTableProps> = ({ ...rest }) => {
+interface IncomeExpenseTableProps extends ObjectTableProps {
+  onViewDetail?: (record: IncomeExpense) => void;
+}
+
+export const IncomeExpenseTable: React.FC<IncomeExpenseTableProps> = ({
+  onViewDetail,
+  ...rest
+}) => {
   const columns = useMemo(
-    () => [
+    (): ColumnsConfigType<IncomeExpense> => [
       {
         title: "Số phiếu",
         dataIndex: "code",
         key: "code",
         width: 140,
-        fixed: "left" as const,
+        fixed: "left",
         className: "code-column font-mono",
+        render: (value: string, record: IncomeExpense) => (
+          <button
+            type="button"
+            className="font-mono text-left text-primary hover:underline"
+            onClick={(event) => {
+              event.stopPropagation();
+              onViewDetail?.(record);
+            }}
+          >
+            {value}
+          </button>
+        ),
       },
       {
         title: "Thời gian",
@@ -34,39 +54,15 @@ export const IncomeExpenseTable: React.FC<ObjectTableProps> = ({ ...rest }) => {
         dataIndex: "type",
         key: "type",
         width: 110,
-        align: "center" as const,
-        render: (value: IncomeExpenseType) => (
-          <Tag color={value === IncomeExpenseType.INCOME ? "success" : "error"}>
-            {incomeExpenseTypeMap[value] || value}
-          </Tag>
-        ),
-      },
-      {
-        title: "Trạng thái",
-        dataIndex: "status",
-        key: "status",
-        width: 80,
-        align: "center" as const,
-        render: (value: IncomeExpenseStatus) => (
-          <Tag
-            color={
-              value === IncomeExpenseStatus.COMPLETED
-                ? "success"
-                : value === IncomeExpenseStatus.CANCELED
-                  ? "error"
-                  : "warning"
-            }
-          >
-            {incomeExpenseStatusMap[value] || value}
-          </Tag>
-        ),
+        align: "center",
+        render: (value: IncomeExpenseType) => <IncomeExpenseTypeTag value={value} />,
       },
       {
         title: "Số tiền",
         dataIndex: "amount",
         key: "amount",
         width: 160,
-        align: "right" as const,
+        align: "right",
         render: (value: number, record: IncomeExpense) => (
           <span
             className={
@@ -114,8 +110,17 @@ export const IncomeExpenseTable: React.FC<ObjectTableProps> = ({ ...rest }) => {
         width: 220,
         render: (value: string | null) => value || "—",
       },
+      {
+        title: "Trạng thái",
+        dataIndex: "status",
+        key: "status",
+        width: 80,
+        align: "center",
+        fixed: "right",
+        render: (value: IncomeExpenseStatus) => <IncomeExpenseStatusTag value={value} />,
+      },
     ],
-    [],
+    [onViewDetail],
   );
   return (
     <TableColumnConfig

@@ -198,7 +198,7 @@ export const apiEndpoint = {
     adjustment: "/fund-balance/adjustment",
     transfer: "/fund-balance/transfer",
   },
-  incomeExpense: { base: "/income", income: "/income", expense: "/expense" },
+  incomeExpense: { base: "/income-expense" },
   invoice: { base: "/invoice", line: "/invoice/:invoiceId/line" },
   paymentRequest: {
     base: "/payment-request",

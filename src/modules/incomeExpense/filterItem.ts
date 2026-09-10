@@ -9,10 +9,6 @@ export const sortItems: SortItem[] = [
 export const rangerItems: RangerItem[] = [{ label: "Số tiền", key: "amount" }];
 export const filterUses: FilterKey[] = [
   "partnerIds",
-  "customerIds",
-  "supplierIds",
-  "customerGroupIds",
-  "supplierGroupIds",
   "fundIds",
   "creatorIds",
 ];

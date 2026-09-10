@@ -14,7 +14,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 import { IncomeExpenseAddUpdateModal } from "@/modules/incomeExpense/components/IncomeExpenseAddUpdateModal";
-import { useIncomeStore } from "@/modules/incomeExpense/incomeExpense.store";
+import { useIncomeExpenseStore } from "@/modules/incomeExpense/incomeExpense.store";
 import { IncomeExpenseType } from "@/modules/incomeExpense/incomeExpense.model";
 import { useAuth } from "@/shared/hooks/useAuth";
 import { privateRoutesName, publicRoutesName } from "@/shared/constants/routerName";
@@ -42,7 +42,10 @@ export const PosActionMenu = ({
   const importFileRef = useRef<HTMLInputElement>(null);
   const [incomeExpenseOpen, setIncomeExpenseOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
-  const incomeStore = useIncomeStore({ isLocked: true }, () => setIncomeExpenseOpen(false));
+  const incomeStore = useIncomeExpenseStore(
+    { isLocked: true, type: IncomeExpenseType.INCOME },
+    () => setIncomeExpenseOpen(false),
+  );
   const isSaleReturn = type === OrderType.SALE_RETURN;
 
   const handleLogout = () => {
