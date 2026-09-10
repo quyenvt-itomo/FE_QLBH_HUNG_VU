@@ -1,6 +1,17 @@
 import React, { useMemo } from "react";
 import { Empty } from "antd";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  LabelList,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { formatMoney, formatQuantity, formatShortMoney } from "@/shared/utils/number.util";
+import { useGlobalData } from "@/shared/hooks/useGlobalData";
 
 export interface HorizontalBarItem {
   id: string;
@@ -16,8 +27,20 @@ interface TopHorizontalBarChartProps {
   actions?: React.ReactNode;
 }
 
+interface BarLabelProps {
+  x?: number | string;
+  y?: number | string;
+  width?: number | string;
+  height?: number | string;
+  value?: unknown;
+  valueType?: TopHorizontalBarChartProps["valueType"];
+}
+
 const TICK_COUNT = 5;
 const ROW_HEIGHT = 40;
+const BAR_HEIGHT = 20;
+
+const toNumber = (value: unknown) => Number(value) || 0;
 
 const formatValue = (value: number, valueType: TopHorizontalBarChartProps["valueType"]) =>
   valueType === "money" ? formatMoney(value) || "0" : formatQuantity(value) || "0";
@@ -32,6 +55,45 @@ const getNiceMax = (value: number) => {
   return Math.ceil(value / magnitude) * magnitude;
 };
 
+const truncateLabel = (value: unknown, maxLength = 72) => {
+  const label = String(value || "");
+  return label.length > maxLength ? `${label.slice(0, maxLength - 3)}...` : label;
+};
+
+const CategoryLabel: React.FC<BarLabelProps> = ({ x = 0, y = 0, value }) => (
+  <text
+    x={toNumber(x) + 8}
+    y={toNumber(y) - 6}
+    fill="#334155"
+    fontSize={11}
+    textAnchor="start"
+    pointerEvents="none"
+  >
+    {truncateLabel(value)}
+  </text>
+);
+
+const ValueLabel: React.FC<BarLabelProps> = ({
+  x = 0,
+  y = 0,
+  width = 0,
+  height = BAR_HEIGHT,
+  value,
+  valueType = "money",
+}) => (
+  <text
+    x={toNumber(x) + toNumber(width) + 8}
+    y={toNumber(y) + toNumber(height) / 2}
+    fill="#334155"
+    fontSize={11}
+    dominantBaseline="middle"
+    textAnchor="start"
+    pointerEvents="none"
+  >
+    {formatValue(toNumber(value), valueType)}
+  </text>
+);
+
 export const TopHorizontalBarChart: React.FC<TopHorizontalBarChartProps> = ({
   title,
   data = [],
@@ -39,16 +101,22 @@ export const TopHorizontalBarChart: React.FC<TopHorizontalBarChartProps> = ({
   loading,
   actions,
 }) => {
-  const maxValue = useMemo(
-    () => getNiceMax(Math.max(...data.map((item) => item.value), 0)),
+  const { themeMode } = useGlobalData();
+  const chartData = useMemo(
+    () => data.map((item) => ({ ...item, value: Math.max(0, Number(item.value) || 0) })),
     [data],
+  );
+  const maxValue = useMemo(
+    () => getNiceMax(Math.max(...chartData.map((item) => item.value), 0)),
+    [chartData],
   );
   const ticks = useMemo(
     () => Array.from({ length: TICK_COUNT + 1 }, (_, index) => (maxValue / TICK_COUNT) * index),
     [maxValue],
   );
-
-  const chartHeight = Math.max(280, data.length * ROW_HEIGHT + 28);
+  const chartHeight = Math.max(280, chartData.length * ROW_HEIGHT + 48);
+  const axisColor = themeMode === "dark" ? "#cbd5e1" : "#64748b";
+  const gridColor = themeMode === "dark" ? "#334155" : "#e2e8f0";
 
   return (
     <div className="rounded-lg border border-gray-100 bg-white p-5 shadow-sm">
@@ -58,58 +126,53 @@ export const TopHorizontalBarChart: React.FC<TopHorizontalBarChartProps> = ({
       </div>
       {loading ? (
         <div className="h-[350px] animate-pulse rounded bg-gray-50" />
-      ) : data.length ? (
-        <div className="relative overflow-hidden" style={{ height: chartHeight }}>
-          <div className="mr-14 h-[calc(100%-24px)]">
-            <div className="pointer-events-none absolute bottom-6 left-0 right-14 top-0">
-              {ticks.map((tick) => (
-                <span
-                  key={tick}
-                  className="absolute bottom-0 top-0 border-l border-gray-200"
-                  style={{ left: `${(tick / maxValue) * 100}%` }}
-                />
-              ))}
-            </div>
-
-            {data.map((item) => {
-              const percentage = Math.max(0, Math.min(100, (item.value / maxValue) * 100));
-
-              return (
-                <div key={item.id} className="relative" style={{ height: ROW_HEIGHT }}>
-                  <div
-                    className="relative z-10 h-5 truncate px-2 text-[11px] leading-5 text-gray-700"
-                    title={item.label}
-                  >
-                    {item.label}
-                  </div>
-                  <div className="relative h-5 border-b border-gray-200">
-                    <div
-                      className="absolute inset-y-0 left-0 bg-blue-600 transition-[width] duration-300"
-                      style={{ width: `${percentage}%` }}
-                      title={`${item.label}: ${formatValue(item.value, valueType)}`}
-                    />
-                    <span
-                      className="absolute top-1/2 z-10 -translate-y-1/2 whitespace-nowrap pl-2 text-[11px] text-gray-700"
-                      style={{ left: `${percentage}%` }}
-                    >
-                      {formatValue(item.value, valueType)}
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="absolute bottom-0 left-0 right-14 flex justify-between border-t border-gray-300 pt-1 text-[11px] text-gray-500">
-            {ticks.map((tick) => (
-              <span
-                key={tick}
-                className="-translate-x-1/2 first:translate-x-0 last:translate-x-1/2"
+      ) : chartData.length ? (
+        <div style={{ height: chartHeight }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={chartData}
+              layout="vertical"
+              margin={{ top: 28, right: 72, bottom: 20, left: 0 }}
+              barCategoryGap={0}
+            >
+              <CartesianGrid stroke={gridColor} horizontal vertical />
+              <XAxis
+                type="number"
+                domain={[0, maxValue]}
+                ticks={ticks}
+                tick={{ fill: axisColor, fontSize: 11 }}
+                tickFormatter={(value) => formatAxisValue(Number(value), valueType)}
+                axisLine={{ stroke: gridColor }}
+                tickLine={{ stroke: gridColor }}
+              />
+              <YAxis
+                type="category"
+                dataKey="label"
+                width={0}
+                axisLine={false}
+                tickLine={false}
+                tick={false}
+              />
+              <Tooltip
+                cursor={{ fill: themeMode === "dark" ? "#1e293b" : "#eff6ff" }}
+                formatter={(value) => [formatValue(Number(value), valueType), title]}
+                labelFormatter={(label) => String(label)}
+              />
+              <Bar
+                dataKey="value"
+                fill="#1677ff"
+                barSize={BAR_HEIGHT}
+                radius={[0, 2, 2, 0]}
+                isAnimationActive
+                animationBegin={0}
+                animationDuration={700}
+                animationEasing="ease-out"
               >
-                {formatAxisValue(tick, valueType)}
-              </span>
-            ))}
-          </div>
+                <LabelList dataKey="label" content={<CategoryLabel />} />
+                <LabelList dataKey="value" content={<ValueLabel valueType={valueType} />} />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       ) : (
         <div className="flex h-[350px] items-center justify-center">

@@ -17,6 +17,13 @@ const money = (value: number) => formatMoney(value) || "0";
 const quantity = (value: number) => formatQuantity(value) || "0";
 const percentage = (value: number) => formatPercentage(value) || "0%";
 
+const separatorByIndex = [
+  "border-t-0",
+  "border-t sm:border-l sm:border-t-0",
+  "border-t xl:border-l xl:border-t-0",
+  "border-t sm:border-l sm:border-t-0 xl:border-t-0",
+];
+
 const CompactCard: React.FC<{
   label: string;
   value: string;
@@ -25,9 +32,11 @@ const CompactCard: React.FC<{
   loading?: boolean;
   icon?: React.ReactNode;
 }> = ({ label, value, details, index, loading, icon }) => {
+  const separatorClass = separatorByIndex[index] || "border-t";
+
   if (loading) {
     return (
-      <div className="flex gap-4 pl-4 first:pl-0 border-l first:border-l-0">
+      <div className={`flex gap-4 border-gray-200 pl-4 ${separatorClass}`}>
         {icon}
         <div className="flex min-h-[82px] flex-col gap-0.5">
           <span className="text-xs font-semibold text-gray-500">{label}</span>
@@ -40,7 +49,7 @@ const CompactCard: React.FC<{
   }
 
   return (
-    <div className="flex gap-4 pl-4 first:pl-0 border-l first:border-l-0">
+    <div className={`flex gap-4 border-gray-200 pl-4 ${separatorClass}`}>
       {icon}
       <div className="flex min-h-[82px] flex-col gap-0.5">
         <span className="text-xs font-semibold text-gray-500">{label}</span>
