@@ -7,10 +7,7 @@ import { FundTransferPage } from "@/modules/fundTransfer";
 import { IncomeExpensePage } from "@/modules/incomeExpense";
 import { InventoryAdjustmentPage } from "@/modules/inventoryAdjustment";
 import { InventoryPage } from "@/modules/inventory";
-import {
-  PurchaseReturnPage,
-  PosPage,
-} from "@/modules/order";
+import { PurchaseReturnPage, PosPage } from "@/modules/order";
 import { PurchasePage } from "@/modules/purchase";
 import { CustomerPage, ShipperPage, SupplierPage } from "@/modules/partner";
 import { ProductPage, ProductPriceHistoryPage } from "@/modules/product";
@@ -23,6 +20,7 @@ import { StoreTransferPage } from "@/modules/storeTransfer";
 import { InternalExportPage } from "@/modules/internalExport";
 import { DebtAdjustmentPage } from "@/modules/debtAdjustment";
 import { VatDebtAdjustmentPage } from "@/modules/vatDebtAdjustment";
+import { OperationLogPage } from "@/modules/operationLog";
 
 export const desktopPage = {
   DashboardPage,
@@ -51,4 +49,5 @@ export const desktopPage = {
   DebtAdjustmentPage,
   VatDebtAdjustmentPage,
   ComingSoonPage,
+  OperationLogPage,
 };

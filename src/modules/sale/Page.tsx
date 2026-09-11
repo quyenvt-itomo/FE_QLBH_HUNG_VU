@@ -165,16 +165,7 @@ const SalePage: React.FC = () => {
                 </Button>
               </Dropdown>
             )}
-            <AddButton
-              title="Thêm đơn bán"
-              onOpenAdd={handlers.handleOpenAdd}
-              disabled={Boolean(handlers.handleOpenAdd) && !currentStore}
-              tooltip={
-                !currentStore && handlers.handleOpenAdd
-                  ? "Hãy chuyển sang chi nhánh để thêm đơn bán"
-                  : undefined
-              }
-            />
+            <AddButton title="Thêm đơn bán" onOpenAdd={handlers.handleOpenAdd} />
           </div>
         </div>
         <Panel className="min-w-0 flex-1">
@@ -194,8 +185,7 @@ const SalePage: React.FC = () => {
             onPrint={handlers.handlePrint}
             rowSelection={{
               selectedRowKeys,
-              onChange: (keys) =>
-                setSelectedRowKeys(keys.filter((key) => key !== "summary")),
+              onChange: (keys) => setSelectedRowKeys(keys.filter((key) => key !== "summary")),
               renderCell: (_checked, record, _index, originNode) =>
                 record.isSummary ? null : originNode,
             }}

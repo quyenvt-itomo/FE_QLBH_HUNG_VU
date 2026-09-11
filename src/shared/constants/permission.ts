@@ -37,6 +37,7 @@ export const MODULES = [
   "user", // Người dùng
   "role", // Vai trò hệ thống
   "attribute", // Danh mục
+  "log", // Nhật ký thao tác
 ] as const;
 export type Module = (typeof MODULES)[number];
 
@@ -50,6 +51,7 @@ export const ReadOnlyModules: Module[] = [
   "inventoryReport",
   "fundReport",
   "vatReport",
+  "log",
 ];
 export const ApprovalModules: Module[] = [];
 export const CompleteModules: Module[] = [
@@ -101,6 +103,7 @@ export const moduleMap: Record<Module, string> = {
   user: "Người dùng",
   role: "Vai trò",
   attribute: "Danh mục",
+  log: "Nhật ký thao tác",
 };
 export const permissionMap: Record<Permission, string> = {
   read: "Xem",
@@ -117,7 +120,10 @@ export const role: { title: string; modules: Module[] }[] = [
     modules: ["report", "debtReport", "inventoryReport", "fundReport", "vatReport"],
   },
   { title: "Kinh doanh", modules: ["customer", "sale", "saleReturn"] },
-  { title: "Hàng hóa", modules: ["product", "storeTransfer", "inventoryAdjustment", "internalExport"] },
+  {
+    title: "Hàng hóa",
+    modules: ["product", "storeTransfer", "inventoryAdjustment", "internalExport"],
+  },
   { title: "Mua hàng", modules: ["supplier", "purchase", "purchaseReturn"] },
   {
     title: "Tài chính",
@@ -130,7 +136,7 @@ export const role: { title: string; modules: Module[] }[] = [
       "vatAdjustment",
     ],
   },
-  { title: "Thiết lập", modules: ["store", "attribute", "shipper", "user", "role"] },
+  { title: "Thiết lập", modules: ["store", "attribute", "shipper", "user", "role", "log"] },
 ];
 
 export function getPermissionOptions(module: Module): { value: Permission; label: string }[] {

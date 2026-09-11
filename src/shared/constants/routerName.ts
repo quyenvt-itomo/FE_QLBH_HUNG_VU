@@ -63,6 +63,7 @@ export const privateRoutesName = {
     shipper: "/setup/shippers",
     user: "/setup/users",
     role: "/setup/roles",
+    log: "/setup/logs",
   },
 
   profile: "/profile",
@@ -257,5 +258,10 @@ export const routeTitleMap: RouteTitleMap = {
     path: privateRoutesName.setup.role,
     title: "Vai trò hệ thống",
     subtitle: "Quản lý vai trò và phân quyền",
+  },
+  log: {
+    path: privateRoutesName.setup.log,
+    title: "Nhật ký hoạt động",
+    subtitle: "Theo dõi các hoạt động của người dùng trong hệ thống",
   },
 };

@@ -1,17 +1,14 @@
 import React, { useMemo, useState } from "react";
-import { moduleMap, Module } from "@/shared/constants/permission";
-import { logActionMapping, OperationLog } from "../operationLog.model";
+import { moduleMap, Module } from "@/shared/constants";
+import { logActionMapping, OperationLog, targetEntityMapping } from "../operationLog.model";
 import { Button, Tooltip } from "antd";
-import LogDetailDrawer from "./LogDetailDrawer";
-import { TableColumnConfig, ObjectTableProps } from "@/shared/components";
-import { ColumnsConfigType } from "@/shared/components";
-import { formatDateTimeDDMMYYYY } from "@/shared/utils/date.util";
+import { ColumnsConfigType, ObjectTableProps, TableColumnConfig } from "@/shared/components";
+import { formatDateTimeDDMMYYYY } from "@/shared/utils";
 
 const formatText = (v?: string | null) => v || "--";
 
-export const OperationLogTable: React.FC<ObjectTableProps> = ({ ...rest }) => {
-  const [selected, setSelected] = useState<OperationLog | null>(null);
-  const columns: ColumnsConfigType = useMemo(
+export const OperationLogTable: React.FC<ObjectTableProps> = ({ onViewDetail, ...rest }) => {
+  const columns: ColumnsConfigType<OperationLog> = useMemo(
     () => [
       {
         title: "Thời gian",
@@ -41,7 +38,7 @@ export const OperationLogTable: React.FC<ObjectTableProps> = ({ ...rest }) => {
         dataIndex: "targetEntity",
         key: "targetEntity",
         width: 150,
-        render: (v: Module) => moduleMap[v] || v,
+        render: (v: Module) => targetEntityMapping[v] || v,
       },
       {
         title: "Đối tượng",
@@ -73,7 +70,7 @@ export const OperationLogTable: React.FC<ObjectTableProps> = ({ ...rest }) => {
         fixed: "right" as const,
         render: (record: OperationLog) => (
           <Tooltip title="Xem chi tiết">
-            <Button size="small" type="primary" ghost onClick={() => setSelected(record)}>
+            <Button size="small" type="primary" ghost onClick={() => onViewDetail?.(record)}>
               Xem
             </Button>
           </Tooltip>
@@ -84,16 +81,13 @@ export const OperationLogTable: React.FC<ObjectTableProps> = ({ ...rest }) => {
   );
 
   return (
-    <>
-      <TableColumnConfig
-        columns={columns}
-        itemName="nhật ký"
-        tableKey="operation-log-table"
-        showCreator={false}
-        showUpdater={false}
-        {...rest}
-      />
-      <LogDetailDrawer open={!!selected} log={selected} onClose={() => setSelected(null)} />
-    </>
+    <TableColumnConfig
+      columns={columns}
+      itemName="bản ghi"
+      tableKey="operation-log-table"
+      showCreator={false}
+      showUpdater={false}
+      {...rest}
+    />
   );
 };

@@ -31,5 +31,6 @@ export const privateRoutes: { path: string; component: React.FC }[] = [
   { path: privateRoutesName.setup.shipper, component: desktopPage.ShipperPage },
   { path: privateRoutesName.setup.user, component: desktopPage.UserPage },
   { path: privateRoutesName.setup.role, component: desktopPage.RolePage },
+  { path: privateRoutesName.setup.log, component: desktopPage.OperationLogPage },
 ];
 export const standalonePrivateRoutes: { path: string; component: React.FC }[] = [];

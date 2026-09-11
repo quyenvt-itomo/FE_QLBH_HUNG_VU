@@ -1,6 +1,7 @@
 import { Entity, UserSnapshot } from "@/shared/base/entity";
 import { ApiRequestQuery, BaseError } from "@/shared/interfaces/api";
-import { User } from "@/shared/base/entity";
+import { User } from "../user";
+import { FilterKey, RangerItem, SortItem } from "@/shared/interfaces";
 
 export interface OperationLogQuery extends ApiRequestQuery {
   moreQuery?: any;
@@ -82,14 +83,9 @@ export const targetEntityMapping: Record<string, string> = {
   branch: "Chi nhánh",
   product: "Sản phẩm",
   priceList: "Bảng giá",
-  billOfMaterial: "Định mức BOM",
   partner: "Đối tác",
   warehouse: "Kho",
   attribute: "Danh mục",
-  purchase: "Đơn mua",
-  production: "Lệnh sản xuất",
-  salesOrder: "Đơn đặt hàng",
-  directSale: "Đơn bán trực tiếp",
   order: "Đơn hàng",
   stockDocument: "Phiếu kho",
   warehouseTransfer: "Chuyển kho",
@@ -103,3 +99,12 @@ export const targetEntityMapping: Record<string, string> = {
   log: "Nhật ký thao tác",
   report: "Báo cáo",
 };
+
+export const sortItems: SortItem[] = [
+  { label: "Thời gian", value: "createdAt", ascLabel: "Từ cũ đến mới", descLabel: "Từ mới đến cũ" },
+  { label: "Hành động", value: "action", ascLabel: "A → Z", descLabel: "Z → A" },
+  { label: "Module", value: "targetEntity", ascLabel: "A → Z", descLabel: "Z → A" },
+];
+
+export const rangerItems: RangerItem[] = [];
+export const filterUses: FilterKey[] = [];

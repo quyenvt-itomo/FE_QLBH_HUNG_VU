@@ -2,8 +2,7 @@ import { ArrowRightOutlined, MinusOutlined, PlusOutlined } from "@ant-design/ico
 import { Empty, Tag } from "antd";
 import { OperationChangeItem } from "../operationLog.model";
 import { getEnumLabel, getFieldLabel } from "./logLabels";
-import { formatMoney } from "@/shared/utils/number.util";
-import { formatDateTimeDDMMYYYY } from "@/shared/utils/date.util";
+import { formatDateTimeDDMMYYYY, formatMoney } from "@/shared/utils";
 
 const MONEY_FIELDS = new Set([
   "amount",

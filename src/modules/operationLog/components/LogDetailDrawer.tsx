@@ -274,7 +274,7 @@ function renderValue(value: unknown, entity: string, field: string): React.React
 
 const LogDetailDrawer: React.FC<{
   open: boolean;
-  log: OperationLog | null;
+  log?: OperationLog | null;
   onClose: () => void;
 }> = ({ open, log, onClose }) => {
   const { modal } = App.useApp();
@@ -291,7 +291,6 @@ const LogDetailDrawer: React.FC<{
   }, [log]);
 
   if (!log) return null;
-  console.log("log", log);
 
   return (
     <Drawer
