@@ -1,7 +1,12 @@
 import React, { useMemo, useState } from "react";
 import { Empty, Spin, Table, TableProps, Tabs } from "antd";
 import ReactApexChart from "react-apexcharts";
-import { formatMoney, formatPercentage, formatShortMoney } from "@/shared/utils/number.util";
+import {
+  formatMoney,
+  formatPercentage,
+  formatQuantity,
+  formatShortMoney,
+} from "@/shared/utils/number.util";
 import {
   AnalysisBranchRow,
   AnalysisQuery,
@@ -55,7 +60,7 @@ const SaleOverviewMetrics: React.FC<{ query: AnalysisQuery }> = ({ query }) => {
           <div key={key} className="rounded-xl border border-slate-200 bg-white p-4">
             <div className="text-sm text-slate-600">{label}</div>
             <div className="mt-1 text-2xl font-bold text-slate-900">
-              {isCount ? metric.value.toLocaleString("vi-VN") : formatShortMoney(metric.value)}
+              {isCount ? formatQuantity(metric.value) || "0" : formatShortMoney(metric.value)}
             </div>
             <div className="mt-4 flex justify-between gap-4 text-xs text-slate-500">
               <span>
@@ -372,7 +377,7 @@ export const SaleOverview: React.FC<AnalysisFilterProps & { query: AnalysisQuery
     <div className="space-y-4">
       <AnalysisViewHeader title="Tổng quan kinh doanh" {...filters} />
       <SaleOverviewMetrics query={query} />
-      <BusinessIndicator query={{ ...query, sortBy }} />
+      <BusinessIndicator query={query} />
       <div className="flex flex-col pt-1">
         <span className="text-base font-semibold">Phân tích theo</span>
         <Tabs

@@ -1,6 +1,6 @@
 import React from "react";
 import { Spin, Table } from "antd";
-import { formatMoney, formatPercentage } from "@/shared/utils/number.util";
+import { formatMoney, formatPercentage, formatShortMoney } from "@/shared/utils/number.util";
 import { AnalysisQuery, SaleProfitMetricsData } from "../analysis.model";
 import {
   useAnalysisSaleProfitCostStructureStore,
@@ -20,6 +20,24 @@ const metricLabels: Record<keyof SaleProfitMetricsData["metrics"], string> = {
   costRevenueRatio: "Tỷ lệ chi phí/doanh thu",
 };
 
+type BranchDataItem = { branch: string; value: number };
+type BranchDataRow = { branchData?: BranchDataItem[] };
+
+const getBranchColumns = <T extends BranchDataRow>(rows: T[]) => {
+  const branches = Array.from(
+    new Set(rows.flatMap((row) => row.branchData?.map((item) => item.branch) ?? [])),
+  );
+
+  return branches.map((branch) => ({
+    title: branch,
+    key: `branch-${branch}`,
+    width: 140,
+    align: "right" as const,
+    render: (_value: unknown, row: T) =>
+      formatMoney(row.branchData?.find((item) => item.branch === branch)?.value) || "0",
+  }));
+};
+
 const ProfitMetrics: React.FC<{ query: AnalysisQuery }> = ({ query }) => {
   const request = useAnalysisSaleProfitMetricsStore(query);
 
@@ -34,20 +52,22 @@ const ProfitMetrics: React.FC<{ query: AnalysisQuery }> = ({ query }) => {
   const data = request.data;
 
   return (
-    <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-5">
       {Object.entries(metricLabels).map(([key, label]) => {
         const metric = data.metrics[key as keyof typeof data.metrics];
         const isRatio = key === "costRevenueRatio";
 
         return (
           <div key={key} className="rounded-xl border border-slate-200 bg-white p-4">
-            <div className="text-sm text-slate-600">{label}</div>
-            <div className="mt-1 text-2xl font-bold text-slate-900">
-              {isRatio ? formatPercentage(metric.value) || "0%" : formatMoney(metric.value) || "0"}
+            <div className="text-xs font-semibold text-slate-600">{label}</div>
+            <div className="mt-1 text-xl font-bold text-slate-900">
+              {isRatio
+                ? formatPercentage(metric.value) || "0%"
+                : formatShortMoney(metric.value) || "0"}
             </div>
             <div
               className={
-                metric.growth >= 0 ? "mt-3 text-sm text-green-600" : "mt-3 text-sm text-red-500"
+                metric.growth >= 0 ? "mt-1 text-xs text-green-600" : "mt-1 text-xs text-red-500"
               }
             >
               {metric.growth >= 0 ? "+" : ""}
@@ -76,26 +96,24 @@ const CostStructure: React.FC<{ query: AnalysisQuery }> = ({ query }) => {
           rowKey="name"
           loading={request.fetching}
           pagination={false}
+          scroll={{ x: "max-content" }}
           dataSource={request.data.costStructure}
           columns={[
-            { title: "Danh mục", dataIndex: "name" },
+            { title: "Danh mục", dataIndex: "name", key: "name" },
+            ...getBranchColumns(request.data.costStructure),
             {
               title: "Tổng",
               dataIndex: "total",
+              key: "total",
+              align: "right",
               render: (value: number) => formatMoney(value) || "0",
             },
             {
               title: "% chi phí / doanh thu",
               dataIndex: "percent",
+              key: "percent",
+              align: "right",
               render: (value: number) => formatPercentage(value) || "0%",
-            },
-            {
-              title: "Chi nhánh",
-              dataIndex: "branchData",
-              render: (items: { branch: string; value: number }[]) =>
-                items
-                  ?.map((item) => `${item.branch}: ${formatMoney(item.value) || "0"}`)
-                  .join("; "),
             },
           ]}
         />
@@ -120,21 +138,17 @@ const Effectiveness: React.FC<{ query: AnalysisQuery }> = ({ query }) => {
           rowKey="key"
           loading={request.fetching}
           pagination={false}
+          scroll={{ x: "max-content" }}
           dataSource={request.data.effectiveness}
           columns={[
-            { title: "Khoản mục", dataIndex: "name" },
+            { title: "Khoản mục", dataIndex: "name", key: "name" },
+            ...getBranchColumns(request.data.effectiveness),
             {
               title: "Tổng",
               dataIndex: "total",
+              key: "total",
+              align: "right",
               render: (value: number) => formatMoney(value) || "0",
-            },
-            {
-              title: "Chi nhánh",
-              dataIndex: "branchData",
-              render: (items: { branch: string; value: number }[]) =>
-                items
-                  ?.map((item) => `${item.branch}: ${formatMoney(item.value) || "0"}`)
-                  .join("; "),
             },
           ]}
         />
