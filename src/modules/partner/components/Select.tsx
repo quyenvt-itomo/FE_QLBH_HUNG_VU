@@ -19,11 +19,38 @@ import { ShipperAddUpdateModal } from "./ShipperAddUpdateModal";
 import { isPhoneNumber } from "@/shared/utils/common.util";
 
 const columns: DropdownColumn<Partner>[] = [
-  { label: "Tên đối tác", dataIndex: "name", className: "w-64" },
+  { label: "Tên đối tác", dataIndex: "name", className: "w-48" },
   { label: "Mã ĐT", dataIndex: "code", className: "w-24" },
-  { label: "Số điện thoại", dataIndex: "phone", className: "w-32" },
-  { label: "Mã số thuế", dataIndex: "taxCode", className: "w-32" },
+  { label: "SDDT", dataIndex: "phone", className: "w-20" },
+  { label: "MST", dataIndex: "taxCode", className: "w-20" },
 ];
+
+const getFinalColumns = (configs: {
+  showPayableDebt?: boolean;
+  showReceivableDebt?: boolean;
+}): DropdownColumn<Partner>[] => {
+  const { showPayableDebt, showReceivableDebt } = configs;
+  const finalColumns = [...columns];
+
+  if (showPayableDebt) {
+    finalColumns.push({
+      label: "Nợ phải trả",
+      dataIndex: "payableDebtAmount",
+      className: "w-24",
+      dataType: "number",
+    });
+  }
+
+  if (showReceivableDebt) {
+    finalColumns.push({
+      label: "Nợ phải thu",
+      dataIndex: "receivableDebtAmount",
+      className: "w-32",
+      dataType: "number",
+    });
+  }
+  return finalColumns;
+};
 
 const resolvePartnerType = (query?: PartnerQuery, type?: PartnerType) =>
   type ?? query?.type ?? query?.types?.[0];
@@ -48,7 +75,10 @@ const getPartnerQueryHook = (type?: PartnerType) => {
   }
 };
 
-type PartnerSelectProps = SelectProps<Partner, PartnerQuery>;
+interface PartnerSelectProps extends SelectProps<Partner, PartnerQuery> {
+  showPayableDebt?: boolean;
+  showReceivableDebt?: boolean;
+}
 
 export const PartnerSelect: React.FC<PartnerSelectProps> = ({
   value,
@@ -75,6 +105,7 @@ export const PartnerSelect: React.FC<PartnerSelectProps> = ({
       isLocked,
       ...partnerQuery,
     }),
+    resetPageDeps: [partnerQuery],
   });
 
   const handleChange = (id: string) => {
@@ -83,10 +114,15 @@ export const PartnerSelect: React.FC<PartnerSelectProps> = ({
     onChangeData?.(data);
   };
 
+  const finalColumns = getFinalColumns({
+    showPayableDebt: rest.showPayableDebt,
+    showReceivableDebt: rest.showReceivableDebt,
+  });
+
   return (
     <SmartSelect<Partner>
       dataSource={list}
-      columns={columns}
+      columns={finalColumns}
       value={value}
       onChange={handleChange}
       onPopupScroll={handlePopupScroll}
@@ -106,6 +142,8 @@ export const PartnerSelect: React.FC<PartnerSelectProps> = ({
 interface PartnerMultipleSelectProps extends MultipleSelectProps<Partner, PartnerQuery> {
   type?: PartnerType;
   types?: PartnerType[];
+  showPayableDebt?: boolean;
+  showReceivableDebt?: boolean;
 }
 
 export const PartnerMultipleSelect: React.FC<PartnerMultipleSelectProps> = ({
@@ -113,6 +151,8 @@ export const PartnerMultipleSelect: React.FC<PartnerMultipleSelectProps> = ({
   query,
   type,
   types,
+  showPayableDebt,
+  showReceivableDebt,
   onChange,
   onChangeData,
   onFocus,
@@ -143,10 +183,15 @@ export const PartnerMultipleSelect: React.FC<PartnerMultipleSelectProps> = ({
     onChangeData?.(list.filter((item) => ids.includes(item.id)));
   };
 
+  const finalColumns = getFinalColumns({
+    showPayableDebt,
+    showReceivableDebt,
+  });
+
   return (
     <SmartMultipleSelect<Partner>
       dataSource={list}
-      columns={columns}
+      columns={finalColumns}
       onChange={handleChange}
       onPopupScroll={handlePopupScroll}
       placeholder="Chọn đối tác"
@@ -165,6 +210,8 @@ export const CustomerAddSelect: React.FC<PartnerSelectProps> = ({
   value,
   defaultData,
   query,
+  showPayableDebt,
+  showReceivableDebt,
   onChange,
   onChangeData,
   onFocus,
@@ -198,10 +245,15 @@ export const CustomerAddSelect: React.FC<PartnerSelectProps> = ({
     onChangeData?.(newItem);
   }, [newItem, onChange, onChangeData]);
 
+  const finalColumns = getFinalColumns({
+    showPayableDebt,
+    showReceivableDebt,
+  });
+
   return (
     <AddSelect<Partner>
       options={list}
-      columns={columns}
+      columns={finalColumns}
       value={value}
       loading={loading}
       onSearch={setKeywordTemp}
@@ -237,6 +289,8 @@ export const SupplierAddSelect: React.FC<PartnerSelectProps> = ({
   value,
   defaultData,
   query,
+  showPayableDebt,
+  showReceivableDebt,
   onChange,
   onChangeData,
   onFocus,
@@ -270,10 +324,15 @@ export const SupplierAddSelect: React.FC<PartnerSelectProps> = ({
     onChangeData?.(newItem);
   }, [newItem, onChange, onChangeData]);
 
+  const finalColumns = getFinalColumns({
+    showPayableDebt,
+    showReceivableDebt,
+  });
+
   return (
     <AddSelect<Partner>
       options={list}
-      columns={columns}
+      columns={finalColumns}
       value={value}
       loading={loading}
       onSearch={setKeywordTemp}
@@ -308,6 +367,8 @@ export const ShipperAddSelect: React.FC<PartnerSelectProps> = ({
   value,
   defaultData,
   query,
+  showPayableDebt,
+  showReceivableDebt,
   onChange,
   onChangeData,
   onFocus,
@@ -341,10 +402,15 @@ export const ShipperAddSelect: React.FC<PartnerSelectProps> = ({
     onChangeData?.(newItem);
   }, [newItem, onChange, onChangeData]);
 
+  const finalColumns = getFinalColumns({
+    showPayableDebt,
+    showReceivableDebt,
+  });
+
   return (
     <AddSelect<Partner>
       options={list}
-      columns={columns}
+      columns={finalColumns}
       value={value}
       loading={loading}
       onSearch={setKeywordTemp}
@@ -380,6 +446,8 @@ interface PartnerAddMultipleSelectProps extends MultipleSelectProps<Partner, Par
   groupId?: string;
   staffId?: string;
   isActive?: boolean;
+  showPayableDebt?: boolean;
+  showReceivableDebt?: boolean;
 }
 
 export const PartnerAddMultipleSelect: React.FC<PartnerAddMultipleSelectProps> = ({
@@ -390,6 +458,8 @@ export const PartnerAddMultipleSelect: React.FC<PartnerAddMultipleSelectProps> =
   groupId,
   staffId,
   isActive,
+  showPayableDebt,
+  showReceivableDebt,
   onChange,
   onChangeData,
   onFocus,
@@ -436,13 +506,18 @@ export const PartnerAddMultipleSelect: React.FC<PartnerAddMultipleSelectProps> =
     onChangeData?.(selectedData);
   };
 
+  const finalColumns = getFinalColumns({
+    showPayableDebt,
+    showReceivableDebt,
+  });
+
   return (
     <AddMultipleSelect<Partner>
       dataSource={list}
       placeholder="Chọn đối tác"
       showAddButton={!!create}
       loading={loading}
-      columns={columns}
+      columns={finalColumns}
       value={value}
       onChange={handleChange}
       onPopupScroll={handlePopupScroll}

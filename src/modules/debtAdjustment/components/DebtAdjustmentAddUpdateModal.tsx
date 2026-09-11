@@ -1,8 +1,10 @@
-import React, { useEffect } from "react";
-import dayjs from "dayjs";
+import React, { useCallback, useEffect, useRef } from "react";
+import dayjs, { Dayjs } from "dayjs";
 import { Col, Form, Input, Modal, Row } from "antd";
 import { AddUpdateModalProps } from "@/shared/interfaces/common";
 import { DatePickerCustom, InputMoney, Label, SubmitButton } from "@/shared/components";
+import { getData } from "@/shared/api/apiClient";
+import { apiEndpoint } from "@/shared/constants/apiEndpoint";
 import { PartnerSelect } from "@/modules/partner/components/Select";
 import { PartnerType } from "@/modules/partner/partner.model";
 import { DebtSide, debtSideMap } from "@/shared/constants/enum";
@@ -11,23 +13,68 @@ import { setFormErrors } from "@/shared/utils/form.util";
 import { randomId } from "@/shared/utils/common.util";
 import { DebtAdjustment } from "../debtAdjustment.model";
 
-export const DebtAdjustmentAddUpdateModal: React.FC<AddUpdateModalProps<DebtAdjustment>> = ({
+interface DebtAdjustmentAddUpdateModalProps extends AddUpdateModalProps<DebtAdjustment> {
+  side: DebtSide;
+}
+export const DebtAdjustmentAddUpdateModal: React.FC<DebtAdjustmentAddUpdateModalProps> = ({
   open,
   editData,
   errors,
   loading,
-  type,
+  side,
   onAdd,
   onEdit,
   onClose,
 }) => {
   const [form] = Form.useForm<DebtAdjustment>();
-  const side = (type || editData?.side || DebtSide.RECEIVABLE) as DebtSide;
   const partner = Form.useWatch("partner", form);
   const expectedAmount = Number(Form.useWatch("expectedAmount", form) || 0);
   const countedAmount = Number(Form.useWatch("countedAmount", form) || 0);
   const id = editData?.id || randomId();
-  const partnerType = side === DebtSide.RECEIVABLE ? PartnerType.CUSTOMER : PartnerType.SUPPLIER;
+  const occurredAt = Form.useWatch("occurredAt", form);
+  const partnerId = Form.useWatch("partnerId", form);
+  const balanceRequestId = useRef(0);
+
+  const isPayable = side === DebtSide.PAYABLE;
+
+  const partnerTypes = isPayable
+    ? [PartnerType.SUPPLIER, PartnerType.SHIPPER]
+    : [PartnerType.CUSTOMER];
+
+  const fetchPartnerDebt = useCallback(
+    async (
+      partnerId: string | null | undefined,
+      value: string | number | Dayjs | Date | null | undefined,
+    ) => {
+      const date = dayjs(value);
+      if (!open || !partnerId || !date.isValid()) return;
+
+      const requestId = ++balanceRequestId.current;
+      form.setFieldValue("expectedAmount", 0);
+
+      try {
+        const url = apiEndpoint.debt.balance.replace(":partnerId", partnerId);
+        const response = await getData<{
+          payableDebtAmount: number;
+          receivableDebtAmount: number;
+        }>(url, {
+          offsetAt: date.toISOString(),
+          ...(editData?.id ? { excludeId: editData.id } : {}),
+        });
+
+        if (requestId !== balanceRequestId.current) return;
+        const amount = isPayable
+          ? response.data?.payableDebtAmount
+          : response.data?.receivableDebtAmount;
+        form.setFieldValue("expectedAmount", Number(amount || 0));
+      } catch (error) {
+        if (requestId !== balanceRequestId.current) return;
+        console.error("Failed to fetch partner debt balance", error);
+        form.setFieldValue("expectedAmount", 0);
+      }
+    },
+    [form, isPayable, open],
+  );
 
   useEffect(() => {
     if (errors) setFormErrors(form, errors);
@@ -35,25 +82,38 @@ export const DebtAdjustmentAddUpdateModal: React.FC<AddUpdateModalProps<DebtAdju
 
   const handleAfterOpenChange = (isOpen: boolean) => {
     if (!isOpen) {
+      balanceRequestId.current += 1;
       form.resetFields();
       return;
     }
     if (editData) {
+      const values = parseFormDataDates(editData) as unknown as DebtAdjustment;
       form.setFieldsValue({
-        ...(parseFormDataDates(editData) as unknown as DebtAdjustment),
+        ...values,
         side,
       });
+      void fetchPartnerDebt(values.partnerId, values.occurredAt);
       return;
     }
+    const occurredAt = dayjs();
     form.setFieldsValue({
       id,
       tempId: id,
-      occurredAt: dayjs() as unknown as string,
+      occurredAt: occurredAt as unknown as string,
       side,
       expectedAmount: 0,
       countedAmount: 0,
       isInitial: false,
     });
+  };
+
+  const handleOccurredAtChange = (value: Dayjs | null) => {
+    if (!value) {
+      balanceRequestId.current += 1;
+      form.setFieldValue("expectedAmount", 0);
+      return;
+    }
+    void fetchPartnerDebt(partnerId || partner?.id, value);
   };
 
   const handleFinish = (values: DebtAdjustment) => {
@@ -64,7 +124,7 @@ export const DebtAdjustmentAddUpdateModal: React.FC<AddUpdateModalProps<DebtAdju
       ...formValues,
       id,
       tempId: id,
-      deltaAmount: Number(values.countedAmount || 0) - Number(values.expectedAmount || 0),
+      side,
     }) as Partial<DebtAdjustment>;
     if (editData) onEdit?.(payload);
     else onAdd?.(payload);
@@ -82,7 +142,7 @@ export const DebtAdjustmentAddUpdateModal: React.FC<AddUpdateModalProps<DebtAdju
       destroyOnClose
       maskClosable={false}
       footer={null}
-      title={`${editData ? "Cập nhật" : "Thêm"} phiếu điều chỉnh công nợ`}
+      title={`${editData ? "Cập nhật" : "Thêm"} phiếu điều chỉnh ${debtSideMap[side]?.toLowerCase()}`}
       onCancel={handleClose}
       afterOpenChange={handleAfterOpenChange}
     >
@@ -95,36 +155,34 @@ export const DebtAdjustmentAddUpdateModal: React.FC<AddUpdateModalProps<DebtAdju
             </Form.Item>
           </Col>
           <Col xs={24} sm={12}>
-            <Form.Item
-              name="occurredAt"
-              label={<Label title="Thời gian" required />}
-              rules={[{ required: true, message: "Vui lòng chọn thời gian" }]}
-            >
-              <DatePickerCustom showTime />
+            <Form.Item name="occurredAt" label={<Label title="Thời gian" />}>
+              <DatePickerCustom onChange={handleOccurredAtChange} />
             </Form.Item>
           </Col>
-          <Col xs={24} sm={12}>
-            <Form.Item label={<Label title="Loại công nợ" required />}>
-              <Input value={debtSideMap[side]} disabled />
-            </Form.Item>
-          </Col>
-          <Col xs={24} sm={12}>
+
+          <Col xs={24}>
             <Form.Item name="partnerId" label={<Label title="Đối tác" />}>
               <PartnerSelect
-                query={{ type: partnerType }}
+                query={{ types: partnerTypes, offsetAt: dayjs(occurredAt).toISOString() }}
                 defaultData={partner || editData?.partner || null}
-                onChangeData={(value) => form.setFieldValue("partner", value || null)}
+                showPayableDebt={isPayable}
+                showReceivableDebt={!isPayable}
+                onChangeData={(value) => {
+                  if (!value?.id) balanceRequestId.current += 1;
+                  form.setFieldValue("partner", value || null);
+                  form.setFieldValue(
+                    "expectedAmount",
+                    isPayable ? value?.payableDebtAmount || 0 : value?.receivableDebtAmount || 0,
+                  );
+                  if (value?.id) void fetchPartnerDebt(value.id, occurredAt);
+                }}
               />
             </Form.Item>
             <Form.Item name="partner" hidden />
           </Col>
           <Col xs={24} sm={12}>
-            <Form.Item
-              name="expectedAmount"
-              label={<Label title="Số dư hệ thống" required />}
-              rules={[{ required: true, message: "Vui lòng nhập số dư hệ thống" }]}
-            >
-              <InputMoney notRightAlign min={0} />
+            <Form.Item name="expectedAmount" label={<Label title="Số dư hệ thống" />}>
+              <InputMoney notRightAlign min={0} disabled />
             </Form.Item>
           </Col>
           <Col xs={24} sm={12}>

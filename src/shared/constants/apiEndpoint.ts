@@ -121,6 +121,7 @@ export const apiEndpoint = {
     saleReturn: "/sale-return",
     purchase: "/purchase",
     purchaseReturn: "/purchase-return",
+    history: "/order/history",
     cancel: "/sale/:id/cancel",
     complete: "/sale/:id/complete",
   },
@@ -216,6 +217,7 @@ export const apiEndpoint = {
   // ── Debt / Commission / VAT ──
   partnerDebtAdjustment: { base: "/partner-debt/adjustment" },
   debtAdjustment: { base: "/debt-adjustment" },
+  debt: { balance: "/debt/balance/:partnerId" },
   partnerDebtOffset: { base: "/partner-debt/offset" },
   partnerDebt: {
     base: "/partner-debt",
@@ -234,6 +236,7 @@ export const apiEndpoint = {
     adjustment: "/commission-debt/adjustment",
   },
   vat: { transaction: "/vat-debt/report", adjustment: "/vat-adjustment" },
+  vatTransaction: { base: "/vat-transaction", balance: "/vat-transaction/balance" },
   vatDebtAdjustment: { base: "/vat-adjustment" },
   vatDebtReport: { base: "/vat-debt/report" },
 

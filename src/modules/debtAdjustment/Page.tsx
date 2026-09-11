@@ -181,7 +181,7 @@ export const DebtAdjustmentPage: React.FC = () => {
       <DebtAdjustmentAddUpdateModal
         open={open}
         editData={rowData}
-        type={openSide}
+        side={openSide}
         errors={store.errors}
         loading={store.creating || store.updating}
         onAdd={store.create}
