@@ -17,7 +17,7 @@ const metricLabels: Record<keyof SaleProfitMetricsData["metrics"], string> = {
   otherIncome: "Thu nhập khác",
   netProfit: "Lợi nhuận ròng",
   averageCostPerDay: "Chi phí TB/ngày",
-  costRevenueRatio: "Tỷ lệ chi phí/doanh thu",
+  costRevenueRatio: "% chi phí/doanh thu",
 };
 
 type BranchDataItem = { branch: string; value: number };
