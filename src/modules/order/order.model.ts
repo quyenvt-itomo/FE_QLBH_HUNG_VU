@@ -22,6 +22,7 @@ export interface OrderQuery extends ApiRequestQuery {
   statuses?: OrderStatus[];
   partnerId?: string;
   customerId?: string;
+  shipperId?: string;
   storeId?: string;
   isCompleted?: boolean;
   approveStatus?: string;

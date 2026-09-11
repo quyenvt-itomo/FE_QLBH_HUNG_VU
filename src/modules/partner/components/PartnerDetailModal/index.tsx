@@ -4,10 +4,12 @@ import { DetailModalProps } from "@/shared/interfaces/common";
 import { InfoTab } from "./InfoTab";
 import { BankTab } from "./BankTab";
 import { ContactTab } from "./ContactTab";
-import { Partner } from "../../partner.model";
+import { Partner, PartnerType } from "../../partner.model";
 import { checkModule } from "@/shared/utils";
 import { useGlobalData } from "@/shared/hooks";
-import { CustomerDebtReport } from "@/modules/partnerDebtReport";
+import { PayableDebtReport, ReceivableDebtReport } from "@/modules/partnerDebtReport";
+import { OrderType } from "@/modules/order/order.model";
+import { PartnerOrderHistory } from "../PartnerOrderHistory";
 
 export const PartnerDetailModal: React.FC<DetailModalProps<Partner>> = ({
   open,
@@ -19,7 +21,7 @@ export const PartnerDetailModal: React.FC<DetailModalProps<Partner>> = ({
 
   useEffect(() => {
     if (open) setActiveTab("info");
-  }, [open]);
+  }, [open, data?.id]);
 
   if (!data) return null;
 
@@ -29,12 +31,28 @@ export const PartnerDetailModal: React.FC<DetailModalProps<Partner>> = ({
     { key: "contacts", label: `Người liên hệ (${data.contacts?.length ?? 0})` },
   ];
 
-  if (checkModule(permissions, "sale")) {
-    tabItems.push({ key: "sales", label: "Lịch sử mua hàng" });
+  if (data.type === PartnerType.CUSTOMER) {
+    if (checkModule(permissions, "sale")) {
+      tabItems.push({ key: "sales", label: "Lịch sử mua hàng" });
+    }
+
+    if (checkModule(permissions, "saleReturn")) {
+      tabItems.push({ key: "saleReturns", label: "Trả hàng" });
+    }
   }
 
-  if (checkModule(permissions, "saleReturn")) {
-    tabItems.push({ key: "saleReturns", label: "Trả hàng" });
+  if (data.type === PartnerType.SUPPLIER) {
+    if (checkModule(permissions, "purchase")) {
+      tabItems.push({ key: "purchases", label: "Lịch sử nhập hàng" });
+    }
+
+    if (checkModule(permissions, "purchaseReturn")) {
+      tabItems.push({ key: "purchaseReturns", label: "Trả hàng" });
+    }
+  }
+
+  if (data.type === PartnerType.SHIPPER) {
+    tabItems.push({ key: "shipments", label: "Đơn đã vận chuyển" });
   }
 
   if (checkModule(permissions, "debtReport")) {
@@ -45,9 +63,41 @@ export const PartnerDetailModal: React.FC<DetailModalProps<Partner>> = ({
     info: <InfoTab data={data} />,
     banks: <BankTab data={data} />,
     contacts: <ContactTab data={data} />,
-    sales: <div>Chưa có dữ liệu</div>,
-    saleReturns: <div>Chưa có dữ liệu</div>,
-    debts: <CustomerDebtReport customer={data} />,
+    sales: (
+      <PartnerOrderHistory
+        partnerId={data.id}
+        mode="customer"
+        orderType={OrderType.SALE}
+      />
+    ),
+    saleReturns: (
+      <PartnerOrderHistory
+        partnerId={data.id}
+        mode="customer"
+        orderType={OrderType.SALE_RETURN}
+      />
+    ),
+    purchases: (
+      <PartnerOrderHistory
+        partnerId={data.id}
+        mode="supplier"
+        orderType={OrderType.PURCHASE}
+      />
+    ),
+    purchaseReturns: (
+      <PartnerOrderHistory
+        partnerId={data.id}
+        mode="supplier"
+        orderType={OrderType.PURCHASE_RETURN}
+      />
+    ),
+    shipments: <PartnerOrderHistory partnerId={data.id} mode="shipper" />,
+    debts:
+      data.type === PartnerType.CUSTOMER ? (
+        <ReceivableDebtReport partner={data} />
+      ) : (
+        <PayableDebtReport partner={data} />
+      ),
   };
 
   return (

@@ -1,1 +1,1 @@
-export * from "./CustomerDebt";
+export * from "./ReceivableDebt";

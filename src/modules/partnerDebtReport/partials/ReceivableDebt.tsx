@@ -2,7 +2,7 @@ import { usePageState } from "@/shared/hooks";
 import {
   PartnerDebtRefType,
   partnerDebtRefTypeMap,
-  PartnerDebtReport,
+  PartnerDebtReport as PartnerDebtReportRow,
 } from "../partnerDebtReport.model";
 import { CLASSNAME, DebtSide, TransactionType } from "@/shared/constants";
 import { useEffect, useState } from "react";
@@ -13,10 +13,11 @@ import { Table } from "antd";
 import { RefTypeFilter } from "../components";
 import { formatDateDDMMYYYY, formatMoney } from "@/shared/utils";
 
-interface CustomerDebtReportProps {
-  customer?: Partner;
+interface PartnerDebtReportProps {
+  partner?: Partner;
+  side?: DebtSide;
 }
-export const CustomerDebtReport: React.FC<CustomerDebtReportProps> = ({ customer }) => {
+const DebtReport: React.FC<PartnerDebtReportProps> = ({ partner, side = DebtSide.RECEIVABLE }) => {
   const {
     keyword,
     page,
@@ -31,7 +32,7 @@ export const CustomerDebtReport: React.FC<CustomerDebtReportProps> = ({ customer
     setPage,
     setSize,
     pageAction,
-  } = usePageState<PartnerDebtReport>();
+  } = usePageState<PartnerDebtReportRow>();
   const [refType, setRefType] = useState<PartnerDebtRefType | undefined>();
   const [data, setData] = useState<any[]>([]);
 
@@ -46,10 +47,10 @@ export const CustomerDebtReport: React.FC<CustomerDebtReportProps> = ({ customer
       sortBy,
       sortOrder,
       isLockedReport: true,
-      isLockedTransaction: !customer,
-      partnerId: customer?.id,
+      isLockedTransaction: !partner,
+      partnerId: partner?.id,
       refType,
-      side: DebtSide.RECEIVABLE,
+      side,
       ...filter,
       ...ranger,
     });
@@ -218,3 +219,11 @@ export const CustomerDebtReport: React.FC<CustomerDebtReportProps> = ({ customer
     </div>
   );
 };
+
+export const ReceivableDebtReport: React.FC<{ partner?: Partner }> = ({ partner }) => (
+  <DebtReport partner={partner} side={DebtSide.RECEIVABLE} />
+);
+
+export const PayableDebtReport: React.FC<{ partner?: Partner }> = ({ partner }) => (
+  <DebtReport partner={partner} side={DebtSide.PAYABLE} />
+);
