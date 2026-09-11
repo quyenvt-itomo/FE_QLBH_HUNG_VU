@@ -62,7 +62,6 @@ export const UserPage: React.FC = () => {
     setOpen,
     setRowData,
   });
-  console.log({ status });
 
   return (
     <div className="flex flex-col h-full w-full gap-3">

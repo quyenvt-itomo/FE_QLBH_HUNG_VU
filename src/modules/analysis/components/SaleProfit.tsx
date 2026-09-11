@@ -14,7 +14,7 @@ const metricLabels: Record<keyof SaleProfitMetricsData["metrics"], string> = {
   netRevenue: "Doanh thu thuần",
   grossProfit: "Lợi nhuận gộp",
   totalCost: "Tổng chi phí",
-  customerIncome: "Thu nhập khách",
+  otherIncome: "Thu nhập khác",
   netProfit: "Lợi nhuận ròng",
   averageCostPerDay: "Chi phí TB/ngày",
   costRevenueRatio: "Tỷ lệ chi phí/doanh thu",
@@ -150,7 +150,7 @@ export const SaleProfit: React.FC<AnalysisFilterProps & { query: AnalysisQuery }
   <div className="space-y-4">
     <AnalysisViewHeader title="Chi phí - Lợi nhuận" {...filters} />
     <ProfitMetrics query={query} />
-    <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+    <div className="flex flex-col gap-4">
       <CostStructure query={query} />
       <Effectiveness query={query} />
     </div>

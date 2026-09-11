@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Empty, Spin, Table, Tabs } from "antd";
+import React, { useMemo, useState } from "react";
+import { Empty, Spin, Table, TableProps, Tabs } from "antd";
 import ReactApexChart from "react-apexcharts";
 import { formatMoney, formatPercentage, formatShortMoney } from "@/shared/utils/number.util";
 import {
@@ -106,26 +106,31 @@ const BranchTable: React.FC<{ data: AnalysisBranchRow[]; loading: boolean }> = (
       {
         title: "Doanh thu",
         dataIndex: "revenue",
+        align: "right",
         render: (value: number) => formatMoney(value) || "0",
       },
       {
         title: "Trả hàng",
         dataIndex: "returns",
+        align: "right",
         render: (value: number) => formatMoney(value) || "0",
       },
       {
         title: "Doanh thu thuần",
         dataIndex: "netRevenue",
+        align: "right",
         render: (value: number) => formatMoney(value) || "0",
       },
       {
         title: "Tổng giá vốn",
         dataIndex: "totalCost",
+        align: "right",
         render: (value: number) => formatMoney(value) || "0",
       },
       {
         title: "Lợi nhuận gộp",
         dataIndex: "grossProfit",
+        align: "right",
         render: (value: number) => formatMoney(value) || "0",
       },
     ]}
@@ -190,63 +195,106 @@ const TopTable: React.FC<{
     );
   }
 
-  const valueColumns =
-    sortBy === "returns"
-      ? [
+  const columns = useMemo((): TableProps<AnalysisTopRow>["columns"] => {
+    const baseColumns: TableProps<AnalysisTopRow>["columns"] = [
+      { title: "Tên", dataIndex: "name" },
+    ];
+
+    switch (sortBy) {
+      case "returns":
+        baseColumns.push(
           {
             title: "SL trả",
             dataIndex: "returnQuantity",
+            align: "right",
+            width: 140,
             render: (value: number) => value.toLocaleString("vi-VN"),
           },
           {
             title: "Giá trị trả",
             dataIndex: "returns",
+            align: "right",
+            width: 140,
             render: (value: number) => formatMoney(value) || "0",
           },
           {
             title: "Tỷ lệ trả",
             dataIndex: "returnRatio",
+            align: "right",
+            width: 140,
             render: (value: number) => formatPercentage(value) || "0%",
           },
-        ]
-      : sortBy === "invoiceCount"
-        ? [
-            {
-              title: "Số hóa đơn",
-              dataIndex: "invoiceCount",
-              render: (value: number) => value.toLocaleString("vi-VN"),
-            },
-          ]
-        : sortBy === "grossProfit"
-          ? [
-              {
-                title: "Lợi nhuận gộp",
-                dataIndex: "grossProfit",
-                render: (value: number) => formatMoney(value) || "0",
-              },
-              {
-                title: "TB/đơn",
-                dataIndex: "averageOrder",
-                render: (value: number) => formatMoney(value) || "0",
-              },
-              {
-                title: "Tỷ suất",
-                dataIndex: "margin",
-                render: (value: number) => formatPercentage(value) || "0%",
-              },
-            ]
-          : [
-              {
-                title: sortLabels[sortBy],
-                dataIndex: sortBy === "netRevenue" ? "netRevenue" : "revenue",
-                render: (value: number) => formatMoney(value) || "0",
-              },
-              {
-                title: "TB/đơn",
-                dataIndex: "averageOrder",
-                render: (value: number) => formatMoney(value) || "0",
-              },
-            ];
+        );
+        break;
+      case "invoiceCount":
+        baseColumns.push({
+          title: "Số hóa đơn",
+          dataIndex: "invoiceCount",
+          align: "right",
+          width: 140,
+          render: (value: number) => value.toLocaleString("vi-VN"),
+        });
+        break;
+      case "grossProfit":
+        baseColumns.push(
+          {
+            title: "Lợi nhuận gộp",
+            dataIndex: "grossProfit",
+            align: "right",
+            width: 140,
+            render: (value: number) => formatMoney(value) || "0",
+          },
+          {
+            title: "TB/đơn",
+            dataIndex: "averageOrder",
+            align: "right",
+            width: 140,
+            render: (value: number) => formatMoney(value) || "0",
+          },
+          {
+            title: "Tỷ suất",
+            dataIndex: "margin",
+            align: "right",
+            width: 140,
+            render: (value: number) => formatPercentage(value) || "0%",
+          },
+        );
+        break;
+      default:
+        baseColumns.push(
+          {
+            title: sortLabels[sortBy],
+            dataIndex: sortBy === "netRevenue" ? "netRevenue" : "revenue",
+            align: "right",
+            width: 140,
+            render: (value: number) => formatMoney(value) || "0",
+          },
+          {
+            title: "TB/đơn",
+            dataIndex: "averageOrder",
+            align: "right",
+            width: 140,
+            render: (value: number) => formatMoney(value) || "0",
+          },
+        );
+    }
+
+    baseColumns.push({
+      title: "So với kỳ trước",
+      dataIndex: "growth",
+      key: "growth",
+      align: "right",
+      width: 140,
+      render: (value: number) => (
+        <span className={value >= 0 ? "text-green-600" : "text-red-500"}>
+          {value >= 0 ? "+" : ""}
+          {value.toFixed(2)}%
+        </span>
+      ),
+    });
+
+    return baseColumns;
+  }, [sortBy]);
 
   return (
     <section className="rounded-xl bg-white p-4 shadow-sm">
@@ -263,20 +311,7 @@ const TopTable: React.FC<{
         locale={{
           emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Chưa có dữ liệu" />,
         }}
-        columns={[
-          { title: "Tên", dataIndex: "name" },
-          ...valueColumns,
-          {
-            title: "So với kỳ trước",
-            dataIndex: "growth",
-            render: (value: number) => (
-              <span className={value >= 0 ? "text-green-600" : "text-red-500"}>
-                {value >= 0 ? "+" : ""}
-                {value.toFixed(2)}%
-              </span>
-            ),
-          },
-        ]}
+        columns={columns}
       />
     </section>
   );

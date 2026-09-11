@@ -91,7 +91,7 @@ export const AnalysisPage: React.FC = () => {
   return (
     <div className="flex min-h-full gap-4 w-full max-w-7xl mx-auto">
       <TabBar section={section} tabActive={selectedTab} onTabChange={onTabChange} />
-      <main className="min-w-0 flex-1 pb-4">{renderContent()}</main>
+      <main className="min-w-0 flex-1">{renderContent()}</main>
     </div>
   );
 };
