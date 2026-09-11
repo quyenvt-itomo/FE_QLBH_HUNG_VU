@@ -22,10 +22,16 @@ export interface OrderQuery extends ApiRequestQuery {
   statuses?: OrderStatus[];
   partnerId?: string;
   customerId?: string;
+  customerIds?: string[];
+  supplierIds?: string[];
   shipperId?: string;
   storeId?: string;
   isCompleted?: boolean;
   approveStatus?: string;
+}
+
+export interface OrderHistoryQuery extends OrderQuery {
+  shipperId?: string;
 }
 export interface OrderSnapshot {
   id: string;

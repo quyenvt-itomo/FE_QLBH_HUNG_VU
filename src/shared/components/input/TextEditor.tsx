@@ -1,6 +1,5 @@
 import React from "react";
 import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
 
 interface TextEditorProps {
   value?: string | null;
@@ -26,7 +25,7 @@ export const TextEditor: React.FC<TextEditorProps> = ({
     <ReactQuill
       theme="snow"
       value={value || ""}
-      onChange={(content) => onChange?.(content)}
+      onChange={(content: string) => onChange?.(content)}
       placeholder={placeholder}
       modules={{
         toolbar: [

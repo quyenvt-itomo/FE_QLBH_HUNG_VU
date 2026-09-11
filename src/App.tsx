@@ -101,12 +101,7 @@ const App: React.FC = () => {
         },
       }}
     >
-      <BrowserRouter
-        future={{
-          v7_startTransition: true,
-          v7_relativeSplatPath: true,
-        }}
-      >
+      <BrowserRouter>
         <AntdApp>
           <OnlineStatusNotifier />
           <Routes>

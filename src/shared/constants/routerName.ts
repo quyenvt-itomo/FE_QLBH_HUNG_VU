@@ -51,10 +51,16 @@ export const privateRoutesName = {
   vatAdjustment: "/vat-adjustments",
 
   // TODO: Phân tích
-  analysis: {},
+  analysis: {
+    base: "/analysis/:section",
+    sale: "/analysis/sale",
+    product: "/analysis/product",
+    customer: "/analysis/customer",
+    effectiveness: "/analysis/effectiveness",
+  },
 
   // TODO: Báo cáo
-  report: {},
+  report: { base: "/reports" },
 
   // TODO: Thiết lập
   setup: {
@@ -223,6 +229,11 @@ export const routeTitleMap: RouteTitleMap = {
     path: privateRoutesName.vatAdjustment,
     title: "Điều chỉnh VAT",
     subtitle: "Điều chỉnh số dư VAT",
+  },
+  analysis: {
+    path: privateRoutesName.analysis.base,
+    title: "Phân tích",
+    subtitle: "Phân tích dữ liệu hoạt động kinh doanh",
   },
   profile: {
     path: privateRoutesName.profile,

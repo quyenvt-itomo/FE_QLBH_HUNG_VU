@@ -1,28 +1,20 @@
-import React, { useState } from "react";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import React from "react";
 import { Table, Tag } from "antd";
-import { apiEndpoint } from "@/shared/constants/apiEndpoint";
 import { CustomPagination } from "@/shared/components";
-import { getData } from "@/shared/api/apiClient";
-import { formatPayload } from "@/shared/utils/common.util";
 import { formatDateTimeDDMMYYYY } from "@/shared/utils/date.util";
 import { formatMoney } from "@/shared/utils/number.util";
-import { ApiResponse } from "@/shared/interfaces/api";
-import { Order, OrderStatus, OrderType } from "@/modules/order/order.model";
-import { CLASSNAME } from "@/shared/constants";
+import { Order, OrderStatus, OrderType } from "../order.model";
 
-type OrderHistoryMode = "customer" | "supplier" | "shipper";
+type HistoryMode = "customer" | "supplier" | "shipper";
 
-interface PartnerOrderHistoryProps {
-  partnerId: string;
-  mode: OrderHistoryMode;
-  orderType?: OrderType;
+interface PartnerOrderHistoryTableProps {
+  dataSource: Order[];
+  loading?: boolean;
+  pagination?: any;
+  mode: HistoryMode;
+  setPage?: (page: number) => void;
+  setSize?: (size: number) => void;
 }
-
-const endpointByMode: Record<Exclude<OrderHistoryMode, "shipper">, string> = {
-  customer: apiEndpoint.order.sale,
-  supplier: apiEndpoint.order.purchase,
-};
 
 const typeLabel: Record<OrderType, string> = {
   [OrderType.PURCHASE]: "Nhập hàng",
@@ -46,49 +38,16 @@ const statusColor: Record<OrderStatus, string> = {
 const isReturnOrder = (type: OrderType) =>
   type === OrderType.PURCHASE_RETURN || type === OrderType.SALE_RETURN;
 
-export const PartnerOrderHistory: React.FC<PartnerOrderHistoryProps> = ({
-  partnerId,
+export const PartnerOrderHistoryTable: React.FC<PartnerOrderHistoryTableProps> = ({
+  dataSource,
+  loading,
+  pagination,
   mode,
-  orderType,
+  setPage,
+  setSize,
 }) => {
-  const [page, setPage] = useState(1);
-  const [size, setSize] = useState(10);
   const isShipper = mode === "shipper";
-  const selectedOrderType =
-    orderType || (mode === "customer" ? OrderType.SALE : OrderType.PURCHASE);
-  const endpoint = isShipper
-    ? apiEndpoint.order.history
-    : selectedOrderType === OrderType.SALE_RETURN
-      ? apiEndpoint.order.saleReturn
-      : selectedOrderType === OrderType.PURCHASE_RETURN
-        ? apiEndpoint.order.purchaseReturn
-        : endpointByMode[mode];
-  const params = isShipper ? { shipperId: partnerId, page, size } : { partnerId, page, size };
-
-  const {
-    data: response,
-    isLoading,
-    isError,
-  } = useQuery<ApiResponse<Order[]>>({
-    queryKey: ["partner-order-history", mode, partnerId, page, size],
-    queryFn: () => getData<Order[]>(endpoint, formatPayload(params)),
-    placeholderData: keepPreviousData,
-    enabled: Boolean(partnerId),
-  });
-
-  const orders = response?.data || [];
-  const pagination = response?.pagination;
-  const { currentPage = 1, size: currentSize = 10 } = pagination || {};
-
   const columns: any[] = [
-    {
-      title: "#",
-      dataIndex: "index",
-      key: "index",
-      width: 50,
-      render: (_value: unknown, _record: Order, index: number) =>
-        (currentPage - 1) * currentSize + index + 1,
-    },
     {
       title: "Mã hóa đơn",
       dataIndex: "code",
@@ -116,7 +75,7 @@ export const PartnerOrderHistory: React.FC<PartnerOrderHistoryProps> = ({
         formatDateTimeDDMMYYYY(record.orderAt || record.occurredAt),
     },
     {
-      title: "Người bán",
+      title: mode === "supplier" ? "Người nhập" : "Người bán",
       key: "seller",
       width: 150,
       render: (_value: unknown, record: Order) =>
@@ -148,17 +107,13 @@ export const PartnerOrderHistory: React.FC<PartnerOrderHistoryProps> = ({
   ];
 
   return (
-    <div className="flex flex-col h-full rounded-lg border overflow-hidden">
-      {isError && (
-        <div className="px-4 py-3 text-sm text-red-500">Không thể tải lịch sử đơn hàng.</div>
-      )}
+    <div className="flex h-full flex-col overflow-hidden rounded-lg border">
       <Table
-        loading={isLoading}
+        loading={loading}
         columns={columns}
-        dataSource={orders}
+        dataSource={dataSource}
         rowKey="id"
         pagination={false}
-        className={CLASSNAME.table}
         tableLayout="fixed"
         scroll={{ x: "max-content" }}
         footer={() =>
@@ -166,7 +121,7 @@ export const PartnerOrderHistory: React.FC<PartnerOrderHistoryProps> = ({
             <CustomPagination
               pagination={pagination}
               itemName="đơn hàng"
-              length={orders.length}
+              length={dataSource.length}
               showTotal
               setPage={setPage}
               setSize={setSize}

@@ -1,38 +1,68 @@
 import { useEffect, useState } from "react";
 
-export const useHashTabs = <T = any>({
-  items,
-}: {
-  items: {
-    key: T;
-    label: React.ReactNode;
-  }[];
-}) => {
+interface HashTabItem<T> {
+  key: T;
+  label: React.ReactNode;
+}
+
+interface UseHashTabsProps<T> {
+  items: HashTabItem<T>[];
+}
+
+const getHash = () => decodeURIComponent(window.location.hash.replace(/^#/, ""));
+
+const replaceHash = (key: unknown) => {
+  const url = `${window.location.pathname}${window.location.search}#${String(key)}`;
+  window.history.replaceState(null, "", url);
+};
+
+export const useHashTabs = <T = string>({ items }: UseHashTabsProps<T>) => {
   const [activeTab, setActiveTab] = useState<T | undefined>();
 
   useEffect(() => {
-    if (activeTab || !items.length) return;
+    if (!items.length) {
+      setActiveTab(undefined);
+      return;
+    }
 
-    const hash = window.location.hash.replace("#", "");
-    const isValid = items.some((item) => item.key === hash);
+    const syncFromHash = () => {
+      const hash = getHash();
+      const matchedItem = items.find((item) => String(item.key) === hash);
 
-    if (isValid) {
-      setActiveTab(hash as T);
-    } else {
+      if (matchedItem) {
+        setActiveTab(matchedItem.key);
+        return;
+      }
+
       const defaultKey = items[0].key;
       setActiveTab(defaultKey);
-      window.history.replaceState(null, "", `#${defaultKey}`);
-    }
-  }, [activeTab, items]);
+      replaceHash(defaultKey);
+    };
+
+    syncFromHash();
+    window.addEventListener("hashchange", syncFromHash);
+    window.addEventListener("popstate", syncFromHash);
+
+    return () => {
+      window.removeEventListener("hashchange", syncFromHash);
+      window.removeEventListener("popstate", syncFromHash);
+    };
+  }, [items]);
 
   const onTabChange = (key: T) => {
+    if (!items.some((item) => item.key === key)) return;
+
+    const nextHash = `#${String(key)}`;
+    if (window.location.hash !== nextHash) {
+      const url = `${window.location.pathname}${window.location.search}${nextHash}`;
+      window.history.pushState(null, "", url);
+    }
     setActiveTab(key);
-    window.history.replaceState(null, "", `#${key}`);
   };
 
   return {
     activeTab,
     onTabChange,
-    setActiveTab, // optional nếu muốn control ngoài
+    setActiveTab,
   };
 };

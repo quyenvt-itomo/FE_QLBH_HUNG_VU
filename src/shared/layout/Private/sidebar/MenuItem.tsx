@@ -26,8 +26,6 @@ const subgroup = (
 const group = (key: string, label: string, children: MenuItem[]): MenuItem | null =>
   children.length ? ({ key, type: "group", label, children } as MenuItem) : null;
 
-const emptyItem = (key: string): MenuItem => ({ key, label: "Trống", disabled: true });
-
 export const SideBarMenuItems = (): MenuItem[] => {
   const { permissions } = useGlobalData();
   const can = (module: Parameters<typeof checkPermission>[1]) => checkModule(permissions, module);
@@ -99,22 +97,26 @@ export const SideBarMenuItems = (): MenuItem[] => {
     ].filter(Boolean) as MenuItem[],
   );
 
-  const analysisAndReports = group("analysis-reports", "Phân tích & báo cáo", [
-    {
-      key: "analysis",
-      type: "submenu",
-      label: "Phân tích",
-      icon: <Icon icon="solar:chart-bold" />,
-      children: [emptyItem("analysis-empty")],
-    } as MenuItem,
-    {
-      key: "reports",
-      type: "submenu",
-      label: "Báo cáo",
-      icon: <Icon icon="solar:pie-chart-outline" />,
-      children: [emptyItem("reports-empty")],
-    } as MenuItem,
-  ]);
+  const analysisAndReports = group(
+    "analysis-reports",
+    "Phân tích & báo cáo",
+    [
+      can("analysis") &&
+        subgroup("analysis", "Phân tích", <Icon icon="solar:chart-bold" />, [
+          item(privateRoutesName.analysis.sale, "Kinh doanh"),
+          item(privateRoutesName.analysis.product, "Hàng hóa"),
+          item(privateRoutesName.analysis.customer, "Khách hàng"),
+          item(privateRoutesName.analysis.effectiveness, "Hiệu quả"),
+        ]),
+      can("reports") &&
+        ({
+          key: "reports-empty",
+          label: "Đang hoàn thiện",
+          disabled: true,
+          icon: <Icon icon="solar:pie-chart-outline" />,
+        } as MenuItem),
+    ].filter(Boolean) as MenuItem[],
+  );
 
   const setup = subgroup(
     "setup",

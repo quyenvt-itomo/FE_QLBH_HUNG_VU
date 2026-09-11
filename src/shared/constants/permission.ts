@@ -1,6 +1,8 @@
 /** Permission modules — single source of truth matching BE permission.middleware.ts. */
 export const MODULES = [
   "report", // Báo cáo
+  "analysis", // Phân tích
+  "reports", // Báo cáo chi tiết
   "debtReport", // Báo cáo công nợ
   "inventoryReport", // Báo cáo tồn kho
   "fundReport", // Báo cáo số dư quỹ
@@ -47,6 +49,8 @@ export type PermissionStructure = { [key in Module]?: Permission[] };
 
 export const ReadOnlyModules: Module[] = [
   "report",
+  "analysis",
+  "reports",
   "debtReport",
   "inventoryReport",
   "fundReport",
@@ -78,6 +82,8 @@ export const readPermissionFallbackMap: Partial<Record<Module, Module[]>> = {
 
 export const moduleMap: Record<Module, string> = {
   report: "Báo cáo tổng quan",
+  analysis: "Phân tích",
+  reports: "Báo cáo chi tiết",
   debtReport: "Báo cáo công nợ",
   inventoryReport: "Báo cáo tồn kho",
   fundReport: "Báo cáo quỹ",
@@ -117,7 +123,7 @@ export const permissionMap: Record<Permission, string> = {
 export const role: { title: string; modules: Module[] }[] = [
   {
     title: "Báo cáo",
-    modules: ["report", "debtReport", "inventoryReport", "fundReport", "vatReport"],
+    modules: ["report", "analysis", "reports", "debtReport", "inventoryReport", "fundReport", "vatReport"],
   },
   { title: "Kinh doanh", modules: ["customer", "sale", "saleReturn"] },
   {

@@ -8,8 +8,13 @@ import { Partner, PartnerType } from "../../partner.model";
 import { checkModule } from "@/shared/utils";
 import { useGlobalData } from "@/shared/hooks";
 import { PayableDebtReport, ReceivableDebtReport } from "@/modules/partnerDebtReport";
-import { OrderType } from "@/modules/order/order.model";
-import { PartnerOrderHistory } from "../PartnerOrderHistory";
+import { SalePartnerHistory } from "@/modules/sale/partials";
+import { SaleReturnPartnerHistory } from "@/modules/saleReturn/partials";
+import {
+  PurchasePartnerHistory,
+  PurchaseReturnPartnerHistory,
+} from "@/modules/purchase/partials";
+import { ShipperOrderHistory } from "@/modules/order/partials";
 
 export const PartnerDetailModal: React.FC<DetailModalProps<Partner>> = ({
   open,
@@ -63,35 +68,11 @@ export const PartnerDetailModal: React.FC<DetailModalProps<Partner>> = ({
     info: <InfoTab data={data} />,
     banks: <BankTab data={data} />,
     contacts: <ContactTab data={data} />,
-    sales: (
-      <PartnerOrderHistory
-        partnerId={data.id}
-        mode="customer"
-        orderType={OrderType.SALE}
-      />
-    ),
-    saleReturns: (
-      <PartnerOrderHistory
-        partnerId={data.id}
-        mode="customer"
-        orderType={OrderType.SALE_RETURN}
-      />
-    ),
-    purchases: (
-      <PartnerOrderHistory
-        partnerId={data.id}
-        mode="supplier"
-        orderType={OrderType.PURCHASE}
-      />
-    ),
-    purchaseReturns: (
-      <PartnerOrderHistory
-        partnerId={data.id}
-        mode="supplier"
-        orderType={OrderType.PURCHASE_RETURN}
-      />
-    ),
-    shipments: <PartnerOrderHistory partnerId={data.id} mode="shipper" />,
+    sales: <SalePartnerHistory partnerId={data.id} />,
+    saleReturns: <SaleReturnPartnerHistory partnerId={data.id} />,
+    purchases: <PurchasePartnerHistory partnerId={data.id} />,
+    purchaseReturns: <PurchaseReturnPartnerHistory partnerId={data.id} />,
+    shipments: <ShipperOrderHistory shipperId={data.id} />,
     debts:
       data.type === PartnerType.CUSTOMER ? (
         <ReceivableDebtReport partner={data} />

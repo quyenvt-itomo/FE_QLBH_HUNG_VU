@@ -21,6 +21,7 @@ import { InternalExportPage } from "@/modules/internalExport";
 import { DebtAdjustmentPage } from "@/modules/debtAdjustment";
 import { VatDebtAdjustmentPage } from "@/modules/vatDebtAdjustment";
 import { OperationLogPage } from "@/modules/operationLog";
+import { AnalysisPage } from "@/modules/analysis";
 
 export const desktopPage = {
   DashboardPage,
@@ -50,4 +51,5 @@ export const desktopPage = {
   VatDebtAdjustmentPage,
   ComingSoonPage,
   OperationLogPage,
+  AnalysisPage,
 };

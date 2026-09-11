@@ -3,5 +3,6 @@ export * from "./order.store";
 export * from "./order.util";
 export * from "./filterItem";
 export * from "./components";
+export * from "./partials";
 export { default as PurchaseReturnPage } from "./PurchaseReturnPage";
 export * from "./PosPage";

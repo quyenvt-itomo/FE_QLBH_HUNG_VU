@@ -1,8 +1,11 @@
 import { createBaseStore } from "@/shared/base/createBaseStore";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { apiEndpoint } from "@/shared/constants/apiEndpoint";
-import { Order, OrderQuery } from "./order.model";
+import { Order, OrderHistoryQuery, OrderQuery } from "./order.model";
 import type { Purchase } from "@/modules/purchase/purchase.model";
-import { postData } from "@/shared/api/apiClient";
+import { getData, postData } from "@/shared/api/apiClient";
+import { formatPayload } from "@/shared/utils/common.util";
+import { ApiResponse } from "@/shared/interfaces/api";
 import { useSaleStore } from "@/modules/sale/store";
 import { useSaleReturnStore } from "@/modules/saleReturn/store";
 
@@ -50,5 +53,21 @@ const createOrderStore = <T extends Order = Order>(key: string, apiUrl: string, 
 export const usePurchaseStore = createOrderStore("purchases", apiEndpoint.order.purchase, "purchase");
 export const usePurchaseReturnStore = createOrderStore<Purchase>("purchaseReturns", apiEndpoint.order.purchaseReturn, "purchaseReturn");
 export { useSaleStore, useSaleReturnStore };
+/** Store đọc lịch sử mọi loại đơn của một đơn vị vận chuyển. */
+export const useOrderHistoryStore = (params?: OrderHistoryQuery) => {
+  const query = useQuery<ApiResponse<Order[]>>({
+    queryKey: ["orderHistory", params],
+    placeholderData: keepPreviousData,
+    queryFn: () => getData<Order[]>(apiEndpoint.order.history, formatPayload(params)),
+    enabled: Boolean(params?.shipperId),
+  });
+
+  return {
+    data: query.data?.data || [],
+    pagination: query.data?.pagination,
+    loading: query.isLoading,
+    fetching: query.isFetching,
+  };
+};
 /** Compatibility alias for old order screens; orders are now split by type. */
 export const useOrderStore = useSaleStore;
