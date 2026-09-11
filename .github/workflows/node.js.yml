@@ -1,0 +1,107 @@
+name: Deploy FE
+
+on:
+  push:
+    branches: [production]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: "npm"
+
+      - name: Cache npm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: Create .env file from Secret
+        run: |
+          echo "${{ secrets.production_FE_ENV_FILE }}" > .env
+          echo "✅ .env file created"
+
+      - name: Install dependencies & Build
+        run: |
+          npm ci --legacy-peer-deps
+          npm run build
+
+      - name: Prepare deployment package
+        run: |
+          tar -czf deploy.tar.gz \
+            --exclude=node_modules \
+            --exclude=.git \
+            --exclude=src \
+            --exclude=.github \
+            --exclude=*.log \
+            --exclude=.env.example \
+            dist package.json package-lock.json .env ecosystem.config.cjs
+
+          echo "📦 Deployment package created ($(du -h deploy.tar.gz | cut -f1))"
+
+      - name: Copy files to Server
+        if: github.ref == 'refs/heads/production'
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT }}
+          proxy_host: ${{ secrets.RELAY_HOST }}
+          proxy_username: ${{ secrets.RELAY_USERNAME }}
+          proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          proxy_port: ${{ secrets.RELAY_PORT }}
+          source: "deploy.tar.gz"
+          target: "/var/www/production/fe"
+
+      - name: Deploy and Setup on Server
+        if: github.ref == 'refs/heads/production'
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT }}
+          proxy_host: ${{ secrets.RELAY_HOST }}
+          proxy_username: ${{ secrets.RELAY_USERNAME }}
+          proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          proxy_port: ${{ secrets.RELAY_PORT }}
+          script: |
+            set -e
+
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+            cd "/var/www/production/fe"
+
+            echo "📦 Extracting deployment package..."
+            tar -xzf deploy.tar.gz
+
+            echo "📦 Installing production dependencies..."
+            npm ci --omit=dev --legacy-peer-deps
+
+            echo "🔒 Setting .env file permissions..."
+            chmod 600 .env
+
+            echo "🧹 Cleaning up..."
+            rm deploy.tar.gz
+
+            cp .env .env.backup.$(date +%Y%m%d_%H%M%S)
+
+            pm2 reload ecosystem.config.cjs --update-env || pm2 start ecosystem.config.cjs
+
+            echo "✅ Deployment completed at $(date)"
+            echo "📋 Environment file loaded ($(wc -l < .env) lines)"
