@@ -33,9 +33,7 @@ export const useAuth = () => {
       onSuccess: (res) => {
         notify("success", "Đăng nhập thành công");
         opts?.onSuccess?.(res);
-        console.log({
-          res,
-        });
+
         if (opts?.rememberMe) {
           localStorage.setItem("loginData", JSON.stringify(res.data));
         } else {
