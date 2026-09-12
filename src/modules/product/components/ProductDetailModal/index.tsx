@@ -6,6 +6,8 @@ import { InfoTab } from "./InfoTab";
 import { DescriptionTab } from "./DescriptionTab";
 import { StoreBranchesTab } from "./StoreBranchesTab";
 import { InventoryTransactionTab } from "./InventoryTransactionTab";
+import { checkModule } from "@/shared/utils";
+import { useGlobalData } from "@/shared/hooks";
 
 export const ProductDetailModal: React.FC<DetailModalProps<Product>> = ({
   open,
@@ -13,6 +15,7 @@ export const ProductDetailModal: React.FC<DetailModalProps<Product>> = ({
   onClose,
 }) => {
   const [activeTab, setActiveTab] = useState("info");
+  const { permissions } = useGlobalData();
 
   useEffect(() => {
     if (open) setActiveTab("info");
@@ -23,9 +26,15 @@ export const ProductDetailModal: React.FC<DetailModalProps<Product>> = ({
     { key: "info", label: "Thông tin" },
     { key: "description", label: "Mô tả & ghi chú" },
     { key: "stores", label: "Chi nhánh kinh doanh" },
-    { key: "inventory", label: "Thẻ kho" },
-    { key: "report", label: "Báo cáo" },
   ];
+
+  if (checkModule(permissions, "inventoryReport")) {
+    tabItems.push({ key: "inventory", label: "Thẻ kho" });
+  }
+
+  if (checkModule(permissions, "reports")) {
+    tabItems.push({ key: "report", label: "Báo cáo" });
+  }
   const contentMap: Record<string, React.ReactNode> = {
     info: <InfoTab data={data} />,
     description: <DescriptionTab data={data} />,
@@ -53,7 +62,7 @@ export const ProductDetailModal: React.FC<DetailModalProps<Product>> = ({
       destroyOnClose
       width={1280}
     >
-      <div className="flex flex-col min-h-[50vh] gap-4">
+      <div className="flex flex-col min-h-[70vh] gap-4">
         {!hideTabs && (
           <>
             <Tabs
